@@ -1,0 +1,200 @@
+#include "Visualization.h"
+
+#include <ModelObjectList.h>
+#include <CylinderModelObject.h>
+#include <DiskModelObject.h>
+#include <FlexibleTubeModelObject.h>
+#include <PlaneModelObject.h>
+#include <PointSetModelObject.h>
+#include <SphereModelObject.h>
+#include <TorusModelObject.h>
+
+#include <FluorescenceRepresentation.h>
+#include <GeometryRepresentation.h>
+#include <PointSpreadFunction.h>
+#include <Simulation.h>
+
+#include <vtkActor.h>
+#include <vtkAbstractPicker.h>
+#include <vtkAlgorithmOutput.h>
+#include <vtkCamera.h>
+#include <vtkFluorescenceRenderView.h>
+#include <vtkImageData.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkInteractorStyleTrackballActor.h>
+#include <vtkFluorescenceWidgetsRepresentation.h>
+#include <vtkModelObjectGeometryRepresentation.h>
+#include <vtkModelObjectFluorescenceRepresentation.h>
+#include <vtkRenderer.h>
+#include <vtkRenderView.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderedSurfaceRepresentation.h>
+#include <vtkSurfaceUniformPointSampler.h>
+#include <vtkTriangleFilter.h>
+#include <vtkVisualizationInteractionObserver.h>
+
+
+Visualization
+::Visualization() {
+  m_Simulation = NULL;
+  m_GeometryRepresentation = new GeometryRepresentation();
+  m_FluorescenceRepresentation = new FluorescenceRepresentation();
+  m_FluorescenceWidgetsRepresentation = vtkSmartPointer<vtkFluorescenceWidgetsRepresentation>::New();
+
+  // Set up the model object view.
+  m_ModelObjectRenderView = vtkSmartPointer<vtkRenderView>::New();
+  m_ModelObjectRenderView->GetRenderer()->SetBackground(0.5, 0.5, 1.0);
+
+  m_InteractionObserver = vtkSmartPointer<vtkVisualizationInteractionObserver>::New();
+
+  m_CameraInteractor = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+  m_ActorInteractor = vtkSmartPointer<vtkInteractorStyleTrackballActor>::New();
+  m_ActorInteractor->AddObserver(vtkCommand::InteractionEvent, m_InteractionObserver);
+  m_GeometryRepresentation->SetInteractionObserver(m_InteractionObserver);
+
+  // Use the camera interactor initially.
+  m_ModelObjectRenderView->SetInteractorStyle(m_CameraInteractor);
+
+  // Set up the fluorescence render view.
+  m_FluorescenceRenderView = vtkSmartPointer<vtkFluorescenceRenderView>::New();
+}
+
+
+Visualization
+::~Visualization() {
+
+}
+
+
+void
+Visualization
+::SetSimulation(Simulation* simulation) {
+  m_Simulation = simulation;
+  m_GeometryRepresentation->SetModelObjectList(simulation->GetModelObjectList());
+  m_FluorescenceRepresentation->SetModelObjectList(simulation->GetModelObjectList());
+  m_FluorescenceWidgetsRepresentation->SetFluorescenceSimulation(simulation->GetFluorescenceSimulation());
+  m_FluorescenceRenderView->SetFluorescenceSimulation(simulation->GetFluorescenceSimulation());
+
+}
+
+
+vtkRenderWindow*
+Visualization
+::GetModelObjectRenderWindow() {
+  return m_ModelObjectRenderView->GetRenderWindow();
+}
+
+
+vtkRenderWindow*
+Visualization
+::GetFluorescenceRenderWindow() {
+  return m_FluorescenceRenderView->GetRenderWindow();
+}
+
+
+void
+Visualization
+::ModelObjectViewRender() {
+  m_ModelObjectRenderView->Render();
+}
+
+
+void
+Visualization
+::FluorescenceViewRender() {
+  m_FluorescenceRenderView->Render();
+}
+
+
+void
+Visualization
+::ResetModelObjectCamera() {
+  vtkCamera* camera = m_ModelObjectRenderView->GetRenderer()->GetActiveCamera();
+  camera->SetPosition(0.0, 0.0, 1.0);
+  camera->SetFocalPoint(0.0, 0.0, 0.0);
+  camera->SetViewUp(0.0, 1.0, 0.0);
+  camera->ComputeViewPlaneNormal();
+  m_ModelObjectRenderView->ResetCamera();
+}
+
+
+void
+Visualization
+::RefreshModelObjectView() {
+  m_ModelObjectRenderView->RemoveAllRepresentations();
+  m_GeometryRepresentation->Update();
+  m_GeometryRepresentation->AddToView(m_ModelObjectRenderView);
+  m_ModelObjectRenderView->AddRepresentation(m_FluorescenceWidgetsRepresentation);
+
+  m_FluorescenceRenderView->RemoveAllRepresentations();
+  m_FluorescenceRepresentation->Update();
+  m_FluorescenceRepresentation->AddToView(m_FluorescenceRenderView);
+}
+
+
+void
+Visualization
+::SetInteractionModeToCamera() {
+  m_ModelObjectRenderView->SetInteractorStyle(m_CameraInteractor);  
+}
+
+
+void
+Visualization
+::SetInteractionModeToActor() {
+  m_ModelObjectRenderView->SetInteractorStyle(m_ActorInteractor);
+}
+
+
+void
+Visualization
+::GetFluorescenceScalarRange(double scalarRange[2]) {
+  vtkImageData* image = m_FluorescenceRenderView->GetImage();
+  image->Update();
+
+  int components = image->GetNumberOfScalarComponents();
+  double min = 1e9;
+  double max = -1e9;
+  float* scalars = static_cast<float*>(image->GetScalarPointer());
+  for (int i = 0; i < image->GetNumberOfPoints(); i++) {
+    for (int j = 0; j < components; j++) {
+      float scalar = scalars[i*components + j];
+      if (scalar < min) min = scalar;
+      if (scalar > max) max = scalar;
+    }
+  }
+  
+  scalarRange[0] = static_cast<double>(min);
+  scalarRange[1] = static_cast<double>(max);
+}
+
+
+void
+Visualization
+::SetPSF(PointSpreadFunction* psf) {
+  SetPSFImage(psf->GetOutput());
+}
+
+
+void
+Visualization
+::SetPSFImage(vtkImageData* image) {
+  m_FluorescenceRenderView->SetPSFImage(image);
+}
+
+
+void
+Visualization
+::FocusOnObject(ModelObject* object) {
+  vtkPolyDataAlgorithm* geometrySource = object->GetAllGeometryTransformed();
+  geometrySource->GetOutput()->Update();
+
+  double* bounds = geometrySource->GetOutput()->GetBounds();
+  if (bounds) {
+    m_ModelObjectRenderView->GetRenderer()->ResetCamera(bounds);
+    m_ModelObjectRenderView->GetRenderer()->ResetCameraClippingRange();
+    m_ModelObjectRenderView->Render();
+  }
+}
+

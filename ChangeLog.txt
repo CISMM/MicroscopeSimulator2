@@ -1,0 +1,28 @@
+2009-09-15  Cory Quammen <cquammen@cs.unc.edu>
+
+   * README.txt: Updated last modified date.
+
+2009-09-15  Cory Quammen <cquammen@cs.unc.edu>
+
+   * README.txt: Added another file whose name needs to be changed.
+
+2009-09-15  Cory Quammen <cquammen@cs.unc.edu>
+
+   * README.txt: Added some instructions for which file names need changing.
+   Added instructions on how to create a new application from this project.
+
+2009-07-07  Cory Quammen <cquammen@cs.unc.edu>
+
+   * README.txt: Added special instructions for Windows users on how to set
+   up the NSIS installer maker so that the installers it produces can have a
+   different default install directory for the installed program.
+
+2009-07-06  Cory Quammen <cquammen@cs.unc.edu>
+
+   * README.txt: New file with instructions on how to create a new project
+   from this example.
+
+2009-07-05  Cory Quammen <cquammen@cs.unc.edu>
+
+   * Initial check-in.
+   

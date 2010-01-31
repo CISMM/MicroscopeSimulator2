@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Material name="material">
+  <Property>
+    <Member name="AmbientColor" value="0.5 0.5 0.5"/>
+    <Member name="DiffuseColor" value="0.0 0.0 1.0"/>
+  </Property>
+  <Shader name="gatherVertex" location="/Users/cquammen/development/packages/MicroscopeSimulator2/lib/shaders/gather-v.glsl" language="GLSL" scope="Vertex" entry="main">
+  </Shader>
+  <Shader name="gatherFragment" location="/Users/cquammen/development/packages/MicroscopeSimulator2/lib/shaders/gather-f.glsl" language="GLSL" scope="Fragment" entry="main">
+    <ApplicationUniform name="startIndex" type="int" number_of_elements="1"/>
+    <ApplicationUniform name="endIndex" type="int" number_of_elements="1"/>
+    <ApplicationUniform name="pointTexDim" type="int" number_of_elements="1"/>
+    <ApplicationUniform name="psfShift" type="float" number_of_elements="3"/>
+    <ApplicationUniform name="psfScale" type="float" number_of_elements="3"/>
+    <ApplicationUniform name="focalDepth" type="float" number_of_elements="1"/>
+    <ApplicationUniform name="psfSampler" type="int" number_of_elements="1"/>
+    <ApplicationUniform name="ptsSampler" type="int" number_of_elements="1"/>
+    <ApplicationUniform name="exposure" type="double" number_of_elements="1"/>
+  </Shader>
+</Material>

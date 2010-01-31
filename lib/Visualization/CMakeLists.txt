@@ -1,0 +1,36 @@
+SET(visualizationSrc
+  ImagePlaneVisualizationPipeline.cxx
+  IsosurfaceVisualizationPipeline.cxx
+  OutlineVisualizationPipeline.cxx
+  VisualizationPipeline.cxx
+  Visualization.h
+  Visualization.cxx
+)
+
+SET(visualizationViewsSrc
+  vtkModelObjectRepresentation.h
+  vtkModelObjectRepresentation.cxx
+  GeometryView/GeometryRepresentation.h
+  GeometryView/GeometryRepresentation.cxx
+  GeometryView/vtkModelObjectGeometryRepresentation.h
+  GeometryView/vtkModelObjectGeometryRepresentation.cxx
+  GeometryView/vtkModelObjectActorPickObserver.h
+  GeometryView/vtkModelObjectActorPickObserver.cxx
+  GeometryView/vtkVisualizationInteractionObserver.h
+  GeometryView/vtkVisualizationInteractionObserver.cxx
+  GeometryView/vtkFluorescenceWidgetsRepresentation.h
+  GeometryView/vtkFluorescenceWidgetsRepresentation.cxx
+  GeometryView/vtkReferenceGridSource.h
+  GeometryView/vtkReferenceGridSource.cxx
+  FluorescenceView/FluorescenceRepresentation.h
+  FluorescenceView/FluorescenceRepresentation.cxx
+  FluorescenceView/vtkModelObjectFluorescenceRepresentation.h
+  FluorescenceView/vtkModelObjectFluorescenceRepresentation.cxx
+  FluorescenceView/vtkFluorescenceRenderView.h
+  FluorescenceView/vtkFluorescenceRenderView.cxx
+)
+
+ADD_LIBRARY( msimVisualization 
+  ${visualizationSrc}
+  ${visualizationViewsSrc}
+)

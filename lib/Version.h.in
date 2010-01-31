@@ -1,0 +1,5 @@
+// Specifies version number of MicroscopeSimulator library and program.
+
+#define MicroscopeSimulator_MAJOR_NUMBER @MicroscopeSimulator_MAJOR_NUMBER@
+#define MicroscopeSimulator_MINOR_NUMBER @MicroscopeSimulator_MINOR_NUMBER@
+#define MicroscopeSimulator_REVISION_NUMBER @MicroscopeSimulator_REVISION_NUMBER@
