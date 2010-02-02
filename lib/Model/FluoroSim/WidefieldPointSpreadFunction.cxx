@@ -61,16 +61,6 @@ WidefieldPointSpreadFunction
   m_ParameterNames.push_back("Actual Distance From Back Focal Plane to Detector");
 
   m_GibsonLanniSource = ImageSourceType::New();
-#if 0
-  unsigned long size[] = {64, 64, 64};
-  m_GibsonLanniSource->SetSize(size);
-  float spacing[] = {65.0, 65.0, 200.0};
-  m_GibsonLanniSource->SetSpacing(spacing);
-  float origin[] = {0.0, 0.0, 0.0};
-  m_GibsonLanniSource->SetOrigin(origin);
-  float pointCenter[] = {0.0, 0.0, 0.0};
-  m_GibsonLanniSource->SetPointCenter(pointCenter);
-#endif
 
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GibsonLanniSource->GetOutput());
