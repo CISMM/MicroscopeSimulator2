@@ -790,7 +790,6 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimPSFMenuComboBox_currentIndexChanged(int selected) {
-  std::cout << "Selected PSF: " << fluoroSimPSFMenuComboBox->currentText().toStdString() << std::endl;
   m_Simulation->GetFluorescenceSimulation()->SetActivePSFIndex(selected-1);
 }
 
