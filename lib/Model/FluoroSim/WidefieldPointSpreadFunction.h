@@ -61,6 +61,8 @@ class WidefieldPointSpreadFunction : public PointSpreadFunction {
   ITKImageToVTKImage<ImageType>* m_ITKToVTKFilter;
 
   std::vector<std::string> m_ParameterNames;
+
+  void RecenterImage();
 };
 
 #endif // _WIDEFIELD_POINT_SPREAD_FUNCTION_H_

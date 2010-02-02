@@ -4,7 +4,6 @@
 
 const std::string WidefieldPointSpreadFunction::SIZE_ELEMENT = "Size";
 const std::string WidefieldPointSpreadFunction::SPACING_ELEMENT = "Spacing";
-const std::string WidefieldPointSpreadFunction::ORIGIN_ELEMENT = "Origin";
 const std::string WidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
 const std::string WidefieldPointSpreadFunction::CCD_BORDER_WIDTH_ELEMENT = "CCDBorderWidth";;
 const std::string WidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
@@ -36,9 +35,6 @@ WidefieldPointSpreadFunction
   m_ParameterNames.push_back("X Spacing");
   m_ParameterNames.push_back("Y Spacing");
   m_ParameterNames.push_back("Z Spacing");
-  m_ParameterNames.push_back("X Origin");
-  m_ParameterNames.push_back("Y Origin");
-  m_ParameterNames.push_back("Z Origin");
   m_ParameterNames.push_back("X Point Center");
   m_ParameterNames.push_back("Y Point Center");
   m_ParameterNames.push_back("Z Point Center");
@@ -116,29 +112,26 @@ WidefieldPointSpreadFunction
   case  3: return m_GibsonLanniSource->GetSpacing()[0]; break;
   case  4: return m_GibsonLanniSource->GetSpacing()[1]; break;
   case  5: return m_GibsonLanniSource->GetSpacing()[2]; break;
-  case  6: return m_GibsonLanniSource->GetOrigin()[0]; break;
-  case  7: return m_GibsonLanniSource->GetOrigin()[1]; break;
-  case  8: return m_GibsonLanniSource->GetOrigin()[2]; break;
-  case  9: return m_GibsonLanniSource->GetPointCenter()[0]; break;
-  case 10: return m_GibsonLanniSource->GetPointCenter()[1]; break;
-  case 11: return m_GibsonLanniSource->GetPointCenter()[2]; break;
-  case 12: return m_GibsonLanniSource->GetCCDBorderWidth()[0]; break;
-  case 13: return m_GibsonLanniSource->GetCCDBorderWidth()[1]; break;
-  case 14: return m_GibsonLanniSource->GetEmissionWavelength(); break;
-  case 15: return m_GibsonLanniSource->GetNumericalAperture(); break;
-  case 16: return m_GibsonLanniSource->GetMagnification(); break;
-  case 17: return m_GibsonLanniSource->GetDesignCoverSlipRefractiveIndex(); break;
-  case 18: return m_GibsonLanniSource->GetActualCoverSlipRefractiveIndex(); break;
-  case 19: return m_GibsonLanniSource->GetDesignCoverSlipThickness(); break;
-  case 20: return m_GibsonLanniSource->GetActualCoverSlipThickness(); break;
-  case 21: return m_GibsonLanniSource->GetDesignImmersionOilRefractiveIndex(); break;
-  case 22: return m_GibsonLanniSource->GetActualImmersionOilRefractiveIndex(); break;
-  case 23: return m_GibsonLanniSource->GetDesignImmersionOilThickness(); break;
-  case 24: return m_GibsonLanniSource->GetDesignSpecimenLayerRefractiveIndex(); break;
-  case 25: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
-  case 26: return m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer(); break;
-  case 27: return m_GibsonLanniSource->GetDesignDistanceFromBackFocalPlaneToDetector(); break;
-  case 28: return m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector(); break;  
+  case  6: return m_GibsonLanniSource->GetPointCenter()[0]; break;
+  case  7: return m_GibsonLanniSource->GetPointCenter()[1]; break;
+  case  8: return m_GibsonLanniSource->GetPointCenter()[2]; break;
+  case  9: return m_GibsonLanniSource->GetCCDBorderWidth()[0]; break;
+  case 10: return m_GibsonLanniSource->GetCCDBorderWidth()[1]; break;
+  case 11: return m_GibsonLanniSource->GetEmissionWavelength(); break;
+  case 12: return m_GibsonLanniSource->GetNumericalAperture(); break;
+  case 13: return m_GibsonLanniSource->GetMagnification(); break;
+  case 14: return m_GibsonLanniSource->GetDesignCoverSlipRefractiveIndex(); break;
+  case 15: return m_GibsonLanniSource->GetActualCoverSlipRefractiveIndex(); break;
+  case 16: return m_GibsonLanniSource->GetDesignCoverSlipThickness(); break;
+  case 17: return m_GibsonLanniSource->GetActualCoverSlipThickness(); break;
+  case 18: return m_GibsonLanniSource->GetDesignImmersionOilRefractiveIndex(); break;
+  case 19: return m_GibsonLanniSource->GetActualImmersionOilRefractiveIndex(); break;
+  case 20: return m_GibsonLanniSource->GetDesignImmersionOilThickness(); break;
+  case 21: return m_GibsonLanniSource->GetDesignSpecimenLayerRefractiveIndex(); break;
+  case 22: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
+  case 23: return m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer(); break;
+  case 24: return m_GibsonLanniSource->GetDesignDistanceFromBackFocalPlaneToDetector(); break;
+  case 25: return m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector(); break;  
 
   default: return 0.0;
   }
@@ -154,8 +147,6 @@ WidefieldPointSpreadFunction
   unsigned long size[3];
   const float* constSpacing = m_GibsonLanniSource->GetSpacing();
   float spacing[3];
-  const float* constOrigin = m_GibsonLanniSource->GetOrigin();
-  float origin[3];
   const float* constPointCenter = m_GibsonLanniSource->GetPointCenter();
   float pointCenter[3];  
   const float* constCCDBorderWidth = m_GibsonLanniSource->GetCCDBorderWidth();
@@ -164,7 +155,6 @@ WidefieldPointSpreadFunction
   for (int i = 0; i < 3; i++) {
     size[i]        = constSize[i];
     spacing[i]     = constSpacing[i];
-    origin[i]      = constOrigin[i];
     pointCenter[i] = constPointCenter[i];
   }
   ccdBorderWidth[0] = constCCDBorderWidth[0];
@@ -177,6 +167,7 @@ WidefieldPointSpreadFunction
     constSize = m_GibsonLanniSource->GetSize();
     size[index] = static_cast<unsigned long>(value);
     m_GibsonLanniSource->SetSize(size);
+    RecenterImage();
     break;
 
   case 3:
@@ -184,85 +175,79 @@ WidefieldPointSpreadFunction
   case 5:
     spacing[index-3] = value;
     m_GibsonLanniSource->SetSpacing(spacing);
+    RecenterImage();
     break;
 
   case 6:
   case 7:
   case 8:
-    origin[index-6] = value;
-    m_GibsonLanniSource->SetOrigin(origin);
+    pointCenter[index-6] = value;
+    m_GibsonLanniSource->SetPointCenter(pointCenter);
     break;
 
   case 9:
   case 10:
-  case 11:
-    pointCenter[index-9] = value;
-    m_GibsonLanniSource->SetPointCenter(pointCenter);
-    break;
-
-  case 12:
-  case 13:
-    ccdBorderWidth[index-12] = value;
+    ccdBorderWidth[index-9] = value;
     m_GibsonLanniSource->SetCCDBorderWidth(ccdBorderWidth);
     break;
 
-  case 14:
+  case 11:
     m_GibsonLanniSource->SetEmissionWavelength(value);
     break;
 
-  case 15:
+  case 12:
     m_GibsonLanniSource->SetNumericalAperture(value);
     break;
 
-  case 16:
+  case 13:
     m_GibsonLanniSource->SetMagnification(value);
     break;
 
-  case 17:
+  case 14:
     m_GibsonLanniSource->SetDesignCoverSlipRefractiveIndex(value);
     break;
     
-  case 18:
+  case 15:
     m_GibsonLanniSource->SetActualCoverSlipRefractiveIndex(value);
     break;
     
-  case 19:
+  case 16:
     m_GibsonLanniSource->SetDesignCoverSlipThickness(value);
     break;
     
-  case 20:
+  case 17:
     m_GibsonLanniSource->SetActualCoverSlipThickness(value);
     break;
 
-  case 21:
+  case 18:
     m_GibsonLanniSource->SetDesignImmersionOilRefractiveIndex(value);
     break;
 
-  case 22:
+  case 19:
     m_GibsonLanniSource->SetActualImmersionOilRefractiveIndex(value);
     break;
 
-  case 23:
+  case 20:
     m_GibsonLanniSource->SetDesignImmersionOilThickness(value);
     break;
 
-  case 24:
+  case 21:
     m_GibsonLanniSource->SetDesignSpecimenLayerRefractiveIndex(value);
     break;
     
-  case 25:
+  case 22:
     m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(value);
     break;
 
-  case 26:
+  case 23:
     m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(value);
     break;
 
-  case 27:
+  case 24:
     m_GibsonLanniSource->SetDesignDistanceFromBackFocalPlaneToDetector(value);
     break;
 
-  case 28:
+  case 25:
     m_GibsonLanniSource->SetActualDistanceFromBackFocalPlaneToDetector(value);
     break;
 
@@ -270,6 +255,21 @@ WidefieldPointSpreadFunction
     break;
   }
 
+}
+
+
+void
+WidefieldPointSpreadFunction
+::RecenterImage() {
+  const float*         constSpacing = m_GibsonLanniSource->GetSpacing();
+  const unsigned long* constSize    = m_GibsonLanniSource->GetSize();
+
+  float origin[3];
+  for (int i = 0; i < 3; i++) {
+    origin[i] = -0.5 * static_cast<double>(constSize[i]-1) * constSpacing[i];
+  }
+
+  m_GibsonLanniSource->SetOrigin(origin);
 }
 
 
@@ -299,14 +299,6 @@ WidefieldPointSpreadFunction
   xmlNewProp(spacingNode, BAD_CAST Y_ATTRIBUTE.c_str(), BAD_CAST buf);
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetSpacing()[2]);
   xmlNewProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
-
-  xmlNodePtr originNode = xmlNewChild(root, NULL, BAD_CAST ORIGIN_ELEMENT.c_str(), NULL);
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetOrigin()[0]);
-  xmlNewProp(originNode, BAD_CAST X_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetOrigin()[1]);
-  xmlNewProp(originNode, BAD_CAST Y_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetOrigin()[2]);
-  xmlNewProp(originNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   xmlNodePtr pointCenterNode = xmlNewChild(root, NULL, BAD_CAST POINT_CENTER_ELEMENT.c_str(), NULL);
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetPointCenter()[0]);
@@ -387,13 +379,6 @@ WidefieldPointSpreadFunction
   spacing[2] = atof((const char*) xmlGetProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_GibsonLanniSource->SetSpacing(spacing);
 
-  float origin[3];
-  xmlNodePtr originNode = xmlGetFirstElementChildWithName(node, BAD_CAST ORIGIN_ELEMENT.c_str());
-  origin[0] = atof((const char*) xmlGetProp(originNode, BAD_CAST X_ATTRIBUTE.c_str()));
-  origin[1] = atof((const char*) xmlGetProp(originNode, BAD_CAST Y_ATTRIBUTE.c_str()));
-  origin[2] = atof((const char*) xmlGetProp(originNode, BAD_CAST Z_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetOrigin(origin);
-
   float pointCenter[3];
   xmlNodePtr pointCenterNode = xmlGetFirstElementChildWithName(node, BAD_CAST POINT_CENTER_ELEMENT.c_str());
   pointCenter[0] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST X_ATTRIBUTE.c_str()));
@@ -451,5 +436,6 @@ WidefieldPointSpreadFunction
 
   tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE.c_str()));
   m_GibsonLanniSource->SetActualDistanceFromBackFocalPlaneToDetector(tmp);
-             
+
+  RecenterImage();
 }
