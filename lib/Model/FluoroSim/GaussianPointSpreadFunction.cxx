@@ -41,11 +41,6 @@ GaussianPointSpreadFunction
   sigma[1] = 100.0;
   sigma[2] = 200.0;
   m_GaussianSource->SetSigma(sigma);
-  ImageSourceType::ArrayType mean;
-  mean[0] = 2047.5;
-  mean[1] = 2047.5;
-  mean[2] = 0.0;
-  m_GaussianSource->SetMean(mean);
   
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GaussianSource->GetOutput());
@@ -138,6 +133,7 @@ GaussianPointSpreadFunction
     }
     size[index] = static_cast<unsigned long>(value);
     m_GaussianSource->SetSize(size);
+    RecenterImage();
     break;
 
   case 3:
@@ -146,6 +142,7 @@ GaussianPointSpreadFunction
     spacing = m_GaussianSource->GetSpacing();
     spacing[index-3] = value;
     m_GaussianSource->SetSpacing(spacing);
+    RecenterImage();
     break;
 
   case 6:
@@ -166,6 +163,21 @@ GaussianPointSpreadFunction
 
   default: break;
   }
+}
+
+
+void
+GaussianPointSpreadFunction
+::RecenterImage() {
+  const ImageSourceType::SpacingType constSpacing = m_GaussianSource->GetSpacing();
+  const unsigned long*               constSize    = m_GaussianSource->GetSize();
+
+  double origin[3];
+  for (int i = 0; i < 3; i++) {
+    origin[i] = -0.5 * static_cast<double>(constSize[i]-1) * constSpacing[i];
+  }
+
+  m_GaussianSource->SetOrigin(origin);
 }
 
 
@@ -244,4 +256,6 @@ GaussianPointSpreadFunction
   sigma[1] = atof((const char*) xmlGetProp(sigmaNode, BAD_CAST Y_ATTRIBUTE.c_str()));
   sigma[2] = atof((const char*) xmlGetProp(sigmaNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_GaussianSource->SetSigma(sigma);
+
+  RecenterImage();
 }

@@ -44,6 +44,8 @@ class GaussianPointSpreadFunction : public PointSpreadFunction {
 
   std::vector<std::string> m_ParameterNames;
 
+  void RecenterImage();
+
 };
 
 
