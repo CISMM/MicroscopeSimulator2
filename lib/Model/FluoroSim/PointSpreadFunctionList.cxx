@@ -102,6 +102,8 @@ PointSpreadFunctionList
 ::GetXMLConfiguration(xmlNodePtr node) {
   Iterator iter;
   for (iter = m_PSFList.begin(); iter != m_PSFList.end(); iter++) {
+    // The XML from each PSF will be added to the node data structure
+    // in the call below.
     (*iter)->GetXMLConfiguration(node);
   }
 }
