@@ -53,12 +53,18 @@
 // Constructor
 MicroscopeSimulator
 ::MicroscopeSimulator(QWidget* p)
- : QMainWindow(p) {
+  : QMainWindow(p), m_ModelObjectPropertyListTableModel(NULL) {
   setupUi(this);
 
   // Instantiate visualization pipelines.
   m_Visualization = new Visualization();
 
+  // Need to manually set the interactor to the QVTK widget's interactor.
+  // Otherwise, the default interactor may be used. On Mac with Carbon,
+  // the default interactor sucks up all the keypress events, making it
+  // impossible to type anything in Qt widgets.
+  m_Visualization->GetModelObjectRenderWindow()->
+    SetInteractor(modelObjectQvtkWidget->GetInteractor());
   modelObjectQvtkWidget->SetRenderWindow(m_Visualization->GetModelObjectRenderWindow());
 
 
