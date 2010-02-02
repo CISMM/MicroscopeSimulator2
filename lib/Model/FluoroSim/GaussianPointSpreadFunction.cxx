@@ -136,7 +136,7 @@ GaussianPointSpreadFunction
     for (i = 0; i < 3; i++) {
       size[i] = constSize[i];
     }
-    size[index] = static_cast<int>(value);
+    size[index] = static_cast<unsigned long>(value);
     m_GaussianSource->SetSize(size);
     break;
 
