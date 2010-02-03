@@ -31,16 +31,27 @@ public:
   bool GetVisible();
 
   void SetSliceNumber(int sliceNumber);
-  int GetSliceNumber();
+  int  GetSliceNumber();
+
+  void SetAutoScalingOn();
+  void SetAutoScalingOff();
+
+  void   SetMapsToBlack(double value);
+  double GetMapsToBlack();
+  void   SetMapsToWhite(double value);
+  double GetMapsToWhite();
+
+  void Update();
 
 protected:
-  int planeDimension;
+  int    m_PlaneDimension;
+  bool   m_AutoScalingOn;
+  double m_MapsToWhite;
+  double m_MapsToBlack;
 
-  vtkSmartPointer<vtkImageShiftScale> shiftScaler;
+  vtkSmartPointer<vtkImageShiftScale> m_ShiftScaler;
 
-  vtkSmartPointer<vtkImageActor> imageActor;
-
-  bool autoRescalingOn;
+  vtkSmartPointer<vtkImageActor> m_ImageActor;
 
 };
 

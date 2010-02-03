@@ -14,23 +14,22 @@ const int ImagePlaneVisualizationPipeline::Z_PLANE = 3;
 
 ImagePlaneVisualizationPipeline
 ::ImagePlaneVisualizationPipeline() {
-
-  // Set to X dimension by default.
-  this->planeDimension = X_PLANE;
+  m_PlaneDimension = X_PLANE;
+  m_AutoScalingOn = true;
+  m_MapsToWhite = 0.0;
+  m_MapsToBlack = 1.0;
 
   // Set up pipeline.
-  this->shiftScaler = vtkSmartPointer<vtkImageShiftScale>::New();
-  this->shiftScaler->SetOutputScalarTypeToUnsignedChar();
-  this->shiftScaler->ClampOverflowOn();
+  m_ShiftScaler = vtkSmartPointer<vtkImageShiftScale>::New();
+  m_ShiftScaler->SetOutputScalarTypeToUnsignedChar();
+  m_ShiftScaler->ClampOverflowOn();
 
   // It is essential to set the input algorithm.
-  this->SetInputAlgorithm(this->shiftScaler);
+  SetInputAlgorithm(m_ShiftScaler);
 
-  this->imageActor = vtkSmartPointer<vtkImageActor>::New();
-  this->imageActor->InterpolateOn();
-  this->imageActor->SetInput(this->shiftScaler->GetOutput());
-
-  this->autoRescalingOn = true;
+  m_ImageActor = vtkSmartPointer<vtkImageActor>::New();
+  m_ImageActor->InterpolateOff();
+  m_ImageActor->SetInput(m_ShiftScaler->GetOutput());
 }
 
 
@@ -42,96 +41,164 @@ ImagePlaneVisualizationPipeline
 void
 ImagePlaneVisualizationPipeline
 ::SetInputConnection(vtkAlgorithmOutput* input) {
-  this->input = input;
-  this->inputAlgorithm->SetInputConnection(input);
+  input = input;
+  inputAlgorithm->SetInputConnection(input);
 
     // Update shift/scale filter automatically if auto-rescaling is on.
-  if (input && this->autoRescalingOn) {
+  double scalarRange[2];
+  if (m_AutoScalingOn) {
     // Gotta be a better way to do this.
     input->GetProducer()->Update();
     vtkImageData* originalImage 
       = vtkImageData::SafeDownCast(input->GetProducer()->GetOutputDataObject(0));
-    double* scalarRange = originalImage->GetScalarRange();
-    this->shiftScaler->SetShift(-scalarRange[0]);
-    this->shiftScaler->SetScale(255.0 / (scalarRange[1] - scalarRange[0]));
+    originalImage->GetScalarRange(scalarRange);
   } else {
-    this->shiftScaler->SetShift(0.0);
-    this->shiftScaler->SetScale(1.0);
+    scalarRange[0] = m_MapsToBlack;
+    scalarRange[1] = m_MapsToWhite;
   }
-  this->shiftScaler->Update();
+
+  m_ShiftScaler->SetShift(-scalarRange[0]);
+  m_ShiftScaler->SetScale(255.0 / (scalarRange[1] - scalarRange[0]));
+  m_ShiftScaler->Update();
 }
 
 
 void
 ImagePlaneVisualizationPipeline
 ::AddToRenderer(vtkRenderer* renderer) {
-  renderer->AddActor(this->imageActor);
+  renderer->AddActor(m_ImageActor);
 }
 
 
 void
 ImagePlaneVisualizationPipeline
 ::SetToXPlane() {
-  this->planeDimension = X_PLANE;
-  this->SetSliceNumber(0);
+  m_PlaneDimension = X_PLANE;
+  SetSliceNumber(0);
 }
 
 
 void
 ImagePlaneVisualizationPipeline
 ::SetToYPlane() {
-  this->planeDimension = Y_PLANE;
-  this->SetSliceNumber(0);
+  m_PlaneDimension = Y_PLANE;
+  SetSliceNumber(0);
 }
 
 
 void
 ImagePlaneVisualizationPipeline
 ::SetToZPlane() {
-  this->planeDimension = Z_PLANE;
-  this->SetSliceNumber(0);
+  m_PlaneDimension = Z_PLANE;
+  SetSliceNumber(0);
 }
 
 
 void
 ImagePlaneVisualizationPipeline
 ::SetVisible(bool visible) {
-  this->imageActor->SetVisibility(visible ? 1 : 0);
+  m_ImageActor->SetVisibility(visible ? 1 : 0);
 }
 
 
 bool
 ImagePlaneVisualizationPipeline
 ::GetVisible() {
-  return this->imageActor->GetVisibility() == 1;
+  return m_ImageActor->GetVisibility() == 1;
 }
 
 
 void
 ImagePlaneVisualizationPipeline
 ::SetSliceNumber(int sliceNumber) {
-  int* extent = this->imageActor->GetInput()->GetWholeExtent();
+  int* extent = m_ImageActor->GetInput()->GetWholeExtent();
   
-  if (this->planeDimension == X_PLANE) {
-    this->imageActor->SetDisplayExtent(sliceNumber, sliceNumber,
+  if (m_PlaneDimension == X_PLANE) {
+    m_ImageActor->SetDisplayExtent(sliceNumber, sliceNumber,
                  extent[2], extent[3],
                  extent[4], extent[5]);
   
-  } else if (this->planeDimension == Y_PLANE) {
-    this->imageActor->SetDisplayExtent(extent[0], extent[1],
+  } else if (m_PlaneDimension == Y_PLANE) {
+    m_ImageActor->SetDisplayExtent(extent[0], extent[1],
                  sliceNumber, sliceNumber,
                  extent[4], extent[5]);
   } else {
-    this->imageActor->SetDisplayExtent(extent[0], extent[1],
+    m_ImageActor->SetDisplayExtent(extent[0], extent[1],
                  extent[2], extent[3],
                  sliceNumber, sliceNumber);
   }
-  this->imageActor->Modified();
+  m_ImageActor->Modified();
 }
 
 
 int
 ImagePlaneVisualizationPipeline
 ::GetSliceNumber() {
-  return this->imageActor->GetZSlice();
+  int slice = 0;
+  if (m_PlaneDimension == X_PLANE) {
+    slice = m_ImageActor->GetDisplayExtent()[0];
+  } else if (m_PlaneDimension == Y_PLANE) {
+    slice = m_ImageActor->GetDisplayExtent()[2];
+  } else {
+    slice = m_ImageActor->GetDisplayExtent()[4];
+  }
+
+  return slice;
+}
+
+
+void
+ImagePlaneVisualizationPipeline
+::SetAutoScalingOn() {
+  m_AutoScalingOn = true;
+}
+
+
+void
+ImagePlaneVisualizationPipeline
+::SetAutoScalingOff() {
+  m_AutoScalingOn = false;
+}
+
+
+void
+ImagePlaneVisualizationPipeline
+::SetMapsToBlack(double value) {
+  m_MapsToBlack = value;
+
+  m_ShiftScaler->SetShift(-m_MapsToBlack);
+  m_ShiftScaler->SetScale(255.0 / (m_MapsToWhite - m_MapsToBlack));
+  m_ShiftScaler->Update();
+}
+
+
+double
+ImagePlaneVisualizationPipeline
+::GetMapsToBlack() {
+  return m_MapsToBlack;
+}
+
+
+void
+ImagePlaneVisualizationPipeline
+::SetMapsToWhite(double value) {
+  m_MapsToWhite = value;
+
+  m_ShiftScaler->SetShift(-m_MapsToBlack);
+  m_ShiftScaler->SetScale(255.0 / (m_MapsToWhite - m_MapsToBlack));
+  m_ShiftScaler->Update();
+}
+
+
+double
+ImagePlaneVisualizationPipeline
+::GetMapsToWhite() {
+  return m_MapsToWhite;
+}
+
+
+void
+ImagePlaneVisualizationPipeline
+::Update() {
+  m_ShiftScaler->Modified();
 }
