@@ -258,4 +258,6 @@ GaussianPointSpreadFunction
   m_GaussianSource->SetSigma(sigma);
 
   RecenterImage();
+
+  m_GaussianSource->Update();
 }
