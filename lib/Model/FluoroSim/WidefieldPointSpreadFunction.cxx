@@ -438,4 +438,6 @@ WidefieldPointSpreadFunction
   m_GibsonLanniSource->SetActualDistanceFromBackFocalPlaneToDetector(tmp);
 
   RecenterImage();
+  
+  m_GibsonLanniSource->Update();
 }
