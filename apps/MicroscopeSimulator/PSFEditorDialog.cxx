@@ -5,6 +5,7 @@
 #include <QPSFListModel.h>
 #include <QPointSpreadFunctionPropertyTableModel.h>
 #include <vtkAlgorithmOutput.h>
+#include <vtkImageData.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
@@ -33,9 +34,9 @@ PSFEditorDialog
           SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
           this,
           SLOT(handle_PSFListModel_selectionChanged(const QItemSelection&, const QItemSelection&)));
-
-
+  
   m_ImagePlaneVisualization = new ImagePlaneVisualizationPipeline();
+  m_ImagePlaneVisualization->SetAutoScalingOff();
 
   m_Renderer = vtkRenderer::New();
   m_RenderWindow = vtkRenderWindow::New();
@@ -169,6 +170,55 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
+::on_gui_MinLevelEdit_textChanged(QString value) {
+  double level = gui_MinLevelEdit->text().toDouble();
+  m_ImagePlaneVisualization->SetMapsToBlack(level);
+
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_MinLevelSlider_valueChanged(int value) {
+  double dValue = SliderValueToIntensity(value, *gui_MinLevelSlider);
+  gui_MinLevelEdit->setText(QString().sprintf("%0.6f", dValue));
+
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_MaxLevelEdit_textChanged(QString value) {
+  double level = gui_MaxLevelEdit->text().toDouble();
+  m_ImagePlaneVisualization->SetMapsToWhite(level);
+
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_MaxLevelSlider_valueChanged(int value) {
+  double dValue = SliderValueToIntensity(value, *gui_MaxLevelSlider);
+  gui_MaxLevelEdit->setText(QString().sprintf("%0.6f", dValue));
+
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_RescaleButton_clicked() {
+  RescaleToFullDynamicRange();
+  
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
 ::handle_PSFListModel_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
   QModelIndexList indexes = selected.indexes();
   if (!indexes.isEmpty() && indexes[0].row() >= 0) {
@@ -178,7 +228,7 @@ PSFEditorDialog
     m_PSFTableModel->SetPointSpreadFunction(activePSF);
 
     m_ImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
-    
+
     UpdatePSFVisualization();
   }
 }
@@ -193,6 +243,42 @@ PSFEditorDialog
 }
 
 
+int
+PSFEditorDialog
+::IntensityToSliderValue(double intensity, const QSlider& slider) {
+  int sliderMin = slider.minimum();
+  int sliderMax = slider.maximum();
+
+  PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
+  double* range = psf->GetOutput()->GetScalarRange();
+  double minImageValue = range[0];
+  double maxImageValue = range[1];
+
+  double normed = (intensity - minImageValue) / (maxImageValue - minImageValue);
+  double dSliderValue = static_cast<double>(sliderMax - sliderMin) * normed;
+  int sliderValue = static_cast<int>(dSliderValue) + sliderMin;
+
+  return sliderValue;
+}
+
+
+double
+PSFEditorDialog
+::SliderValueToIntensity(int value, const QSlider& slider) {
+  int sliderMin = slider.minimum();
+  int sliderMax = slider.maximum();
+  double normed = static_cast<double>(value - sliderMin) /
+    static_cast<double>(sliderMax - sliderMin);
+
+  PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
+  double* range = psf->GetOutput()->GetScalarRange();
+  double minImageValue = range[0];
+  double maxImageValue = range[1];
+  
+  return (normed * (maxImageValue - minImageValue)) + minImageValue;
+}
+
+
 void
 PSFEditorDialog
 ::UpdatePSFVisualization() {
@@ -200,4 +286,28 @@ PSFEditorDialog
   m_ImagePlaneVisualization->AddToRenderer(m_Renderer);
   m_Renderer->ResetCamera();  
   m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::RescaleToFullDynamicRange() {
+  QModelIndex index = m_PSFSelectionModel->currentIndex();
+
+  PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
+  double* range = psf->GetOutput()->GetScalarRange();
+
+  gui_MinLevelEdit->setText(QString().sprintf("%f", range[0]));
+  gui_MaxLevelEdit->setText(QString().sprintf("%f", range[1]));
+
+  double minTextValue = SliderValueToIntensity(gui_MinLevelSlider->value(),
+                                               *gui_MinLevelSlider);
+  gui_MinLevelEdit->setText(QString().sprintf("%f", minTextValue));
+
+  double maxTextValue = SliderValueToIntensity(gui_MaxLevelSlider->value(),
+                                               *gui_MaxLevelSlider);
+  gui_MaxLevelEdit->setText(QString().sprintf("%f", maxTextValue));
+
+  gui_MinLevelSlider->setValue(gui_MinLevelSlider->minimum());
+  gui_MaxLevelSlider->setValue(gui_MaxLevelSlider->maximum());
 }

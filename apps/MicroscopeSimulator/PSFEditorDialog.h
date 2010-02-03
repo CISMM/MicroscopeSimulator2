@@ -36,6 +36,12 @@ Q_OBJECT
   virtual void on_gui_ImportPSFButton_clicked();
   virtual void on_gui_DeletePSFButton_clicked();
 
+  virtual void on_gui_MinLevelEdit_textChanged(QString value);
+  virtual void on_gui_MinLevelSlider_valueChanged(int value);
+  virtual void on_gui_MaxLevelEdit_textChanged(QString value);
+  virtual void on_gui_MaxLevelSlider_valueChanged(int value);
+  virtual void on_gui_RescaleButton_clicked();
+
   virtual void handle_PSFListModel_selectionChanged(const QItemSelection&, const QItemSelection&);
   virtual void handle_PSFListModel_dataChanged(const QModelIndex&, const QModelIndex&);
 
@@ -51,7 +57,12 @@ Q_OBJECT
 
   ImagePlaneVisualizationPipeline* m_ImagePlaneVisualization;
 
+  int IntensityToSliderValue(double intensity, const QSlider& slider);
+  double SliderValueToIntensity(int value, const QSlider& slider);
+
   void UpdatePSFVisualization();
+
+  void RescaleToFullDynamicRange();
 
 };
 
