@@ -210,7 +210,7 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
-::on_gui_RescaleButton_clicked() {
+::on_gui_ResetButton_clicked() {
   RescaleToFullDynamicRange();
   
   m_RenderWindow->Render();
@@ -295,6 +295,9 @@ PSFEditorDialog
   QModelIndex index = m_PSFSelectionModel->currentIndex();
 
   PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
+  if (!psf)
+    return;
+
   double* range = psf->GetOutput()->GetScalarRange();
 
   gui_MinLevelEdit->setText(QString().sprintf("%f", range[0]));
