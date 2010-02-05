@@ -44,10 +44,9 @@ PointSpreadFunctionList
 
 PointSpreadFunction*
 PointSpreadFunctionList
-::ImportPointSpreadFunction(const std::string& fileName) {
+::ImportPointSpreadFunction(const std::string& name) {
   ImportedPointSpreadFunction* psf = new ImportedPointSpreadFunction();
-  psf->SetName(GetUniqueName(-1, fileName));
-  psf->SetFileName(fileName);
+  psf->SetName(GetUniqueName(-1, name));
   m_PSFList.push_back(psf);
 
   return psf;
@@ -112,20 +111,24 @@ PointSpreadFunctionList
 void
 PointSpreadFunctionList
 ::RestoreFromXML(xmlNodePtr node) {
+  char errName[] = {"No name given"};
+
   // Iterate over all children and import
   xmlNodePtr psfNode = node->children;
   while (psfNode != NULL) {
     if (psfNode->type == XML_ELEMENT_NODE) {
-      std::string nodeName(reinterpret_cast<const char*>(psfNode->name));
+      std::string nodeName((const char*) psfNode->name);
+      const char* name = (const char*) xmlGetProp(psfNode, BAD_CAST PointSpreadFunction::NAME_ATTRIBUTE.c_str());
+      if (!name)
+        name = errName;
+
       if (nodeName == "GaussianPointSpreadFunction") {
-        const char* name = reinterpret_cast<const char*>(xmlGetProp(psfNode, BAD_CAST "name"));
         PointSpreadFunction* psf = AddGaussianPointSpreadFunction(name);
         psf->RestoreFromXML(psfNode);
       } else if (nodeName == "ImportedPointSpreadFunction") {
-        // TODO - fix this up
-        //ImportedPointSpreadFunction("tmp");
+        PointSpreadFunction* psf = ImportPointSpreadFunction(name);
+        psf->RestoreFromXML(psfNode);
       } else if (nodeName == "WidefieldPointSpreadFunction") {
-        const char* name = reinterpret_cast<const char*>(xmlGetProp(psfNode, BAD_CAST "name"));
         PointSpreadFunction* psf = AddWidefieldPointSpreadFunction(name);
         psf->RestoreFromXML(psfNode);
       }
