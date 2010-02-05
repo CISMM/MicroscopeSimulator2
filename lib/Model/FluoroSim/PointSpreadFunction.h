@@ -1,7 +1,6 @@
 #ifndef _POINT_SPREAD_FUNCTION_H_
 #define _POINT_SPREAD_FUNCTION_H_
 
-#include <StdLibGuard.h>
 #include <string>
 
 #include <XMLStorable.h>
@@ -12,6 +11,14 @@ class vtkImageData;
 
 class PointSpreadFunction : public XMLStorable {
  public:
+  static const std::string NAME_ATTRIBUTE;
+  static const std::string SIZE_ELEMENT;
+  static const std::string SPACING_ELEMENT;
+  static const std::string X_ATTRIBUTE;
+  static const std::string Y_ATTRIBUTE;
+  static const std::string Z_ATTRIBUTE;
+
+
   PointSpreadFunction();
   virtual ~PointSpreadFunction();
 
