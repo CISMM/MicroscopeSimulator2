@@ -5,6 +5,7 @@
 #include <QPSFListModel.h>
 #include <QPointSpreadFunctionPropertyTableModel.h>
 #include <vtkAlgorithmOutput.h>
+#include <vtkCamera.h>
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -35,8 +36,20 @@ PSFEditorDialog
           this,
           SLOT(handle_PSFListModel_selectionChanged(const QItemSelection&, const QItemSelection&)));
   
-  m_ImagePlaneVisualization = new ImagePlaneVisualizationPipeline();
-  m_ImagePlaneVisualization->SetAutoScalingOff();
+  m_XImagePlaneVisualization = new ImagePlaneVisualizationPipeline();
+  m_XImagePlaneVisualization->SetAutoScalingOff();
+  m_XImagePlaneVisualization->SetMapsToBlack(0.0);
+  m_XImagePlaneVisualization->SetMapsToWhite(1.0);
+
+  m_YImagePlaneVisualization = new ImagePlaneVisualizationPipeline();
+  m_YImagePlaneVisualization->SetAutoScalingOff();
+  m_YImagePlaneVisualization->SetMapsToBlack(0.0);
+  m_YImagePlaneVisualization->SetMapsToWhite(1.0);
+
+  m_ZImagePlaneVisualization = new ImagePlaneVisualizationPipeline();
+  m_ZImagePlaneVisualization->SetAutoScalingOff();
+  m_ZImagePlaneVisualization->SetMapsToBlack(0.0);
+  m_ZImagePlaneVisualization->SetMapsToWhite(1.0);
 
   m_Renderer = vtkRenderer::New();
   m_RenderWindow = vtkRenderWindow::New();
@@ -48,7 +61,9 @@ PSFEditorDialog
 
 PSFEditorDialog
 ::~PSFEditorDialog() {
-
+  delete m_XImagePlaneVisualization;
+  delete m_YImagePlaneVisualization;
+  delete m_ZImagePlaneVisualization;
 }
 
 
@@ -170,9 +185,81 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
+::on_gui_ShowXPlaneCheckBox_toggled(bool value) {
+  m_XImagePlaneVisualization->SetVisible(value);
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_XPlaneEdit_textChanged(QString text) {
+  int slice = text.toInt() - 1;
+  UpdatePlane(slice, m_XImagePlaneVisualization, gui_XPlaneSlider);
+}
+
+
+void
+PSFEditorDialog
+::on_gui_XPlaneSlider_valueChanged(int value) {
+  gui_XPlaneEdit->setText(QString().sprintf("%d", value));
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ShowYPlaneCheckBox_toggled(bool value) {
+  m_YImagePlaneVisualization->SetVisible(value);
+  m_RenderWindow->Render();
+}
+
+void
+PSFEditorDialog
+::on_gui_YPlaneEdit_textChanged(QString text) {
+  int slice = text.toInt() - 1;
+  UpdatePlane(slice, m_YImagePlaneVisualization, gui_YPlaneSlider);
+}
+
+
+void
+PSFEditorDialog
+::on_gui_YPlaneSlider_valueChanged(int value) {
+  gui_YPlaneEdit->setText(QString().sprintf("%d", value));
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ShowZPlaneCheckBox_toggled(bool value) {
+  m_ZImagePlaneVisualization->SetVisible(value);
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ZPlaneEdit_textChanged(QString text) {
+  int slice = text.toInt() - 1;
+  UpdatePlane(slice, m_ZImagePlaneVisualization, gui_ZPlaneSlider);
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ZPlaneSlider_valueChanged(int value) {
+  m_ZImagePlaneVisualization->SetSliceNumber(value-1);
+  gui_ZPlaneEdit->setText(QString().sprintf("%d", value));
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
 ::on_gui_MinLevelEdit_textChanged(QString value) {
   double level = gui_MinLevelEdit->text().toDouble();
-  m_ImagePlaneVisualization->SetMapsToBlack(level);
+  m_XImagePlaneVisualization->SetMapsToBlack(level);
+  m_YImagePlaneVisualization->SetMapsToBlack(level);
+  m_ZImagePlaneVisualization->SetMapsToBlack(level);
 
   m_RenderWindow->Render();
 }
@@ -192,7 +279,9 @@ void
 PSFEditorDialog
 ::on_gui_MaxLevelEdit_textChanged(QString value) {
   double level = gui_MaxLevelEdit->text().toDouble();
-  m_ImagePlaneVisualization->SetMapsToWhite(level);
+  m_XImagePlaneVisualization->SetMapsToWhite(level);
+  m_YImagePlaneVisualization->SetMapsToWhite(level);
+  m_ZImagePlaneVisualization->SetMapsToWhite(level);
 
   m_RenderWindow->Render();
 }
@@ -219,6 +308,54 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
+::on_gui_XPlusButton_clicked() {
+  SetViewToXPlus();
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_XMinusButton_clicked() {
+  SetViewToXMinus();
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_YPlusButton_clicked() {
+  SetViewToYPlus();
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_YMinusButton_clicked() {
+  SetViewToYMinus();
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ZPlusButton_clicked() {
+  SetViewToZPlus();
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ZMinusButton_clicked() {
+  SetViewToZMinus();
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
 ::handle_PSFListModel_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
   QModelIndexList indexes = selected.indexes();
   if (!indexes.isEmpty() && indexes[0].row() >= 0) {
@@ -227,8 +364,8 @@ PSFEditorDialog
       GetPointSpreadFunctionAt(selected);
     m_PSFTableModel->SetPointSpreadFunction(activePSF);
 
-    m_ImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
-
+    UpdateImage();
+    UpdateSliders();
     UpdatePSFVisualization();
   }
 }
@@ -237,8 +374,8 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::handle_PSFListModel_dataChanged(const QModelIndex&, const QModelIndex&) {
-  m_PSFTableModel->GetPointSpreadFunction()->GetOutputPort()->GetProducer()->Update();
-
+  UpdateImage();
+  UpdateSliders();
   UpdatePSFVisualization();
 }
 
@@ -281,9 +418,70 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
+::UpdatePlane(int slice, ImagePlaneVisualizationPipeline* vis, QSlider* slider) {
+  if (slice < 0)
+    slice = 0;
+  if (slice >= slider->maximum())
+    slice = slider->maximum() - 1;
+  vis->SetSliceNumber(slice);
+
+  if (slider->value() != slice + 1) {
+    slider->setValue(slice+1);
+  }
+
+  m_RenderWindow->Render();
+}
+
+
+void
+PSFEditorDialog
+::UpdateImage() {
+  PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
+  psf->GetOutputPort()->GetProducer()->Update();
+  psf->GetOutputPort()->GetProducer()->UpdateWholeExtent();
+  psf->GetOutput()->Update();
+
+  m_XImagePlaneVisualization->Update();
+  m_YImagePlaneVisualization->Update();
+  m_ZImagePlaneVisualization->Update();
+}
+
+
+void
+PSFEditorDialog
+::UpdateSliders() {
+  // Get bounds of image
+  PointSpreadFunction* activePSF = m_PSFTableModel->GetPointSpreadFunction();
+  activePSF->GetOutput()->Update();
+  int *bounds = activePSF->GetOutput()->GetDimensions();
+
+  m_XImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
+  m_XImagePlaneVisualization->SetToXPlane();
+  m_XImagePlaneVisualization->SetSliceNumber(gui_XPlaneSlider->value());
+  gui_XPlaneSlider->setMinimum(1);
+  gui_XPlaneSlider->setMaximum(bounds[0]);
+
+  m_YImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
+  m_YImagePlaneVisualization->SetToYPlane();
+  m_YImagePlaneVisualization->SetSliceNumber(gui_YPlaneSlider->value());
+  gui_YPlaneSlider->setMinimum(1);
+  gui_YPlaneSlider->setMaximum(bounds[1]);
+
+  m_ZImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
+  m_ZImagePlaneVisualization->SetToZPlane();
+  m_ZImagePlaneVisualization->SetSliceNumber(gui_ZPlaneSlider->value());
+  gui_ZPlaneSlider->setMinimum(1);
+  gui_ZPlaneSlider->setMaximum(bounds[2]);
+}
+
+
+void
+PSFEditorDialog
 ::UpdatePSFVisualization() {
   m_Renderer->RemoveAllViewProps();
-  m_ImagePlaneVisualization->AddToRenderer(m_Renderer);
+  m_XImagePlaneVisualization->AddToRenderer(m_Renderer);
+  m_YImagePlaneVisualization->AddToRenderer(m_Renderer);
+  m_ZImagePlaneVisualization->AddToRenderer(m_Renderer);
   m_Renderer->ResetCamera();  
   m_RenderWindow->Render();
 }
@@ -298,6 +496,7 @@ PSFEditorDialog
   if (!psf)
     return;
 
+  psf->GetOutput()->Update();
   double* range = psf->GetOutput()->GetScalarRange();
 
   gui_MinLevelEdit->setText(QString().sprintf("%f", range[0]));
@@ -314,3 +513,68 @@ PSFEditorDialog
   gui_MinLevelSlider->setValue(gui_MinLevelSlider->minimum());
   gui_MaxLevelSlider->setValue(gui_MaxLevelSlider->maximum());
 }
+
+
+void
+PSFEditorDialog
+::ResetView() {
+  vtkCamera* camera = m_Renderer->GetActiveCamera();
+  camera->SetFocalPoint(0, 0, 0);
+  camera->SetPosition(0, 0, 1);
+  camera->SetViewUp(0, 1, 0);
+  m_Renderer->ResetCamera();
+}
+
+
+void 
+PSFEditorDialog
+::SetViewToXPlus() {
+  ResetView();
+  vtkCamera* camera = m_Renderer->GetActiveCamera();
+  camera->Azimuth(-90.0);
+}
+
+
+void
+PSFEditorDialog
+::SetViewToXMinus() {
+  ResetView();
+  vtkCamera* camera = m_Renderer->GetActiveCamera();
+  camera->Azimuth(90.0);
+}
+
+
+void
+PSFEditorDialog
+::SetViewToYPlus() {
+  ResetView();
+  vtkCamera* camera = m_Renderer->GetActiveCamera();
+  camera->Elevation(-90.0);
+}
+
+
+void
+PSFEditorDialog
+::SetViewToYMinus() {
+  ResetView();
+  vtkCamera* camera = m_Renderer->GetActiveCamera();
+  camera->Elevation(90.0);
+}
+
+
+void
+PSFEditorDialog
+::SetViewToZPlus() {
+  ResetView();
+  vtkCamera* camera = m_Renderer->GetActiveCamera();
+  camera->Azimuth(180.0);
+}
+
+
+void
+PSFEditorDialog
+::SetViewToZMinus() {
+  ResetView();
+  // No rotation needed.
+}
+
