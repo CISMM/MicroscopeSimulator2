@@ -1133,10 +1133,6 @@ MicroscopeSimulator
     m_PSFEditorDialog->GetWindowSplitterSizes();
   settings.setValue("windowSplitterSizes", windowSplitterSizes);
 
-  QList<QVariant> controlPanelSplitterSizes = 
-    m_PSFEditorDialog->GetControlPanelSplitterSizes();
-  settings.setValue("controlPanelSplitterSizes", controlPanelSplitterSizes);
-
   settings.endGroup();
 
   // Write out PSF list settings
@@ -1208,15 +1204,6 @@ MicroscopeSimulator
   defaultWindowSplitterSizes.push_back(QVariant(340));
   m_PSFEditorDialog->SetWindowSplitterSizes
     (settings.value("windowSplitterSizes", defaultWindowSplitterSizes).toList());
-
-  QList<QVariant> defaultControlPanelSplitterSizes;
-  defaultControlPanelSplitterSizes.push_back(QVariant(300));
-  defaultControlPanelSplitterSizes.push_back(QVariant(300));
-  defaultControlPanelSplitterSizes.push_back(QVariant(300));
-
-  m_PSFEditorDialog->SetControlPanelSplitterSizes
-    (settings.value("controlPanelSplitterSizes",
-                    defaultControlPanelSplitterSizes).toList());
 
   settings.endGroup();
 

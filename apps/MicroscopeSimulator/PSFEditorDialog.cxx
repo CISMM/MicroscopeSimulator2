@@ -108,30 +108,6 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
-::SetControlPanelSplitterSizes(QList<QVariant> sizes) {
-  QList<int> intSizes;
-  for (QList<QVariant>::iterator iter = sizes.begin(); iter != sizes.end(); iter++) {
-    intSizes.push_back((*iter).toInt());
-  }
-  gui_ControlPanelSplitter->setSizes(intSizes);
-}
-
-
-QList<QVariant>
-PSFEditorDialog
-::GetControlPanelSplitterSizes() {
-  QList<int> sizes = gui_ControlPanelSplitter->sizes();
-  QList<QVariant> variantSizes;
-  for (QList<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++) {
-    variantSizes.push_back(QVariant(*iter));
-  }
-
-  return variantSizes;
-}
-
-
-void
-PSFEditorDialog
 ::on_gui_AddCalculatedGaussianPSFButton_clicked() {
   m_PSFListModel->GetPSFList()->AddGaussianPointSpreadFunction("Gaussian");
   m_PSFListModel->Refresh();

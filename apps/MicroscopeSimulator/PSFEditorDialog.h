@@ -27,9 +27,6 @@ Q_OBJECT
   void SetWindowSplitterSizes(QList<QVariant> sizes);
   QList<QVariant> GetWindowSplitterSizes();
 
-  void SetControlPanelSplitterSizes(QList<QVariant> sizes);
-  QList<QVariant> GetControlPanelSplitterSizes();
-
  public slots:
   virtual void on_gui_AddCalculatedGaussianPSFButton_clicked();
   virtual void on_gui_AddCalculatedWidefieldPSFButton_clicked();
