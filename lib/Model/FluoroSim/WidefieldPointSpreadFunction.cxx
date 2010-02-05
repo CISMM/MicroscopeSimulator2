@@ -2,8 +2,6 @@
 
 #include <XMLHelper.h>
 
-const std::string WidefieldPointSpreadFunction::SIZE_ELEMENT = "Size";
-const std::string WidefieldPointSpreadFunction::SPACING_ELEMENT = "Spacing";
 const std::string WidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
 const std::string WidefieldPointSpreadFunction::CCD_BORDER_WIDTH_ELEMENT = "CCDBorderWidth";;
 const std::string WidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
@@ -21,45 +19,44 @@ const std::string WidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE
 const std::string WidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
 const std::string WidefieldPointSpreadFunction::DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "DesignDistanceFromBackFocalPlaneToDetector";
 const std::string WidefieldPointSpreadFunction::ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "ActualDistanceFromBackFocalPlaneToDetector";
-const std::string WidefieldPointSpreadFunction::X_ATTRIBUTE = "x";
-const std::string WidefieldPointSpreadFunction::Y_ATTRIBUTE = "y";
-const std::string WidefieldPointSpreadFunction::Z_ATTRIBUTE = "z";
 
 
 WidefieldPointSpreadFunction
 ::WidefieldPointSpreadFunction() {
   // Set up parameter names and default parameters
-  m_ParameterNames.push_back("X Size");
-  m_ParameterNames.push_back("Y Size");
-  m_ParameterNames.push_back("Z Size");
-  m_ParameterNames.push_back("X Spacing");
-  m_ParameterNames.push_back("Y Spacing");
-  m_ParameterNames.push_back("Z Spacing");
-  m_ParameterNames.push_back("X Point Center");
-  m_ParameterNames.push_back("Y Point Center");
-  m_ParameterNames.push_back("Z Point Center");
-  m_ParameterNames.push_back("CCD Border Width X");
-  m_ParameterNames.push_back("CCD Border Width Y");
-  m_ParameterNames.push_back("Emission Wavelength");
+  m_ParameterNames.push_back("X Size (voxels)");
+  m_ParameterNames.push_back("Y Size (voxels)");
+  m_ParameterNames.push_back("Z Size (voxels)");
+  m_ParameterNames.push_back("X Voxel Spacing (nm)");
+  m_ParameterNames.push_back("Y Voxel Spacing (nm)");
+  m_ParameterNames.push_back("Z Voxel Spacing (nm)");
+  m_ParameterNames.push_back("X Point Center (nm)");
+  m_ParameterNames.push_back("Y Point Center (nm)");
+  m_ParameterNames.push_back("Z Point Center (nm)");
+  m_ParameterNames.push_back("CCD Border Width X (microns)");
+  m_ParameterNames.push_back("CCD Border Width Y (microns)");
+  m_ParameterNames.push_back("Emission Wavelength (nm)");
   m_ParameterNames.push_back("Numerical Aperture");
   m_ParameterNames.push_back("Magnification");
   m_ParameterNames.push_back("Design Cover Slip Refractive Index");
   m_ParameterNames.push_back("Actual Cover Slip Refractive Index");
-  m_ParameterNames.push_back("Design Cover Slip Thickness");
-  m_ParameterNames.push_back("Actual Cover Slip Thickness");
+  m_ParameterNames.push_back("Design Cover Slip Thickness (microns)");
+  m_ParameterNames.push_back("Actual Cover Slip Thickness (microns)");
   m_ParameterNames.push_back("Design Immersion Oil Refractive Index");
   m_ParameterNames.push_back("Actual Immersion Oil Refractive Index");
-  m_ParameterNames.push_back("Design Immersion Oil Thickness");
+  m_ParameterNames.push_back("Design Immersion Oil Thickness (microns)");
   m_ParameterNames.push_back("Design Specimen Layer Refractive Index");
   m_ParameterNames.push_back("Actual Specimen Layer Refractive Index");
-  m_ParameterNames.push_back("Actual Point Source Depth in Specimen Layer");
-  m_ParameterNames.push_back("Design Distance From Back Focal Plane to Detector");
-  m_ParameterNames.push_back("Actual Distance From Back Focal Plane to Detector");
+  m_ParameterNames.push_back("Actual Point Source Depth in Specimen Layer (nm)");
+  m_ParameterNames.push_back("Design Distance From Back Focal Plane to Detector (mm)");
+  m_ParameterNames.push_back("Actual Distance From Back Focal Plane to Detector (mm)");
 
   m_GibsonLanniSource = ImageSourceType::New();
 
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GibsonLanniSource->GetOutput());
+
+  RecenterImage();
 }
 
 
@@ -282,7 +279,7 @@ WidefieldPointSpreadFunction
   char doubleFormat[] = "%f";
   char buf[128];
 
-  xmlNewProp(root, BAD_CAST "name", BAD_CAST m_Name.c_str());
+  xmlNewProp(root, BAD_CAST NAME_ATTRIBUTE.c_str(), BAD_CAST m_Name.c_str());
   
   xmlNodePtr sizeNode = xmlNewChild(root, NULL, BAD_CAST SIZE_ELEMENT.c_str(), NULL);
   sprintf(buf, intFormat, m_GibsonLanniSource->GetSize()[0]);

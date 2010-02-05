@@ -12,9 +12,6 @@
 class WidefieldPointSpreadFunction : public PointSpreadFunction {
 
  public:
-  static const std::string SIZE_ELEMENT;
-  static const std::string SPACING_ELEMENT;
-  static const std::string ORIGIN_ELEMENT;
   static const std::string POINT_CENTER_ELEMENT;
   static const std::string CCD_BORDER_WIDTH_ELEMENT;
   static const std::string EMISSION_WAVELENGTH_ATTRIBUTE;
@@ -32,9 +29,6 @@ class WidefieldPointSpreadFunction : public PointSpreadFunction {
   static const std::string ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE;
   static const std::string DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
   static const std::string ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
-  static const std::string X_ATTRIBUTE;
-  static const std::string Y_ATTRIBUTE;
-  static const std::string Z_ATTRIBUTE;
 
 
   WidefieldPointSpreadFunction();
