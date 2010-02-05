@@ -128,6 +128,8 @@ PSFEditorDialog
   QString fileName = QFileDialog::
     getOpenFileName(this, tr("Open PSF Image"), QString(), 
                     tr("TIF Files (*.tif *.tiff);;LSM Files (*.lsm)"));
+  if (fileName == "")
+    return;
 
   m_PSFListModel->GetPSFList()->ImportPointSpreadFunction(fileName.toStdString());
   m_PSFListModel->Refresh();
