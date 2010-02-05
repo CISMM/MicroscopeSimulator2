@@ -1,10 +1,7 @@
 #ifndef _MICROSCOPE_SIMULATOR_H_
 #define _MICROSCOPE_SIMULATOR_H_
 
-#include <QActionGroup>
 #include <QErrorMessage>
-#include <QMainWindow>
-#include <QStandardItemModel>
 #include <QModelObjectListModel.h>
 #include <QModelObjectPropertyListTableModel.h>
 
@@ -35,8 +32,7 @@ class QPSFListModel;
 #include <vtkSmartPointer.h>
 
 
-class MicroscopeSimulator : public QMainWindow, private Ui_MainWindow,
-public DirtyListener {
+class MicroscopeSimulator : public QMainWindow, public DirtyListener {
   Q_OBJECT
 
 public:
@@ -49,6 +45,7 @@ public:
   virtual ~MicroscopeSimulator();
   
 protected:
+  Ui_MainWindow* gui;
 
   void WriteProgramSettings();
   void ReadProgramSettings();

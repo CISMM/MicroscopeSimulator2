@@ -45,16 +45,14 @@
 #include <vtkFramebufferObjectRenderer.h>
 #include <vtkFramebufferObjectTexture.h>
 
-// TEMP
-#include <vtkImageGaussianSource.h>
-#include <vtkImageChangeInformation.h>
-
 
 // Constructor
 MicroscopeSimulator
 ::MicroscopeSimulator(QWidget* p)
   : QMainWindow(p), m_ModelObjectPropertyListTableModel(NULL) {
-  setupUi(this);
+
+  gui = new Ui_MainWindow();
+  gui->setupUi(this);
 
   // Instantiate visualization pipelines.
   m_Visualization = new Visualization();
@@ -64,28 +62,14 @@ MicroscopeSimulator
   // the default interactor sucks up all the keypress events, making it
   // impossible to type anything in Qt widgets.
   m_Visualization->GetModelObjectRenderWindow()->
-    SetInteractor(modelObjectQvtkWidget->GetInteractor());
-  modelObjectQvtkWidget->SetRenderWindow(m_Visualization->GetModelObjectRenderWindow());
+    SetInteractor(gui->modelObjectQvtkWidget->GetInteractor());
+  gui->modelObjectQvtkWidget->SetRenderWindow(m_Visualization->GetModelObjectRenderWindow());
 
-
-  // Set temporary PSF image. Will have class to manage PSFs in future.
-  vtkSmartPointer<vtkImageGaussianSource> psf = vtkSmartPointer<vtkImageGaussianSource>::New();
-  psf->SetWholeExtent(0, 63, 0, 63, 0, 63);
-  psf->SetStandardDeviation(3.0);
-  psf->SetCenter(0.5*63.0, 0.5*63.0, 0.5*63.0);
-
-  vtkSmartPointer<vtkImageChangeInformation> spacer = vtkSmartPointer<vtkImageChangeInformation>::New();
-  spacer->SetOutputSpacing(65.0, 65.0, 200.0);
-  spacer->SetInputConnection(psf->GetOutputPort());
-  spacer->GetOutput()->Update();
-
-  m_Visualization->SetPSFImage(spacer->GetOutput());
-
-  fluorescenceQvtkWidget->SetRenderWindow(m_Visualization->GetFluorescenceRenderWindow());
-  fluorescenceQvtkWidget->setMaximumSize(200, 200);
-  fluorescenceQvtkWidget->setMinimumSize(200, 200);
-  fluorescenceQvtkWidget->setHidden(true);
-  fluorescenceBackgroundWidget->setMaximumHeight(200);
+  gui->fluorescenceQvtkWidget->SetRenderWindow(m_Visualization->GetFluorescenceRenderWindow());
+  gui->fluorescenceQvtkWidget->setMaximumSize(200, 200);
+  gui->fluorescenceQvtkWidget->setMinimumSize(200, 200);
+  gui->fluorescenceQvtkWidget->setHidden(true);
+  gui->fluorescenceBackgroundWidget->setMaximumHeight(200);
 
   // Instantiate data model.
   m_SimulationNeedsSaving  = false;
@@ -101,7 +85,7 @@ MicroscopeSimulator
   m_PSFMenuListModel = new QPSFListModel();
   m_PSFMenuListModel->SetHasNone(true);
   m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
-  fluoroSimPSFMenuComboBox->setModel(m_PSFMenuListModel);
+  gui->fluoroSimPSFMenuComboBox->setModel(m_PSFMenuListModel);
     
   // Set up error dialog box.
   m_ErrorDialog.setModal(true);
@@ -110,34 +94,34 @@ MicroscopeSimulator
   m_ViewModeActionGroup->setEnabled(true);
   m_ViewModeActionGroup->setVisible(true);
   m_ViewModeActionGroup->setExclusive(true);
-  m_ViewModeActionGroup->addAction(actionViewModelOnly);
-  actionViewModelOnly->setChecked(true);
-  m_ViewModeActionGroup->addAction(actionViewModelAndPoints);
-  m_ViewModeActionGroup->addAction(actionViewModelAndScan);
-  m_ViewModeActionGroup->addAction(actionViewAFMScanOnly);
-  m_ViewModeActionGroup->addAction(actionViewModelsWithFluorescenceComparison);
-  m_ViewModeActionGroup->addAction(actionViewFluorescenceComparisonOnly);
+  m_ViewModeActionGroup->addAction(gui->actionViewModelOnly);
+  gui->actionViewModelOnly->setChecked(true);
+  m_ViewModeActionGroup->addAction(gui->actionViewModelAndPoints);
+  m_ViewModeActionGroup->addAction(gui->actionViewModelAndScan);
+  m_ViewModeActionGroup->addAction(gui->actionViewAFMScanOnly);
+  m_ViewModeActionGroup->addAction(gui->actionViewModelsWithFluorescenceComparison);
+  m_ViewModeActionGroup->addAction(gui->actionViewFluorescenceComparisonOnly);
 
   m_InteractionActionGroup = new QActionGroup(this);
   m_InteractionActionGroup->setEnabled(true);
   m_InteractionActionGroup->setVisible(true);
   m_InteractionActionGroup->setExclusive(true);
-  m_InteractionActionGroup->addAction(actionMoveCamera);
-  actionMoveCamera->setChecked(true);
-  m_InteractionActionGroup->addAction(actionMoveObjects);
+  m_InteractionActionGroup->addAction(gui->actionMoveCamera);
+  gui->actionMoveCamera->setChecked(true);
+  m_InteractionActionGroup->addAction(gui->actionMoveObjects);
   
   m_ModelObjectListModel = new QModelObjectListModel();
   m_ModelObjectListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
-  fluoroSimModelObjectList->setModel(m_ModelObjectListModel);
+  gui->fluoroSimModelObjectList->setModel(m_ModelObjectListModel);
 
-  m_ModelObjectListSelectionModel = fluoroSimModelObjectList->selectionModel();
+  m_ModelObjectListSelectionModel = gui->fluoroSimModelObjectList->selectionModel();
   connect(m_ModelObjectListSelectionModel,
           SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
           this,
           SLOT(handle_ModelObjectListSelectionModel_selectionChanged(const QItemSelection&, const QItemSelection&)));
 
   m_ModelObjectPropertyListTableModel = new QModelObjectPropertyListTableModel();
-  fluoroSimModelObjectPropertiesTable->setModel(m_ModelObjectPropertyListTableModel);
+  gui->fluoroSimModelObjectPropertiesTable->setModel(m_ModelObjectPropertyListTableModel);
   connect(m_ModelObjectPropertyListTableModel,
           SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
           this, 
@@ -166,7 +150,7 @@ MicroscopeSimulator
   RefreshUI();
   RefreshModelObjectViews();
   on_actionResetCamera_triggered();
-  modelObjectQvtkWidget->GetRenderWindow()->Render();
+  gui->modelObjectQvtkWidget->GetRenderWindow()->Render();
 }
 
 
@@ -189,6 +173,8 @@ MicroscopeSimulator
   delete m_InteractionActionGroup;
   delete m_ModelObjectPropertyListTableModel;
   delete m_ModelObjectListSelectionModel;
+
+  delete gui;
 }
 
 
@@ -472,7 +458,7 @@ MicroscopeSimulator
     // Grab screen shot and save it.
     vtkSmartPointer<vtkWindowToImageFilter> w2if = 
       vtkSmartPointer<vtkWindowToImageFilter>::New();
-    w2if->SetInput(modelObjectQvtkWidget->GetRenderWindow());
+    w2if->SetInput(gui->modelObjectQvtkWidget->GetRenderWindow());
     w2if->SetMagnification(1);
     w2if->Update();
 
@@ -561,11 +547,11 @@ void
 MicroscopeSimulator
 ::on_fluoroSimModelObjectList_customContextMenuRequested(QPoint point) {
   QMenu menu(tr("Model Object Menu"));
-  menu.addAction(actionFocusOnObject);
-  menu.addAction(actionExportGeometry);
+  menu.addAction(gui->actionFocusOnObject);
+  menu.addAction(gui->actionExportGeometry);
   menu.addSeparator();
-  menu.addAction(actionDeleteModelObject);
-  menu.exec(fluoroSimModelObjectList->mapToGlobal(point));
+  menu.addAction(gui->actionDeleteModelObject);
+  menu.exec(gui->fluoroSimModelObjectList->mapToGlobal(point));
 }
 
 
@@ -573,7 +559,7 @@ void
 MicroscopeSimulator
 ::on_actionFocusOnObject_triggered() {
   // See which object is selected in the list.
-  int row = fluoroSimModelObjectList->currentIndex().row();
+  int row = gui->fluoroSimModelObjectList->currentIndex().row();
   ModelObjectListPtr mol = m_Simulation->GetModelObjectList();
   ModelObject* object = mol->GetModelObjectAtIndex(row);
   if (!object) {
@@ -587,7 +573,7 @@ void
 MicroscopeSimulator
 ::on_actionExportGeometry_triggered() {
   // See which object is selected in the list.
-  int row = fluoroSimModelObjectList->currentIndex().row();
+  int row = gui->fluoroSimModelObjectList->currentIndex().row();
   ModelObjectListPtr mol = m_Simulation->GetModelObjectList();
   ModelObject* object = mol->GetModelObjectAtIndex(row);
   if (!object) {
@@ -635,7 +621,7 @@ void
 MicroscopeSimulator
 ::on_actionDeleteModelObject_triggered() {
   // See which object is selected in the list.
-  int row = fluoroSimModelObjectList->currentIndex().row();
+  int row = gui->fluoroSimModelObjectList->currentIndex().row();
 
   ModelObjectListPtr mol = m_Simulation->GetModelObjectList();
   if (row >= 0 && row < static_cast<int>(mol->GetSize())) {
@@ -701,7 +687,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_experimentDescriptionTextArea_textChanged() {
-  QString text = experimentDescriptionTextArea->toPlainText();
+  QString text = gui->experimentDescriptionTextArea->toPlainText();
   m_Simulation->SetSimulationDescription(text.toStdString());
 }
 
@@ -720,14 +706,14 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::handle_ErrorLogDialog_accepted() {
-  actionShowErrors->setChecked(false);
+  gui->actionShowErrors->setChecked(false);
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionFluorescenceWindow_toggled(bool visible) {
-  fluorescenceQvtkWidget->setHidden(!visible);
+  gui->fluorescenceQvtkWidget->setHidden(!visible);
   if (visible) {
     m_Visualization->FluorescenceViewRender();
   }
@@ -738,13 +724,13 @@ void
 MicroscopeSimulator
 ::on_fluoroSimFocusSlider_valueChanged(int value) {
   // Convert value into focal plane position
-  float focusSpacing = fluoroSimFocusSpacingEdit->text().toFloat();
+  float focusSpacing = gui->fluoroSimFocusSpacingEdit->text().toFloat();
   float focalPlaneDepth = static_cast<float>(value) * focusSpacing;
 
   m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneDepth(focalPlaneDepth);
 
   // Set text in fluoroSimFocusEdit to slider value
-  fluoroSimFocusEdit->setText(QString().sprintf("%0.1f", focalPlaneDepth));
+  gui->fluoroSimFocusEdit->setText(QString().sprintf("%0.1f", focalPlaneDepth));
 
   RenderViews();
 
@@ -757,9 +743,9 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimFocusMaxEdit_editingFinished() {
-  UpdateFocalPlaneUIControls(fluoroSimFocusMinEdit->text().toFloat(),
-    fluoroSimFocusMaxEdit->text().toFloat(),
-    fluoroSimFocusSpacingEdit->text().toFloat());
+  UpdateFocalPlaneUIControls(gui->fluoroSimFocusMinEdit->text().toFloat(),
+    gui->fluoroSimFocusMaxEdit->text().toFloat(),
+    gui->fluoroSimFocusSpacingEdit->text().toFloat());
 
   RenderViews();
 }
@@ -768,9 +754,9 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimFocusMinEdit_editingFinished() {
-  UpdateFocalPlaneUIControls(fluoroSimFocusMinEdit->text().toFloat(),
-    fluoroSimFocusMaxEdit->text().toFloat(),
-    fluoroSimFocusSpacingEdit->text().toFloat());
+  UpdateFocalPlaneUIControls(gui->fluoroSimFocusMinEdit->text().toFloat(),
+    gui->fluoroSimFocusMaxEdit->text().toFloat(),
+    gui->fluoroSimFocusSpacingEdit->text().toFloat());
 
   RenderViews();
 }
@@ -779,9 +765,9 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimFocusSpacingEdit_editingFinished() {
-  UpdateFocalPlaneUIControls(fluoroSimFocusMinEdit->text().toFloat(),
-    fluoroSimFocusMaxEdit->text().toFloat(),
-    fluoroSimFocusSpacingEdit->text().toFloat());
+  UpdateFocalPlaneUIControls(gui->fluoroSimFocusMinEdit->text().toFloat(),
+    gui->fluoroSimFocusMaxEdit->text().toFloat(),
+    gui->fluoroSimFocusSpacingEdit->text().toFloat());
 
   RenderViews();
 }
@@ -797,18 +783,18 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimEditPSFsButton_clicked() {
-  QString previousSelection = fluoroSimPSFMenuComboBox->currentText();
+  QString previousSelection = gui->fluoroSimPSFMenuComboBox->currentText();
   int result = m_PSFEditorDialog->exec();
   if (result == QDialog::Accepted) {
     m_PSFMenuListModel->Refresh();
     // Need to set the selected index back to what it was originally.
     // Apparently, resetting the model via Refresh affects the selection
     // model.
-    int index = fluoroSimPSFMenuComboBox->findText(previousSelection);
+    int index = gui->fluoroSimPSFMenuComboBox->findText(previousSelection);
     if (index == -1) {
-      fluoroSimPSFMenuComboBox->setCurrentIndex(0);
+      gui->fluoroSimPSFMenuComboBox->setCurrentIndex(0);
     } else {
-      fluoroSimPSFMenuComboBox->setCurrentIndex(index);
+      gui->fluoroSimPSFMenuComboBox->setCurrentIndex(index);
     }
   }
 }
@@ -836,7 +822,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimPixelSizeEdit_editingFinished() {
-  double pixelSize = fluoroSimPixelSizeEdit->text().toDouble();
+  double pixelSize = gui->fluoroSimPixelSizeEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetPixelSize(pixelSize);
 
   m_Visualization->FluorescenceViewRender();
@@ -848,9 +834,9 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimImageWidthEdit_editingFinished() {
-  int width = fluoroSimImageWidthEdit->text().toInt();
-  fluorescenceQvtkWidget->setMinimumWidth(width);
-  fluorescenceQvtkWidget->setMaximumWidth(width);
+  int width = gui->fluoroSimImageWidthEdit->text().toInt();
+  gui->fluorescenceQvtkWidget->setMinimumWidth(width);
+  gui->fluorescenceQvtkWidget->setMaximumWidth(width);
 
   m_Simulation->GetFluorescenceSimulation()->SetImageWidth(width);
 
@@ -861,10 +847,10 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimImageHeightEdit_editingFinished() {
-  int height = fluoroSimImageHeightEdit->text().toInt();
-  fluorescenceQvtkWidget->setMinimumHeight(height);
-  fluorescenceQvtkWidget->setMaximumHeight(height);
-  fluorescenceBackgroundWidget->setMaximumHeight(height);
+  int height = gui->fluoroSimImageHeightEdit->text().toInt();
+  gui->fluorescenceQvtkWidget->setMinimumHeight(height);
+  gui->fluorescenceQvtkWidget->setMaximumHeight(height);
+  gui->fluorescenceBackgroundWidget->setMaximumHeight(height);
 
   m_Simulation->GetFluorescenceSimulation()->SetImageHeight(height);
 
@@ -902,7 +888,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimGridSpacingEdit_editingFinished() {
-  double spacing = fluoroSimGridSpacingEdit->text().toDouble();
+  double spacing = gui->fluoroSimGridSpacingEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetReferenceGridSpacing(spacing);
 
   RenderViews();
@@ -912,7 +898,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimMinLevelEdit_editingFinished() {
-  double level = fluoroSimMinLevelEdit->text().toDouble();
+  double level = gui->fluoroSimMinLevelEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetMinimumIntensityLevel(level);
 
   m_Visualization->FluorescenceViewRender();
@@ -926,14 +912,14 @@ MicroscopeSimulator
   m_Simulation->GetFluorescenceSimulation()->SetMinimumIntensityLevel(dValue);
   m_Visualization->FluorescenceViewRender();
   
-  fluoroSimMinLevelEdit->setText(QString().sprintf("%0.1f", dValue));
+  gui->fluoroSimMinLevelEdit->setText(QString().sprintf("%0.1f", dValue));
 }
 
 
 void
 MicroscopeSimulator
 ::on_fluoroSimMaxLevelEdit_editingFinished() {
-  double level = fluoroSimMaxLevelEdit->text().toDouble();
+  double level = gui->fluoroSimMaxLevelEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetMaximumIntensityLevel(level);
   m_Visualization->FluorescenceViewRender();
 }
@@ -946,7 +932,7 @@ MicroscopeSimulator
   m_Simulation->GetFluorescenceSimulation()->SetMaximumIntensityLevel(dValue);
   m_Visualization->FluorescenceViewRender();
 
-  fluoroSimMaxLevelEdit->setText(QString().sprintf("%0.1f", dValue));
+  gui->fluoroSimMaxLevelEdit->setText(QString().sprintf("%0.1f", dValue));
 }
 
 
@@ -956,10 +942,10 @@ MicroscopeSimulator
   double scalarRange[2];
   m_Visualization->GetFluorescenceScalarRange(scalarRange);
 
-  fluoroSimMinLevelEdit->setText(QVariant(scalarRange[0]).toString());
-  fluoroSimMinLevelSlider->setValue(static_cast<int>(scalarRange[0]));
-  fluoroSimMaxLevelEdit->setText(QVariant(scalarRange[1]).toString());
-  fluoroSimMaxLevelSlider->setValue(static_cast<int>(scalarRange[1]));
+  gui->fluoroSimMinLevelEdit->setText(QVariant(scalarRange[0]).toString());
+  gui->fluoroSimMinLevelSlider->setValue(static_cast<int>(scalarRange[0]));
+  gui->fluoroSimMaxLevelEdit->setText(QVariant(scalarRange[1]).toString());
+  gui->fluoroSimMaxLevelSlider->setValue(static_cast<int>(scalarRange[1]));
 }
 
 
@@ -973,19 +959,19 @@ MicroscopeSimulator
   maxValue = static_cast<float>(maxIndex) * spacing;
 
   // Update widgets
-  fluoroSimFocusSlider->setMinimum(minIndex);
-  fluoroSimFocusSlider->setMaximum(maxIndex);
-  fluoroSimFocusMinEdit->setText(QString().sprintf("%0.1f", minValue));
-  fluoroSimFocusMaxEdit->setText(QString().sprintf("%0.1f", maxValue));
+  gui->fluoroSimFocusSlider->setMinimum(minIndex);
+  gui->fluoroSimFocusSlider->setMaximum(maxIndex);
+  gui->fluoroSimFocusMinEdit->setText(QString().sprintf("%0.1f", minValue));
+  gui->fluoroSimFocusMaxEdit->setText(QString().sprintf("%0.1f", maxValue));
 
   m_Simulation->GetFluorescenceSimulation()->
-    SetFocalPlaneDepthSpacing(fluoroSimFocusSpacingEdit->text().toDouble());
+    SetFocalPlaneDepthSpacing(gui->fluoroSimFocusSpacingEdit->text().toDouble());
 
   m_Simulation->GetFluorescenceSimulation()->
-    SetFocalPlaneDepthMinimum(fluoroSimFocusMinEdit->text().toDouble());
+    SetFocalPlaneDepthMinimum(gui->fluoroSimFocusMinEdit->text().toDouble());
 
   m_Simulation->GetFluorescenceSimulation()->
-    SetFocalPlaneDepthMaximum(fluoroSimFocusMaxEdit->text().toDouble());
+    SetFocalPlaneDepthMaximum(gui->fluoroSimFocusMaxEdit->text().toDouble());
 
 
 }
@@ -1045,7 +1031,7 @@ MicroscopeSimulator
 ::RenderViews() {
   m_Visualization->ModelObjectViewRender();
 
-  if (!fluorescenceQvtkWidget->isHidden()) {
+  if (!gui->fluorescenceQvtkWidget->isHidden()) {
     m_Visualization->FluorescenceViewRender();
   }
 }
@@ -1054,7 +1040,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::RefreshSimulationDescription() {
-  experimentDescriptionTextArea->
+  gui->experimentDescriptionTextArea->
     setPlainText(QString(m_Simulation->GetSimulationDescription().c_str()));
 }
 
@@ -1074,7 +1060,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::SetStatusMessage(const std::string& status) {
-  statusbar->showMessage(QString(status.c_str()));
+  gui->statusbar->showMessage(QString(status.c_str()));
 }
 
 
@@ -1093,7 +1079,7 @@ MicroscopeSimulator
     m_ModelObjectPropertyListTableModel->Refresh();
   }
 
-  if (!fluorescenceQvtkWidget->isHidden()) {
+  if (!gui->fluorescenceQvtkWidget->isHidden()) {
     m_Visualization->FluorescenceViewRender();
   }
 }
