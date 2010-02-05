@@ -6,13 +6,8 @@
 
 #include <XMLHelper.h>
 
-const std::string GaussianPointSpreadFunction::SIZE_ELEMENT    = "Size";
-const std::string GaussianPointSpreadFunction::SPACING_ELEMENT = "Spacing";
 const std::string GaussianPointSpreadFunction::MEAN_ELEMENT    = "Mean";
 const std::string GaussianPointSpreadFunction::SIGMA_ELEMENT   = "Sigma";
-const std::string GaussianPointSpreadFunction::X_ATTRIBUTE     = "x";
-const std::string GaussianPointSpreadFunction::Y_ATTRIBUTE     = "y";
-const std::string GaussianPointSpreadFunction::Z_ATTRIBUTE     = "z";
 
 
 GaussianPointSpreadFunction
@@ -44,6 +39,8 @@ GaussianPointSpreadFunction
   
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GaussianSource->GetOutput());
+
+  RecenterImage();
 }
 
 
@@ -190,7 +187,7 @@ GaussianPointSpreadFunction
   char doubleFormat[] = "%f";
   char buf[128];
 
-  xmlNewProp(root, BAD_CAST "name", BAD_CAST m_Name.c_str());
+  xmlNewProp(root, BAD_CAST NAME_ATTRIBUTE.c_str(), BAD_CAST m_Name.c_str());
 
   xmlNodePtr sizeNode = xmlNewChild(root, NULL, BAD_CAST SIZE_ELEMENT.c_str(), NULL);
   sprintf(buf, intFormat, m_GaussianSource->GetSize()[0]);
