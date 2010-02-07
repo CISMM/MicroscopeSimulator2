@@ -399,7 +399,7 @@ PSFEditorDialog
 ::UpdatePlane(int slice, ImagePlaneVisualizationPipeline* vis, QSlider* slider) {
   if (slice < 0)
     slice = 0;
-  if (slice >= slider->maximum())
+  if (slice >= slider->maximum() && slider->maximum() > slider->minimum())
     slice = slider->maximum() - 1;
   vis->SetSliceNumber(slice);
 
@@ -414,13 +414,24 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::UpdateImage() {
-  PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
-  psf->GetOutputPort()->GetProducer()->Update();
-  psf->GetOutputPort()->GetProducer()->UpdateWholeExtent();
-  psf->GetOutput()->Update();
+  PointSpreadFunction* activePSF = m_PSFTableModel->GetPointSpreadFunction();
+  activePSF->GetOutputPort()->GetProducer()->Update();
+  activePSF->GetOutputPort()->GetProducer()->UpdateWholeExtent();
+  activePSF->GetOutput()->Update();
 
+  int *dims = activePSF->GetOutput()->GetDimensions();
+  std::cout << dims[0] << ", " << dims[1] << ", " << dims[2] << std::endl;
+
+  m_XImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
+  m_XImagePlaneVisualization->SetToXPlane();
   m_XImagePlaneVisualization->Update();
+
+  m_YImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
+  m_YImagePlaneVisualization->SetToYPlane();
   m_YImagePlaneVisualization->Update();
+
+  m_ZImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
+  m_ZImagePlaneVisualization->SetToZPlane();
   m_ZImagePlaneVisualization->Update();
 }
 
@@ -433,20 +444,14 @@ PSFEditorDialog
   activePSF->GetOutput()->Update();
   int *bounds = activePSF->GetOutput()->GetDimensions();
 
-  m_XImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
-  m_XImagePlaneVisualization->SetToXPlane();
   m_XImagePlaneVisualization->SetSliceNumber(gui_XPlaneSlider->value());
   gui_XPlaneSlider->setMinimum(1);
   gui_XPlaneSlider->setMaximum(bounds[0]);
 
-  m_YImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
-  m_YImagePlaneVisualization->SetToYPlane();
   m_YImagePlaneVisualization->SetSliceNumber(gui_YPlaneSlider->value());
   gui_YPlaneSlider->setMinimum(1);
   gui_YPlaneSlider->setMaximum(bounds[1]);
 
-  m_ZImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
-  m_ZImagePlaneVisualization->SetToZPlane();
   m_ZImagePlaneVisualization->SetSliceNumber(gui_ZPlaneSlider->value());
   gui_ZPlaneSlider->setMinimum(1);
   gui_ZPlaneSlider->setMaximum(bounds[2]);
