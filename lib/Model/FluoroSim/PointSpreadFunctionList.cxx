@@ -47,6 +47,7 @@ PointSpreadFunctionList
 ::ImportPointSpreadFunction(const std::string& name) {
   ImportedPointSpreadFunction* psf = new ImportedPointSpreadFunction();
   psf->SetName(GetUniqueName(-1, name));
+  psf->SetFileName(name);
   m_PSFList.push_back(psf);
 
   return psf;
