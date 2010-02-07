@@ -124,14 +124,17 @@ PointSpreadFunctionList
         name = errName;
 
       if (nodeName == "GaussianPointSpreadFunction") {
-        PointSpreadFunction* psf = AddGaussianPointSpreadFunction(name);
+        PointSpreadFunction* psf = new GaussianPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
+        m_PSFList.push_back(psf);
       } else if (nodeName == "ImportedPointSpreadFunction") {
-        PointSpreadFunction* psf = ImportPointSpreadFunction(name);
+        ImportedPointSpreadFunction* psf = new ImportedPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
+        m_PSFList.push_back(psf);
       } else if (nodeName == "WidefieldPointSpreadFunction") {
-        PointSpreadFunction* psf = AddWidefieldPointSpreadFunction(name);
+        PointSpreadFunction* psf = new WidefieldPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
+        m_PSFList.push_back(psf);
       }
     }
     psfNode = psfNode->next;
