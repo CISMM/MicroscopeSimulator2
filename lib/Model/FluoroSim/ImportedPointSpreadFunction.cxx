@@ -42,6 +42,8 @@ ImportedPointSpreadFunction
 ::SetFileName(const std::string& fileName) {
   m_FileName = fileName;
   m_ImageReader->SetFileName(m_FileName);
+  m_ImageReader->UpdateLargestPossibleRegion();
+  m_ChangeInformationFilter->UpdateWholeExtent();
 }
 
 
@@ -62,6 +64,8 @@ ImportedPointSpreadFunction
 vtkImageData*
 ImportedPointSpreadFunction
 ::GetOutput() {
+  m_ITKToVTKFilter->Modified();
+  m_ChangeInformationFilter->UpdateWholeExtent();
   return m_ChangeInformationFilter->GetOutput();
 }
 
@@ -69,6 +73,8 @@ ImportedPointSpreadFunction
 vtkAlgorithmOutput*
 ImportedPointSpreadFunction
 ::GetOutputPort() {
+  m_ITKToVTKFilter->Modified();
+  m_ChangeInformationFilter->UpdateWholeExtent();
   return m_ChangeInformationFilter->GetOutputPort();
 }
 
