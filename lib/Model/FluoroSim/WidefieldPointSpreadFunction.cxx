@@ -362,6 +362,10 @@ WidefieldPointSpreadFunction
 void
 WidefieldPointSpreadFunction
 ::RestoreFromXML(xmlNodePtr node) {
+  const char* name =
+    (const char*) xmlGetProp(node, BAD_CAST NAME_ATTRIBUTE.c_str());
+  SetName(name);
+
   unsigned long size[3];
   xmlNodePtr sizeNode = xmlGetFirstElementChildWithName(node, BAD_CAST SIZE_ELEMENT.c_str());
   size[0] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST X_ATTRIBUTE.c_str()));
