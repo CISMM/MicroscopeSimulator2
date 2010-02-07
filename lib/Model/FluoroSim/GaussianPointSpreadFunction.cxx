@@ -226,6 +226,10 @@ GaussianPointSpreadFunction
 void
 GaussianPointSpreadFunction
 ::RestoreFromXML(xmlNodePtr node) {
+  const char* name =
+    (const char*) xmlGetProp(node, BAD_CAST NAME_ATTRIBUTE.c_str());
+  SetName(name);
+
   ImageSourceType::SizeType    size;
   xmlNodePtr sizeNode = xmlGetFirstElementChildWithName(node, BAD_CAST SIZE_ELEMENT.c_str());
   size[0] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST X_ATTRIBUTE.c_str()));
