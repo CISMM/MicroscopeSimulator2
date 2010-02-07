@@ -419,9 +419,6 @@ PSFEditorDialog
   activePSF->GetOutputPort()->GetProducer()->UpdateWholeExtent();
   activePSF->GetOutput()->Update();
 
-  int *dims = activePSF->GetOutput()->GetDimensions();
-  std::cout << dims[0] << ", " << dims[1] << ", " << dims[2] << std::endl;
-
   m_XImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
   m_XImagePlaneVisualization->SetToXPlane();
   m_XImagePlaneVisualization->Update();
