@@ -146,11 +146,13 @@ ImportedPointSpreadFunction
 void
 ImportedPointSpreadFunction
 ::RestoreFromXML(xmlNodePtr node) {
+  const char* name =
+    (const char*) xmlGetProp(node, BAD_CAST NAME_ATTRIBUTE.c_str());
+  SetName(name);
+
   const char* fileName = 
     (const char*) xmlGetProp(node, BAD_CAST FILE_NAME_ATTRIBUTE.c_str());
-
-  m_ImageReader->SetFileName(fileName);
-  m_ImageReader->Update();
+  SetFileName(std::string(fileName));
 }
 
 
