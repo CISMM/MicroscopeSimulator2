@@ -28,6 +28,26 @@ FluorescenceSimulation
   m_DirtyListener = dirtyListener;
   m_PSFList = new PointSpreadFunctionList();
 
+  m_FocalPlaneDepth = 0.0;
+  m_FocalPlaneDepthMinimum = 0.0;
+  m_FocalPlaneDepthMaximum = 0.0;
+  m_FocalPlaneDepthSpacing = 0.0;
+  m_ActivePSFIndex = 0;
+  m_Exposure = 1.0;
+  m_PixelSize = 65.0;
+  m_ImageWidth = 200;
+  m_ImageHeight = 200;
+  m_AddGaussianNoise = false;
+  m_NoiseStdDev = 0.0;
+  m_NoiseMean = 0.0;
+  m_ShowImageVolumeOutline = false;
+  m_ShowReferencePlane = true;
+  m_ShowReferenceGrid = true;
+  m_ReferenceGridSpacing = 1000.0;
+  m_SuperimposeFluorescenceImage = false;
+  m_MinimumIntensityLevel = 0.0;
+  m_MaximumIntensityLevel = 1.0;
+
   NewSimulation();
 }
 
