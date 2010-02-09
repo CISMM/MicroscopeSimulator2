@@ -2,7 +2,7 @@
 #define _FLUOROPHORE_MODEL_DIALOG_H_
 
 #include <ui_FluorophoreModelDialog.h>
-#include <QDialog.h>
+#include <QDialog>
 
 #include <FluorophoreModelTypes.h>
 

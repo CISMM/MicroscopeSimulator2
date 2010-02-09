@@ -2,7 +2,7 @@
 #define _ERROR_LOG_DIALOG_H_
 
 #include <ui_ErrorLogDialog.h>
-#include <QDialog.h>
+#include <QDialog>
 
 
 class ErrorLogDialog : public QDialog, private Ui_ErrorLogDialog {

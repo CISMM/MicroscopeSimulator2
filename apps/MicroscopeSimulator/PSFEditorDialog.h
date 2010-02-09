@@ -2,7 +2,9 @@
 #define _PSF_EDITOR_DIALOG_H_
 
 #include <ui_PSFEditorDialog.h>
-#include <QDialog.h>
+#include <QDialog>
+#include <QFileDialog>
+#include <QMessageBox>
 
 class ImagePlaneVisualizationPipeline;
 class QWidget;

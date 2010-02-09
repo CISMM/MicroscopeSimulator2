@@ -1,9 +1,11 @@
 #include <PSFEditorDialog.h>
 
-#include <QFileDialog.h>
-#include <QMessageBox.h>
+#include <QFileDialog>
+#include <QMessageBox>
+
 #include <QPSFListModel.h>
 #include <QPointSpreadFunctionPropertyTableModel.h>
+
 #include <vtkAlgorithmOutput.h>
 #include <vtkCamera.h>
 #include <vtkImageData.h>

@@ -2,7 +2,7 @@
 #define _PREFERENCES_DIALOG_H_
 
 #include <ui_PreferencesDialog.h>
-#include <QDialog.h>
+#include <QDialog>
 
 
 class PreferencesDialog : public QDialog,
