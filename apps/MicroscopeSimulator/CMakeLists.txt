@@ -84,7 +84,7 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   QVTK
   ${QT_LIBRARIES}
   vtksys
-  vtklibxml2
+  #vtklibxml2
   vtkCommon
   vtkFiltering
   vtkGraphics
