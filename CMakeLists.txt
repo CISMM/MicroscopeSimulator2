@@ -58,16 +58,16 @@ ENDIF (VTKMS_FOUND)
 #######################################
 INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/filters
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/filters/itk
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/io
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/model
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/model/FluoroSim
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/model/ModelObjects
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/visualization
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/visualization/GeometrySources
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/visualization/GeometryView
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/visualization/FluorescenceView
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters/itk
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/IO
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Model
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/FluoroSim
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/ModelObjects
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometrySources
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometryView
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/FluorescenceView
     ${MicroscopeSimulator_BINARY_DIR}/lib
     ${VTK_KITS_DIR}/vtklibxml2/)
 
