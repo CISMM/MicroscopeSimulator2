@@ -5,7 +5,7 @@
 #pragma warning( disable : 4996 )
 #endif
 
-#include <StdLibGuard.h>
+//#include <StdLibGuard.h>
 #include <cstdlib>
 #include <ctime>
 
