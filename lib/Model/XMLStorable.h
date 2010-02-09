@@ -8,6 +8,8 @@
 class XMLStorable {
 
 public:
+  virtual ~XMLStorable() {};
+
   virtual void GetXMLConfiguration(xmlNodePtr node) = 0;
 
 }; // class XMLStorable
