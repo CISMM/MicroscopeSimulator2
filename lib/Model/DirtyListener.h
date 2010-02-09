@@ -20,6 +20,8 @@
 class DirtyListener {
 
 public:
+  virtual ~DirtyListener() {};
+
   virtual void Sully() = 0;
 
   virtual void SetStatusMessage(const std::string& status) = 0;
