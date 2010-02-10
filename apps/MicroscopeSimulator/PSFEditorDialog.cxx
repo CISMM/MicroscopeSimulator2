@@ -174,7 +174,7 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::on_gui_XPlaneEdit_textChanged(QString text) {
-  int slice = text.toInt() - 1;
+  int slice = text.toInt();
   UpdatePlane(slice, m_XImagePlaneVisualization, gui_XPlaneSlider);
 }
 
@@ -196,7 +196,7 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::on_gui_YPlaneEdit_textChanged(QString text) {
-  int slice = text.toInt() - 1;
+  int slice = text.toInt();
   UpdatePlane(slice, m_YImagePlaneVisualization, gui_YPlaneSlider);
 }
 
@@ -219,7 +219,8 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::on_gui_ZPlaneEdit_textChanged(QString text) {
-  int slice = text.toInt() - 1;
+  int slice = text.toInt();
+  std::cout << "Slice value: " << slice << std::endl;
   UpdatePlane(slice, m_ZImagePlaneVisualization, gui_ZPlaneSlider);
 }
 
@@ -227,7 +228,7 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::on_gui_ZPlaneSlider_valueChanged(int value) {
-  m_ZImagePlaneVisualization->SetSliceNumber(value-1);
+  m_ZImagePlaneVisualization->SetSliceNumber(value);
   gui_ZPlaneEdit->setText(QString().sprintf("%d", value));
   m_RenderWindow->Render();
 }
@@ -402,11 +403,11 @@ PSFEditorDialog
   if (slice < 0)
     slice = 0;
   if (slice >= slider->maximum() && slider->maximum() > slider->minimum())
-    slice = slider->maximum() - 1;
+    slice = slider->maximum();
   vis->SetSliceNumber(slice);
 
-  if (slider->value() != slice + 1) {
-    slider->setValue(slice+1);
+  if (slider->value() != slice) {
+    slider->setValue(slice);
   }
 
   m_RenderWindow->Render();
@@ -444,16 +445,16 @@ PSFEditorDialog
   int *bounds = activePSF->GetOutput()->GetDimensions();
 
   m_XImagePlaneVisualization->SetSliceNumber(gui_XPlaneSlider->value());
-  gui_XPlaneSlider->setMinimum(1);
-  gui_XPlaneSlider->setMaximum(bounds[0]);
+  gui_XPlaneSlider->setMinimum(0);
+  gui_XPlaneSlider->setMaximum(bounds[0] - 1);
 
   m_YImagePlaneVisualization->SetSliceNumber(gui_YPlaneSlider->value());
-  gui_YPlaneSlider->setMinimum(1);
-  gui_YPlaneSlider->setMaximum(bounds[1]);
+  gui_YPlaneSlider->setMinimum(0);
+  gui_YPlaneSlider->setMaximum(bounds[1] - 1);
 
   m_ZImagePlaneVisualization->SetSliceNumber(gui_ZPlaneSlider->value());
-  gui_ZPlaneSlider->setMinimum(1);
-  gui_ZPlaneSlider->setMaximum(bounds[2]);
+  gui_ZPlaneSlider->setMinimum(0);
+  gui_ZPlaneSlider->setMaximum(bounds[2] - 1);
 }
 
 
