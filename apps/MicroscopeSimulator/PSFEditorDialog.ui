@@ -251,7 +251,7 @@
                      <item>
                       <widget class="QLineEdit" name="gui_XPlaneEdit">
                        <property name="text">
-                        <string>1</string>
+                        <string>0</string>
                        </property>
                       </widget>
                      </item>
@@ -261,10 +261,10 @@
                   <item>
                    <widget class="QSlider" name="gui_XPlaneSlider">
                     <property name="minimum">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <property name="maximum">
-                     <number>64</number>
+                     <number>63</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -290,7 +290,7 @@
                      <item>
                       <widget class="QLineEdit" name="gui_YPlaneEdit">
                        <property name="text">
-                        <string>1</string>
+                        <string>0</string>
                        </property>
                       </widget>
                      </item>
@@ -300,10 +300,10 @@
                   <item>
                    <widget class="QSlider" name="gui_YPlaneSlider">
                     <property name="minimum">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <property name="maximum">
-                     <number>64</number>
+                     <number>63</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -329,7 +329,7 @@
                      <item>
                       <widget class="QLineEdit" name="gui_ZPlaneEdit">
                        <property name="text">
-                        <string>1</string>
+                        <string>0</string>
                        </property>
                       </widget>
                      </item>
@@ -339,10 +339,10 @@
                   <item>
                    <widget class="QSlider" name="gui_ZPlaneSlider">
                     <property name="minimum">
-                     <number>1</number>
+                     <number>0</number>
                     </property>
                     <property name="maximum">
-                     <number>64</number>
+                     <number>63</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
