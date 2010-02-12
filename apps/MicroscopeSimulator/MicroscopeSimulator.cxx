@@ -181,16 +181,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionNewSimulation_triggered() {
-  // Ask if user really wants to quit if the simulation has been modified.
-  if (m_SimulationNeedsSaving) {
-    if (PromptToSaveChanges() == QMessageBox::Cancel)
-      return;
-  }
-
-  // Delete the old Simulation and replace with a new one.
-  delete m_Simulation;
-  m_Simulation = new Simulation(this);
-  m_Visualization->SetSimulation(m_Simulation);
+  NewSimulation();
 
   SetStatusMessage("Created new simulation.");
 
@@ -202,16 +193,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionOpenSimulation_triggered() {
-  // Ask if user really wants to quit if the simulation has been modified.
-  if (m_SimulationNeedsSaving) {
-    if (PromptToSaveChanges() == QMessageBox::Cancel)
-      return;
-  }
-
-  // First, create a new Simulation.
-  delete m_Simulation;
-  m_Simulation = new Simulation(this);
-  m_Visualization->SetSimulation(m_Simulation);
+  NewSimulation();
   
   // Prompt for simulation file to open.
   QString selectedFileName = 
@@ -299,6 +281,30 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::NewSimulation() {
+  // Ask if user really wants to quit if the simulation has been modified.
+  if (m_SimulationNeedsSaving) {
+    if (PromptToSaveChanges() == QMessageBox::Cancel)
+      return;
+  }
+
+  PointSpreadFunctionList* psfList = m_Simulation->GetFluorescenceSimulation()->GetPSFList();
+
+  // Delete the old Simulation and replace with a new one.
+  delete m_Simulation;
+  m_Simulation = new Simulation(this);
+  m_Visualization->SetSimulation(m_Simulation);
+
+  // Set PSFList in the PSFMenuListModel to the previous one.
+  m_Simulation->GetFluorescenceSimulation()->SetPSFList(psfList);
+
+  m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
+  m_ModelObjectListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
+}
+
+
+void
+MicroscopeSimulator
 ::OpenSimulationFile(const std::string& fileName) {
   if (m_Simulation->OpenXMLConfiguration(fileName) < 0) {
     QString message = QString("Could not load simulation '").
@@ -308,7 +314,7 @@ MicroscopeSimulator
                      "have permission to open the file."),
                   tr("FileOpenError"));
   } else {
-    QString message = QString("Loaded simulation '").append(fileName.c_str()).append("'.");
+    QString message = QString("Opened simulation '").append(fileName.c_str()).append("'.");
     SetStatusMessage(message.toStdString());
 
     m_Simulation->SetSimulationAlreadySaved(true);
@@ -361,6 +367,15 @@ void
 MicroscopeSimulator
 ::on_actionAddCylinder_triggered() {
   m_Simulation->AddNewModelObject("CylinderModel");
+
+  RefreshModelObjectViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_actionAddHollowCylinder_triggered() {
+  m_Simulation->AddNewModelObject("HollowCylinderModel");
 
   RefreshModelObjectViews();
 }

@@ -64,6 +64,7 @@ public slots:
 
   // Add geometry
   virtual void on_actionAddCylinder_triggered();
+  virtual void on_actionAddHollowCylinder_triggered();
   virtual void on_actionAddDisk_triggered();
   virtual void on_actionAddFlexibleTube_triggered();
   virtual void on_actionAddPlane_triggered();
@@ -142,7 +143,8 @@ protected:
   QItemSelectionModel*                m_ModelObjectListSelectionModel;
   QModelObjectPropertyListTableModel* m_ModelObjectPropertyListTableModel;
   QPSFListModel*                      m_PSFMenuListModel;
-  
+
+  void NewSimulation();
   void OpenSimulationFile(const std::string& fileName);
   void SaveSimulationFile(const std::string& fileName);
   
