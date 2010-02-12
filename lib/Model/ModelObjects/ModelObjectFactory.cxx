@@ -3,6 +3,7 @@
 #include <DirtyListener.h>
 
 #include <CylinderModelObject.h>
+#include <HollowCylinderModelObject.h>
 #include <DiskModelObject.h>
 #include <FlexibleTubeModelObject.h>
 #include <PlaneModelObject.h>
@@ -28,6 +29,8 @@ ModelObjectFactory
   ModelObjectPtr object = NULL;
   if (objectName == CylinderModelObject::OBJECT_TYPE_NAME) {
     object = new CylinderModelObject(m_DirtyListener);
+  } else if (objectName == HollowCylinderModelObject::OBJECT_TYPE_NAME) {
+    object = new HollowCylinderModelObject(m_DirtyListener);
   } else if (objectName == DiskModelObject::OBJECT_TYPE_NAME) {
     object = new DiskModelObject(m_DirtyListener);
   } else if (objectName == FlexibleTubeModelObject::OBJECT_TYPE_NAME) {
