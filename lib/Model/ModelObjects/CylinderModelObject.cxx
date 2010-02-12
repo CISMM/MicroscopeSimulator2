@@ -9,8 +9,8 @@ const char* CylinderModelObject::OBJECT_TYPE_NAME = "CylinderModel";
 const char* CylinderModelObject::RADIUS_ATT       = "radius";
 const char* CylinderModelObject::RADIUS_PROP      = "Radius";
 
-const char* CylinderModelObject::HEIGHT_ATT       = "height";
-const char* CylinderModelObject::HEIGHT_PROP      = "Height";
+const char* CylinderModelObject::LENGTH_ATT       = "length";
+const char* CylinderModelObject::LENGTH_PROP      = "Length";
 
 const char* CylinderModelObject::SURFACE_FLUOR_ATT = "surfaceFluorophoreModel";
 const char* CylinderModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
@@ -37,7 +37,7 @@ CylinderModelObject
 
   // Set up properties
   AddProperty(new ModelObjectProperty(RADIUS_PROP,  100.0, "nanometers"));
-  AddProperty(new ModelObjectProperty(HEIGHT_PROP, 1000.0, "nanometers"));
+  AddProperty(new ModelObjectProperty(LENGTH_PROP, 1000.0, "nanometers"));
 
   AddProperty(new FluorophoreModelObjectProperty(SURFACE_FLUOR_PROP,
                                                  UNIFORM_RANDOM_SURFACE_SAMPLE,
@@ -60,8 +60,8 @@ CylinderModelObject
 void
 CylinderModelObject
 ::Update() {
-  m_CylinderSource->SetRadius(GetProperty("Radius")->GetDoubleValue());
-  m_CylinderSource->SetHeight(GetProperty("Height")->GetDoubleValue());
+  m_CylinderSource->SetRadius(GetProperty(RADIUS_PROP)->GetDoubleValue());
+  m_CylinderSource->SetHeight(GetProperty(LENGTH_PROP)->GetDoubleValue());
 }
 
 
@@ -79,6 +79,6 @@ CylinderModelObject
   char buf[128];
   sprintf(buf, doubleFormat, GetProperty(RADIUS_PROP)->GetDoubleValue());
   xmlNewProp(root, BAD_CAST RADIUS_ATT, BAD_CAST buf);
-  sprintf(buf, doubleFormat, GetProperty(HEIGHT_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST HEIGHT_ATT, BAD_CAST buf);
+  sprintf(buf, doubleFormat, GetProperty(LENGTH_PROP)->GetDoubleValue());
+  xmlNewProp(root, BAD_CAST LENGTH_ATT, BAD_CAST buf);
 }
