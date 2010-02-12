@@ -26,6 +26,8 @@ SET(modelModelObjectsSrc
   ModelObjects/DiskModelObject.cxx
   ModelObjects/FlexibleTubeModelObject.h
   ModelObjects/FlexibleTubeModelObject.cxx
+  ModelObjects/HollowCylinderModelObject.h
+  ModelObjects/HollowCylinderModelObject.cxx
   ModelObjects/PlaneModelObject.h
   ModelObjects/PlaneModelObject.cxx
   ModelObjects/PointSetModelObject.h
