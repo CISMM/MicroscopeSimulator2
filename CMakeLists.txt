@@ -14,6 +14,15 @@ OPTION (CMAKE_VERBOSE_MAKEFILE  "Enable/Disable verbose compiler output" ON)
 OPTION (CMAKE_COLOR_MAKEFILE "Enable/Disable color cues when building" ON)
 MARK_AS_ADVANCED (CLEAR CMAKE_VERBOSE_MAKEFILE CMAKE_COLOR_MAKEFILE)
 
+# Workaround for rc.exe in Visual Studio 2005 being unable to handle many /I arguments.
+# At this point, there are very few directories in the list of include directories.
+IF( WIN32 )
+  ADD_SUBDIRECTORY(
+    apps/MicroscopeSimulator/installer/Win32
+  )
+ENDIF( WIN32 )
+
+
 #######################################
 # Include ITK
 #######################################
@@ -53,7 +62,7 @@ ENDIF (VTKMS_FOUND)
 #######################################
 # Personal filter library and support classes.
 #
-# FibrinAnalysis is split up into several logical groups.
+# Microscope Simulator is split up into several logical groups.
 # apps      - a place for various applications related to the main application
 #######################################
 INCLUDE_DIRECTORIES (
@@ -68,8 +77,7 @@ INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometrySources
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometryView
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/FluorescenceView
-    ${MicroscopeSimulator_BINARY_DIR}/lib
-    ${VTK_KITS_DIR}/vtklibxml2/)
+    ${MicroscopeSimulator_BINARY_DIR}/lib)
 
 ADD_SUBDIRECTORY(lib)
 
@@ -77,12 +85,3 @@ ADD_SUBDIRECTORY(lib)
 # Applications
 #######################################
 ADD_SUBDIRECTORY(apps)
-
-
-#######################################
-# Testing components
-#######################################
-#OPTION (BUILD_IT_TESTS "Include MicroscopeSimulator unit tests" ON)
-#IF (BUILD_IT_TESTS)
-#    SUBDIRS(TestSuite Tests)
-#ENDIF (BUILD_IT_TESTS)
