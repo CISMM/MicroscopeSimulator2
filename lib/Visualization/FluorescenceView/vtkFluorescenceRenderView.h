@@ -24,7 +24,7 @@ class FluorescenceSimulation;
 // .SECTION Description
 // This class is used as a view for fluorescent objects.
 
-class VTK_VIEWS_EXPORT vtkFluorescenceRenderView : public vtkView {
+class vtkFluorescenceRenderView : public vtkView {
  public:
   static vtkFluorescenceRenderView* New();
   vtkTypeRevisionMacro(vtkFluorescenceRenderView, vtkView);
