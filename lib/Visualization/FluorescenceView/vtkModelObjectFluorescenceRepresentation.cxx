@@ -34,7 +34,7 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
   this->GatherMapper->SetPixelSize(65.0, 65.0);
 
   this->GatherProperty = vtkSmartPointer<vtkProperty>::New();
-  this->GatherProperty->LoadMaterial("/Users/cquammen/development/packages/MicroscopeSimulator2/lib/shaders/gather.xml");
+  this->GatherProperty->LoadMaterial("lib/shaders/gather.xml");
   this->GatherProperty->ShadingOn();
   this->GatherProperty->SetColor(0.0, 1.0, 0.0);
   this->GatherProperty->AddShaderVariable("startIndex", 0);
