@@ -82,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>1102</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -188,7 +188,7 @@
           <x>0</x>
           <y>0</y>
           <width>381</width>
-          <height>1336</height>
+          <height>1157</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1280,7 +1280,7 @@
   <action name="actionSaveImage">
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/Disk.gif</normaloff>:/Disk.gif</iconset>
+     <normaloff>:/Disk.png</normaloff>:/Disk.png</iconset>
    </property>
    <property name="text">
     <string>Save Image</string>
@@ -1292,7 +1292,7 @@
   <action name="actionResetCamera">
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/ResetCamera.gif</normaloff>:/ResetCamera.gif</iconset>
+     <normaloff>:/ResetCamera.png</normaloff>:/ResetCamera.png</iconset>
    </property>
    <property name="text">
     <string>Reset Camera</string>
@@ -1307,7 +1307,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/ModelOnly.gif</normaloff>:/ModelOnly.gif</iconset>
+     <normaloff>:/ModelOnly.png</normaloff>:/ModelOnly.png</iconset>
    </property>
    <property name="text">
     <string>Model Only</string>
@@ -1322,7 +1322,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/ModelPoints.gif</normaloff>:/ModelPoints.gif</iconset>
+     <normaloff>:/ModelPoints.png</normaloff>:/ModelPoints.png</iconset>
    </property>
    <property name="text">
     <string>Model and Points</string>
@@ -1337,7 +1337,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/ModelScan.gif</normaloff>:/ModelScan.gif</iconset>
+     <normaloff>:/ModelScan.png</normaloff>:/ModelScan.png</iconset>
    </property>
    <property name="text">
     <string>Model and Scan</string>
@@ -1352,7 +1352,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/ScanOnly.gif</normaloff>:/ScanOnly.gif</iconset>
+     <normaloff>:/ScanOnly.png</normaloff>:/ScanOnly.png</iconset>
    </property>
    <property name="text">
     <string>View AFM scan only</string>
@@ -1367,7 +1367,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/FluorComparison.gif</normaloff>:/FluorComparison.gif</iconset>
+     <normaloff>:/FluorComparison.png</normaloff>:/FluorComparison.png</iconset>
    </property>
    <property name="text">
     <string>View Models with Fluorescence Comparison</string>
@@ -1382,7 +1382,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/FluorComparisonOnly.gif</normaloff>:/FluorComparisonOnly.gif</iconset>
+     <normaloff>:/FluorComparisonOnly.png</normaloff>:/FluorComparisonOnly.png</iconset>
    </property>
    <property name="text">
     <string>View Fluorescence Comparison Only</string>
@@ -1397,7 +1397,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/Axes.gif</normaloff>:/Axes.gif</iconset>
+     <normaloff>:/Axes.png</normaloff>:/Axes.png</iconset>
    </property>
    <property name="text">
     <string>Enable/Disable Axes</string>
@@ -1412,7 +1412,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/CameraMode.gif</normaloff>:/CameraMode.gif</iconset>
+     <normaloff>:/CameraMode.png</normaloff>:/CameraMode.png</iconset>
    </property>
    <property name="text">
     <string>Move Camera</string>
@@ -1427,7 +1427,7 @@
    </property>
    <property name="icon">
     <iconset resource="resources/icons/icons.qrc">
-     <normaloff>:/MoveObject.gif</normaloff>:/MoveObject.gif</iconset>
+     <normaloff>:/MoveObject.png</normaloff>:/MoveObject.png</iconset>
    </property>
    <property name="text">
     <string>Move Objects</string>
