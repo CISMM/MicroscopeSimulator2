@@ -74,17 +74,12 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
   SET (QtGuiSrcs ${QtGuiSrcs} ${UIS})
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
-IF ( WIN32 )
-  SET( WinResources "${MicroscopeSimulator_SOURCE_DIR}/apps/MicroscopeSimulator/installer/Win32/icon.rc" )
-ENDIF ( WIN32 )
-
-ADD_EXECUTABLE( MicroscopeSimulator ${QtGuiSrcs} ${UISrcs} ${RCCSrcs} ${MOCSrcs} ${WinResources} )
+ADD_EXECUTABLE( MicroscopeSimulator ${QtGuiSrcs} ${UISrcs} ${RCCSrcs} ${MOCSrcs} )
 
 TARGET_LINK_LIBRARIES( MicroscopeSimulator
   QVTK
   ${QT_LIBRARIES}
   vtksys
-  #vtklibxml2
   vtkCommon
   vtkFiltering
   vtkGraphics
@@ -105,6 +100,12 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   msimModel
   msimVisualization
 )
+
+IF( WIN32 )
+  TARGET_LINK_LIBRARIES( MicroscopeSimulator
+      msimWinIcon
+  )
+ENDIF( WIN32 )
 
 # Set package properties
 SET( CPACK_PACKAGE_NAME "MicroscopeSimulator" )
