@@ -7,7 +7,7 @@ class ModelObject;
 typedef ModelObject* ModelObjectPtr;
 
 
-class VTK_VIEWS_EXPORT vtkModelObjectRepresentation : public vtkDataRepresentation {
+class vtkModelObjectRepresentation : public vtkDataRepresentation {
  public:
   vtkTypeRevisionMacro(vtkModelObjectRepresentation, vtkDataRepresentation);
   void PrintSelf(ostream& os, vtkIndent indent);
