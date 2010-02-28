@@ -16,7 +16,7 @@ class vtkTransformFilter;
 class vtkUniformPointSampler;
 
 
-class VTK_VIEWS_EXPORT vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresentation {
+class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresentation {
  public:
   static vtkModelObjectFluorescenceRepresentation *New();
   vtkTypeRevisionMacro(vtkModelObjectFluorescenceRepresentation, vtkModelObjectRepresentation);
