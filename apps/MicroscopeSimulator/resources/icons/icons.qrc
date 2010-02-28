@@ -1,16 +1,16 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-  <file>Axes.gif</file>
-  <file>CameraMode.gif</file>
-  <file>Disk.gif</file>
-  <file>FluorComparison.gif</file>
-  <file>FluorComparisonOnly.gif</file>
-  <file>LittleSave.gif</file>
-  <file>ModelOnly.gif</file>
-  <file>ModelPoints.gif</file>
-  <file>ModelScan.gif</file>
-  <file>MoveObject.gif</file>
-  <file>ResetCamera.gif</file>
-  <file>ScanOnly.gif</file>
+  <file>Axes.png</file>
+  <file>CameraMode.png</file>
+  <file>Disk.png</file>
+  <file>FluorComparison.png</file>
+  <file>FluorComparisonOnly.png</file>
+  <file>LittleSave.png</file>
+  <file>ModelOnly.png</file>
+  <file>ModelPoints.png</file>
+  <file>ModelScan.png</file>
+  <file>MoveObject.png</file>
+  <file>ResetCamera.png</file>
+  <file>ScanOnly.png</file>
 </qresource>
 </RCC>
