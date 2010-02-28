@@ -47,7 +47,7 @@
 
 #include "vtkPolyDataAlgorithm.h"
 
-class VTK_GRAPHICS_EXPORT vtkReferenceGridSource : public vtkPolyDataAlgorithm 
+class vtkReferenceGridSource : public vtkPolyDataAlgorithm 
 {
 public:
   void PrintSelf(ostream& os, vtkIndent indent);

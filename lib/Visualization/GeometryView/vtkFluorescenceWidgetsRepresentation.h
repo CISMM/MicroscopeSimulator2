@@ -14,7 +14,7 @@ class vtkReferenceGridSource;
 class vtkRenderView;
 
 
-class VTK_VIEWS_EXPORT vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
+class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
  public:
   static vtkFluorescenceWidgetsRepresentation *New();
   vtkTypeRevisionMacro(vtkFluorescenceWidgetsRepresentation, vtkRenderedRepresentation);

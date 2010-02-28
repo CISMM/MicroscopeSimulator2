@@ -12,7 +12,7 @@ class vtkRenderedSurfaceRepresentation;
 class vtkModelObjectActorPickObserver;
 
 
-class VTK_VIEWS_EXPORT vtkModelObjectGeometryRepresentation : public vtkRenderedSurfaceRepresentation {
+class vtkModelObjectGeometryRepresentation : public vtkRenderedSurfaceRepresentation {
  public:
   static vtkModelObjectGeometryRepresentation *New();
   vtkTypeRevisionMacro(vtkModelObjectGeometryRepresentation, vtkRenderedSurfaceRepresentation);
