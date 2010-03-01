@@ -1093,10 +1093,8 @@ MicroscopeSimulator
   if (m_ModelObjectPropertyListTableModel) {
     m_ModelObjectPropertyListTableModel->Refresh();
   }
-
-  if (!gui->fluorescenceQvtkWidget->isHidden()) {
-    m_Visualization->FluorescenceViewRender();
-  }
+  
+  RenderViews();
 }
 
 
