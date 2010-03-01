@@ -67,7 +67,14 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(MinimumIntensityLevel, double);
   SetGetMacro(MaximumIntensityLevel, double);
 
-  SetGetMacro(PSFList, PointSpreadFunctionList*);
+  void SetPSFList(PointSpreadFunctionList* psfList) {
+    m_PSFList = psfList;
+  }
+
+  PointSpreadFunctionList* GetPSFList() {
+    return m_PSFList;
+  }
+
   SetGetMacro(PSFListSettingsFileName, std::string);
 
  protected:
