@@ -184,7 +184,10 @@ Simulation
     SetSimulationDescription(std::string(description));
   }
 
-
+  // Restore fluorescence simulation
+  xmlNodePtr fluoroSimNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST "FluorescenceSimulation");
+  m_FluoroSim->RestoreFromXML(fluoroSimNode);
 
 }
 
