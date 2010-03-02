@@ -749,8 +749,6 @@ MicroscopeSimulator
 
   RenderViews();
 
-  // TODO - save this away to the FluorescenceSimulation class
-
   Sully();
 }
 
@@ -875,6 +873,35 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimAddGaussianNoiseCheckBox_toggled(bool value) {
+  m_Simulation->GetFluorescenceSimulation()->SetAddGaussianNoise(value);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimStdDevEdit_editingFinished() {
+  double stdDev = gui->fluoroSimStdDevEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetNoiseStdDev(stdDev);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimMeanEdit_editingFinished() {
+  double mean = gui->fluoroSimMeanEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetNoiseMean(mean);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimShowReferencePlaneCheckBox_toggled(bool show) {
   m_Simulation->GetFluorescenceSimulation()->SetShowReferencePlane(show);
 
@@ -987,8 +1014,6 @@ MicroscopeSimulator
 
   m_Simulation->GetFluorescenceSimulation()->
     SetFocalPlaneDepthMaximum(gui->fluoroSimFocusMaxEdit->text().toDouble());
-
-
 }
 
 
@@ -1067,7 +1092,39 @@ MicroscopeSimulator
 
   m_SimulationNeedsSaving = false;
   UpdateMainWindowTitle();
-  
+
+  // Refresh FluoroSim UI widgets
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+
+  // Focus group box
+  UpdateFocalPlaneUIControls(fluoroSim->GetFocalPlaneDepthMinimum(),
+                             fluoroSim->GetFocalPlaneDepthMaximum(),
+                             fluoroSim->GetFocalPlaneDepthSpacing());
+  int minValue = fluoroSim->GetFocalPlaneDepthMinimum();
+  int maxValue = fluoroSim->GetFocalPlaneDepthMaximum();
+  int focusSliderValue = (int) ((fluoroSim->GetFocalPlaneDepth() / fluoroSim->GetFocalPlaneDepthSpacing()));
+  gui->fluoroSimFocusSlider->setValue(focusSliderValue);
+
+  // Simulator Settings group box
+  gui->fluoroSimExposureEdit->setText(QVariant(fluoroSim->GetExposure()).toString());
+  gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
+  gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
+  gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());
+  gui->fluoroSimAddGaussianNoiseCheckBox->setChecked(QVariant(fluoroSim->GetAddGaussianNoise()).toBool());
+  gui->fluoroSimStdDevEdit->setText(QVariant(fluoroSim->GetNoiseStdDev()).toString());
+  gui->fluoroSimMeanEdit->setText(QVariant(fluoroSim->GetNoiseMean()).toString());
+
+  // Fluorescence Display group box
+  gui->fluoroSimShowReferencePlaneCheckBox->setChecked(QVariant(fluoroSim->GetShowReferencePlane()).toBool());
+  gui->fluoroSimShowGridCheckBox->setChecked(QVariant(fluoroSim->GetShowReferenceGrid()).toBool());
+  gui->fluoroSimGridSpacingEdit->setText(QVariant(fluoroSim->GetReferenceGridSpacing()).toString());
+  gui->fluoroSimSuperimposeFluorescenceImageCheckBox->setChecked(QVariant(fluoroSim->GetSuperimposeFluorescenceImage()).toBool());
+  gui->fluoroSimShowImageVolumeOutlineCheckBox->setChecked(QVariant(fluoroSim->GetShowImageVolumeOutline()).toBool());
+  //gui->fluoroSimMinLevelEdit->setText(QVariant(fluoroSim->GetMinimumIntensityLevel()).toString());
+  gui->fluoroSimMinLevelSlider->setValue((int) fluoroSim->GetMinimumIntensityLevel());
+  //gui->fluoroSimMaxLevelEdit->setText(QVariant(fluoroSim->GetMaximumIntensityLevel()).toString());
+  gui->fluoroSimMaxLevelSlider->setValue((int) fluoroSim->GetMaximumIntensityLevel());
+
   RenderViews();
 }
 
