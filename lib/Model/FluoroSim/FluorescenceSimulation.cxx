@@ -130,7 +130,115 @@ FluorescenceSimulation
 void
 FluorescenceSimulation
 ::RestoreFromXML(xmlNodePtr node) {
+  std::string trueValue("true");
 
+  char* focalDepthStr = (char*) xmlGetProp(node, BAD_CAST FOCAL_DEPTH_ATT);
+  if (focalDepthStr) {
+    double focalDepth = atof(focalDepthStr);
+    SetFocalPlaneDepth(focalDepth);
+  }
+
+  char* focalDepthMinStr = (char*) xmlGetProp(node, BAD_CAST FOCAL_DEPTH_MIN_ATT);
+  if (focalDepthMinStr) {
+    double focalDepthMin = atof(focalDepthMinStr);
+    SetFocalPlaneDepthMinimum(focalDepthMin);
+  }
+
+  char* focalDepthMaxStr = (char*) xmlGetProp(node, BAD_CAST FOCAL_DEPTH_MAX_ATT);
+  if (focalDepthMaxStr) {
+    double focalDepthMax = atof(focalDepthMaxStr);
+    SetFocalPlaneDepthMaximum(focalDepthMax);
+  }
+
+  char* focalDepthSpacingStr = (char*) xmlGetProp(node, BAD_CAST FOCAL_DEPTH_SPACING_ATT);
+  if (focalDepthSpacingStr) {
+    double focalDepthSpacing = atof(focalDepthSpacingStr);
+    SetFocalPlaneDepthSpacing(focalDepthSpacing);
+  }
+
+  char* exposureTimeStr = (char*) xmlGetProp(node, BAD_CAST EXPOSURE_TIME_ATT);
+  if (exposureTimeStr) {
+    double exposureTime = atof(exposureTimeStr);
+    SetExposure(exposureTime);
+  }
+
+  char* pixelSizeStr = (char*) xmlGetProp(node, BAD_CAST PIXEL_SIZE_ATT);
+  if (pixelSizeStr) {
+    double pixelSize = atof(pixelSizeStr);
+    SetPixelSize(pixelSize);
+  }
+
+  char* imageWidthStr = (char*) xmlGetProp(node, BAD_CAST IMAGE_WIDTH_ATT);
+  if (imageWidthStr) {
+    unsigned int imageWidth = (unsigned int) atoi(imageWidthStr);
+    SetImageWidth(imageWidth);
+  }
+
+  char* imageHeightStr = (char*) xmlGetProp(node, BAD_CAST IMAGE_HEIGHT_ATT);
+  if (imageHeightStr) {
+    unsigned int imageHeight = (unsigned int) atoi(imageHeightStr);
+    SetImageHeight(imageHeight);
+  }
+
+  char* addGaussianNoiseStr = (char*) xmlGetProp(node, BAD_CAST ADD_GAUSSIAN_NOISE_ATT);
+  if (addGaussianNoiseStr) {
+    bool addGaussianNoise = (std::string(addGaussianNoiseStr) == trueValue);
+    SetAddGaussianNoise(addGaussianNoise);
+  }
+
+  char* noiseStdDevStr = (char*) xmlGetProp(node, BAD_CAST NOISE_STD_DEV_ATT);
+  if (noiseStdDevStr) {
+    double noiseStdDev = atof(noiseStdDevStr);
+    SetNoiseStdDev(noiseStdDev);
+  }
+
+  char* noiseMeanStr = (char*) xmlGetProp(node, BAD_CAST NOISE_MEAN_ATT);
+  if (noiseMeanStr) {
+    double noiseMean = atof(noiseMeanStr);
+    SetNoiseMean(noiseMean);
+  }
+
+  char* showImageVolumeOutlineStr = (char*) xmlGetProp(node, BAD_CAST SHOW_IMAGE_VOLUME_OUTLINE_ATT);
+  if (showImageVolumeOutlineStr) {
+    bool showImageVolumeOutline = (std::string(showImageVolumeOutlineStr) == trueValue);
+    SetShowImageVolumeOutline(showImageVolumeOutline);
+  }
+
+  char* showReferencePlaneStr = (char*) xmlGetProp(node, BAD_CAST SHOW_REFERENCE_PLANE_ATT);
+  if (showReferencePlaneStr) {
+    bool showReferencePlane = (std::string(showReferencePlaneStr) == trueValue);
+    SetShowReferencePlane(showReferencePlane);
+  }
+
+  char* showReferenceGridStr = (char*) xmlGetProp(node, BAD_CAST SHOW_REFERENCE_GRID_ATT);
+  if (showReferenceGridStr) {
+    bool showReferenceGrid = (std::string(showReferenceGridStr) == trueValue);
+    SetShowReferenceGrid(showReferenceGrid);
+  }
+
+  char* referenceGridSpacingStr = (char*) xmlGetProp(node, BAD_CAST REFERENCE_GRID_SPACING_ATT);
+  if (referenceGridSpacingStr) {
+    double referenceGridSpacing = atof(referenceGridSpacingStr);
+    SetReferenceGridSpacing(referenceGridSpacing);
+  }
+
+  char* superimposeFluorescenceImageStr = (char*) xmlGetProp(node, BAD_CAST SUPERIMPOSE_FLUORESCENCE_IMAGE_ATT);
+  if (superimposeFluorescenceImageStr) {
+    bool superimposeFluorescenceImage = (std::string(superimposeFluorescenceImageStr) == trueValue);
+    SetSuperimposeFluorescenceImage(superimposeFluorescenceImage);
+  }
+
+  char* minIntensityLevelStr = (char*) xmlGetProp(node, BAD_CAST MIN_INTENSITY_LEVEL_ATT);
+  if (minIntensityLevelStr) {
+    double minIntensityLevel = atof(minIntensityLevelStr);
+    SetMinimumIntensityLevel(minIntensityLevel);
+  }
+
+  char* maxIntensityLevelStr = (char*) xmlGetProp(node, BAD_CAST MAX_INTENSITY_LEVEL_ATT);
+  if (maxIntensityLevelStr) {
+    double maxIntensityLevel = atof(maxIntensityLevelStr);
+    SetMaximumIntensityLevel(maxIntensityLevel);
+  }
 }
 
 
