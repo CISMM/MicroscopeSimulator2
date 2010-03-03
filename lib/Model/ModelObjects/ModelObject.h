@@ -37,7 +37,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
   static const char* Z_POSITION_PROP;
   
   static const char* ROTATION_ELEM;
-  static const char* ROTATION_ANGLE;
+  static const char* ROTATION_ANGLE_ATT;
   static const char* ROTATION_VECTOR_X_ATT;
   static const char* ROTATION_VECTOR_Y_ATT;
   static const char* ROTATION_VECTOR_Z_ATT;
@@ -69,6 +69,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
   virtual void SetStatusMessage(const std::string& status);
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual std::string& GetObjectTypeName();
 

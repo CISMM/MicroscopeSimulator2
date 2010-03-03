@@ -2,6 +2,7 @@
 #include <ModelObjectProperty.h>
 #include <ModelObjectPropertyList.h>
 #include <FluorophoreModelTypes.h>
+#include <XMLHelper.h>
 
 #include <vtkAppendPolyData.h>
 #include <vtkPolyDataAlgorithm.h>
@@ -22,7 +23,7 @@ const char* ModelObject::Y_POSITION_PROP  = "Position Y";
 const char* ModelObject::Z_POSITION_PROP  = "Position Z";
 
 const char* ModelObject::ROTATION_ELEM          = "Rotation";
-const char* ModelObject::ROTATION_ANGLE         = "angle";
+const char* ModelObject::ROTATION_ANGLE_ATT     = "angle";
 const char* ModelObject::ROTATION_VECTOR_X_ATT  = "vx";
 const char* ModelObject::ROTATION_VECTOR_Y_ATT  = "vy";
 const char* ModelObject::ROTATION_VECTOR_Z_ATT  = "vz";
@@ -162,7 +163,7 @@ ModelObject
   // TODO - finish adding rotation components
   xmlNodePtr rotElem = xmlNewChild(node, NULL, BAD_CAST ROTATION_ELEM, NULL);
   sprintf(buf, floatFormat, GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue());
-  xmlNewProp(rotElem, BAD_CAST ROTATION_ANGLE, BAD_CAST buf);
+  xmlNewProp(rotElem, BAD_CAST ROTATION_ANGLE_ATT, BAD_CAST buf);
   sprintf(buf, floatFormat, GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue());
   xmlNewProp(rotElem, BAD_CAST ROTATION_VECTOR_X_ATT, BAD_CAST buf);
   sprintf(buf, floatFormat, GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue());
@@ -183,6 +184,93 @@ ModelObject
 
   
   
+}
+
+
+void
+ModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  std::string trueStr("true");
+  std::string falseStr("false");
+
+  char* name = (char*) xmlGetProp(node, BAD_CAST NAME_ATT);
+  if (name) {
+    GetProperty(NAME_PROP)->SetStringValue(std::string(name));
+  }
+
+  char* visible = (char*) xmlGetProp(node, BAD_CAST VISIBLE_ATT);
+  if (visible) {
+    GetProperty(VISIBLE_PROP)->SetBoolValue(std::string(visible) == trueStr);
+  }
+
+  char* scannable = (char*) xmlGetProp(node, BAD_CAST SCANNABLE_ATT);
+  if (scannable) {
+    GetProperty(SCANNABLE_PROP)->SetBoolValue(std::string(scannable) == trueStr);
+  }
+
+  // Position node
+  xmlNodePtr positionNode = 
+    xmlGetFirstElementChildWithName(node, BAD_CAST POSITION_ELEM);
+  if (positionNode) {
+    char* xPosition = (char*) xmlGetProp(positionNode, BAD_CAST X_POSITION_ATT);
+    if (xPosition) {
+      GetProperty(X_POSITION_PROP)->SetDoubleValue(atof(xPosition));
+    }
+
+    char* yPosition = (char*) xmlGetProp(positionNode, BAD_CAST Y_POSITION_ATT);
+    if (yPosition) {
+      GetProperty(Y_POSITION_PROP)->SetDoubleValue(atof(yPosition));
+    }
+
+    char* zPosition = (char*) xmlGetProp(positionNode, BAD_CAST Z_POSITION_ATT);
+    if (zPosition) {
+      GetProperty(Z_POSITION_PROP)->SetDoubleValue(atof(zPosition));
+    }
+  }
+
+  // Rotation node
+  xmlNodePtr rotationNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST ROTATION_ELEM);
+  if (rotationNode) {
+    char* rotAngle = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_ANGLE_ATT);
+    if (rotAngle) {
+      GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(atof(rotAngle));
+    }
+    
+    char* rotVecX = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_VECTOR_X_ATT);
+    if (rotVecX) {
+      GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(atof(rotVecX));
+    }
+
+    char* rotVecY = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_VECTOR_Y_ATT);
+    if (rotVecY) {
+      GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(atof(rotVecY));
+    }
+
+    char* rotVecZ = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_VECTOR_Z_ATT);
+    if (rotVecZ) {
+      GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(atof(rotVecZ));
+    }
+    
+  }
+
+  // TODO - Color node
+  xmlNodePtr colorNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST COLOR_ELEM);
+  if (colorNode) {
+    char *red = (char*) xmlGetProp(colorNode, BAD_CAST RED_ATT);
+    if (red) {
+    }
+
+    char *green = (char*) xmlGetProp(colorNode, BAD_CAST GREEN_ATT);
+    if (green) {
+    }
+
+    char *blue = (char*) xmlGetProp(colorNode, BAD_CAST BLUE_ATT);
+    if (blue) {
+    }
+  }
+
 }
 
 
