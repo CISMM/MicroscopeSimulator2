@@ -16,7 +16,6 @@
 
 #include <FluorescenceSimulation.h>
 #include <ModelObjectList.h>
-#include <ModelObjectFactory.h>
 #include <XMLHelper.h>
 
 const char* Simulation::XML_ENCODING     = "ISO-8859-1";
@@ -41,7 +40,6 @@ Simulation
   m_SimulationAlreadySaved = false;
   m_DirtyListener = dirtyListener;
   m_ModelObjectList = new ModelObjectList(this);
-  m_ModelObjectFactory = new ModelObjectFactory(m_ModelObjectList);
 
   m_FluoroSim = new FluorescenceSimulation(this);
 
@@ -186,8 +184,13 @@ Simulation
 
   // Restore fluorescence simulation
   xmlNodePtr fluoroSimNode =
-    xmlGetFirstElementChildWithName(node, BAD_CAST "FluorescenceSimulation");
+    xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::FLUORO_SIM_ELEM);
   m_FluoroSim->RestoreFromXML(fluoroSimNode);
+
+  // Restore model object list
+  xmlNodePtr molNode = 
+    xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM);
+  m_ModelObjectList->RestoreFromXML(molNode);
 
 }
 
@@ -299,12 +302,7 @@ Simulation
 void
 Simulation
 ::AddNewModelObject(const std::string& objectTypeName) {
-  ModelObjectPtr mo = m_ModelObjectFactory->CreateModelObject(objectTypeName);
-  if (mo) {
-    std::string name = m_ModelObjectList->GenerateUniqueName(mo->GetName());
-    mo->SetName(name);
-    m_ModelObjectList->Add(mo);
-  }
+  m_ModelObjectList->AddModelObject(objectTypeName);
 }
 
 

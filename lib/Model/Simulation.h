@@ -10,7 +10,6 @@
 #include <ModelObjectList.h>
 
 // Forward declarations
-class ModelObjectFactory;
 class FluorescenceSimulation;
 
 
@@ -89,8 +88,6 @@ protected:
   FluorescenceSimulation* m_FluoroSim;
 
   ModelObjectList* m_ModelObjectList;
-
-  ModelObjectFactory* m_ModelObjectFactory;
 
  private:
   Simulation() {};
