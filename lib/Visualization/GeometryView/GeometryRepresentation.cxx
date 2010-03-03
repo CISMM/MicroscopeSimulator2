@@ -25,6 +25,8 @@ void
 GeometryRepresentation
 ::SetModelObjectList(ModelObjectList* list) {
   m_ModelObjectList = list;
+
+  Update();
 }
 
 
@@ -84,7 +86,7 @@ GeometryRepresentation
 void
 GeometryRepresentation
 ::UpdateRepresentation() {
-  if (m_ModelObjectList->GetSize() < m_GeometryReps.size()) {
+  if (m_ModelObjectList == NULL || m_ModelObjectList->GetSize() != m_GeometryReps.size()) {
     // Something was deleted. We don't know what it was, so rebuild the
     // whole geometry list.
     while (!m_GeometryReps.empty()) {
@@ -98,18 +100,9 @@ GeometryRepresentation
       m_GeometryReps.push_back(CreateRepresentation(newModelObject));      
     }
     
-  } else if (m_ModelObjectList->GetSize() > m_GeometryReps.size()) {
-    // Something was added to the end of the list, so push a new
-    // representation onto the end of the list
-
-    ModelObject* newModelObject = 
-      m_ModelObjectList->GetModelObjectAtIndex(m_ModelObjectList->GetSize()-1);
-    m_GeometryReps.push_back(CreateRepresentation(newModelObject));      
   }
 
-  // If list is the same size, don't do anything.
-  // WARNING: This assumes that this method gets called after every object
-  // add/delete.
+  // If list is the same size, there is nothing to do.
 }
 
 
