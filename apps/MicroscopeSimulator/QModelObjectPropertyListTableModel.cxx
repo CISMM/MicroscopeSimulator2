@@ -153,8 +153,9 @@ QModelObjectPropertyListTableModel
 int
 QModelObjectPropertyListTableModel
 ::rowCount(const QModelIndex& parent) const {
-  if (m_ModelObject == NULL)
+  if (m_ModelObject == NULL || m_ModelObject->GetPropertyList() == NULL)
     return 0;
+
   return m_ModelObject->GetPropertyList()->GetSize();
 }
 
