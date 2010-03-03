@@ -1,12 +1,12 @@
 #ifndef _MODEL_OBJECT_LIST_H_
 #define _MODEL_OBJECT_LIST_H_
 
-#include "StdLibGuard.h"
 #include <string>
 #include <list>
 
 #include "DirtyListener.h"
 #include "ModelObject.h"
+#include "ModelObjectFactory.h"
 #include "XMLStorable.h"
 
 
@@ -21,11 +21,12 @@ class ModelObjectList : public DirtyListener, public XMLStorable {
   virtual void SetStatusMessage(const std::string& status);
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
   size_t GetSize();
 
-  void AddModelObject(const std::string& objectName);
-  void ImportModelObject(const std::string& objectName);
+  ModelObjectPtr AddModelObject(const std::string& objectTypeName);
+  void ImportModelObject(const std::string& objectTypeName);
 
   ModelObjectPtr GetModelObjectByName(const std::string& objectName);
   ModelObjectPtr GetModelObjectAtIndex(int index);
@@ -44,8 +45,7 @@ class ModelObjectList : public DirtyListener, public XMLStorable {
 
   std::list<ModelObjectPtr> m_ObjectList;
 
-  // TODO - add reference to ModelObjectFactory
-
+  ModelObjectFactory* m_ModelObjectFactory;
 
   bool IsNameUnique(const std::string& name);
 

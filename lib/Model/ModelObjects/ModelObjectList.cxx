@@ -1,11 +1,12 @@
 #include "ModelObjectList.h"
 
-#include "SphereModelObject.h"
+#include "ModelObjectFactory.h"
 
 
 ModelObjectList
 ::ModelObjectList(DirtyListener* dirtyListener) {
   m_DirtyListener = dirtyListener;
+  m_ModelObjectFactory = new ModelObjectFactory(dirtyListener);
 }
 
 
@@ -17,7 +18,7 @@ ModelObjectList
   for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
     delete *iter;
   }
-
+  delete m_ModelObjectFactory;
 }
 
 
@@ -51,6 +52,21 @@ ModelObjectList
 }
 
 
+void
+ModelObjectList
+::RestoreFromXML(xmlNodePtr node) {
+  xmlNodePtr modelObjectNode = node->children;
+
+  // Iterate over model objects
+  while (modelObjectNode) {
+    ModelObjectPtr mo = AddModelObject(std::string((char*) modelObjectNode->name));
+    mo->RestoreFromXML(modelObjectNode);
+
+    modelObjectNode = modelObjectNode->next;
+  }
+}
+
+
 size_t
 ModelObjectList
 ::GetSize() {
@@ -58,22 +74,28 @@ ModelObjectList
 }
 
 
-void
+ModelObjectPtr
 ModelObjectList
-::AddModelObject(const std::string& objectName) {
-  // TODO - here the ModelObjectFactory will create a new model
+::AddModelObject(const std::string& objectTypeName) {
+  std::cout << "Adding model object: " << objectTypeName << std::endl;
 
-  // TODO - add the created model to the list
-
+  ModelObjectPtr mo = m_ModelObjectFactory->CreateModelObject(objectTypeName);
+  if (mo) {
+    std::string name = GenerateUniqueName(mo->GetName());
+    mo->SetName(name);
+    Add(mo);
+  }
 
   Sully();
   SetStatusMessage("Added object to the scene.");
+  
+  return mo;
 }
 
 
 void
 ModelObjectList
-::ImportModelObject(const std::string& objectName) {
+::ImportModelObject(const std::string& objectTypeName) {
   // TODO - here the ModelObjectFactory will import a model
 
   // TODO - add the created model to the list
