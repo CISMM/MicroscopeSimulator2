@@ -288,6 +288,9 @@ MicroscopeSimulator
       return;
   }
 
+  m_ModelObjectListModel->SetModelObjectList(NULL);
+  m_ModelObjectPropertyListTableModel->SetModelObject(NULL);
+
   PointSpreadFunctionList* psfList = m_Simulation->GetFluorescenceSimulation()->GetPSFList();
 
   // Delete the old Simulation and replace with a new one.
@@ -299,7 +302,7 @@ MicroscopeSimulator
   m_Simulation->GetFluorescenceSimulation()->SetPSFList(psfList);
 
   m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
-  m_ModelObjectListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
+  m_ModelObjectListModel->SetModelObjectList(m_Simulation->GetModelObjectList());  
 }
 
 
@@ -320,7 +323,8 @@ MicroscopeSimulator
     m_Simulation->SetSimulationAlreadySaved(true);
     m_Simulation->SetSimulationFileName(fileName);
     m_SimulationNeedsSaving = false;
-
+    
+    RefreshModelObjectViews();
     RefreshUI();
   }
 }
