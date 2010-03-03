@@ -106,9 +106,8 @@ FluorescenceRepresentation
       GetNumberOfFluorophoreProperties();
   }
   
-  if (necessaryReps < m_FluorescenceReps.size()) {
-    // Something was deleted. We don't know what it was, so rebuild the
-    // whole geometry list.
+  if (necessaryReps != m_FluorescenceReps.size()) {
+    // Rebuild the whole geometry list
     while (!m_FluorescenceReps.empty()) {
       vtkModelObjectFluorescenceRepresentation* rep = m_FluorescenceReps.front();
       rep->Delete();
@@ -118,23 +117,10 @@ FluorescenceRepresentation
     for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
       ModelObject* object = m_ModelObjectList->GetModelObjectAtIndex(i);
       AddRepresentations(object);
-
-      //m_FluorescenceReps.push_back(CreateRepresentation(object));      
     }
     
-  } else if (necessaryReps > m_FluorescenceReps.size()) {
-    // Something was added to the end of the list, so push a new
-    // representation onto the end of the list
-
-    ModelObject* object = 
-      m_ModelObjectList->GetModelObjectAtIndex(m_ModelObjectList->GetSize()-1);
-    AddRepresentations(object);
-    //m_FluorescenceReps.push_back(CreateRepresentation(newModelObject));      
   }
-
-  // If list is the same size, don't do anything.
-  // WARNING: This assumes that this method gets called after every object
-  // add/delete.
+  // If list is the same size, there is nothing to do.
 }
 
 
