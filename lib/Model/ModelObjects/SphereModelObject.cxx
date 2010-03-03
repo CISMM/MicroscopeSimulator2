@@ -77,3 +77,13 @@ SphereModelObject
 }
 
 
+void
+SphereModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  ModelObject::RestoreFromXML(node);
+
+  char* radius = (char*) xmlGetProp(node, BAD_CAST RADIUS_ATT);
+  if (radius) {
+    GetProperty(RADIUS_PROP)->SetDoubleValue(atof(radius));
+  }
+}

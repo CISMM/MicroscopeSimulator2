@@ -37,6 +37,7 @@ class HollowCylinderModelObject : public ModelObject {
   virtual ~HollowCylinderModelObject();
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

@@ -82,3 +82,20 @@ CylinderModelObject
   sprintf(buf, doubleFormat, GetProperty(LENGTH_PROP)->GetDoubleValue());
   xmlNewProp(root, BAD_CAST LENGTH_ATT, BAD_CAST buf);
 }
+
+
+void
+CylinderModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  ModelObject::RestoreFromXML(node);
+
+  char* radius = (char*) xmlGetProp(node, BAD_CAST RADIUS_ATT);
+  if (radius) {
+    GetProperty(RADIUS_PROP)->SetDoubleValue(atof(radius));
+  }
+
+  char* length = (char*) xmlGetProp(node, BAD_CAST LENGTH_ATT);
+  if (length) {
+    GetProperty(LENGTH_PROP)->SetDoubleValue(atof(length));
+  }
+}

@@ -33,6 +33,7 @@ class TorusModelObject : public ModelObject {
   virtual void Update();
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
  protected:
   TorusModelObject() {};

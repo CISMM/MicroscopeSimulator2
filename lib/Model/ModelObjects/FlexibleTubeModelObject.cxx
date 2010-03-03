@@ -187,13 +187,64 @@ FlexibleTubeModelObject
   int numPoints = GetProperty(NUMBER_OF_POINTS_PROP)->GetIntValue();
   int offset = m_PointPropertyStartingIndex;
   for (int i = 0; i < numPoints; i++) {
-    xmlNodePtr pointNode = xmlNewChild(root, NULL, BAD_CAST "Point", NULL);
+    xmlNodePtr pointNode = xmlNewChild(root, NULL, BAD_CAST PointSetModelObject::POINT_ELEM, NULL);
 
     sprintf(attValueBuf, doubleFormat, GetProperty(i*3+0+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST "X", BAD_CAST attValueBuf);
+    xmlNewProp(pointNode, BAD_CAST PointSetModelObject::X_ATT, BAD_CAST attValueBuf);
     sprintf(attValueBuf, doubleFormat, GetProperty(i*3+1+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST "Y", BAD_CAST attValueBuf);
+    xmlNewProp(pointNode, BAD_CAST PointSetModelObject::Y_ATT, BAD_CAST attValueBuf);
     sprintf(attValueBuf, doubleFormat, GetProperty(i*3+2+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST "Z", BAD_CAST attValueBuf);
+    xmlNewProp(pointNode, BAD_CAST PointSetModelObject::Z_ATT, BAD_CAST attValueBuf);
   }
+}
+
+
+void
+FlexibleTubeModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  ModelObject::RestoreFromXML(node);
+
+  char* radius = (char*) xmlGetProp(node, BAD_CAST RADIUS_ATT);
+  if (radius) {
+    GetProperty(RADIUS_PROP)->SetDoubleValue(atof(radius));
+  }
+
+  char* numPoints = (char*) xmlGetProp(node, BAD_CAST NUMBER_OF_POINTS_ATT);
+  if (numPoints) {
+    GetProperty(NUMBER_OF_POINTS_PROP)->SetIntValue(atoi(numPoints));
+  }
+
+  m_Points->SetNumberOfPoints(0);
+  UpdatePointProperties();
+  Update();
+
+  int offset = m_PointPropertyStartingIndex;
+
+  int i = 0;
+  xmlNodePtr pointNode = node->children;
+  while (pointNode != NULL) {
+    if (std::string((char*) pointNode->name) != POINT_ELEM) {
+      pointNode = pointNode->next;
+      continue;
+    }
+
+    char* x = (char*) xmlGetProp(pointNode, BAD_CAST PointSetModelObject::X_ATT);
+    if (x) {
+      GetProperty(i*3+0+offset)->SetDoubleValue(atof(x));
+    }
+
+    char* y = (char*) xmlGetProp(pointNode, BAD_CAST PointSetModelObject::Y_ATT);
+    if (y) {
+      GetProperty(i*3+1+offset)->SetDoubleValue(atof(y));
+    }
+
+    char* z = (char*) xmlGetProp(pointNode, BAD_CAST PointSetModelObject::Z_ATT);
+    if (z) {
+      GetProperty(i*3+2+offset)->SetDoubleValue(atof(z));
+    }
+
+    pointNode = pointNode->next;
+    i++;
+  }
+
 }

@@ -27,6 +27,7 @@ class PlaneModelObject : public ModelObject {
   virtual ~PlaneModelObject();
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

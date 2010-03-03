@@ -30,6 +30,7 @@ class CylinderModelObject : public ModelObject {
   virtual ~CylinderModelObject();
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

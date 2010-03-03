@@ -84,3 +84,20 @@ TorusModelObject
   sprintf(buf, doubleFormat, GetProperty(RING_RADIUS_PROP)->GetDoubleValue());
   xmlNewProp(root, BAD_CAST RING_RADIUS_ATT, BAD_CAST buf);
 }
+
+
+void
+TorusModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  ModelObject::RestoreFromXML(node);
+
+  char* crossSectionRadius = (char*) xmlGetProp(node, BAD_CAST CROSS_SECTION_RADIUS_ATT);
+  if (crossSectionRadius) {
+    GetProperty(CROSS_SECTION_RADIUS_PROP)->SetDoubleValue(atof(crossSectionRadius));
+  }
+
+  char* ringRadius = (char*) xmlGetProp(node, BAD_CAST RING_RADIUS_ATT);
+  if (ringRadius) {
+    GetProperty(RING_RADIUS_PROP)->SetDoubleValue(atof(ringRadius));
+  }
+}

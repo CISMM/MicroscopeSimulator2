@@ -78,3 +78,20 @@ PlaneModelObject
   sprintf(buf, doubleFormat, GetProperty(HEIGHT_PROP)->GetDoubleValue());
   xmlNewProp(root, BAD_CAST HEIGHT_ATT, BAD_CAST buf);
 }
+
+
+void
+PlaneModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  ModelObject::RestoreFromXML(node);
+  
+  char* width = (char*) xmlGetProp(node, BAD_CAST WIDTH_ATT);
+  if (width) {
+    GetProperty(WIDTH_PROP)->SetDoubleValue(atof(width));
+  }
+
+  char* height = (char*) xmlGetProp(node, BAD_CAST HEIGHT_ATT);
+  if (height) {
+    GetProperty(HEIGHT_PROP)->SetDoubleValue(atof(height));
+  }
+}

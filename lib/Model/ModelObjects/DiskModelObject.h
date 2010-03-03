@@ -24,6 +24,7 @@ class DiskModelObject : public ModelObject {
   virtual ~DiskModelObject();
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

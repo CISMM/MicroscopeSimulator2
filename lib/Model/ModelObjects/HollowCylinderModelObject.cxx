@@ -114,3 +114,25 @@ HollowCylinderModelObject
   sprintf(buf, doubleFormat, GetProperty(LENGTH_PROP)->GetDoubleValue());
   xmlNewProp(root, BAD_CAST LENGTH_ATT, BAD_CAST buf);
 }
+
+
+void
+HollowCylinderModelObject
+::RestoreFromXML(xmlNodePtr node) {
+  ModelObject::RestoreFromXML(node);
+
+  char* outerRadius = (char*) xmlGetProp(node, BAD_CAST OUTER_RADIUS_ATT);
+  if (outerRadius) {
+    GetProperty(OUTER_RADIUS_PROP)->SetDoubleValue(atof(outerRadius));
+  }
+
+  char* thickness = (char*) xmlGetProp(node, BAD_CAST THICKNESS_ATT);
+  if (thickness) {
+    GetProperty(THICKNESS_PROP)->SetDoubleValue(atof(thickness));
+  }
+
+  char* length = (char*) xmlGetProp(node, BAD_CAST LENGTH_ATT);
+  if (length) {
+    GetProperty(LENGTH_PROP)->SetDoubleValue(atof(length));
+  }
+}
