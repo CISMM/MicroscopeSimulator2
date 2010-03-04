@@ -82,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>1102</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -186,9 +186,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-623</y>
           <width>381</width>
-          <height>1157</height>
+          <height>1370</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -890,31 +890,31 @@
                 <property name="margin">
                  <number>12</number>
                 </property>
-                <item row="0" column="0" colspan="2">
+                <item row="2" column="0" colspan="2">
                  <widget class="QPushButton" name="fluoroSimExportStackButton">
                   <property name="text">
                    <string>Export Stack...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0" colspan="2">
+                <item row="4" column="0" colspan="2">
                  <widget class="QLabel" name="fluoroSimCompareSimulatedStackToLabel">
                   <property name="text">
                    <string>Compare simulated stack to:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0" colspan="2">
+                <item row="5" column="0" colspan="2">
                  <widget class="QComboBox" name="fluoroSimCompareSimulatedStackToComboBox"/>
                 </item>
-                <item row="3" column="0" colspan="2">
+                <item row="6" column="0" colspan="2">
                  <widget class="QPushButton" name="fluoroSimCopyStackSettingsButton">
                   <property name="text">
                    <string>Copy Stack Settings</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="0">
+                <item row="7" column="0">
                  <widget class="QLabel" name="fluoroSimIsoValueLabel">
                   <property name="text">
                    <string>Iso value:</string>
@@ -924,20 +924,27 @@
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="7" column="1">
                  <widget class="QLineEdit" name="fluoroSimIsoValueEdit"/>
                 </item>
-                <item row="5" column="0" colspan="2">
+                <item row="8" column="0" colspan="2">
                  <widget class="QPushButton" name="fluoroSimUpdateComparisonButton">
                   <property name="text">
                    <string>Update Comparison</string>
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="0" colspan="2">
+                <item row="9" column="0" colspan="2">
                  <widget class="QPushButton" name="fluoroSimExportGeometryButton">
                   <property name="text">
                    <string>Export Geometry</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0" colspan="2">
+                 <widget class="QPushButton" name="fluoroSimExportImageButton">
+                  <property name="text">
+                   <string>Export Image...</string>
                   </property>
                  </widget>
                 </item>
