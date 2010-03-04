@@ -14,6 +14,7 @@
 #include <QActionGroup>
 #include <QApplication>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QItemSelectionModel>
 #include <QMessageBox>
 #include <QPSFListModel.h>
@@ -27,12 +28,16 @@
 
 #include <vtkActor.h>
 #include <vtkAlgorithmOutput.h>
+#include <vtkBMPWriter.h>
 #include <vtkBYUWriter.h>
 #include <vtkCamera.h>
 #include <vtkContourFilter.h>
+#include <vtkImageShiftScale.h>
+#include <vtkImageWriter.h>
+#include <vtkJPEGWriter.h>
 #include <vtkOutputWindow.h>
-#include <vtkPNGWriter.h>
 #include <vtkPLYWriter.h>
+#include <vtkPNGWriter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataWriter.h>
 #include <vtkQtOutputLogger.h>
@@ -40,6 +45,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
+#include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
 
 #include <vtkFramebufferObjectRenderer.h>
@@ -992,6 +998,63 @@ MicroscopeSimulator
   gui->fluoroSimMinLevelSlider->setValue(static_cast<int>(scalarRange[0]));
   gui->fluoroSimMaxLevelEdit->setText(QVariant(scalarRange[1]).toString());
   gui->fluoroSimMaxLevelSlider->setValue(static_cast<int>(scalarRange[1]));
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimExportImageButton_clicked() {
+  QFileDialog fileDialog(this, tr("Export Fluorescence Image"), tr(""),
+                         "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
+  fileDialog.setDefaultSuffix(tr("png"));
+  fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+
+  if (fileDialog.exec() == QDialog::Rejected)
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+  if (selectedFileName.isEmpty())
+    return;
+
+  vtkImageData* image = m_Visualization->GetFluorescenceImage();
+
+  vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
+  scaler->SetOutputScalarTypeToUnsignedChar();
+  scaler->ClampOverflowOn();
+  scaler->SetInput(image);
+  double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
+  double maxIntensity = m_Simulation->GetFluorescenceSimulation()->GetMaximumIntensityLevel();
+  scaler->SetShift(-minIntensity);
+  scaler->SetScale(255.0 / (maxIntensity - minIntensity));
+
+  vtkSmartPointer<vtkImageWriter> writer;
+  QString extension = QFileInfo(selectedFileName).suffix().toLower();
+  if (extension == QString("png")) {
+    writer = vtkSmartPointer<vtkPNGWriter>::New();
+  } else if (extension == QString("bmp")) {
+    writer = vtkSmartPointer<vtkBMPWriter>::New();
+  } else if (extension == QString("jpg")) {
+    writer = vtkSmartPointer<vtkJPEGWriter>::New();
+  } else if (extension == QString("tif")) {
+    vtkSmartPointer<vtkTIFFWriter> tiffWriter = vtkSmartPointer<vtkTIFFWriter>::New();
+    tiffWriter->SetCompressionToNoCompression();
+    writer = tiffWriter;
+    
+    scaler->SetShift(0.0);
+    scaler->SetScale(1.0);
+    scaler->SetOutputScalarTypeToUnsignedShort();
+  }
+
+  writer->SetInputConnection(scaler->GetOutputPort());
+  writer->SetFileName(selectedFileName.toStdString().c_str());
+  writer->Write();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimExportStackButton_clicked() {
+
 }
 
 
