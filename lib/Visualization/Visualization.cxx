@@ -107,6 +107,13 @@ Visualization
 }
 
 
+vtkImageData*
+Visualization
+::GetFluorescenceImage() {
+  return m_FluorescenceRenderView->GetImage();
+}
+
+
 void
 Visualization
 ::ResetModelObjectCamera() {

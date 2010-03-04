@@ -28,6 +28,8 @@ class VisualizationInteractionObserver;
 // Forward declarations
 class PointSpreadFunction;
 
+class vtkImageData;
+
 
 class Visualization {
 
@@ -42,6 +44,8 @@ public:
 
   void ModelObjectViewRender();
   void FluorescenceViewRender();
+
+  vtkImageData* GetFluorescenceImage();
 
   void ResetModelObjectCamera();
   void RefreshModelObjectView();
