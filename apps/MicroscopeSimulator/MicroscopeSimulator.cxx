@@ -24,6 +24,7 @@
 #include <ErrorLogDialog.h>
 #include <FluorophoreModelDialog.h>
 #include <PSFEditorDialog.h>
+#include <Preferences.h>
 #include <PreferencesDialog.h>
 
 #include <vtkActor.h>
@@ -147,7 +148,9 @@ MicroscopeSimulator
   m_PSFEditorDialog->SetPSFList
     (m_Simulation->GetFluorescenceSimulation()->GetPSFList());
 
-  m_PreferencesDialog = new PreferencesDialog();
+  m_Preferences = new Preferences();
+  
+  m_PreferencesDialog = new PreferencesDialog(this, m_Preferences);
   m_PreferencesDialog->setModal(true);
 
   // Restore inter-session GUI settings.
@@ -173,7 +176,10 @@ MicroscopeSimulator
   m_ErrorLogger->Delete();
   delete m_ErrorLogDialog;
   delete m_PSFEditorDialog;
+ 
+  delete m_Preferences;
   delete m_PreferencesDialog;
+ 
   delete m_Visualization;
   delete m_ViewModeActionGroup;
   delete m_InteractionActionGroup;
@@ -465,10 +471,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionPreferences_triggered() {
-  int result = m_PreferencesDialog->exec();
-  if (result == QDialog::Accepted) {
-    // TODO - save preferences
-  }
+  m_PreferencesDialog->exec();
 }
 
 
@@ -1280,8 +1283,7 @@ MicroscopeSimulator
   xmlDocSetRootElement(doc, node);
 
   // Now save PSF list file
-  settings.beginGroup("DataDirectory");
-  QString psfSettingsFileName = settings.value("path", tr("")).toString();
+  QString psfSettingsFileName(m_Preferences->GetDataDirectoryPath().c_str());
   psfSettingsFileName.append(QDir::separator()).append("PSFList.xml");
   int rc = xmlSaveFileEnc(psfSettingsFileName.toStdString().c_str(), doc, "ISO-8859-1");
   xmlFreeDoc(doc);
@@ -1331,8 +1333,7 @@ MicroscopeSimulator
   settings.endGroup();
 
   // Read PSF list XML file
-  settings.beginGroup("DataDirectory");
-  QString psfSettingsFileName = settings.value("path", tr("")).toString();
+  QString psfSettingsFileName(m_Preferences->GetDataDirectoryPath().c_str());
   psfSettingsFileName.append(QDir::separator()).append("PSFList.xml");
   xmlDocPtr doc = xmlReadFile(psfSettingsFileName.toStdString().c_str(),
                               "ISO-8859-1", XML_PARSE_RECOVER);

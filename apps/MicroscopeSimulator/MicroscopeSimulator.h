@@ -26,6 +26,7 @@ class Visualization;
 
 class ErrorLogDialog;
 class PSFEditorDialog;
+class Preferences;
 class PreferencesDialog;
 class QPSFListModel;
 
@@ -180,6 +181,8 @@ private:
   vtkQtOutputLogger* m_ErrorLogger;
 
   PSFEditorDialog*   m_PSFEditorDialog;
+
+  Preferences*       m_Preferences;
   PreferencesDialog* m_PreferencesDialog;
 };
 
