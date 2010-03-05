@@ -13,15 +13,15 @@ const std::string GaussianPointSpreadFunction::SIGMA_ELEMENT   = "Sigma";
 GaussianPointSpreadFunction
 ::GaussianPointSpreadFunction() {
   // Set up parameter names and default parameters
-  m_ParameterNames.push_back("X Size");
-  m_ParameterNames.push_back("Y Size");
-  m_ParameterNames.push_back("Z Size");
-  m_ParameterNames.push_back("X Spacing");
-  m_ParameterNames.push_back("Y Spacing");
-  m_ParameterNames.push_back("Z Spacing");
-  m_ParameterNames.push_back("X Mean");
-  m_ParameterNames.push_back("Y Mean");
-  m_ParameterNames.push_back("Z Mean");
+  m_ParameterNames.push_back("X Size (voxels)");
+  m_ParameterNames.push_back("Y Size (voxels)");
+  m_ParameterNames.push_back("Z Size (voxels)");
+  m_ParameterNames.push_back("X Voxel Spacing (nm)");
+  m_ParameterNames.push_back("Y Voxel Spacing (nm)");
+  m_ParameterNames.push_back("Z Voxel Spacing (nm)");
+  m_ParameterNames.push_back("X Point Center X");
+  m_ParameterNames.push_back("Y Point Center Y");
+  m_ParameterNames.push_back("Z Point Center Z");
   m_ParameterNames.push_back("X Standard Deviation");
   m_ParameterNames.push_back("Y Standard Deviation");
   m_ParameterNames.push_back("Z Standard Deviation");
