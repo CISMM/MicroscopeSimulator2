@@ -18,6 +18,7 @@ SET (QtGuiSrcs
   ErrorLogDialog.cxx
   FluorophoreModelDialog.cxx
   PSFEditorDialog.cxx
+  Preferences.cxx
   PreferencesDialog.cxx
   QModelObjectListModel.cxx
   QModelObjectPropertyListTableModel.cxx
