@@ -3,9 +3,12 @@
 #include <QFileDialog>
 #include <QSettings>
 
+#include <Preferences.h>
+
 
 PreferencesDialog
-::PreferencesDialog(QWidget* parent) : QDialog(parent) {
+::PreferencesDialog(QWidget* parent, Preferences* preferences) 
+  : QDialog(parent), m_Preferences(preferences) {
   setupUi(this);
 
 }
@@ -20,25 +23,15 @@ PreferencesDialog
 int
 PreferencesDialog
 ::exec() {
-  QSettings settings;
-  settings.beginGroup("DataDirectory");
-  if (settings.contains(tr("path"))) {
-    gui_DirectoryPathEdit->setText(settings.value("path", tr("")).toString());
-    gui_CopyImportedFilesToDataDirectoryCheckBox->
-      setCheckState(settings.value("copyImportedFiles", true).toBool() ?
-                    Qt::Checked : Qt::Unchecked);
-  }
-  settings.endGroup();
+  gui_DirectoryPathEdit->setText(QString(m_Preferences->GetDataDirectoryPath().c_str()));
+  gui_CopyImportedFilesToDataDirectoryCheckBox->
+    setCheckState(m_Preferences->GetCopyImportedFiles() ? Qt::Checked : Qt::Unchecked);
 
   int result = QDialog::exec();
   if (result == QDialog::Accepted) {
     // Save preferences
-    QSettings settings;
-
-    settings.beginGroup("DataDirectory");
-    settings.setValue("path", gui_DirectoryPathEdit->text());
-    settings.setValue("copyImportedFiles", gui_CopyImportedFilesToDataDirectoryCheckBox->isChecked());
-    settings.endGroup();
+    m_Preferences->SetDataDirectoryPath(gui_DirectoryPathEdit->text().toStdString());
+    m_Preferences->SetCopyImportedFiles(gui_CopyImportedFilesToDataDirectoryCheckBox->checkState() == Qt::Checked);
   }
 
   return result;
@@ -52,5 +45,7 @@ PreferencesDialog
   QString dir = QFileDialog::getExistingDirectory(this, tr("Select data directory"), tr(""),
                                                   QFileDialog::ShowDirsOnly
                                                   | QFileDialog::DontResolveSymlinks);
-  gui_DirectoryPathEdit->setText(dir);
+  if (dir.length() > 0) {
+    gui_DirectoryPathEdit->setText(dir);
+  }
 }
