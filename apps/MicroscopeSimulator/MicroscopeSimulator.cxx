@@ -153,6 +153,36 @@ MicroscopeSimulator
   m_PreferencesDialog = new PreferencesDialog(this, m_Preferences);
   m_PreferencesDialog->setModal(true);
 
+  // Query for data directory if it is not set.
+  if (m_Preferences->GetDataDirectoryPath() == "") {
+    QString dataDirectoryPath = QDir::homePath();
+    dataDirectoryPath.append(QDir::separator());
+    dataDirectoryPath.append("MicroscopeSimulatorData");
+    
+    // Notify user that a data directory is needed
+    QString message =
+      QString("Microscope Simulator needs a directory in which to store "
+              "certain data files. Use data directory '");
+    message.append(dataDirectoryPath);
+    message.append("'? If you click 'No', you will be able to select a "
+                   "different data directory.");
+    QMessageBox::StandardButton buttonClicked = 
+      QMessageBox::question(this, tr("Create data directory?"), message,
+                            QMessageBox::Yes | QMessageBox::No,
+                            QMessageBox::Yes);
+    if (buttonClicked == QMessageBox::Yes) {
+      QDir().mkdir(dataDirectoryPath);
+      m_Preferences->SetDataDirectoryPath(dataDirectoryPath.toStdString());
+    } else {
+      QFileDialog fileDialog(this, tr("Select data directory"),
+                             QDir::homePath());
+      fileDialog.setFileMode(QFileDialog::DirectoryOnly);
+      if (fileDialog.exec()) {
+        m_Preferences->SetDataDirectoryPath(fileDialog.directory().absolutePath().toStdString());
+      }
+    }
+  }
+
   // Restore inter-session GUI settings.
   ReadProgramSettings();
 
@@ -1287,8 +1317,6 @@ MicroscopeSimulator
   psfSettingsFileName.append(QDir::separator()).append("PSFList.xml");
   int rc = xmlSaveFileEnc(psfSettingsFileName.toStdString().c_str(), doc, "ISO-8859-1");
   xmlFreeDoc(doc);
-
-  settings.endGroup();
 }
 
 
