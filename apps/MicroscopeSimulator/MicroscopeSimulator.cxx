@@ -33,6 +33,7 @@
 #include <vtkBYUWriter.h>
 #include <vtkCamera.h>
 #include <vtkContourFilter.h>
+#include <vtkImageAppend.h>
 #include <vtkImageShiftScale.h>
 #include <vtkImageWriter.h>
 #include <vtkJPEGWriter.h>
@@ -1039,9 +1040,8 @@ MicroscopeSimulator
 ::on_fluoroSimExportImageButton_clicked() {
   QFileDialog fileDialog(this, tr("Export Fluorescence Image"), tr(""),
                          "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
-  fileDialog.setDefaultSuffix(tr("png"));
+  fileDialog.setDefaultSuffix(tr("tif"));
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-
   if (fileDialog.exec() == QDialog::Rejected)
     return;
 
@@ -1087,7 +1087,60 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimExportStackButton_clicked() {
+  QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), tr(""),
+                         "16-bit TIFF File (*.tif);;All (*.*)");
+  fileDialog.setDefaultSuffix(tr("tif"));
+  fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+  if (fileDialog.exec() == QDialog::Rejected)
+    return;
 
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+  if (selectedFileName.isEmpty())
+    return;
+
+  // Set the file name pattern
+  QString fileNamePattern(selectedFileName.left(selectedFileName.length()-4));
+  fileNamePattern.append("%04d.tif");
+
+  vtkSmartPointer<vtkImageAppend> appender = vtkSmartPointer<vtkImageAppend>::New();
+  appender->SetAppendAxis(2);
+
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+
+  double originalDepth = fluoroSim->GetFocalPlaneDepth();
+  double minDepth = fluoroSim->GetFocalPlaneDepthMinimum();
+  double maxDepth = fluoroSim->GetFocalPlaneDepthMaximum();
+  double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
+  for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
+    fluoroSim->SetFocalPlaneDepth(depth);
+    RenderViews();
+
+    vtkImageData* image = m_Visualization->GetFluorescenceImage();
+    vtkSmartPointer<vtkImageData> imageCopy = vtkSmartPointer<vtkImageData>::New();
+    imageCopy->DeepCopy(image);
+
+    appender->AddInput(imageCopy);
+  }
+
+  appender->GetOutput()->Update();
+
+  // Cast to unsigned short
+  vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
+  scaler->SetOutputScalarTypeToUnsignedShort();
+  scaler->ClampOverflowOn();
+  scaler->SetInputConnection(appender->GetOutputPort());
+
+  // Write out to file
+  vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+  writer->SetCompressionToNoCompression();
+  writer->SetInputConnection(scaler->GetOutputPort());
+  writer->SetFileDimensionality(2);
+  writer->SetFilePattern(fileNamePattern.toStdString().c_str());
+  writer->Write();
+
+  // Reset to original focal plane depth
+  fluoroSim->SetFocalPlaneDepth(originalDepth);
+  RenderViews();
 }
 
 
