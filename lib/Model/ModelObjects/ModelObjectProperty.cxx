@@ -198,7 +198,8 @@ ModelObjectProperty
       value[0] = '\0';
     }
     xmlNewProp(node, BAD_CAST "value", BAD_CAST value);
-    xmlNewProp(node, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
+    if (IsOptimizable())
+      xmlNewProp(node, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
   }
 }
 
