@@ -3,8 +3,10 @@
 
 #include <string>
 
+#include <XMLStorable.h>
 
-class ModelObjectProperty {
+
+class ModelObjectProperty : public XMLStorable {
  public:
 
   typedef enum {
@@ -33,12 +35,15 @@ class ModelObjectProperty {
   virtual ~ModelObjectProperty();
 
   std::string& GetName();
+  std::string  GetXMLElementName();
 
   virtual ModelObjectPropertyType GetType();
 
   bool IsEditable();
-
   bool IsOptimizable();
+
+  void SetOptimize(bool optimize);
+  bool GetOptimize();
 
   void SetBoolValue(bool value);
   bool GetBoolValue();
@@ -54,12 +59,17 @@ class ModelObjectProperty {
 
   std::string& GetUnits();
 
+  virtual void GetXMLConfiguration(xmlNodePtr root);
+  virtual void RestoreFromXML(xmlNodePtr root);
+
  protected:
   std::string m_Name;
   
   bool m_Editable;
 
   bool m_Optimizable;
+
+  bool m_Optimize;
 
   ModelObjectPropertyType m_Type;
 
@@ -72,6 +82,8 @@ class ModelObjectProperty {
   std::string m_StringValue;
 
   std::string m_Units;
+
+  std::string SqueezeString(const std::string& str);
   
  private:
   ModelObjectProperty();

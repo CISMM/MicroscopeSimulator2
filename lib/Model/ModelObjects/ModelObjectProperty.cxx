@@ -50,6 +50,7 @@ ModelObjectProperty
   m_Type = type;
   m_Editable = editable;
   m_Optimizable = optimizable;
+  m_Optimize = false;
   m_Units = units;
 
   m_BoolValue = true;
@@ -72,6 +73,13 @@ ModelObjectProperty
 }
 
 
+std::string
+ModelObjectProperty
+::GetXMLElementName() {
+  return SqueezeString(m_Name);
+}
+
+
 ModelObjectProperty::ModelObjectPropertyType
 ModelObjectProperty
 ::GetType() {
@@ -90,6 +98,20 @@ bool
 ModelObjectProperty
 ::IsOptimizable() {
   return m_Optimizable;
+}
+
+
+void
+ModelObjectProperty
+::SetOptimize(bool optimize) {
+  m_Optimize = optimize;
+}
+
+
+bool
+ModelObjectProperty
+::GetOptimize() {
+  return m_Optimize;
 }
 
 
@@ -153,4 +175,69 @@ std::string&
 ModelObjectProperty
 ::GetUnits() {
   return m_Units;
+}
+
+
+void
+ModelObjectProperty
+::GetXMLConfiguration(xmlNodePtr root) {
+  std::string nodeName(SqueezeString(m_Name));
+  xmlNodePtr node = xmlNewChild(root, NULL, BAD_CAST nodeName.c_str(), NULL);
+
+  char value[256];
+  if (m_Type != FLUOROPHORE_MODEL_TYPE) {
+    if (m_Type == BOOL_TYPE) {
+      sprintf(value, "%s", GetBoolValue() ? "true" : "false");
+    } else if (m_Type == INT_TYPE) {
+      sprintf(value, "%d", GetIntValue());
+    } else if (m_Type == DOUBLE_TYPE) {
+      sprintf(value, "%f", GetDoubleValue());
+    } else if (m_Type == STRING_TYPE) {
+      sprintf(value, "%s", GetStringValue().c_str());
+    } else {
+      value[0] = '\0';
+    }
+    xmlNewProp(node, BAD_CAST "value", BAD_CAST value);
+    xmlNewProp(node, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
+  }
+}
+
+
+void
+ModelObjectProperty
+::RestoreFromXML(xmlNodePtr root) {
+  if (m_Type != FLUOROPHORE_MODEL_TYPE) {
+    char* value = (char *) xmlGetProp(root, BAD_CAST "value");
+    if (!value)
+      return;
+
+    if (m_Type == BOOL_TYPE) {
+      SetBoolValue(!strcmp(value, "true"));
+    } else if (m_Type == INT_TYPE) {
+      SetIntValue(atoi(value));
+    } else if (m_Type == DOUBLE_TYPE) {
+      SetDoubleValue(atof(value));
+    } else if (m_Type == STRING_TYPE) {
+      SetStringValue(std::string(value));
+    }
+
+    char* optimize = (char *) xmlGetProp(root, BAD_CAST "optimize");
+    if (optimize)
+      SetOptimize(!strcmp(optimize,"true"));
+    else
+      SetOptimize(false);
+  }
+}
+
+
+std::string
+ModelObjectProperty
+::SqueezeString(const std::string& str) {
+  std::string squeezed(str);
+  size_t pos;
+  while ((pos = squeezed.find_first_of(' ')) != std::string::npos) {
+    squeezed = squeezed.erase(pos, 1);
+  }
+
+  return squeezed;
 }
