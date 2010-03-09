@@ -18,18 +18,8 @@ class PointSetModelObject : public ModelObject {
  public:
   static const char* OBJECT_TYPE_NAME;
 
-  static const char* VISIBLE_RADIUS_ATT;
   static const char* VISIBLE_RADIUS_PROP;
-
-  static const char* NUMBER_OF_POINTS_ATT;
   static const char* NUMBER_OF_POINTS_PROP;
-
-  static const char* POINT_ELEM;
-  static const char* X_ATT;
-  static const char* Y_ATT;
-  static const char* Z_ATT;
-
-  static const char* VERTICES_FLUOROPHORE_ATT;
   static const char* VERTICES_FLUOROPHORE_PROP;
 
 
@@ -38,11 +28,9 @@ class PointSetModelObject : public ModelObject {
                       ModelObjectPropertyList* properties);
   virtual ~PointSetModelObject();
 
-  virtual void GetXMLConfiguration(xmlNodePtr node);
   virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
-
   virtual void Sully();
 
  protected:

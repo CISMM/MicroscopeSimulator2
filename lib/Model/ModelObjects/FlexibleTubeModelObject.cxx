@@ -3,6 +3,7 @@
 #include <DirtyListener.h>
 #include <FluorophoreModelObjectProperty.h>
 #include <ModelObjectPropertyList.h>
+#include <XMLHelper.h>
 
 #include <vtkMath.h>
 #include <vtkParametricSpline.h>
@@ -15,14 +16,9 @@
 
 const char* FlexibleTubeModelObject::OBJECT_TYPE_NAME = "FlexibleTubeModel";
 
-const char* FlexibleTubeModelObject::RADIUS_ATT  = "radius";
-const char* FlexibleTubeModelObject::RADIUS_PROP = "Radius";
-
-const char* FlexibleTubeModelObject::SURFACE_FLUOR_ATT = "surfaceFluorophoreModel";
+const char* FlexibleTubeModelObject::RADIUS_PROP        = "Radius";
 const char* FlexibleTubeModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
-
-const char* FlexibleTubeModelObject::VOLUME_FLUOR_ATT = "volumeFluorophoreModel";
-const char* FlexibleTubeModelObject::VOLUME_FLUOR_PROP = "Volume Fluorophore Model";
+const char* FlexibleTubeModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
 
 
 FlexibleTubeModelObject
@@ -166,85 +162,18 @@ FlexibleTubeModelObject
 
 void
 FlexibleTubeModelObject
-::GetXMLConfiguration(xmlNodePtr node) {
-  // Create child element of node.
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST OBJECT_TYPE_NAME, NULL);
-
-  // Fill in common properties for all model objects.
-  ModelObject::GetXMLConfiguration(root);
-
-  // Add object-specific properties.
-  char doubleFormat[] = "%f";
-  char attValueBuf[128];
-  sprintf(attValueBuf, doubleFormat, GetProperty(RADIUS_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST RADIUS_ATT, BAD_CAST attValueBuf);
-
-  char intFormat[] = "%d";
-  sprintf(attValueBuf, intFormat, GetProperty(NUMBER_OF_POINTS_PROP)->GetIntValue());
-  xmlNewProp(root, BAD_CAST NUMBER_OF_POINTS_ATT, BAD_CAST attValueBuf);
-
-  // Print point properties
-  int numPoints = GetProperty(NUMBER_OF_POINTS_PROP)->GetIntValue();
-  int offset = m_PointPropertyStartingIndex;
-  for (int i = 0; i < numPoints; i++) {
-    xmlNodePtr pointNode = xmlNewChild(root, NULL, BAD_CAST PointSetModelObject::POINT_ELEM, NULL);
-
-    sprintf(attValueBuf, doubleFormat, GetProperty(i*3+0+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST PointSetModelObject::X_ATT, BAD_CAST attValueBuf);
-    sprintf(attValueBuf, doubleFormat, GetProperty(i*3+1+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST PointSetModelObject::Y_ATT, BAD_CAST attValueBuf);
-    sprintf(attValueBuf, doubleFormat, GetProperty(i*3+2+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST PointSetModelObject::Z_ATT, BAD_CAST attValueBuf);
-  }
-}
-
-
-void
-FlexibleTubeModelObject
 ::RestoreFromXML(xmlNodePtr node) {
-  ModelObject::RestoreFromXML(node);
+  ModelObjectProperty* numPointsProp = GetProperty(NUMBER_OF_POINTS_PROP);
+  std::string elementName = numPointsProp->GetXMLElementName();
+  xmlNodePtr numPointsNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST elementName.c_str());
+  numPointsProp->RestoreFromXML(numPointsNode);
 
-  char* radius = (char*) xmlGetProp(node, BAD_CAST RADIUS_ATT);
-  if (radius) {
-    GetProperty(RADIUS_PROP)->SetDoubleValue(atof(radius));
-  }
-
-  char* numPoints = (char*) xmlGetProp(node, BAD_CAST NUMBER_OF_POINTS_ATT);
-  if (numPoints) {
-    GetProperty(NUMBER_OF_POINTS_PROP)->SetIntValue(atoi(numPoints));
-  }
-
+  // Then we need to create all the necessary model object properties
   m_Points->SetNumberOfPoints(0);
   UpdatePointProperties();
   Update();
 
-  int offset = m_PointPropertyStartingIndex;
-
-  int i = 0;
-  xmlNodePtr pointNode = node->children;
-  while (pointNode != NULL) {
-    if (std::string((char*) pointNode->name) != POINT_ELEM) {
-      pointNode = pointNode->next;
-      continue;
-    }
-
-    char* x = (char*) xmlGetProp(pointNode, BAD_CAST PointSetModelObject::X_ATT);
-    if (x) {
-      GetProperty(i*3+0+offset)->SetDoubleValue(atof(x));
-    }
-
-    char* y = (char*) xmlGetProp(pointNode, BAD_CAST PointSetModelObject::Y_ATT);
-    if (y) {
-      GetProperty(i*3+1+offset)->SetDoubleValue(atof(y));
-    }
-
-    char* z = (char*) xmlGetProp(pointNode, BAD_CAST PointSetModelObject::Z_ATT);
-    if (z) {
-      GetProperty(i*3+2+offset)->SetDoubleValue(atof(z));
-    }
-
-    pointNode = pointNode->next;
-    i++;
-  }
-
+  // Now that we are ready, restore all the properties
+  ModelObject::RestoreFromXML(node);
 }

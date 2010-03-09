@@ -3,6 +3,7 @@
 
 #include <DirtyListener.h>
 #include <ModelObjectPropertyList.h>
+#include <XMLHelper.h>
 
 #include <vtkGlyph3D.h>
 #include <vtkPoints.h>
@@ -13,18 +14,8 @@
 
 const char* PointSetModelObject::OBJECT_TYPE_NAME = "PointSetModel";
 
-const char* PointSetModelObject::VISIBLE_RADIUS_ATT  = "visibleRadius";
-const char* PointSetModelObject::VISIBLE_RADIUS_PROP = "Visible Radius";
-
-const char* PointSetModelObject::NUMBER_OF_POINTS_ATT  = "numPoints";
-const char* PointSetModelObject::NUMBER_OF_POINTS_PROP = "Number of Points";
-
-const char* PointSetModelObject::POINT_ELEM = "Point";
-const char* PointSetModelObject::X_ATT = "X";
-const char* PointSetModelObject::Y_ATT = "Y";
-const char* PointSetModelObject::Z_ATT = "Z";
-
-const char* PointSetModelObject::VERTICES_FLUOROPHORE_ATT = "verticesFluorophoreModel";
+const char* PointSetModelObject::VISIBLE_RADIUS_PROP       = "Visible Radius";
+const char* PointSetModelObject::NUMBER_OF_POINTS_PROP     = "Number of Points";
 const char* PointSetModelObject::VERTICES_FLUOROPHORE_PROP = "Vertices Fluorophore Model";
 
 
@@ -127,85 +118,18 @@ PointSetModelObject
 
 void
 PointSetModelObject
-::GetXMLConfiguration(xmlNodePtr node) {
-  // Create child element of node.
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST OBJECT_TYPE_NAME, NULL);
-
-  // Fill in common properties for all model objects.
-  ModelObject::GetXMLConfiguration(root);
-
-  // Add object-specific properties.
-  char doubleFormat[] = "%f";
-  char attValueBuf[128];
-  sprintf(attValueBuf, doubleFormat, GetProperty(VISIBLE_RADIUS_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST VISIBLE_RADIUS_ATT, BAD_CAST attValueBuf);
-
-  char intFormat[] = "%d";
-  sprintf(attValueBuf, intFormat, GetProperty(NUMBER_OF_POINTS_PROP)->GetIntValue());
-  xmlNewProp(root, BAD_CAST NUMBER_OF_POINTS_ATT, BAD_CAST attValueBuf);
-
-  // Print point properties
-  int numPoints = GetProperty(NUMBER_OF_POINTS_PROP)->GetIntValue();
-  int offset = m_PointPropertyStartingIndex;
-  for (int i = 0; i < numPoints; i++) {
-    xmlNodePtr pointNode = xmlNewChild(root, NULL, BAD_CAST POINT_ELEM, NULL);
-
-    sprintf(attValueBuf, doubleFormat, GetProperty(i*3+0+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST X_ATT, BAD_CAST attValueBuf);
-    sprintf(attValueBuf, doubleFormat, GetProperty(i*3+1+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST Y_ATT, BAD_CAST attValueBuf);
-    sprintf(attValueBuf, doubleFormat, GetProperty(i*3+2+offset)->GetDoubleValue());
-    xmlNewProp(pointNode, BAD_CAST Z_ATT, BAD_CAST attValueBuf);
-  }
-}
-
-
-void
-PointSetModelObject
 ::RestoreFromXML(xmlNodePtr node) {
-  ModelObject::RestoreFromXML(node);
-  
-  char* visibleRadius = (char*) xmlGetProp(node, BAD_CAST VISIBLE_RADIUS_ATT);
-  if (visibleRadius) {
-    GetProperty(VISIBLE_RADIUS_PROP)->SetDoubleValue(atof(visibleRadius));
-  }
+  ModelObjectProperty* numPointsProp = GetProperty(NUMBER_OF_POINTS_PROP);
+  std::string elementName = numPointsProp->GetXMLElementName();
+  xmlNodePtr numPointsNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST elementName.c_str());
+  numPointsProp->RestoreFromXML(numPointsNode);
 
-  char* numPoints = (char*) xmlGetProp(node, BAD_CAST NUMBER_OF_POINTS_ATT);
-  if (numPoints) {
-    GetProperty(NUMBER_OF_POINTS_PROP)->SetIntValue(atoi(numPoints));
-  }
-
+  // Then we need to create all the necessary model object properties
   UpdatePointProperties();  
 
-  int offset =  m_PointPropertyStartingIndex;
-
-  int i = 0;
-  xmlNodePtr pointNode = node->children;
-  while (pointNode != NULL) {
-    if (std::string((char*) pointNode->name) != POINT_ELEM) {
-      pointNode = pointNode->next;
-      continue;
-    }
-
-    char* x = (char*) xmlGetProp(pointNode, BAD_CAST X_ATT);
-    if (x) {
-      GetProperty(i*3+0+offset)->SetDoubleValue(atof(x));
-    }
-    
-    char* y = (char*) xmlGetProp(pointNode, BAD_CAST Y_ATT);
-    if (y) {
-      GetProperty(i*3+1+offset)->SetDoubleValue(atof(y));
-    }
-
-    char* z = (char*) xmlGetProp(pointNode, BAD_CAST Z_ATT);
-    if (z) {
-      GetProperty(i*3+2+offset)->SetDoubleValue(atof(z));
-    }
-
-    i++;
-    pointNode = pointNode->next;
-  }
-
+  // Now that we are ready, restore all the properties
+  ModelObject::RestoreFromXML(node);
 }
 
 
