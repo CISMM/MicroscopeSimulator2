@@ -186,9 +186,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-623</y>
+          <y>-676</y>
           <width>381</width>
-          <height>1370</height>
+          <height>1347</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -223,14 +223,11 @@
              <string>AFMSim</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_7">
-             <property name="leftMargin">
-              <number>12</number>
+             <property name="spacing">
+              <number>6</number>
              </property>
-             <property name="rightMargin">
-              <number>12</number>
-             </property>
-             <property name="bottomMargin">
-              <number>12</number>
+             <property name="margin">
+              <number>6</number>
              </property>
              <item>
               <widget class="QGroupBox" name="afmSimTipModelGroupBox">
@@ -238,6 +235,12 @@
                 <string>Tip Model</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_2">
+                <property name="margin">
+                 <number>6</number>
+                </property>
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="tipRadiusLabel">
                   <property name="text">
@@ -274,6 +277,12 @@
                 <string>Simulator Settings</string>
                </property>
                <layout class="QGridLayout" name="gridLayout">
+                <property name="margin">
+                 <number>6</number>
+                </property>
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="afmSimPixelSizeLabel">
                   <property name="text">
@@ -325,6 +334,12 @@
                 <string>Surface Visualization</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_8">
+                <property name="margin">
+                 <number>6</number>
+                </property>
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <item row="0" column="0" colspan="2">
                  <widget class="QCheckBox" name="afmSimClipGroundPlaneCheckBox">
                   <property name="text">
@@ -405,23 +420,29 @@
              <string>FluoroSim</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_10">
-             <property name="leftMargin">
-              <number>12</number>
+             <property name="spacing">
+              <number>6</number>
              </property>
-             <property name="rightMargin">
-              <number>12</number>
-             </property>
-             <property name="bottomMargin">
-              <number>12</number>
+             <property name="margin">
+              <number>6</number>
              </property>
              <item>
               <widget class="QGroupBox" name="fluoroSimFocusGroupBox">
                <property name="title">
                 <string>Focus</string>
                </property>
+               <property name="flat">
+                <bool>false</bool>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <property name="spacing">
+                 <number>-1</number>
+                </property>
                 <property name="margin">
-                 <number>12</number>
+                 <number>6</number>
                 </property>
                 <item>
                  <widget class="QWidget" name="widget" native="true">
@@ -522,6 +543,12 @@
                 <item>
                  <widget class="QWidget" name="widget_3" native="true">
                   <layout class="QGridLayout" name="gridLayout_7">
+                   <property name="margin">
+                    <number>6</number>
+                   </property>
+                   <property name="spacing">
+                    <number>6</number>
+                   </property>
                    <item row="0" column="0" colspan="2">
                     <widget class="QLabel" name="fluoroSimFocusRangeLabel">
                      <property name="text">
@@ -583,6 +610,12 @@
                 <string>Point-Spread Function</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_9">
+                <property name="spacing">
+                 <number>-1</number>
+                </property>
+                <property name="margin">
+                 <number>6</number>
+                </property>
                 <item>
                  <widget class="QComboBox" name="fluoroSimPSFMenuComboBox"/>
                 </item>
@@ -603,7 +636,10 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
                 <property name="margin">
-                 <number>12</number>
+                 <number>6</number>
+                </property>
+                <property name="spacing">
+                 <number>-1</number>
                 </property>
                 <item row="1" column="0">
                  <widget class="QLabel" name="fluoroSimPixelSizeLabel">
@@ -761,7 +797,10 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_9">
                 <property name="margin">
-                 <number>12</number>
+                 <number>6</number>
+                </property>
+                <property name="spacing">
+                 <number>-1</number>
                 </property>
                 <item row="11" column="0">
                  <widget class="QLabel" name="fluoroSimMaxLevelLabel">
@@ -792,8 +831,20 @@
                 </item>
                 <item row="13" column="0" colspan="4">
                  <widget class="QPushButton" name="fluoroSimScaleToFullDynamicRange">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
                   <property name="text">
                    <string>Scale to Full Dynamic Range</string>
+                  </property>
+                  <property name="flat">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -888,7 +939,10 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_5">
                 <property name="margin">
-                 <number>12</number>
+                 <number>6</number>
+                </property>
+                <property name="spacing">
+                 <number>-1</number>
                 </property>
                 <item row="2" column="0" colspan="2">
                  <widget class="QPushButton" name="fluoroSimExportStackButton">
@@ -957,8 +1011,37 @@
                 <string>Model Fitting</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_15">
+                <property name="spacing">
+                 <number>-1</number>
+                </property>
+                <property name="margin">
+                 <number>6</number>
+                </property>
                 <item>
-                 <widget class="QComboBox" name="fluoroSimOptimizerComboBox"/>
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Optimization method:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="comboBox">
+                  <item>
+                   <property name="text">
+                    <string>Nelder-Mead Downhill Simplex</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Gradient Descent</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Flow-driven Deformation</string>
+                   </property>
+                  </item>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="fluoroSimOptimizerSettingsButton">
@@ -968,7 +1051,28 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="fluoroSimExploreObjectiveFunctionButton">
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>Objective function:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="comboBox_2">
+                  <item>
+                   <property name="text">
+                    <string>Sum of Squared Differences</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Normalized Cross Correlation</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="fluoroSimExploreObjectiveFunction">
                   <property name="text">
                    <string>Explore Objective Function...</string>
                   </property>
@@ -1004,23 +1108,32 @@
              <string>Notes</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_4">
-             <property name="leftMargin">
-              <number>12</number>
+             <property name="spacing">
+              <number>6</number>
              </property>
-             <property name="rightMargin">
-              <number>12</number>
-             </property>
-             <property name="bottomMargin">
-              <number>12</number>
+             <property name="margin">
+              <number>6</number>
              </property>
              <item>
               <widget class="QGroupBox" name="experimentDescriptionGroupBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="title">
                 <string>Experiment Notes</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout">
                 <item>
                  <widget class="QPlainTextEdit" name="experimentDescriptionTextArea">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="plainText">
                    <string/>
                   </property>
