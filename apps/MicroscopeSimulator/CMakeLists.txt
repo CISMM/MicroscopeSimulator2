@@ -17,6 +17,7 @@ SET (QtGuiSrcs
   MicroscopeSimulator.cxx
   ErrorLogDialog.cxx
   FluorophoreModelDialog.cxx
+  OptimizerSettingsDialog.cxx
   PSFEditorDialog.cxx
   Preferences.cxx
   PreferencesDialog.cxx
@@ -39,6 +40,7 @@ SET(UIS
   MicroscopeSimulator.ui
   ErrorLogDialog.ui
   FluorophoreModelDialog.ui
+  OptimizerSettingsDialog.ui
   PSFEditorDialog.ui
   PreferencesDialog.ui
 )
@@ -50,6 +52,7 @@ SET (ApplicationHeaders
   MicroscopeSimulator.h
   ErrorLogDialog.h
   FluorophoreModelDialog.h
+  OptimizerSettingsDialog.h
   PSFEditorDialog.h
   PreferencesDialog.h
   QModelObjectListModel.h
