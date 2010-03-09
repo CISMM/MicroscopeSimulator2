@@ -25,36 +25,21 @@ class ModelObject : public DirtyListener, public XMLStorable {
  public:
 
   static const char* OBJECT_TYPE_NAME;
-  static const char* NAME_ATT;
   static const char* NAME_PROP;
 
   static const char* POSITION_ELEM;
-  static const char* X_POSITION_ATT;
-  static const char* Y_POSITION_ATT;
-  static const char* Z_POSITION_ATT;
   static const char* X_POSITION_PROP;
   static const char* Y_POSITION_PROP;
   static const char* Z_POSITION_PROP;
   
   static const char* ROTATION_ELEM;
-  static const char* ROTATION_ANGLE_ATT;
-  static const char* ROTATION_VECTOR_X_ATT;
-  static const char* ROTATION_VECTOR_Y_ATT;
-  static const char* ROTATION_VECTOR_Z_ATT;
   static const char* ROTATION_ANGLE_PROP;
   static const char* ROTATION_VECTOR_X_PROP;
   static const char* ROTATION_VECTOR_Y_PROP;
   static const char* ROTATION_VECTOR_Z_PROP;
 
-  static const char* COLOR_ELEM;
-  static const char* RED_ATT;
-  static const char* GREEN_ATT;
-  static const char* BLUE_ATT;
-
-  static const char* VISIBLE_ATT;
   static const char* VISIBLE_PROP;
 
-  static const char* SCANNABLE_ATT;
   static const char* SCANNABLE_PROP;
 
   static const char* FLUOROPHORE_MODEL_LIST_ELEM;

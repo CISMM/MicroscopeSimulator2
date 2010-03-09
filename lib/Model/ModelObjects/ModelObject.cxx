@@ -11,36 +11,21 @@
 
 
 const char* ModelObject::OBJECT_TYPE_NAME = "AbstractModelObject";
-const char* ModelObject::NAME_ATT         = "name";
 const char* ModelObject::NAME_PROP        = "Name";
 
 const char* ModelObject::POSITION_ELEM    = "Position";
-const char* ModelObject::X_POSITION_ATT   = "x";
-const char* ModelObject::Y_POSITION_ATT   = "y";
-const char* ModelObject::Z_POSITION_ATT   = "z";
 const char* ModelObject::X_POSITION_PROP  = "Position X";
 const char* ModelObject::Y_POSITION_PROP  = "Position Y";
 const char* ModelObject::Z_POSITION_PROP  = "Position Z";
 
 const char* ModelObject::ROTATION_ELEM          = "Rotation";
-const char* ModelObject::ROTATION_ANGLE_ATT     = "angle";
-const char* ModelObject::ROTATION_VECTOR_X_ATT  = "vx";
-const char* ModelObject::ROTATION_VECTOR_Y_ATT  = "vy";
-const char* ModelObject::ROTATION_VECTOR_Z_ATT  = "vz";
 const char* ModelObject::ROTATION_ANGLE_PROP    = "Rotation Angle";
 const char* ModelObject::ROTATION_VECTOR_X_PROP = "Rotation Vector X";
 const char* ModelObject::ROTATION_VECTOR_Y_PROP = "Rotation Vector Y";
 const char* ModelObject::ROTATION_VECTOR_Z_PROP = "Rotation Vector Z";
 
-const char* ModelObject::COLOR_ELEM = "Color";
-const char* ModelObject::RED_ATT    = "red";
-const char* ModelObject::GREEN_ATT  = "green";
-const char* ModelObject::BLUE_ATT   = "blue";
-
-const char* ModelObject::VISIBLE_ATT           = "visible";
 const char* ModelObject::VISIBLE_PROP          = "Visible";
 
-const char* ModelObject::SCANNABLE_ATT         = "scannable";
 const char* ModelObject::SCANNABLE_PROP        = "Scannable";
 
 const char* ModelObject::FLUOROPHORE_MODEL_LIST_ELEM = "FluorophoreModelList";
@@ -78,9 +63,10 @@ ModelObjectPropertyList*
 ModelObject
 ::CreateDefaultProperties() {
   ModelObjectPropertyList* props = new ModelObjectPropertyList();
-  props->AddProperty(new ModelObjectProperty(NAME_PROP, ModelObjectProperty::STRING_TYPE));
-  props->AddProperty(new ModelObjectProperty(VISIBLE_PROP, true));
-  props->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true));
+  props->AddProperty(new ModelObjectProperty(NAME_PROP, ModelObjectProperty::STRING_TYPE,
+                                             "i", true, false));
+  props->AddProperty(new ModelObjectProperty(VISIBLE_PROP, true, "-", true, false));
+  props->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true, "-", true, false));
   props->AddProperty(new ModelObjectProperty(X_POSITION_PROP, 0.0, "nanometers"));
   props->AddProperty(new ModelObjectProperty(Y_POSITION_PROP, 0.0, "nanometers"));
   props->AddProperty(new ModelObjectProperty(Z_POSITION_PROP, 0.0, "nanometers"));
@@ -133,144 +119,23 @@ ModelObject
 void
 ModelObject
 ::GetXMLConfiguration(xmlNodePtr node) {
-  
-  // Subclasses are required to create the element for the model object
-  // description prior to calling this method. The node parameter must be
-  // root element for this model object. This method simply adds
-  // children elements and their attributes that are common to all model
-  // object types.
-
-  // Set object attributes
-  char trueString[]  = "true";
-  char falseString[] = "false";
-  xmlNewProp(node, BAD_CAST NAME_ATT,
-             BAD_CAST GetProperty(NAME_PROP)->GetStringValue().c_str());
-  xmlNewProp(node, BAD_CAST VISIBLE_ATT, 
-             BAD_CAST (GetProperty(VISIBLE_PROP)->GetBoolValue() ? trueString : falseString));
-  xmlNewProp(node, BAD_CAST SCANNABLE_ATT,
-             BAD_CAST (GetProperty(SCANNABLE_PROP)->GetBoolValue() ? trueString : falseString));
-
-  xmlNodePtr posElem = xmlNewChild(node, NULL, BAD_CAST POSITION_ELEM, NULL);
-  char floatFormat[] = "%f";
-  char buf[128];
-  sprintf(buf, floatFormat, GetProperty(X_POSITION_PROP)->GetDoubleValue());
-  xmlNewProp(posElem, BAD_CAST X_POSITION_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, GetProperty(Y_POSITION_PROP)->GetDoubleValue());
-  xmlNewProp(posElem, BAD_CAST Y_POSITION_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, GetProperty(Z_POSITION_PROP)->GetDoubleValue());
-  xmlNewProp(posElem, BAD_CAST Z_POSITION_ATT, BAD_CAST buf);
-
-  // TODO - finish adding rotation components
-  xmlNodePtr rotElem = xmlNewChild(node, NULL, BAD_CAST ROTATION_ELEM, NULL);
-  sprintf(buf, floatFormat, GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue());
-  xmlNewProp(rotElem, BAD_CAST ROTATION_ANGLE_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue());
-  xmlNewProp(rotElem, BAD_CAST ROTATION_VECTOR_X_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue());
-  xmlNewProp(rotElem, BAD_CAST ROTATION_VECTOR_Y_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue());
-  xmlNewProp(rotElem, BAD_CAST ROTATION_VECTOR_Z_ATT, BAD_CAST buf);
-
-  xmlNodePtr colorElem = xmlNewChild(node, NULL, BAD_CAST COLOR_ELEM, NULL);
-  sprintf(buf, floatFormat, m_Color[0]);
-  xmlNewProp(colorElem, BAD_CAST RED_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, m_Color[1]);
-  xmlNewProp(colorElem, BAD_CAST GREEN_ATT, BAD_CAST buf);
-  sprintf(buf, floatFormat, m_Color[2]);
-  xmlNewProp(colorElem, BAD_CAST BLUE_ATT, BAD_CAST buf);
-
-  
-  // TODO - add fluorophore model list
-
-  
-  
+  xmlNodePtr childNode = xmlNewChild(node, NULL, BAD_CAST GetObjectTypeName().c_str(), NULL);
+  for (int i = 0; i < GetNumberOfProperties(); i++) {
+    GetProperty(i)->GetXMLConfiguration(childNode);
+  }
 }
 
 
 void
 ModelObject
 ::RestoreFromXML(xmlNodePtr node) {
-  std::string trueStr("true");
-  std::string falseStr("false");
-
-  char* name = (char*) xmlGetProp(node, BAD_CAST NAME_ATT);
-  if (name) {
-    GetProperty(NAME_PROP)->SetStringValue(std::string(name));
+  for (int i = 0; i < GetNumberOfProperties(); i++) {
+    ModelObjectProperty* mop = GetProperty(i);
+    std::string squeezedName = mop->GetXMLElementName();
+    xmlNodePtr propertyNode =
+      xmlGetFirstElementChildWithName(node, BAD_CAST squeezedName.c_str());
+    GetProperty(i)->RestoreFromXML(propertyNode);
   }
-
-  char* visible = (char*) xmlGetProp(node, BAD_CAST VISIBLE_ATT);
-  if (visible) {
-    GetProperty(VISIBLE_PROP)->SetBoolValue(std::string(visible) == trueStr);
-  }
-
-  char* scannable = (char*) xmlGetProp(node, BAD_CAST SCANNABLE_ATT);
-  if (scannable) {
-    GetProperty(SCANNABLE_PROP)->SetBoolValue(std::string(scannable) == trueStr);
-  }
-
-  // Position node
-  xmlNodePtr positionNode = 
-    xmlGetFirstElementChildWithName(node, BAD_CAST POSITION_ELEM);
-  if (positionNode) {
-    char* xPosition = (char*) xmlGetProp(positionNode, BAD_CAST X_POSITION_ATT);
-    if (xPosition) {
-      GetProperty(X_POSITION_PROP)->SetDoubleValue(atof(xPosition));
-    }
-
-    char* yPosition = (char*) xmlGetProp(positionNode, BAD_CAST Y_POSITION_ATT);
-    if (yPosition) {
-      GetProperty(Y_POSITION_PROP)->SetDoubleValue(atof(yPosition));
-    }
-
-    char* zPosition = (char*) xmlGetProp(positionNode, BAD_CAST Z_POSITION_ATT);
-    if (zPosition) {
-      GetProperty(Z_POSITION_PROP)->SetDoubleValue(atof(zPosition));
-    }
-  }
-
-  // Rotation node
-  xmlNodePtr rotationNode =
-    xmlGetFirstElementChildWithName(node, BAD_CAST ROTATION_ELEM);
-  if (rotationNode) {
-    char* rotAngle = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_ANGLE_ATT);
-    if (rotAngle) {
-      GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(atof(rotAngle));
-    }
-    
-    char* rotVecX = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_VECTOR_X_ATT);
-    if (rotVecX) {
-      GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(atof(rotVecX));
-    }
-
-    char* rotVecY = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_VECTOR_Y_ATT);
-    if (rotVecY) {
-      GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(atof(rotVecY));
-    }
-
-    char* rotVecZ = (char*) xmlGetProp(rotationNode, BAD_CAST ROTATION_VECTOR_Z_ATT);
-    if (rotVecZ) {
-      GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(atof(rotVecZ));
-    }
-    
-  }
-
-  // TODO - Color node
-  xmlNodePtr colorNode =
-    xmlGetFirstElementChildWithName(node, BAD_CAST COLOR_ELEM);
-  if (colorNode) {
-    char *red = (char*) xmlGetProp(colorNode, BAD_CAST RED_ATT);
-    if (red) {
-    }
-
-    char *green = (char*) xmlGetProp(colorNode, BAD_CAST GREEN_ATT);
-    if (green) {
-    }
-
-    char *blue = (char*) xmlGetProp(colorNode, BAD_CAST BLUE_ATT);
-    if (blue) {
-    }
-  }
-
 }
 
 
