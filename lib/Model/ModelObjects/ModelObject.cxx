@@ -64,7 +64,7 @@ ModelObject
 ::CreateDefaultProperties() {
   ModelObjectPropertyList* props = new ModelObjectPropertyList();
   props->AddProperty(new ModelObjectProperty(NAME_PROP, ModelObjectProperty::STRING_TYPE,
-                                             "i", true, false));
+                                             "-", true, false));
   props->AddProperty(new ModelObjectProperty(VISIBLE_PROP, true, "-", true, false));
   props->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true, "-", true, false));
   props->AddProperty(new ModelObjectProperty(X_POSITION_PROP, 0.0, "nanometers"));
@@ -131,9 +131,9 @@ ModelObject
 ::RestoreFromXML(xmlNodePtr node) {
   for (int i = 0; i < GetNumberOfProperties(); i++) {
     ModelObjectProperty* mop = GetProperty(i);
-    std::string squeezedName = mop->GetXMLElementName();
+    std::string elementName = mop->GetXMLElementName();
     xmlNodePtr propertyNode =
-      xmlGetFirstElementChildWithName(node, BAD_CAST squeezedName.c_str());
+      xmlGetFirstElementChildWithName(node, BAD_CAST elementName.c_str());
     GetProperty(i)->RestoreFromXML(propertyNode);
   }
 }
