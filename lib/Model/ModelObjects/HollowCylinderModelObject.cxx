@@ -11,20 +11,11 @@
 
 const char* HollowCylinderModelObject::OBJECT_TYPE_NAME = "HollowCylinderModel";
 
-const char* HollowCylinderModelObject::OUTER_RADIUS_ATT = "outerRadius";
-const char* HollowCylinderModelObject::OUTER_RADIUS_PROP = "Outer Radius";
-
-const char* HollowCylinderModelObject::THICKNESS_ATT = "thickness";
-const char* HollowCylinderModelObject::THICKNESS_PROP = "Thickness";
-
-const char* HollowCylinderModelObject::LENGTH_ATT = "length";
-const char* HollowCylinderModelObject::LENGTH_PROP = "Length";
-
-const char* HollowCylinderModelObject::SURFACE_FLUOR_ATT = "surfaceFluorophoreModel";
+const char* HollowCylinderModelObject::OUTER_RADIUS_PROP  = "Outer Radius";
+const char* HollowCylinderModelObject::THICKNESS_PROP     = "Thickness";
+const char* HollowCylinderModelObject::LENGTH_PROP        = "Length";
 const char* HollowCylinderModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
-
-const char* HollowCylinderModelObject::VOLUME_FLUOR_ATT = "volumeFluorophoreModel";
-const char* HollowCylinderModelObject::VOLUME_FLUOR_PROP = "Volume Fluorophore Model";
+const char* HollowCylinderModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
 
 
 HollowCylinderModelObject
@@ -94,45 +85,3 @@ HollowCylinderModelObject
   m_ExtrusionSource->SetScaleFactor(GetProperty(LENGTH_PROP)->GetDoubleValue());
 }
 
-
-void
-HollowCylinderModelObject
-::GetXMLConfiguration(xmlNodePtr node) {
-  // Create child element of node.
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST OBJECT_TYPE_NAME, NULL);
-
-  // Fill in common properties for all model objects.
-  ModelObject::GetXMLConfiguration(root);
-
-  // Add object-specific properties.
-  char doubleFormat[] = "%f";
-  char buf[128];
-  sprintf(buf, doubleFormat, GetProperty(OUTER_RADIUS_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST OUTER_RADIUS_ATT, BAD_CAST buf);
-  sprintf(buf, doubleFormat, GetProperty(THICKNESS_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST THICKNESS_ATT, BAD_CAST buf);
-  sprintf(buf, doubleFormat, GetProperty(LENGTH_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST LENGTH_ATT, BAD_CAST buf);
-}
-
-
-void
-HollowCylinderModelObject
-::RestoreFromXML(xmlNodePtr node) {
-  ModelObject::RestoreFromXML(node);
-
-  char* outerRadius = (char*) xmlGetProp(node, BAD_CAST OUTER_RADIUS_ATT);
-  if (outerRadius) {
-    GetProperty(OUTER_RADIUS_PROP)->SetDoubleValue(atof(outerRadius));
-  }
-
-  char* thickness = (char*) xmlGetProp(node, BAD_CAST THICKNESS_ATT);
-  if (thickness) {
-    GetProperty(THICKNESS_PROP)->SetDoubleValue(atof(thickness));
-  }
-
-  char* length = (char*) xmlGetProp(node, BAD_CAST LENGTH_ATT);
-  if (length) {
-    GetProperty(LENGTH_PROP)->SetDoubleValue(atof(length));
-  }
-}

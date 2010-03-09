@@ -13,18 +13,12 @@ class DiskModelObject : public ModelObject {
  public:
   static const char* OBJECT_TYPE_NAME;
 
-  static const char* RADIUS_ATT;
   static const char* RADIUS_PROP;
-
-  static const char* SURFACE_FLUOR_ATT;
   static const char* SURFACE_FLUOR_PROP;
 
 
   DiskModelObject(DirtyListener* dirtyListener);
   virtual ~DiskModelObject();
-
-  virtual void GetXMLConfiguration(xmlNodePtr node);
-  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

@@ -14,16 +14,9 @@ class TorusModelObject : public ModelObject {
  public:
   static const char* OBJECT_TYPE_NAME;
 
-  static const char* CROSS_SECTION_RADIUS_ATT;
   static const char* CROSS_SECTION_RADIUS_PROP;
-
-  static const char* RING_RADIUS_ATT;
   static const char* RING_RADIUS_PROP;
-
-  static const char* SURFACE_FLUOR_ATT;
   static const char* SURFACE_FLUOR_PROP;
-
-  static const char* VOLUME_FLUOR_ATT;
   static const char* VOLUME_FLUOR_PROP;
 
 
@@ -31,9 +24,6 @@ class TorusModelObject : public ModelObject {
   virtual ~TorusModelObject();
 
   virtual void Update();
-
-  virtual void GetXMLConfiguration(xmlNodePtr node);
-  virtual void RestoreFromXML(xmlNodePtr node);
 
  protected:
   TorusModelObject() {};

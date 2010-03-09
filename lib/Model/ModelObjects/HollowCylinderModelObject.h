@@ -18,26 +18,14 @@ class HollowCylinderModelObject : public ModelObject {
  public:
   static const char* OBJECT_TYPE_NAME;
   
-  static const char* OUTER_RADIUS_ATT;
   static const char* OUTER_RADIUS_PROP;
-
-  static const char* THICKNESS_ATT;
   static const char* THICKNESS_PROP;
-
-  static const char* LENGTH_ATT;
   static const char* LENGTH_PROP;
-  
-  static const char* SURFACE_FLUOR_ATT;
   static const char* SURFACE_FLUOR_PROP;
-  
-  static const char* VOLUME_FLUOR_ATT;
   static const char* VOLUME_FLUOR_PROP;
 
   HollowCylinderModelObject(DirtyListener* dirtyListener);
   virtual ~HollowCylinderModelObject();
-
-  virtual void GetXMLConfiguration(xmlNodePtr node);
-  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

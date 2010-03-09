@@ -6,13 +6,8 @@
 
 const char* PlaneModelObject::OBJECT_TYPE_NAME = "PlaneModel";
 
-const char* PlaneModelObject::WIDTH_ATT   = "width";
-const char* PlaneModelObject::WIDTH_PROP  = "Width";
-
-const char* PlaneModelObject::HEIGHT_ATT  = "height";
-const char* PlaneModelObject::HEIGHT_PROP = "Height";
-
-const char* PlaneModelObject::SURFACE_FLUOR_ATT = "surfaceFluorophoreModel";
+const char* PlaneModelObject::WIDTH_PROP         = "Width";
+const char* PlaneModelObject::HEIGHT_PROP        = "Height";
 const char* PlaneModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
 
 
@@ -60,38 +55,3 @@ PlaneModelObject
   m_PlaneSource->SetPoint2(0.0, height, 0.0);
 }
 
-
-void
-PlaneModelObject
-::GetXMLConfiguration(xmlNodePtr node) {
-  // Create child element of node.
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST OBJECT_TYPE_NAME, NULL);
-
-  // Fill in common properties for all model objects.
-  ModelObject::GetXMLConfiguration(root);
-
-  // Add object-specific properties.
-  char doubleFormat[] = "%f";
-  char buf[128];
-  sprintf(buf, doubleFormat, GetProperty(WIDTH_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST WIDTH_ATT, BAD_CAST buf);
-  sprintf(buf, doubleFormat, GetProperty(HEIGHT_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST HEIGHT_ATT, BAD_CAST buf);
-}
-
-
-void
-PlaneModelObject
-::RestoreFromXML(xmlNodePtr node) {
-  ModelObject::RestoreFromXML(node);
-  
-  char* width = (char*) xmlGetProp(node, BAD_CAST WIDTH_ATT);
-  if (width) {
-    GetProperty(WIDTH_PROP)->SetDoubleValue(atof(width));
-  }
-
-  char* height = (char*) xmlGetProp(node, BAD_CAST HEIGHT_ATT);
-  if (height) {
-    GetProperty(HEIGHT_PROP)->SetDoubleValue(atof(height));
-  }
-}

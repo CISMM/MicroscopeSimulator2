@@ -13,21 +13,13 @@ class PlaneModelObject : public ModelObject {
  public:
   static const char* OBJECT_TYPE_NAME;
 
-  static const char* WIDTH_ATT;
   static const char* WIDTH_PROP;
-
-  static const char* HEIGHT_ATT;
   static const char* HEIGHT_PROP;
-
-  static const char* SURFACE_FLUOR_ATT;
   static const char* SURFACE_FLUOR_PROP;
 
 
   PlaneModelObject(DirtyListener* dirtyListener);
   virtual ~PlaneModelObject();
-
-  virtual void GetXMLConfiguration(xmlNodePtr node);
-  virtual void RestoreFromXML(xmlNodePtr node);
 
   virtual void Update();
 

@@ -8,17 +8,10 @@
 
 const char* TorusModelObject::OBJECT_TYPE_NAME          = "TorusModel";
 
-const char* TorusModelObject::CROSS_SECTION_RADIUS_ATT  = "crossSectionRadius";
 const char* TorusModelObject::CROSS_SECTION_RADIUS_PROP = "Cross Section Radius";
-
-const char* TorusModelObject::RING_RADIUS_ATT           = "ringRadius";
 const char* TorusModelObject::RING_RADIUS_PROP          = "Ring Radius";
-
-const char* TorusModelObject::SURFACE_FLUOR_ATT = "surfaceFluorophoreModel";
-const char* TorusModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
-
-const char* TorusModelObject::VOLUME_FLUOR_ATT = "volumeFluorophoreModel";
-const char* TorusModelObject::VOLUME_FLUOR_PROP = "Volume Fluorophore Model";
+const char* TorusModelObject::SURFACE_FLUOR_PROP        = "Surface Fluorophore Model";
+const char* TorusModelObject::VOLUME_FLUOR_PROP         = "Volume Fluorophore Model";
 
 
 TorusModelObject
@@ -67,37 +60,3 @@ TorusModelObject
 }
 
 
-void
-TorusModelObject
-::GetXMLConfiguration(xmlNodePtr node) {
-  // Create child element of node.
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST OBJECT_TYPE_NAME, NULL);
-
-  // Fill in common properties for all model objects.
-  ModelObject::GetXMLConfiguration(root);
-
-  // Add object-specific properties.
-  char doubleFormat[] = "%f";
-  char buf[128];
-  sprintf(buf, doubleFormat, GetProperty(CROSS_SECTION_RADIUS_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST CROSS_SECTION_RADIUS_ATT, BAD_CAST buf);
-  sprintf(buf, doubleFormat, GetProperty(RING_RADIUS_PROP)->GetDoubleValue());
-  xmlNewProp(root, BAD_CAST RING_RADIUS_ATT, BAD_CAST buf);
-}
-
-
-void
-TorusModelObject
-::RestoreFromXML(xmlNodePtr node) {
-  ModelObject::RestoreFromXML(node);
-
-  char* crossSectionRadius = (char*) xmlGetProp(node, BAD_CAST CROSS_SECTION_RADIUS_ATT);
-  if (crossSectionRadius) {
-    GetProperty(CROSS_SECTION_RADIUS_PROP)->SetDoubleValue(atof(crossSectionRadius));
-  }
-
-  char* ringRadius = (char*) xmlGetProp(node, BAD_CAST RING_RADIUS_ATT);
-  if (ringRadius) {
-    GetProperty(RING_RADIUS_PROP)->SetDoubleValue(atof(ringRadius));
-  }
-}
