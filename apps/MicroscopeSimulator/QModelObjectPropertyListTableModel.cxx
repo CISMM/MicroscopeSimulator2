@@ -41,18 +41,22 @@ QModelObjectPropertyListTableModel
 ::setData(const QModelIndex& index, const QVariant& value, int role) {
   ModelObjectProperty* mop = m_ModelObject->GetProperty(index.row());
 
-  if (mop->GetType() == ModelObjectProperty::BOOL_TYPE) {
-    mop->SetBoolValue(value.toBool());
-  } else if (mop->GetType() == ModelObjectProperty::INT_TYPE) {
-    mop->SetIntValue(value.toInt());
-  } else if (mop->GetType() == ModelObjectProperty::DOUBLE_TYPE) {
-    mop->SetDoubleValue(value.toDouble());
-  } else if (mop->GetType() == ModelObjectProperty::STRING_TYPE) {
-    mop->SetStringValue(value.toString().toStdString());
-  } else if (mop->GetType() == ModelObjectProperty::FLUOROPHORE_MODEL_TYPE) {
-    // Don't do anything
-  } else {
-    std::cout << "Unknown property type" << std::endl;
+  if (index.column() == 1) {
+    if (mop->GetType() == ModelObjectProperty::BOOL_TYPE) {
+      mop->SetBoolValue(value.toBool());
+    } else if (mop->GetType() == ModelObjectProperty::INT_TYPE) {
+      mop->SetIntValue(value.toInt());
+    } else if (mop->GetType() == ModelObjectProperty::DOUBLE_TYPE) {
+      mop->SetDoubleValue(value.toDouble());
+    } else if (mop->GetType() == ModelObjectProperty::STRING_TYPE) {
+      mop->SetStringValue(value.toString().toStdString());
+    } else if (mop->GetType() == ModelObjectProperty::FLUOROPHORE_MODEL_TYPE) {
+      // Don't do anything
+    } else {
+      std::cout << "Unknown property type" << std::endl;
+    }
+  } else if (index.column() == 3) {
+    mop->SetOptimize(value.toBool());
   }
 
   reset();
@@ -100,10 +104,13 @@ QModelObjectPropertyListTableModel
       return QVariant();
     }
   } else if (role == Qt::CheckStateRole) {
-    if (prop->GetType() == ModelObjectProperty::BOOL_TYPE && col == 1)
+    if (prop->GetType() == ModelObjectProperty::BOOL_TYPE && col == 1) {
       return (prop->GetBoolValue() ? Qt::Checked : Qt::Unchecked);
-    else
+    } else if (col == 3 && prop->IsOptimizable()) {
+      return (prop->GetOptimize() ? Qt::Checked : Qt::Unchecked);
+    } else {
       return QVariant();
+    }
   } else {
     return QVariant();
   }
@@ -125,6 +132,8 @@ QModelObjectPropertyListTableModel
       }
     }
     return flag;
+  } else if (index.column() == 3) {
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
   }
 
   return Qt::ItemIsEnabled;
@@ -138,9 +147,10 @@ QModelObjectPropertyListTableModel
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     switch (section) {
     case 0: return QVariant("Property"); break;
-    case 1: return QVariant("Value"); break;
-    case 2: return QVariant("Units"); break;
-    default: return QVariant(section); break;
+    case 1: return QVariant("Value");    break;
+    case 2: return QVariant("Units");    break;
+    case 3: return QVariant("Optimize"); break;
+    default: return QVariant(section);   break;
     }
   } else if (orientation == Qt::Vertical && role == Qt::DisplayRole) {
     return QVariant(section);
@@ -163,7 +173,7 @@ QModelObjectPropertyListTableModel
 int
 QModelObjectPropertyListTableModel
 ::columnCount(const QModelIndex& parent) const {
-  return 3;
+  return 4;
 }
 
 
