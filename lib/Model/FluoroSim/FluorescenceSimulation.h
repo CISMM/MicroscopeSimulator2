@@ -1,7 +1,6 @@
 #ifndef _FLUORESCENCE_SIMULATION_H_
 #define _FLUORESCENCE_SIMULATION_H_
 
-#include <StdLibGuard.h>
 #include <string>
 
 #include <DirtyListener.h>
@@ -9,7 +8,6 @@
 
 class PointSpreadFunction;
 class PointSpreadFunctionList;
-
 
 class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
