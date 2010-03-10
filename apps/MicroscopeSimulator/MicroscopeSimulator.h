@@ -25,6 +25,7 @@ class Simulation;
 class Visualization;
 
 class ErrorLogDialog;
+class OptimizerSettingsDialog;
 class PSFEditorDialog;
 class Preferences;
 class PreferencesDialog;
@@ -137,6 +138,8 @@ public slots:
   virtual void on_fluoroSimExportImageButton_clicked();
   virtual void on_fluoroSimExportStackButton_clicked();
 
+  virtual void on_fluoroSimOptimizerSettingsButton_clicked();
+
 protected:
   Simulation* m_Simulation;
   
@@ -181,6 +184,8 @@ private:
   vtkQtOutputLogger* m_ErrorLogger;
 
   PSFEditorDialog*   m_PSFEditorDialog;
+
+  OptimizerSettingsDialog* m_OptimizerSettingsDialog;
 
   Preferences*       m_Preferences;
   PreferencesDialog* m_PreferencesDialog;

@@ -23,6 +23,7 @@
 
 #include <ErrorLogDialog.h>
 #include <FluorophoreModelDialog.h>
+#include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
 #include <Preferences.h>
 #include <PreferencesDialog.h>
@@ -148,6 +149,9 @@ MicroscopeSimulator
   m_PSFEditorDialog->setModal(true);
   m_PSFEditorDialog->SetPSFList
     (m_Simulation->GetFluorescenceSimulation()->GetPSFList());
+
+  m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
+  m_OptimizerSettingsDialog->setModal(true);
 
   m_Preferences = new Preferences();
   
@@ -1049,12 +1053,14 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty())
     return;
 
-  vtkImageData* image = m_Visualization->GetFluorescenceImage();
+  vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
 
   vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
   scaler->SetOutputScalarTypeToUnsignedChar();
   scaler->ClampOverflowOn();
   scaler->SetInput(image);
+  image->Delete();
+
   double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
   double maxIntensity = m_Simulation->GetFluorescenceSimulation()->GetMaximumIntensityLevel();
   scaler->SetShift(-minIntensity);
@@ -1102,33 +1108,17 @@ MicroscopeSimulator
   QString fileNamePattern(selectedFileName.left(selectedFileName.length()-4));
   fileNamePattern.append("%04d.tif");
 
-  vtkSmartPointer<vtkImageAppend> appender = vtkSmartPointer<vtkImageAppend>::New();
-  appender->SetAppendAxis(2);
-
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
-
   double originalDepth = fluoroSim->GetFocalPlaneDepth();
-  double minDepth = fluoroSim->GetFocalPlaneDepthMinimum();
-  double maxDepth = fluoroSim->GetFocalPlaneDepthMaximum();
-  double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
-  for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
-    fluoroSim->SetFocalPlaneDepth(depth);
-    RenderViews();
-
-    vtkImageData* image = m_Visualization->GetFluorescenceImage();
-    vtkSmartPointer<vtkImageData> imageCopy = vtkSmartPointer<vtkImageData>::New();
-    imageCopy->DeepCopy(image);
-
-    appender->AddInput(imageCopy);
-  }
-
-  appender->GetOutput()->Update();
 
   // Cast to unsigned short
   vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
   scaler->SetOutputScalarTypeToUnsignedShort();
   scaler->ClampOverflowOn();
-  scaler->SetInputConnection(appender->GetOutputPort());
+
+  vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
+  scaler->SetInput(rawStack);
+  rawStack->Delete();
 
   // Write out to file
   vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
@@ -1141,6 +1131,17 @@ MicroscopeSimulator
   // Reset to original focal plane depth
   fluoroSim->SetFocalPlaneDepth(originalDepth);
   RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimOptimizerSettingsButton_clicked() {
+  m_OptimizerSettingsDialog->Update();
+  int result = m_OptimizerSettingsDialog->exec();
+  if (result == QDialog::Accepted) {
+    
+  }
 }
 
 
