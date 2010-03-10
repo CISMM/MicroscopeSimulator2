@@ -89,6 +89,12 @@ vtkImageData* vtkFluorescenceRenderView::GetImage() {
 }
 
 
+vtkAlgorithmOutput* vtkFluorescenceRenderView::GetImageOutputPort() {
+  this->Renderer->GetFramebufferTexture()->UpdateWholeExtent();
+  return this->Renderer->GetFramebufferTexture()->GetOutputPort();
+}
+
+
 void vtkFluorescenceRenderView::PrepareForRendering() {
   this->Update();
   

@@ -64,6 +64,7 @@ class vtkFluorescenceRenderView : public vtkView {
   // Gets a floating-point image containing the contents of the fluorescence
   // render window.
   virtual vtkImageData* GetImage();
+  virtual vtkAlgorithmOutput* GetImageOutputPort();
   
 protected:
   vtkFluorescenceRenderView();
