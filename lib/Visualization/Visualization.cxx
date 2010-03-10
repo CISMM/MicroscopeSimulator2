@@ -19,6 +19,7 @@
 #include <vtkAlgorithmOutput.h>
 #include <vtkCamera.h>
 #include <vtkFluorescenceRenderView.h>
+#include <vtkImageAppend.h>
 #include <vtkImageData.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleTrackballActor.h>
@@ -109,8 +110,44 @@ Visualization
 
 vtkImageData*
 Visualization
-::GetFluorescenceImage() {
-  return m_FluorescenceRenderView->GetImage();
+::GenerateFluorescenceImage() {
+  vtkImageData* imageData = vtkImageData::New();
+  imageData->ShallowCopy(m_FluorescenceRenderView->GetImage());
+
+  return imageData;
+}
+
+
+vtkImageData*
+Visualization
+::GenerateFluorescenceStackImage() {
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+  if (!fluoroSim)
+    return NULL;
+
+  vtkSmartPointer<vtkImageAppend> appender = vtkSmartPointer<vtkImageAppend>::New();
+  appender->SetAppendAxis(2);
+
+  double minDepth = fluoroSim->GetFocalPlaneDepthMinimum();
+  double maxDepth = fluoroSim->GetFocalPlaneDepthMaximum();
+  double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
+  for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
+    fluoroSim->SetFocalPlaneDepth(depth);
+    FluorescenceViewRender();
+
+    vtkImageData* image = GenerateFluorescenceImage();
+    vtkSmartPointer<vtkImageData> imageCopy = vtkSmartPointer<vtkImageData>::New();
+    imageCopy->DeepCopy(image);
+
+    appender->AddInput(imageCopy);
+  }
+
+  appender->Update();
+
+  vtkImageData* stackImage = vtkImageData::New();
+  stackImage->ShallowCopy(appender->GetOutput());
+
+  return stackImage;
 }
 
 

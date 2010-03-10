@@ -1,6 +1,10 @@
 #ifndef _VISUALIZATION_H_
 #define _VISUALIZATION_H_
 
+#include <FluorescenceImageSource.h>
+
+#include <vtkSmartPointer.h>
+#include <vtkCommand.h>
 #include <vtkSmartPointer.h>
 
 // Forward declarations
@@ -20,18 +24,10 @@ class GeometryRepresentation;
 class ModelObject;
 class Simulation;
 class VisualizationInteractionObserver;
-
-
-#include <vtkCommand.h>
-#include <vtkSmartPointer.h>
-
-// Forward declarations
 class PointSpreadFunction;
 
-class vtkImageData;
 
-
-class Visualization {
+class Visualization : public FluorescenceImageSource {
 
 public:
   Visualization();
@@ -45,7 +41,8 @@ public:
   void ModelObjectViewRender();
   void FluorescenceViewRender();
 
-  vtkImageData* GetFluorescenceImage();
+  virtual vtkImageData* GenerateFluorescenceImage();
+  virtual vtkImageData* GenerateFluorescenceStackImage();
 
   void ResetModelObjectCamera();
   void RefreshModelObjectView();
