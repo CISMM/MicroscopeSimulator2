@@ -26,7 +26,7 @@
 namespace itk
 {
 
-/** \class ParameterizedParameterizedImageSource
+/** \class ParameterizedImageSource
  *  \brief Extends ParameterizedImageSource so that parameters can be passed 
  *  to it as a vector of values using the SetParameters() method. This method
  *  enables parameterized image sources to be used within ITK's optimization/
