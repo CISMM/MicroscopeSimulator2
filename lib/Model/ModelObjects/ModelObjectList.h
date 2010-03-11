@@ -35,8 +35,6 @@ class ModelObjectList : public DirtyListener, public XMLStorable {
   void Delete(ModelObjectPtr mo);
   void DeleteAll();
 
-  // TODO - add GetMaximumObjectHeight - see ModelObjectList.java
-
   std::string GenerateUniqueName(const std::string& name);
 
  protected:
