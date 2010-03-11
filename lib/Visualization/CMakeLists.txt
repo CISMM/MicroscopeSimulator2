@@ -5,6 +5,8 @@ SET(visualizationSrc
   VisualizationPipeline.cxx
   Visualization.h
   Visualization.cxx
+  VisualizationFluorescenceImageSource.h
+  VisualizationFluorescenceImageSource.cxx
 )
 
 SET(visualizationViewsSrc
