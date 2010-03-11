@@ -320,9 +320,6 @@ MicroscopeSimulator
 
   // Reset camera
   m_ModelObjectRenderer->ResetCamera();
-  
-  // Render
-  //this->modelObjectQvtkWidget->GetRenderWindow()->Render();
 }
 
 
@@ -335,21 +332,9 @@ MicroscopeSimulator
       return;
   }
 
-  m_ModelObjectListModel->SetModelObjectList(NULL);
   m_ModelObjectPropertyListTableModel->SetModelObject(NULL);
-
-  PointSpreadFunctionList* psfList = m_Simulation->GetFluorescenceSimulation()->GetPSFList();
-
-  // Delete the old Simulation and replace with a new one.
-  delete m_Simulation;
-  m_Simulation = new Simulation(this);
-  m_Visualization->SetSimulation(m_Simulation);
-
-  // Set PSFList in the PSFMenuListModel to the previous one.
-  m_Simulation->GetFluorescenceSimulation()->SetPSFList(psfList);
-
-  m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
-  m_ModelObjectListModel->SetModelObjectList(m_Simulation->GetModelObjectList());  
+  m_Simulation->NewSimulation();
+  m_Visualization->RefreshModelObjectView();
 }
 
 
@@ -1142,6 +1127,15 @@ MicroscopeSimulator
   if (result == QDialog::Accepted) {
     
   }
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimOptimizeButton_clicked() {
+  // TODO - pop up warning that this may take a while to run
+
+  m_Simulation->OptimizeToFluorescence();
 }
 
 

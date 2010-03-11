@@ -139,6 +139,8 @@ public slots:
   virtual void on_fluoroSimExportStackButton_clicked();
 
   virtual void on_fluoroSimOptimizerSettingsButton_clicked();
+  
+  virtual void on_fluoroSimOptimizeButton_clicked();
 
 protected:
   Simulation* m_Simulation;
