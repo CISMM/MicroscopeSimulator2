@@ -50,6 +50,7 @@ Simulation
       this->SetNumberOfThreads(numberOfThreads);
   }
 
+  NewSimulation();
 }
 
 
