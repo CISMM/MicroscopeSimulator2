@@ -24,6 +24,10 @@
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkObjectFactory.h"
 #include "itkProgressReporter.h"
+#include "itkVTKImageImport.h"
+
+#include <vtkImageExport.h>
+#include <vtkImageExtractComponents.h>
 
 namespace itk
 {
@@ -35,17 +39,18 @@ template <class TOutputImage>
 FluorescenceImageSource<TOutputImage>
 ::FluorescenceImageSource()
 {
-  m_Size    = new unsigned long [TOutputImage::GetImageDimension()];
-  m_Spacing = new double [TOutputImage::GetImageDimension()];
   m_Origin  = new double [TOutputImage::GetImageDimension()];
 
-  //Initial image is 0 pixels in each direction.
   for (unsigned int i=0; i<TOutputImage::GetImageDimension(); i++)
     {
-    m_Size[i] = 0;
-    m_Spacing[i] = 1.0;
     m_Origin[i] = 0.0;
     }
+
+  // TODO - set up extract components
+
+  // TODO - set up VTK image exporter
+
+  // TODO - set up ITK image importer
 
 }
 
@@ -54,8 +59,6 @@ template <class TOutputImage>
 FluorescenceImageSource<TOutputImage>
 ::~FluorescenceImageSource()
 {
-  delete [] m_Size;
-  delete [] m_Spacing;
   delete [] m_Origin;
 }
 
@@ -64,14 +67,15 @@ template <class TOutputImage>
 void
 FluorescenceImageSource<TOutputImage>
 ::SetParameters(const ParametersType& parameters) {
-  Array<double> doubleParams(GetNumberOfParameters());
-  for (unsigned int i = 0; i < GetNumberOfParameters(); i++) {
-    doubleParams[i] = static_cast<float>(parameters[i]);
+  int numParameters = GetNumberOfParameters();
+  double* doubleParams = new double[numParameters];
+  for (unsigned int i = 0; i < numParameters; i++) {
+    doubleParams[i] = static_cast<double>(parameters[i]);
   }
 
-  int index = 0;
+  m_ImageSource->SetParameters(doubleParams);
 
-  // TODO - hook up parameters to the fluorescence image generator
+  delete[] doubleParams;
 }
 
 
@@ -79,18 +83,17 @@ template <class TOutputImage>
 typename FluorescenceImageSource<TOutputImage>::ParametersType
 FluorescenceImageSource<TOutputImage>
 ::GetParameters() const {
-  Array<double> doubleParams(GetNumberOfParameters());
+  int numParameters = GetNumberOfParameters();
+  double* doubleParams = new double[numParameters];
 
-  int index = 0;
+  m_ImageSource->GetParameters(doubleParams);
 
-  // TODO - look up parameters from fluorescence image generator
-
-  ParametersType parameters(GetNumberOfParameters());
-  for (unsigned int i = 0; i < GetNumberOfParameters(); i++) {
+  ParametersType parameters(numParameters);
+  for (unsigned int i = 0; i < numParameters; i++) {
     parameters[i] = static_cast<double>(doubleParams[i]);
   }
 
-  return parameters;
+  delete[] doubleParams;
 }
 
 
@@ -98,9 +101,7 @@ template <class TOutputImage>
 unsigned int
 FluorescenceImageSource<TOutputImage>
 ::GetNumberOfParameters() const {
-  // TODO - count up active parameters
-  
-  return 23;
+  return m_ImageSource->GetNumberOfParameters();
 }
 
 
@@ -120,21 +121,6 @@ FluorescenceImageSource<TOutputImage>
     os << m_Origin[i] << ", ";
     }
   os << m_Origin[i] << "]" << std::endl;
-
-  os << indent << "Spacing: [";
-  for (i=0; i < TOutputImage::ImageDimension - 1; i++)
-    {
-    os << m_Spacing[i] << ", ";
-    }
-  os << m_Spacing[i] << "] (nanometers)" << std::endl;
-
-  os << indent << "Size: [";
-  for (i=0; i < TOutputImage::ImageDimension - 1; i++)
-    {
-    os << m_Size[i] << ", ";
-    }
-  os << m_Size[i] << "]" << std::endl;
-
 }
 
 //----------------------------------------------------------------------------
@@ -146,7 +132,12 @@ FluorescenceImageSource<TOutputImage>
   TOutputImage *output;
   typename TOutputImage::IndexType index = {{0}};
   typename TOutputImage::SizeType size = {{0}};
-  size.SetSize( m_Size );
+
+  int* sourceSize = m_ImageSource->GetDimensions();
+  for (unsigned long i = 0; i < TOutputImage::ImageDimension; i++) {
+    size.SetElement(i, static_cast<typename TOutputImage::SizeType::SizeValueType>(sourceSize[i]));
+  }
+  size.SetSize( sourceSize );
   
   output = this->GetOutput(0);
 
@@ -155,7 +146,7 @@ FluorescenceImageSource<TOutputImage>
   largestPossibleRegion.SetIndex( index );
   output->SetLargestPossibleRegion( largestPossibleRegion );
 
-  output->SetSpacing(m_Spacing);
+  output->SetSpacing(m_ImageSource->GetSpacing());
   output->SetOrigin(m_Origin);
 }
 
@@ -166,7 +157,6 @@ FluorescenceImageSource<TOutputImage>
 ::ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread,
                        int threadId )
 {
-  itkDebugMacro(<<"Generating a random image of scalars");
 
   // Support progress methods/callbacks
   ProgressReporter progress(this, threadId, outputRegionForThread.GetNumberOfPixels());
@@ -176,30 +166,7 @@ FluorescenceImageSource<TOutputImage>
 
   ImageRegionIteratorWithIndex<TOutputImage> it(image, outputRegionForThread);
 
-#if 0
-  int zSlice = -1;
-  complex_t opdCache[INTEGRATE_N];
 
-  for (; !it.IsAtEnd(); ++it)
-    {
-    typename TOutputImage::IndexType index = it.GetIndex();
-    typename TOutputImage::PointType point;
-    image->TransformIndexToPhysicalPoint(index, point);
-
-    for (int i = 0; i < 3; i++)
-      point[i] -= m_PointCenter[i];
-
-    // See if we have switched slices. If so, we need to precompute some
-    // integral terms for the new slice.
-    if (zSlice != index[2]) {
-      PrecomputeOPDTerms(opdCache, point[2] * 1e-9);
-      zSlice = index[2];
-    }
-
-    it.Set( ComputeIntegratedPixelValue(opdCache, point) );
-    progress.CompletedPixel();
-    }
-#endif
 }
 
 

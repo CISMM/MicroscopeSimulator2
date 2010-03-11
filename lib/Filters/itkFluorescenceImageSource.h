@@ -23,6 +23,9 @@
 #include "itkParameterizedImageSource.h"
 #include "itkNumericTraits.h"
 
+#include <FluorescenceImageSource.h>
+
+
 namespace itk
 {
 
@@ -59,24 +62,13 @@ public:
   typedef typename Superclass::ParametersValueType ParametersValueType;
   typedef typename Superclass::ParametersType      ParametersType;
   
-  /** Specify the size of the output image. */
-  itkSetVectorMacro(Size,unsigned long,TOutputImage::ImageDimension);
-
-  /** Get the size of the output image. */
-  itkGetVectorMacro(Size,unsigned long,TOutputImage::ImageDimension);
-  
-  /** Specify the spacing of the output image (in nanometers). */
-  itkSetVectorMacro(Spacing,double,TOutputImage::ImageDimension);
-
-  /** Get the spacing of the output image (in nanometers). */
-  itkGetVectorMacro(Spacing,double,TOutputImage::ImageDimension);
-
   /** Specify the origin of the output image (in nanometers). */
   itkSetVectorMacro(Origin,double,TOutputImage::ImageDimension);
 
   /** Get the origin of the output image (in nanometers). */
   itkGetVectorMacro(Origin,double,TOutputImage::ImageDimension);
 
+  void SetFluorescenceImageSource(FluorescenceImageSource* source);
 
   /** Expects the parameters argument to contain values for ALL parameters. */
   virtual void SetParameters(const ParametersType& parameters);
@@ -106,7 +98,8 @@ private:
   unsigned long *m_Size;         //size of the output image
   double        *m_Spacing;      //spacing
   double        *m_Origin;       //origin
-  double        *m_PointCenter;  // the center of the point source
+
+  FluorescenceImageSource* m_ImageSource;
 };
 
 } // end namespace itk
