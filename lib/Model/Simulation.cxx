@@ -5,7 +5,6 @@
 #pragma warning( disable : 4996 )
 #endif
 
-//#include <StdLibGuard.h>
 #include <cstdlib>
 #include <ctime>
 
@@ -15,6 +14,7 @@
 #include <Simulation.h>
 
 #include <FluorescenceSimulation.h>
+
 #include <ModelObjectList.h>
 #include <XMLHelper.h>
 
@@ -35,9 +35,6 @@ const char* Simulation::ACTOR_INTERACTION_EVENT = "InteractionEvent";
 
 Simulation
 ::Simulation(DirtyListener* dirtyListener) {
-  m_SimulationDescription = std::string();
-  m_SimulationFileName = NEW_FILE;
-  m_SimulationAlreadySaved = false;
   m_DirtyListener = dirtyListener;
   m_ModelObjectList = new ModelObjectList(this);
 
@@ -52,22 +49,25 @@ Simulation
     if (numberOfThreads > 0)
       this->SetNumberOfThreads(numberOfThreads);
   }
+
 }
 
 
 Simulation
 ::~Simulation() {
   delete m_ModelObjectList;
+  delete m_FluoroSim;
 }
 
 
 void
 Simulation
 ::NewSimulation() {
-  // TODO - fill in
-
-  m_SimulationFileName = std::string();
   m_SimulationDescription  = std::string();
+  m_SimulationFileName = NEW_FILE;
+  m_SimulationAlreadySaved = false;
+
+  m_ModelObjectList->DeleteAll();
 
   m_FluoroSim->NewSimulation();
 }
