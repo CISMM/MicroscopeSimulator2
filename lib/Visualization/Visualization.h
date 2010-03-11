@@ -1,8 +1,6 @@
 #ifndef _VISUALIZATION_H_
 #define _VISUALIZATION_H_
 
-#include <FluorescenceImageSource.h>
-
 #include <vtkSmartPointer.h>
 #include <vtkCommand.h>
 #include <vtkSmartPointer.h>
@@ -22,18 +20,20 @@ class vtkVisualizationInteractionObserver;
 class FluorescenceRepresentation;
 class GeometryRepresentation;
 class ModelObject;
+class PointSpreadFunction;
 class Simulation;
 class VisualizationInteractionObserver;
-class PointSpreadFunction;
+class VisualizationFluorescenceImageSource;
 
 
-class Visualization : public FluorescenceImageSource {
+class Visualization {
 
 public:
   Visualization();
   virtual ~Visualization();
 
   void SetSimulation(Simulation* simulation);
+  Simulation* GetSimulation();
 
   vtkRenderWindow* GetModelObjectRenderWindow();
   vtkRenderWindow* GetFluorescenceRenderWindow();
@@ -61,6 +61,8 @@ public:
 
 protected:
   Simulation* m_Simulation;
+
+  VisualizationFluorescenceImageSource* m_ImageSource;
 
   GeometryRepresentation*     m_GeometryRepresentation;
   FluorescenceRepresentation* m_FluorescenceRepresentation;

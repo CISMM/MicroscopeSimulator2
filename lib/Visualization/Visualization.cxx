@@ -13,6 +13,7 @@
 #include <GeometryRepresentation.h>
 #include <PointSpreadFunction.h>
 #include <Simulation.h>
+#include <VisualizationFluorescenceImageSource.h>
 
 #include <vtkActor.h>
 #include <vtkAbstractPicker.h>
@@ -39,6 +40,9 @@
 Visualization
 ::Visualization() {
   m_Simulation = NULL;
+  m_ImageSource = new VisualizationFluorescenceImageSource();
+  m_ImageSource->SetVisualization(this);
+
   m_GeometryRepresentation = new GeometryRepresentation();
   m_FluorescenceRepresentation = new FluorescenceRepresentation();
   m_FluorescenceWidgetsRepresentation = vtkSmartPointer<vtkFluorescenceWidgetsRepresentation>::New();
@@ -72,11 +76,20 @@ void
 Visualization
 ::SetSimulation(Simulation* simulation) {
   m_Simulation = simulation;
+  m_Simulation->GetFluorescenceSimulation()->
+    SetFluorescenceImageSource(m_ImageSource);
+
   m_GeometryRepresentation->SetModelObjectList(simulation->GetModelObjectList());
   m_FluorescenceRepresentation->SetModelObjectList(simulation->GetModelObjectList());
   m_FluorescenceWidgetsRepresentation->SetFluorescenceSimulation(simulation->GetFluorescenceSimulation());
   m_FluorescenceRenderView->SetFluorescenceSimulation(simulation->GetFluorescenceSimulation());
+}
 
+
+Simulation*
+Visualization
+::GetSimulation() {
+  return m_Simulation;
 }
 
 
