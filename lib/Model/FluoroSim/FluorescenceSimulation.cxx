@@ -2,6 +2,7 @@
 #include <PointSpreadFunction.h>
 
 #include <FluorescenceSimulation.h>
+#include <FluorescenceImageSource.h>
 
 const char* FluorescenceSimulation::FOCAL_DEPTH_ATT = "focalDepth";
 const char* FluorescenceSimulation::FOCAL_DEPTH_MIN_ATT = "focalDepthMin";
@@ -28,25 +29,7 @@ FluorescenceSimulation
   m_DirtyListener = dirtyListener;
   m_PSFList = new PointSpreadFunctionList();
 
-  m_FocalPlaneDepth = 0.0;
-  m_FocalPlaneDepthMinimum = 0.0;
-  m_FocalPlaneDepthMaximum = 0.0;
-  m_FocalPlaneDepthSpacing = 0.0;
-  m_ActivePSFIndex = 0;
-  m_Exposure = 1.0;
-  m_PixelSize = 65.0;
-  m_ImageWidth = 200;
-  m_ImageHeight = 200;
-  m_AddGaussianNoise = false;
-  m_NoiseStdDev = 0.0;
-  m_NoiseMean = 0.0;
-  m_ShowImageVolumeOutline = false;
-  m_ShowReferencePlane = true;
-  m_ShowReferenceGrid = true;
-  m_ReferenceGridSpacing = 1000.0;
-  m_SuperimposeFluorescenceImage = false;
-  m_MinimumIntensityLevel = 0.0;
-  m_MaximumIntensityLevel = 1.0;
+  m_FluoroImageSource = NULL;
 
   NewSimulation();
 }
@@ -65,6 +48,7 @@ FluorescenceSimulation
   m_FocalPlaneDepthMinimum = -5000.0;
   m_FocalPlaneDepthMaximum =  5000.0;
   m_FocalPlaneDepthSpacing =   200.0;
+  m_ActivePSFIndex = 0;
   m_Exposure    = 1.0;
   m_PixelSize   = 65.0;
   m_ImageWidth  = 200;
@@ -257,6 +241,20 @@ FluorescenceSimulation
   if (m_DirtyListener) {
     m_DirtyListener->SetStatusMessage(status);
   }
+}
+
+
+void
+FluorescenceSimulation
+::SetFluorescenceImageSource(FluorescenceImageSource* source) {
+  m_FluoroImageSource = source;
+}
+
+
+FluorescenceImageSource*
+FluorescenceSimulation
+::GetFluorescenceImageSource() {
+  return m_FluoroImageSource;
 }
 
 

@@ -6,6 +6,7 @@
 #include <DirtyListener.h>
 #include <XMLStorable.h>
 
+class FluorescenceImageSource;
 class PointSpreadFunction;
 class PointSpreadFunctionList;
 
@@ -42,6 +43,9 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
   virtual void Sully();
   virtual void SetStatusMessage(const std::string& status);
+
+  void SetFluorescenceImageSource(FluorescenceImageSource* source);
+  FluorescenceImageSource* GetFluorescenceImageSource();
 
   PointSpreadFunction* GetActivePointSpreadFunction();
 
@@ -97,6 +101,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   bool   m_SuperimposeFluorescenceImage;
   double m_MinimumIntensityLevel;
   double m_MaximumIntensityLevel;
+
+  FluorescenceImageSource* m_FluoroImageSource;
 
   PointSpreadFunctionList* m_PSFList;
   std::string m_PSFListSettingsFileName;
