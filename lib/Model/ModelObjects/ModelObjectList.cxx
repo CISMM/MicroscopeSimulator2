@@ -151,6 +151,17 @@ ModelObjectList
 }
 
 
+void
+ModelObjectList
+::DeleteAll() {
+  std::list<ModelObjectPtr>::iterator iter = m_ObjectList.begin();
+  for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
+    delete *iter;
+  }
+  m_ObjectList.erase(m_ObjectList.begin(), m_ObjectList.end());
+}
+
+
 std::string
 ModelObjectList
 ::GenerateUniqueName(const std::string& name) {

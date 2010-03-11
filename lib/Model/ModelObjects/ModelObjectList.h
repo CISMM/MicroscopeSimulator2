@@ -33,6 +33,7 @@ class ModelObjectList : public DirtyListener, public XMLStorable {
 
   void Add(ModelObjectPtr mo);
   void Delete(ModelObjectPtr mo);
+  void DeleteAll();
 
   // TODO - add GetMaximumObjectHeight - see ModelObjectList.java
 
