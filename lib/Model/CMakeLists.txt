@@ -41,6 +41,8 @@ SET(modelModelObjectsSrc
 SET(modelFluoroSimSrc
   FluoroSim/FluorescenceSimulation.h
   FluoroSim/FluorescenceSimulation.cxx
+  FluoroSim/FluorescenceOptimizer.h
+  FluoroSim/FluorescenceOptimizer.cxx
   FluoroSim/PointSpreadFunction.h
   FluoroSim/PointSpreadFunction.cxx
   FluoroSim/GaussianPointSpreadFunction.h
