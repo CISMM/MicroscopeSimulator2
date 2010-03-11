@@ -110,7 +110,8 @@ ModelObjectList
 ::GetModelObjectByName(const std::string& objectName) {
   ModelObjectListIterator iter;
   for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
-    // TODO - check for name matching objectName
+    if ((*iter)->GetName() == objectName)
+      return *iter;
   }
 
   return NULL;
