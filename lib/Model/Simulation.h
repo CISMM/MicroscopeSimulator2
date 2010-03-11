@@ -11,6 +11,7 @@
 
 // Forward declarations
 class FluorescenceSimulation;
+class FluorescenceOptimizer;
 
 
 // This is the data model for the Microscope Simulator library.
@@ -60,8 +61,8 @@ public:
   std::string& GetSimulationCreationDate();
 
   FluorescenceSimulation* GetFluorescenceSimulation();
-
-  void UpdateDisplay();
+  
+  void OptimizeToFluorescence();
 
   void SetNumberOfThreads(int threads);
   int  GetNumberOfThreads();
@@ -86,6 +87,7 @@ protected:
   DirtyListener* m_DirtyListener;
 
   FluorescenceSimulation* m_FluoroSim;
+  FluorescenceOptimizer* m_FluoroOptimizer;
 
   ModelObjectList* m_ModelObjectList;
 

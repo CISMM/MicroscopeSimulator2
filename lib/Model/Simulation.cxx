@@ -14,6 +14,7 @@
 #include <Simulation.h>
 
 #include <FluorescenceSimulation.h>
+#include <FluorescenceOptimizer.h>
 
 #include <ModelObjectList.h>
 #include <XMLHelper.h>
@@ -40,6 +41,10 @@ Simulation
 
   m_FluoroSim = new FluorescenceSimulation(this);
 
+  m_FluoroOptimizer = new FluorescenceOptimizer();
+  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
   // ITK will detect the number of cores on the system and set it by default.
   // Here we can override that setting if the proper environment variable is
   // set.
@@ -58,6 +63,7 @@ Simulation
 ::~Simulation() {
   delete m_ModelObjectList;
   delete m_FluoroSim;
+  delete m_FluoroOptimizer;
 }
 
 
@@ -279,9 +285,8 @@ Simulation
 
 void
 Simulation
-::UpdateDisplay() {
-  // TODO - visModes.visualize(displayState);
-  // TODO - fluoroSim.updateView();
+::OptimizeToFluorescence() {
+  m_FluoroOptimizer->Optimize();
 }
 
 
