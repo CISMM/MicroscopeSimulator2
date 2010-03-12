@@ -70,6 +70,8 @@ void
 FluorescenceImageSource<TOutputImage>
 ::SetFluorescenceImageSource(::FluorescenceImageSource* source) {
   m_ImageSource = source;
+
+  this->Modified();
 }
 
 
@@ -86,6 +88,8 @@ FluorescenceImageSource<TOutputImage>
   m_ImageSource->SetParameters(doubleParams);
 
   delete[] doubleParams;
+
+  this->Modified();
 }
 
 
