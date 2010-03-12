@@ -20,10 +20,16 @@
 #ifndef __itkFluorescenceImageSource_h
 #define __itkFluorescenceImageSource_h
 
-#include "itkParameterizedImageSource.h"
 #include "itkNumericTraits.h"
+#include "itkParameterizedImageSource.h"
+#include "itkVTKImageImport.h"
+
+#include <vtkSmartPointer.h>
 
 #include <FluorescenceImageSource.h>
+
+class vtkImageExtractComponents;
+class vtkImageExport;
 
 
 namespace itk
@@ -39,15 +45,18 @@ class FluorescenceImageSource : public ParameterizedImageSource<TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef FluorescenceImageSource         Self;
+  typedef FluorescenceImageSource                Self;
   typedef ParameterizedImageSource<TOutputImage> Superclass;
-  typedef SmartPointer<Self>        Pointer;
-  typedef SmartPointer<const Self>  ConstPointer;
+  typedef SmartPointer<Self>                     Pointer;
+  typedef SmartPointer<const Self>               ConstPointer;
 
   /** Typedef for the output image PixelType. */
-  typedef TOutputImage                        OutputImageType;
-  typedef typename OutputImageType::PixelType PixelType;
-  typedef typename OutputImageType::RegionType OutputImageRegionType;
+  typedef TOutputImage                           OutputImageType;
+  typedef typename OutputImageType::PixelType    PixelType;
+  typedef typename OutputImageType::RegionType   OutputImageRegionType;
+
+  /** Typedef for ITK image importer */
+  typedef VTKImageImport<TOutputImage> VTKImageImportType;
 
   itkStaticConstMacro(ImageDimension,
 		      unsigned int,
@@ -61,14 +70,8 @@ public:
 
   typedef typename Superclass::ParametersValueType ParametersValueType;
   typedef typename Superclass::ParametersType      ParametersType;
-  
-  /** Specify the origin of the output image (in nanometers). */
-  itkSetVectorMacro(Origin,double,TOutputImage::ImageDimension);
 
-  /** Get the origin of the output image (in nanometers). */
-  itkGetVectorMacro(Origin,double,TOutputImage::ImageDimension);
-
-  void SetFluorescenceImageSource(FluorescenceImageSource* source);
+  void SetFluorescenceImageSource(::FluorescenceImageSource* source);
 
   /** Expects the parameters argument to contain values for ALL parameters. */
   virtual void SetParameters(const ParametersType& parameters);
@@ -81,25 +84,29 @@ public:
 
 
 protected:
+
+  ::FluorescenceImageSource* m_ImageSource;
+
+  int m_ExtractedComponent;
+  vtkSmartPointer<vtkImageExtractComponents> m_Extractor;
+
+  vtkSmartPointer<vtkImageExport> m_VTKExporter;
+
+  typename VTKImageImportType::Pointer m_ITKImporter;
+
   FluorescenceImageSource();
   ~FluorescenceImageSource();
   void PrintSelf(std::ostream& os, Indent indent) const;
   
-  virtual void 
-  ThreadedGenerateData(const OutputImageRegionType& 
-                       outputRegionForThread, int threadId );
-  virtual void GenerateOutputInformation();
+  void SetUpExporterImporterConnection();
 
+  virtual void GenerateData();
+  virtual void GenerateOutputInformation();
 
 private:
   FluorescenceImageSource(const FluorescenceImageSource&); //purposely not implemented
   void operator=(const FluorescenceImageSource&); //purposely not implemented
 
-  unsigned long *m_Size;         //size of the output image
-  double        *m_Spacing;      //spacing
-  double        *m_Origin;       //origin
-
-  FluorescenceImageSource* m_ImageSource;
 };
 
 } // end namespace itk

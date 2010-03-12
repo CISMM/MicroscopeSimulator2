@@ -26,8 +26,10 @@
 #include "itkProgressReporter.h"
 #include "itkVTKImageImport.h"
 
+#include <vtkImageData.h>
 #include <vtkImageExport.h>
 #include <vtkImageExtractComponents.h>
+
 
 namespace itk
 {
@@ -35,41 +37,49 @@ namespace itk
 /**
  *
  */
-template <class TOutputImage>
+template <typename TOutputImage>
 FluorescenceImageSource<TOutputImage>
 ::FluorescenceImageSource()
 {
-  m_Origin  = new double [TOutputImage::GetImageDimension()];
+  m_ImageSource = NULL;
+  m_ExtractedComponent = 0;
 
-  for (unsigned int i=0; i<TOutputImage::GetImageDimension(); i++)
-    {
-    m_Origin[i] = 0.0;
-    }
+  m_Extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+  m_Extractor->SetComponents(m_ExtractedComponent);
+  // Defer connection to input source
 
-  // TODO - set up extract components
+  m_VTKExporter = vtkSmartPointer<vtkImageExport>::New();
+  m_VTKExporter->SetInputConnection(m_Extractor->GetOutputPort());
 
-  // TODO - set up VTK image exporter
+  m_ITKImporter = VTKImageImportType::New();
+  m_ITKImporter->SetCallbackUserData(m_VTKExporter);
 
-  // TODO - set up ITK image importer
-
+  SetUpExporterImporterConnection();
 }
 
 
-template <class TOutputImage>
+template <typename TOutputImage>
 FluorescenceImageSource<TOutputImage>
 ::~FluorescenceImageSource()
 {
-  delete [] m_Origin;
 }
 
 
-template <class TOutputImage>
+template <typename TOutputImage>
+void
+FluorescenceImageSource<TOutputImage>
+::SetFluorescenceImageSource(::FluorescenceImageSource* source) {
+  m_ImageSource = source;
+}
+
+
+template <typename TOutputImage>
 void
 FluorescenceImageSource<TOutputImage>
 ::SetParameters(const ParametersType& parameters) {
   int numParameters = GetNumberOfParameters();
   double* doubleParams = new double[numParameters];
-  for (unsigned int i = 0; i < numParameters; i++) {
+  for (int i = 0; i < numParameters; i++) {
     doubleParams[i] = static_cast<double>(parameters[i]);
   }
 
@@ -79,7 +89,7 @@ FluorescenceImageSource<TOutputImage>
 }
 
 
-template <class TOutputImage>
+template <typename TOutputImage>
 typename FluorescenceImageSource<TOutputImage>::ParametersType
 FluorescenceImageSource<TOutputImage>
 ::GetParameters() const {
@@ -89,15 +99,17 @@ FluorescenceImageSource<TOutputImage>
   m_ImageSource->GetParameters(doubleParams);
 
   ParametersType parameters(numParameters);
-  for (unsigned int i = 0; i < numParameters; i++) {
+  for (int i = 0; i < numParameters; i++) {
     parameters[i] = static_cast<double>(doubleParams[i]);
   }
 
   delete[] doubleParams;
+
+  return parameters;
 }
 
 
-template <class TOutputImage>
+template <typename TOutputImage>
 unsigned int
 FluorescenceImageSource<TOutputImage>
 ::GetNumberOfParameters() const {
@@ -108,22 +120,44 @@ FluorescenceImageSource<TOutputImage>
 /**
  *
  */
-template <class TOutputImage>
+template <typename TOutputImage>
 void 
 FluorescenceImageSource<TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
-  unsigned int i;
-  os << indent << "Origin: [";
-  for (i=0; i < TOutputImage::ImageDimension - 1; i++)
-    {
-    os << m_Origin[i] << ", ";
-    }
-  os << m_Origin[i] << "]" << std::endl;
 }
 
-//----------------------------------------------------------------------------
+
+template <typename TOutputImage>
+void
+FluorescenceImageSource<TOutputImage>
+::SetUpExporterImporterConnection() {
+  m_ITKImporter->
+    SetBufferPointerCallback(m_VTKExporter->GetBufferPointerCallback());
+  m_ITKImporter->
+    SetDataExtentCallback(m_VTKExporter->GetDataExtentCallback());
+  m_ITKImporter->
+    SetOriginCallback(m_VTKExporter->GetOriginCallback());
+  m_ITKImporter->
+    SetSpacingCallback(m_VTKExporter->GetSpacingCallback());
+  m_ITKImporter->
+    SetNumberOfComponentsCallback(m_VTKExporter->GetNumberOfComponentsCallback());
+  m_ITKImporter->
+    SetPipelineModifiedCallback(m_VTKExporter->GetPipelineModifiedCallback());
+  m_ITKImporter->
+    SetPropagateUpdateExtentCallback(m_VTKExporter->GetPropagateUpdateExtentCallback());
+  m_ITKImporter->
+    SetScalarTypeCallback(m_VTKExporter->GetScalarTypeCallback());
+  m_ITKImporter->
+    SetUpdateDataCallback(m_VTKExporter->GetUpdateDataCallback());
+  m_ITKImporter->
+    SetUpdateInformationCallback(m_VTKExporter->GetUpdateInformationCallback());
+  m_ITKImporter->
+    SetWholeExtentCallback(m_VTKExporter->GetWholeExtentCallback());
+}
+
+
 template <typename TOutputImage>
 void 
 FluorescenceImageSource<TOutputImage>
@@ -137,7 +171,6 @@ FluorescenceImageSource<TOutputImage>
   for (unsigned long i = 0; i < TOutputImage::ImageDimension; i++) {
     size.SetElement(i, static_cast<typename TOutputImage::SizeType::SizeValueType>(sourceSize[i]));
   }
-  size.SetSize( sourceSize );
   
   output = this->GetOutput(0);
 
@@ -147,26 +180,27 @@ FluorescenceImageSource<TOutputImage>
   output->SetLargestPossibleRegion( largestPossibleRegion );
 
   output->SetSpacing(m_ImageSource->GetSpacing());
-  output->SetOrigin(m_Origin);
+
+  double origin[TOutputImage::ImageDimension];
+  for (int i = 0; i < TOutputImage::ImageDimension; i++) {
+    origin[i] = 0.0;
+  }
+  output->SetOrigin(origin);
 }
 
 //----------------------------------------------------------------------------
 template <typename TOutputImage>
 void 
 FluorescenceImageSource<TOutputImage>
-::ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread,
-                       int threadId )
+::GenerateData()
 {
+  vtkImageData* image = m_ImageSource->GenerateFluorescenceStackImage();
+  m_Extractor->SetInput(image);
+  image->Delete();
 
-  // Support progress methods/callbacks
-  ProgressReporter progress(this, threadId, outputRegionForThread.GetNumberOfPixels());
-       
-  typedef typename TOutputImage::PixelType ScalarType;
-  typename TOutputImage::Pointer image = this->GetOutput(0);
-
-  ImageRegionIteratorWithIndex<TOutputImage> it(image, outputRegionForThread);
-
-
+  m_ITKImporter->GraftOutput(this->GetOutput());
+  m_ITKImporter->Update();
+  this->GraftOutput(m_ITKImporter->GetOutput());
 }
 
 
