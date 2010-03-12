@@ -7,7 +7,6 @@ class Simulation;
 class Visualization;
 
 
-
 class VisualizationFluorescenceImageSource : public FluorescenceImageSource {
 
  public:

@@ -155,4 +155,6 @@ VisualizationFluorescenceImageSource
   m_Spacing[0] = fluoroSim->GetPixelSize();
   m_Spacing[1] = fluoroSim->GetPixelSize();
   m_Spacing[2] = fluoroSim->GetFocalPlaneDepthSpacing();
+
+  return m_Spacing;
 }
