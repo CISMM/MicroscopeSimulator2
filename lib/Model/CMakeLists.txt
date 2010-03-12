@@ -72,4 +72,5 @@ TARGET_LINK_LIBRARIES( msimModel
   ITKCommon
   ITKBasicFilters
   ITKIO
+  ITKNumerics
 )
