@@ -36,6 +36,8 @@ SET(modelModelObjectsSrc
   ModelObjects/SphereModelObject.cxx
   ModelObjects/TorusModelObject.h
   ModelObjects/TorusModelObject.cxx
+  ModelObjects/ImageModelObject.h
+  ModelObjects/ImageModelObject.cxx
 )
 
 SET(modelFluoroSimSrc
