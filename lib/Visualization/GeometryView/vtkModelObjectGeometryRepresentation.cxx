@@ -48,6 +48,8 @@ vtkActor* vtkModelObjectGeometryRepresentation::GetActor() {
 void vtkModelObjectGeometryRepresentation::SetModelObject(ModelObject* modelObject) {
   m_ModelObject = modelObject;
 
+  this->Actor->SetPickable(m_ModelObject->GetPickable() ? 1 : 0);
+
   this->SetInputConnection(m_ModelObject->GetGeometrySubAssembly("All")->GetOutputPort());
 }
 
