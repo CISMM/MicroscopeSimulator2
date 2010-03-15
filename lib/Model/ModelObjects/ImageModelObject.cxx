@@ -20,6 +20,7 @@ ImageModelObject
   ModelObject(dirtyListener, CreateProperties()) {
   m_ObjectTypeName = OBJECT_TYPE_NAME;
   SetName("Image");
+  SetPickable(false);
 
   // Image changer info object
   m_InfoChanger = vtkSmartPointer<vtkImageChangeInformation>::New();
@@ -54,6 +55,7 @@ ImageModelObject
   source->Update();
 
   m_InfoChanger->SetInput(source->GetOutput());
+  source->Delete();
 }
 
 
