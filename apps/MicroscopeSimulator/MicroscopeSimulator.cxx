@@ -473,6 +473,22 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_actionImportImageData_triggered() {
+  QString selectedFileName = 
+    QFileDialog::getOpenFileName(this, "Open Image File", "", 
+                                 "TIF Files (*.tif);;All Files (*)");
+  if (selectedFileName == "") {
+    return;
+  }
+  
+  m_Simulation->ImportModelObject("ImageModel", selectedFileName.toStdString());
+
+  RefreshModelObjectViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_actionAboutApplication_triggered() {
   QString version = QString().sprintf("%d.%d.%d", 
 				      MicroscopeSimulator_MAJOR_NUMBER,

@@ -74,6 +74,9 @@ public slots:
   virtual void on_actionAddSphere_triggered();
   virtual void on_actionAddTorus_triggered();
 
+  // Import
+  virtual void on_actionImportImageData_triggered();
+
   virtual void on_actionShowErrors_toggled(bool visible);
   virtual void handle_ErrorLogDialog_accepted();
   virtual void on_actionFluorescenceWindow_toggled(bool visible);  
