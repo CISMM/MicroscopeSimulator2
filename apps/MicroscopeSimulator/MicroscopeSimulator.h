@@ -29,6 +29,7 @@ class OptimizerSettingsDialog;
 class PSFEditorDialog;
 class Preferences;
 class PreferencesDialog;
+class QImageListModel;
 class QPSFListModel;
 
 #include <vtkSmartPointer.h>
@@ -140,6 +141,8 @@ public slots:
   virtual void on_fluoroSimScaleToFullDynamicRange_clicked();
   virtual void on_fluoroSimExportImageButton_clicked();
   virtual void on_fluoroSimExportStackButton_clicked();
+  virtual void on_fluoroSimCompareSimulatedStackToComboBox_currentIndexChanged(int selected);
+  virtual void on_fluoroSimCopyStackSettingsButton_clicked();
 
   virtual void on_fluoroSimOptimizerSettingsButton_clicked();
   
@@ -156,6 +159,7 @@ protected:
   QModelObjectListModel*              m_ModelObjectListModel;
   QItemSelectionModel*                m_ModelObjectListSelectionModel;
   QModelObjectPropertyListTableModel* m_ModelObjectPropertyListTableModel;
+  QImageListModel*                    m_ImageListModel;
   QPSFListModel*                      m_PSFMenuListModel;
 
   void NewSimulation();

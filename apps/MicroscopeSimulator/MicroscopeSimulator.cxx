@@ -15,6 +15,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QImageListModel.h>
 #include <QItemSelectionModel>
 #include <QMessageBox>
 #include <QPSFListModel.h>
@@ -95,7 +96,11 @@ MicroscopeSimulator
   m_PSFMenuListModel->SetHasNone(true);
   m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
   gui->fluoroSimPSFMenuComboBox->setModel(m_PSFMenuListModel);
-    
+  
+  m_ImageListModel = new QImageListModel();
+  m_ImageListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
+  gui->fluoroSimCompareSimulatedStackToComboBox->setModel(m_ImageListModel);
+
   // Set up error dialog box.
   m_ErrorDialog.setModal(true);
 
@@ -476,12 +481,22 @@ MicroscopeSimulator
 ::on_actionImportImageData_triggered() {
   QString selectedFileName = 
     QFileDialog::getOpenFileName(this, "Open Image File", "", 
-                                 "TIF Files (*.tif);;All Files (*)");
+                                 "TIF Files (*.tif);;LSM Files (*.lsm);;All Files (*)");
   if (selectedFileName == "") {
     return;
   }
   
   m_Simulation->ImportModelObject("ImageModel", selectedFileName.toStdString());
+
+  QString previousSelection = gui->fluoroSimCompareSimulatedStackToComboBox->
+    currentText();
+  m_ImageListModel->Refresh();
+  int index = gui->fluoroSimCompareSimulatedStackToComboBox->findText(previousSelection);
+  if (index == -1) {
+    gui->fluoroSimCompareSimulatedStackToComboBox->setCurrentIndex(0);
+  } else {
+    gui->fluoroSimCompareSimulatedStackToComboBox->setCurrentIndex(index);
+  }
 
   RefreshModelObjectViews();
 }
@@ -695,6 +710,7 @@ MicroscopeSimulator
   }
   m_ModelObjectPropertyListTableModel->SetModelObject(NULL);
   m_ModelObjectPropertyListTableModel->Refresh();
+  m_ImageListModel->Refresh();
 }
 
 
@@ -1137,6 +1153,20 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimCompareSimulatedStackToComboBox_currentIndexChanged(int selected) {
+  m_Simulation->SetComparisonImageModelObjectIndex(selected-1);
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimCopyStackSettingsButton_clicked() {
+  
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimOptimizerSettingsButton_clicked() {
   m_OptimizerSettingsDialog->Update();
   int result = m_OptimizerSettingsDialog->exec();
@@ -1284,9 +1314,7 @@ MicroscopeSimulator
   gui->fluoroSimGridSpacingEdit->setText(QVariant(fluoroSim->GetReferenceGridSpacing()).toString());
   gui->fluoroSimSuperimposeFluorescenceImageCheckBox->setChecked(QVariant(fluoroSim->GetSuperimposeFluorescenceImage()).toBool());
   gui->fluoroSimShowImageVolumeOutlineCheckBox->setChecked(QVariant(fluoroSim->GetShowImageVolumeOutline()).toBool());
-  //gui->fluoroSimMinLevelEdit->setText(QVariant(fluoroSim->GetMinimumIntensityLevel()).toString());
   gui->fluoroSimMinLevelSlider->setValue((int) fluoroSim->GetMinimumIntensityLevel());
-  //gui->fluoroSimMaxLevelEdit->setText(QVariant(fluoroSim->GetMaximumIntensityLevel()).toString());
   gui->fluoroSimMaxLevelSlider->setValue((int) fluoroSim->GetMaximumIntensityLevel());
 
   RenderViews();
