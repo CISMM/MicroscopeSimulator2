@@ -68,6 +68,7 @@ public:
   int  GetNumberOfThreads();
 
   void AddNewModelObject(const std::string& objectTypeName);
+  void ImportModelObject(const std::string& objectTypeName, const std::string& fileName);
 
   ModelObjectListPtr GetModelObjectList();
 

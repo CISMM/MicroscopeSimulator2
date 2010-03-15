@@ -312,6 +312,13 @@ Simulation
 }
 
 
+void
+Simulation
+::ImportModelObject(const std::string& objectTypeName, const std::string& fileName) {
+  m_ModelObjectList->ImportModelObject(objectTypeName, fileName);
+}
+
+
 ModelObjectListPtr
 Simulation
 ::GetModelObjectList() {
