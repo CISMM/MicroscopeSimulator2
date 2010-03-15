@@ -66,8 +66,8 @@ class ModelObject : public DirtyListener, public XMLStorable {
   void SetScannable(bool scannable);
   bool GetScannable();
 
-  void SetOptimizable(bool optimizable);
-  bool GetOptimizable();
+  void SetPickable(bool pickable);
+  bool GetPickable();
 
   void AddProperty(ModelObjectProperty* property);
   void PopProperty();
@@ -102,7 +102,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
 
   DirtyListener*           m_DirtyListener;
   std::string              m_ObjectTypeName;
-  bool                     m_Optimizable;
+  bool                     m_Pickable;
   ModelObjectPropertyList* m_Properties;
   ModelObjectPropertyList* m_FluorophoreProperties;
   double                   m_Color[3];

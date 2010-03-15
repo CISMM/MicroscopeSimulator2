@@ -34,6 +34,7 @@ const char* ModelObject::FLUOROPHORE_MODEL_LIST_ELEM = "FluorophoreModelList";
 ModelObject
 ::ModelObject(DirtyListener* dirtyListener) {
   m_DirtyListener = dirtyListener;
+  m_Pickable = true;
   m_Properties = CreateDefaultProperties();
   m_FluorophoreProperties = new ModelObjectPropertyList();
 
@@ -83,7 +84,6 @@ void
 ModelObject
 ::Initialize() {
   m_ObjectTypeName = OBJECT_TYPE_NAME;
-  m_Optimizable = true;
   m_Color[0] = 0.8;   m_Color[1] = 0.8;   m_Color[2] = 0.8;
 }
 
@@ -194,17 +194,15 @@ ModelObject
 
 void
 ModelObject
-::SetOptimizable(bool optimizable) {
-  m_Optimizable = optimizable;
-
-  Sully();
+::SetPickable(bool dragable) {
+  m_Pickable = dragable;
 }
 
 
 bool
 ModelObject
-::GetOptimizable() {
-  return m_Optimizable;
+::GetPickable() {
+  return m_Pickable;
 }
 
 
