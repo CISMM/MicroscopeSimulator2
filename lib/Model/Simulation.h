@@ -61,7 +61,8 @@ public:
   std::string& GetSimulationCreationDate();
 
   FluorescenceSimulation* GetFluorescenceSimulation();
-  
+
+  void SetComparisonImageModelObjectIndex(int index);
   void OptimizeToFluorescence();
 
   void SetNumberOfThreads(int threads);

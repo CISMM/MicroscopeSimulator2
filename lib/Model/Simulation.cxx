@@ -285,6 +285,16 @@ Simulation
 
 void
 Simulation
+::SetComparisonImageModelObjectIndex(int index) {
+  if (!m_ModelObjectList)
+    return;
+
+  m_FluoroOptimizer->SetComparisonImageModelObjectIndex(index);
+}
+
+
+void
+Simulation
 ::OptimizeToFluorescence() {
   m_FluoroOptimizer->Optimize();
 }
