@@ -13,8 +13,6 @@
 
 #include <ImageModelObject.h>
 
-#include <vtkImageGaussianSource.h>
-
 
 ModelObjectFactory
 ::ModelObjectFactory(DirtyListener* dirtyListener) {
@@ -47,6 +45,8 @@ ModelObjectFactory
     object = new SphereModelObject(m_DirtyListener);
   } else if (objectName == TorusModelObject::OBJECT_TYPE_NAME) {
     object = new TorusModelObject(m_DirtyListener);
+  } else if (objectName == ImageModelObject::OBJECT_TYPE_NAME) {
+    object = new ImageModelObject(m_DirtyListener);
   }
   return object;
 }
@@ -58,14 +58,7 @@ ModelObjectFactory
   ModelObjectPtr object = NULL;
   if (objectName == ImageModelObject::OBJECT_TYPE_NAME) {
     ImageModelObject* imageModel = new ImageModelObject(m_DirtyListener);
-
-    // Temporary
-    vtkImageGaussianSource* source = vtkImageGaussianSource::New();
-    source->SetWholeExtent(0, 63, 0, 63, 0, 63);
-    source->SetStandardDeviation(10.0);
-    source->Update();
-
-    imageModel->SetImageData(source->GetOutput());
+    imageModel->LoadFile(fileName);
 
     object = imageModel;
   }
