@@ -21,6 +21,7 @@ SET (QtGuiSrcs
   PSFEditorDialog.cxx
   Preferences.cxx
   PreferencesDialog.cxx
+  QImageListModel.cxx
   QModelObjectListModel.cxx
   QModelObjectPropertyListTableModel.cxx
   QModelObjectPropertyListItemDelegate.cxx
@@ -55,6 +56,7 @@ SET (ApplicationHeaders
   OptimizerSettingsDialog.h
   PSFEditorDialog.h
   PreferencesDialog.h
+  QImageListModel.h
   QModelObjectListModel.h
   QModelObjectPropertyListTableModel.h
   QModelObjectPropertyListItemDelegate.h
