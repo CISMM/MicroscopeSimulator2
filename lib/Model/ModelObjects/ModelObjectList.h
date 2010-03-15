@@ -26,7 +26,7 @@ class ModelObjectList : public DirtyListener, public XMLStorable {
   size_t GetSize();
 
   ModelObjectPtr AddModelObject(const std::string& objectTypeName);
-  void ImportModelObject(const std::string& objectTypeName);
+  ModelObjectPtr ImportModelObject(const std::string& objectTypeName, const std::string& fileName);
 
   ModelObjectPtr GetModelObjectByName(const std::string& objectName);
   ModelObjectPtr GetModelObjectAtIndex(int index);

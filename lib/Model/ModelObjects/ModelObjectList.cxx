@@ -93,15 +93,22 @@ ModelObjectList
 }
 
 
-void
+ModelObjectPtr
 ModelObjectList
-::ImportModelObject(const std::string& objectTypeName) {
-  // TODO - here the ModelObjectFactory will import a model
+::ImportModelObject(const std::string& objectTypeName, const std::string& fileName) {
+  std::cout << "Importing model object: " << objectTypeName << std::endl;
 
-  // TODO - add the created model to the list
+  ModelObjectPtr mo = m_ModelObjectFactory->ImportModelObject(objectTypeName, fileName);
+  if (mo) {
+    std::string name = GenerateUniqueName(mo->GetName());
+    mo->SetName(name);
+    Add(mo);
+  }
 
   Sully();
   SetStatusMessage("Imported object to the scene.");
+
+  return mo;
 }
 
 
