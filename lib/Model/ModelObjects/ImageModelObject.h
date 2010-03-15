@@ -1,6 +1,7 @@
 #ifndef _IMAGE_MODEL_OBJECT_H_
 #define _IMAGE_MODEL_OBJECT_H_
 
+#include <ImageIO.h>
 #include <ModelObject.h>
 
 #include <vtkImageChangeInformation.h>
@@ -41,6 +42,7 @@ class ImageModelObject : public ModelObject {
 
   ModelObjectPropertyList* CreateProperties();
 
+  ImageIO*                                   m_ImageIO;
   vtkSmartPointer<vtkImageChangeInformation> m_InfoChanger;
   vtkSmartPointer<vtkContourFilter>          m_IsosurfaceSource;
 };

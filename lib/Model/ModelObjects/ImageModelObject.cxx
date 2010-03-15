@@ -3,7 +3,6 @@
 #include <ModelObjectPropertyList.h>
 
 #include <vtkContourFilter.h>
-#include <vtkImageGaussianSource.h>
 
 
 const char* ImageModelObject::OBJECT_TYPE_NAME = "ImageModel";
@@ -22,6 +21,9 @@ ImageModelObject
   SetName("Image");
   SetPickable(false);
 
+  // Image input object
+  m_ImageIO = new ImageIO();
+
   // Image changer info object
   m_InfoChanger = vtkSmartPointer<vtkImageChangeInformation>::New();
 
@@ -38,6 +40,7 @@ ImageModelObject
 
 ImageModelObject
 ::~ImageModelObject() {
+  delete m_ImageIO;
 }
 
 
@@ -46,16 +49,7 @@ ImageModelObject
 ::LoadFile(const std::string& fileName) {
   GetProperty(FILE_NAME_PROP)->SetStringValue(fileName);
 
-  // TODO - Import file here
-
-  // Temporary
-  vtkImageGaussianSource* source = vtkImageGaussianSource::New();
-  source->SetWholeExtent(0, 63, 0, 63, 0, 63);
-  source->SetStandardDeviation(10.0);
-  source->Update();
-
-  m_InfoChanger->SetInput(source->GetOutput());
-  source->Delete();
+  m_InfoChanger->SetInputConnection(m_ImageIO->GetImageOutputPort(fileName));
 }
 
 
@@ -124,9 +118,8 @@ ImageModelObject
 
   // Set up properties
   list->AddProperty(new ModelObjectProperty(NAME_PROP, ModelObjectProperty::STRING_TYPE, "-", true, false));
-  list->AddProperty(new ModelObjectProperty(FILE_NAME_PROP, ModelObjectProperty::STRING_TYPE, "-", false, false));
   list->AddProperty(new ModelObjectProperty(VISIBLE_PROP, true, "-", true, false));
-  list->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true, "-", true, false));
+  list->AddProperty(new ModelObjectProperty(FILE_NAME_PROP, ModelObjectProperty::STRING_TYPE, "-", false, false));
   list->AddProperty(new ModelObjectProperty(X_SPACING_PROP, 100.0, "nanometers", true, false));
   list->AddProperty(new ModelObjectProperty(Y_SPACING_PROP, 100.0, "nanometers", true, false));
   list->AddProperty(new ModelObjectProperty(Z_SPACING_PROP, 100.0, "nanometers", true, false));
