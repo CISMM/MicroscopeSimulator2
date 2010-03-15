@@ -1,7 +1,6 @@
 #ifndef _MODEL_OBJECT_H_
 #define _MODEL_OBJECT_H_
 
-#include <StdLibGuard.h>
 #include <map>
 #include <string>
 #include <vector>
@@ -81,11 +80,11 @@ class ModelObject : public DirtyListener, public XMLStorable {
   ModelObjectPropertyList* GetFluorophorePropertyList();
   int GetNumberOfFluorophoreProperties();
 
-  void SetPosition(double position[3]);
-  void GetPosition(double position[3]);
+  virtual void SetPosition(double position[3]);
+  virtual void GetPosition(double position[3]);
 
-  void SetRotation(double rotation[4]);
-  void GetRotation(double rotation[4]);
+  virtual void SetRotation(double rotation[4]);
+  virtual void GetRotation(double rotation[4]);
 
   void SetColor(double r, double g, double b);
   void GetColor(double color[3]);
