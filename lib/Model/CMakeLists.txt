@@ -1,5 +1,7 @@
 SET(modelSrc
   DirtyListener.h
+  ImageIO.h
+  ImageIO.cxx
   Simulation.h
   Simulation.cxx
   XMLHelper.h
