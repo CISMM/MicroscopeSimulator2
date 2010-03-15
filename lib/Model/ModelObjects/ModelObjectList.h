@@ -24,12 +24,16 @@ class ModelObjectList : public DirtyListener, public XMLStorable {
   virtual void RestoreFromXML(xmlNodePtr node);
 
   size_t GetSize();
+  size_t GetSize(const std::string& objectType);
 
   ModelObjectPtr AddModelObject(const std::string& objectTypeName);
   ModelObjectPtr ImportModelObject(const std::string& objectTypeName, const std::string& fileName);
 
   ModelObjectPtr GetModelObjectByName(const std::string& objectName);
   ModelObjectPtr GetModelObjectAtIndex(int index);
+  
+  // Returns nth model object of a particular type
+  ModelObjectPtr GetModelObjectAtIndex(int index, const std::string& objectType);
 
   void Add(ModelObjectPtr mo);
   void Delete(ModelObjectPtr mo);

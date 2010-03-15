@@ -74,6 +74,21 @@ ModelObjectList
 }
 
 
+size_t
+ModelObjectList
+::GetSize(const std::string& objectType) {
+  // Count up all objects of the given type
+  size_t count = 0;
+  ModelObjectListIterator iter;
+  for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
+    if ((*iter)->GetObjectTypeName() == objectType)
+      count++;
+  }
+  
+  return count;
+}
+
+
 ModelObjectPtr
 ModelObjectList
 ::AddModelObject(const std::string& objectTypeName) {
@@ -135,6 +150,25 @@ ModelObjectList
       return *iter;
     }
     i++;
+  }
+
+  return NULL;
+}
+
+
+ModelObjectPtr
+ModelObjectList
+::GetModelObjectAtIndex(int index, const std::string& objectType) {
+  int i = 0;
+  ModelObjectListIterator iter;
+  for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
+    ModelObjectPtr mo = *iter;
+    if (mo->GetObjectTypeName() == objectType) {
+      if (i == index) {
+        return *iter;
+      }
+      i++;
+    }
   }
 
   return NULL;
