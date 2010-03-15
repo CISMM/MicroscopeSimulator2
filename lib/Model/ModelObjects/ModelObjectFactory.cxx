@@ -11,6 +11,10 @@
 #include <SphereModelObject.h>
 #include <TorusModelObject.h>
 
+#include <ImageModelObject.h>
+
+#include <vtkImageGaussianSource.h>
+
 
 ModelObjectFactory
 ::ModelObjectFactory(DirtyListener* dirtyListener) {
@@ -44,5 +48,27 @@ ModelObjectFactory
   } else if (objectName == TorusModelObject::OBJECT_TYPE_NAME) {
     object = new TorusModelObject(m_DirtyListener);
   }
+  return object;
+}
+
+
+ModelObjectPtr
+ModelObjectFactory
+::ImportModelObject(const std::string& objectName, const std::string& fileName) const {
+  ModelObjectPtr object = NULL;
+  if (objectName == ImageModelObject::OBJECT_TYPE_NAME) {
+    ImageModelObject* imageModel = new ImageModelObject(m_DirtyListener);
+
+    // Temporary
+    vtkImageGaussianSource* source = vtkImageGaussianSource::New();
+    source->SetWholeExtent(0, 63, 0, 63, 0, 63);
+    source->SetStandardDeviation(10.0);
+    source->Update();
+
+    imageModel->SetImageData(source->GetOutput());
+
+    object = imageModel;
+  }
+
   return object;
 }

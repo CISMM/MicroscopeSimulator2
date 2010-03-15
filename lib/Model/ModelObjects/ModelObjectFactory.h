@@ -12,6 +12,7 @@ class ModelObjectFactory {
   virtual ~ModelObjectFactory();
 
   ModelObjectPtr CreateModelObject(const std::string& objectName) const;
+  ModelObjectPtr ImportModelObject(const std::string& objectName, const std::string& fileName) const;
 
  protected:
   ModelObjectFactory() {};
