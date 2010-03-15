@@ -10,6 +10,7 @@
 
 
 class FluorescenceSimulation;
+class ImageModelObject;
 class ModelObjectList;
 
 
@@ -36,6 +37,7 @@ class FluorescenceOptimizer {
   void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
 
   void SetModelObjectList(ModelObjectList* list);
+  void SetComparisonImageModelObjectIndex(int index);
 
   void Optimize();
 
@@ -45,6 +47,7 @@ class FluorescenceOptimizer {
   FluorescenceSimulation* m_FluoroSim;
 
   ModelObjectList* m_ModelObjectList;
+  ImageModelObject* m_ComparisonImageModelObject;
 
   SyntheticImageSourceType::Pointer m_FluorescenceImageSource;
 

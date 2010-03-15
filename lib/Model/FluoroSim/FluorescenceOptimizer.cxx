@@ -4,6 +4,7 @@
 
 #include <FluorescenceImageSource.h>
 #include <FluorescenceSimulation.h>
+#include <ImageModelObject.h>
 #include <ModelObjectList.h>
 
 // TEMP
@@ -16,6 +17,7 @@ FluorescenceOptimizer
 ::FluorescenceOptimizer() {
   m_FluoroSim = NULL;
   m_ModelObjectList = NULL;
+  m_ComparisonImageModelObject = NULL;
   
   m_FluorescenceImageSource = SyntheticImageSourceType::New();
 
@@ -41,6 +43,19 @@ void
 FluorescenceOptimizer
 ::SetModelObjectList(ModelObjectList* list) {
   m_ModelObjectList = list;
+}
+
+
+void
+FluorescenceOptimizer
+::SetComparisonImageModelObjectIndex(int index) {
+  if (index < 0) {
+    m_ComparisonImageModelObject = NULL;
+    return;
+  }
+
+  ModelObjectPtr mo = m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME);
+  m_ComparisonImageModelObject = static_cast<ImageModelObject*>(mo);
 }
 
 
