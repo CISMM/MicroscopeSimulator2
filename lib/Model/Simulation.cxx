@@ -16,8 +16,10 @@
 #include <FluorescenceSimulation.h>
 #include <FluorescenceOptimizer.h>
 
+#include <ImageModelObject.h>
 #include <ModelObjectList.h>
 #include <XMLHelper.h>
+
 
 const char* Simulation::XML_ENCODING     = "ISO-8859-1";
 const char* Simulation::SIMULATION_ELEM  = "SimulatedExperiments";
@@ -290,6 +292,16 @@ Simulation
     return;
 
   m_FluoroOptimizer->SetComparisonImageModelObjectIndex(index);
+
+  m_ComparisonImageModelObject = static_cast<ImageModelObject*>
+    (m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME));
+}
+
+
+ImageModelObject*
+Simulation
+::GetComparisonImageModelObject() {
+  return m_ComparisonImageModelObject;
 }
 
 

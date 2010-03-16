@@ -1,12 +1,12 @@
 #ifndef _SIMULATION_H_
 #define _SIMULATION_H_
 
-#include <StdLibGuard.h>
 #include <string>
 
 #include <DirtyListener.h>
 #include <XMLStorable.h>
 
+#include <ImageModelObject.h>
 #include <ModelObjectList.h>
 
 // Forward declarations
@@ -63,6 +63,8 @@ public:
   FluorescenceSimulation* GetFluorescenceSimulation();
 
   void SetComparisonImageModelObjectIndex(int index);
+  ImageModelObject* GetComparisonImageModelObject();
+
   void OptimizeToFluorescence();
 
   void SetNumberOfThreads(int threads);
@@ -92,6 +94,7 @@ protected:
   FluorescenceOptimizer* m_FluoroOptimizer;
 
   ModelObjectList* m_ModelObjectList;
+  ImageModelObject* m_ComparisonImageModelObject;
 
  private:
   Simulation() {};
