@@ -141,7 +141,7 @@ public slots:
   virtual void on_fluoroSimScaleToFullDynamicRange_clicked();
   virtual void on_fluoroSimExportImageButton_clicked();
   virtual void on_fluoroSimExportStackButton_clicked();
-  virtual void on_fluoroSimCompareSimulatedStackToComboBox_currentIndexChanged(int selected);
+  virtual void on_fluoroSimComparisonImageComboBox_currentIndexChanged(int selected);
   virtual void on_fluoroSimCopyStackSettingsButton_clicked();
 
   virtual void on_fluoroSimOptimizerSettingsButton_clicked();

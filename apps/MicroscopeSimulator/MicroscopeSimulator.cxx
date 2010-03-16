@@ -99,7 +99,7 @@ MicroscopeSimulator
   
   m_ImageListModel = new QImageListModel();
   m_ImageListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
-  gui->fluoroSimCompareSimulatedStackToComboBox->setModel(m_ImageListModel);
+  gui->fluoroSimComparisonImageComboBox->setModel(m_ImageListModel);
 
   // Set up error dialog box.
   m_ErrorDialog.setModal(true);
@@ -488,14 +488,14 @@ MicroscopeSimulator
   
   m_Simulation->ImportModelObject("ImageModel", selectedFileName.toStdString());
 
-  QString previousSelection = gui->fluoroSimCompareSimulatedStackToComboBox->
+  QString previousSelection = gui->fluoroSimComparisonImageComboBox->
     currentText();
   m_ImageListModel->Refresh();
-  int index = gui->fluoroSimCompareSimulatedStackToComboBox->findText(previousSelection);
+  int index = gui->fluoroSimComparisonImageComboBox->findText(previousSelection);
   if (index == -1) {
-    gui->fluoroSimCompareSimulatedStackToComboBox->setCurrentIndex(0);
+    gui->fluoroSimComparisonImageComboBox->setCurrentIndex(0);
   } else {
-    gui->fluoroSimCompareSimulatedStackToComboBox->setCurrentIndex(index);
+    gui->fluoroSimComparisonImageComboBox->setCurrentIndex(index);
   }
 
   RefreshModelObjectViews();
@@ -1153,7 +1153,7 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimCompareSimulatedStackToComboBox_currentIndexChanged(int selected) {
+::on_fluoroSimComparisonImageComboBox_currentIndexChanged(int selected) {
   m_Simulation->SetComparisonImageModelObjectIndex(selected-1);
 }
 
@@ -1198,9 +1198,23 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimOptimizeButton_clicked() {
-  // TODO - pop up warning that this may take a while to run
+  QMessageBox messageBox;
 
-  m_Simulation->OptimizeToFluorescence();
+  if (m_Simulation->GetComparisonImageModelObject()) {
+    messageBox.setText(tr("WARNING: Optimization may take a long time. Run the optimizer?"));
+    messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    messageBox.setDefaultButton(QMessageBox::Yes);
+    
+    int selected = messageBox.exec();
+    if (selected == QMessageBox::Yes) {
+      m_Simulation->OptimizeToFluorescence();
+    }
+  } else {
+    messageBox.setText(tr("Please select an image in the 'Comparison image' menu."));
+    messageBox.setStandardButtons(QMessageBox::Ok);
+    messageBox.setDefaultButton(QMessageBox::Ok);
+    messageBox.exec();
+  }
 }
 
 

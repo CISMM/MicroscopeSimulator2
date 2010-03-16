@@ -183,7 +183,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-735</y>
+          <y>-609</y>
           <width>381</width>
           <height>1370</height>
          </rect>
@@ -931,14 +931,14 @@
                  </widget>
                 </item>
                 <item row="4" column="0" colspan="2">
-                 <widget class="QLabel" name="fluoroSimCompareSimulatedStackToLabel">
+                 <widget class="QLabel" name="fluoroSimComparisonImageLabel">
                   <property name="text">
-                   <string>Compare simulated stack to:</string>
+                   <string>Comparison image:</string>
                   </property>
                  </widget>
                 </item>
                 <item row="5" column="0" colspan="2">
-                 <widget class="QComboBox" name="fluoroSimCompareSimulatedStackToComboBox"/>
+                 <widget class="QComboBox" name="fluoroSimComparisonImageComboBox"/>
                 </item>
                 <item row="6" column="0" colspan="2">
                  <widget class="QPushButton" name="fluoroSimCopyStackSettingsButton">
