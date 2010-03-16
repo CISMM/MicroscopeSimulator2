@@ -29,6 +29,8 @@ class ImageModelObject : public ModelObject {
 
   vtkImageData* GetImageData();
 
+  ImageIO::ImageType* GetITKImage();
+
   void GetDimensions(int dim[3]);
 
   void GetSpacing(double spacing[3]);

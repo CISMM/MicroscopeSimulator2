@@ -60,6 +60,13 @@ ImageModelObject
 }
 
 
+ImageIO::ImageType*
+ImageModelObject
+::GetITKImage() {
+  return m_ImageIO->GetITKImage();
+}
+
+
 void
 ImageModelObject
 ::GetDimensions(int dim[3]) {
@@ -73,8 +80,6 @@ ImageModelObject
   spacing[0] = GetProperty(X_SPACING_PROP)->GetDoubleValue();
   spacing[1] = GetProperty(Y_SPACING_PROP)->GetDoubleValue();
   spacing[2] = GetProperty(Z_SPACING_PROP)->GetDoubleValue();
-
-  std::cout << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
 }
 
 
