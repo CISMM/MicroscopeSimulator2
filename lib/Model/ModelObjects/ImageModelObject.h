@@ -27,6 +27,12 @@ class ImageModelObject : public ModelObject {
 
   void LoadFile(const std::string& fileName);
 
+  vtkImageData* GetImageData();
+
+  void GetDimensions(int dim[3]);
+
+  void GetSpacing(double spacing[3]);
+
   virtual void SetPosition(double position[3]);
   virtual void GetPosition(double position[3]);
 
