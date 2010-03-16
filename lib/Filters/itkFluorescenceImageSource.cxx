@@ -48,20 +48,15 @@ FluorescenceImageSource<TOutputImage>
   m_Extractor->SetComponents(m_ExtractedComponent);
   // Defer connection to input source
 
-  m_VTKExporter = vtkSmartPointer<vtkImageExport>::New();
-  m_VTKExporter->SetInputConnection(m_Extractor->GetOutputPort());
-
-  m_ITKImporter = VTKImageImportType::New();
-  m_ITKImporter->SetCallbackUserData(m_VTKExporter);
-
-  SetUpExporterImporterConnection();
+  m_VTKToITKFilter = new VTKImageToITKImage<TOutputImage>();
+  m_VTKToITKFilter->SetInput(m_Extractor->GetOutput());
 }
 
 
 template <typename TOutputImage>
 FluorescenceImageSource<TOutputImage>
-::~FluorescenceImageSource()
-{
+::~FluorescenceImageSource() {
+  delete m_VTKToITKFilter;
 }
 
 
@@ -134,35 +129,6 @@ FluorescenceImageSource<TOutputImage>
 
 
 template <typename TOutputImage>
-void
-FluorescenceImageSource<TOutputImage>
-::SetUpExporterImporterConnection() {
-  m_ITKImporter->
-    SetBufferPointerCallback(m_VTKExporter->GetBufferPointerCallback());
-  m_ITKImporter->
-    SetDataExtentCallback(m_VTKExporter->GetDataExtentCallback());
-  m_ITKImporter->
-    SetOriginCallback(m_VTKExporter->GetOriginCallback());
-  m_ITKImporter->
-    SetSpacingCallback(m_VTKExporter->GetSpacingCallback());
-  m_ITKImporter->
-    SetNumberOfComponentsCallback(m_VTKExporter->GetNumberOfComponentsCallback());
-  m_ITKImporter->
-    SetPipelineModifiedCallback(m_VTKExporter->GetPipelineModifiedCallback());
-  m_ITKImporter->
-    SetPropagateUpdateExtentCallback(m_VTKExporter->GetPropagateUpdateExtentCallback());
-  m_ITKImporter->
-    SetScalarTypeCallback(m_VTKExporter->GetScalarTypeCallback());
-  m_ITKImporter->
-    SetUpdateDataCallback(m_VTKExporter->GetUpdateDataCallback());
-  m_ITKImporter->
-    SetUpdateInformationCallback(m_VTKExporter->GetUpdateInformationCallback());
-  m_ITKImporter->
-    SetWholeExtentCallback(m_VTKExporter->GetWholeExtentCallback());
-}
-
-
-template <typename TOutputImage>
 void 
 FluorescenceImageSource<TOutputImage>
 ::GenerateOutputInformation()
@@ -202,9 +168,9 @@ FluorescenceImageSource<TOutputImage>
   m_Extractor->SetInput(image);
   image->Delete();
 
-  m_ITKImporter->GraftOutput(this->GetOutput());
-  m_ITKImporter->Update();
-  this->GraftOutput(m_ITKImporter->GetOutput());
+  m_VTKToITKFilter->GraftOutput(this->GetOutput());
+  m_VTKToITKFilter->Update();
+  this->GraftOutput(m_VTKToITKFilter->GetOutput());
 }
 
 

@@ -27,6 +27,7 @@
 #include <vtkSmartPointer.h>
 
 #include <FluorescenceImageSource.h>
+#include <VTKImageToITKImage.h>
 
 class vtkImageExtractComponents;
 class vtkImageExport;
@@ -84,21 +85,16 @@ public:
 
 
 protected:
-
   ::FluorescenceImageSource* m_ImageSource;
+
+  VTKImageToITKImage<TOutputImage>* m_VTKToITKFilter;
 
   int m_ExtractedComponent;
   vtkSmartPointer<vtkImageExtractComponents> m_Extractor;
 
-  vtkSmartPointer<vtkImageExport> m_VTKExporter;
-
-  typename VTKImageImportType::Pointer m_ITKImporter;
-
   FluorescenceImageSource();
   ~FluorescenceImageSource();
   void PrintSelf(std::ostream& os, Indent indent) const;
-  
-  void SetUpExporterImporterConnection();
 
   virtual void GenerateData();
   virtual void GenerateOutputInformation();
