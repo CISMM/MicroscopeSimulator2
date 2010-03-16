@@ -12,16 +12,22 @@ class vtkImageData;
 class ImageIO {
 
  public:
-  ImageIO();
-  virtual ~ImageIO();
-
-  vtkImageData* GetImageOutput(const std::string& fileName);
-  vtkAlgorithmOutput* GetImageOutputPort(const std::string& fileName);
 
   typedef float                           PixelType;
   typedef itk::Image<PixelType, 3>        ImageType;
   typedef itk::ImageFileReader<ImageType> ImageSourceType;
   typedef ImageSourceType::Pointer        ImageSourceTypePointer;
+
+  ImageIO();
+  virtual ~ImageIO();
+
+  void SetFileName(const std::string& fileName);
+  std::string GetFileName() const;
+
+  vtkImageData* GetImageOutput(const std::string& fileName);
+  vtkAlgorithmOutput* GetImageOutputPort(const std::string& fileName);
+
+  ImageType* GetITKImage();
 
  protected:
   ImageSourceTypePointer m_ImageReader;
