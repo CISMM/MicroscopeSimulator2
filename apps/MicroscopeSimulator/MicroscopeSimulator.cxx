@@ -5,7 +5,7 @@
 #include <FluorescenceSimulation.h>
 #include <FluorophoreModelObjectProperty.h>
 #include <PointSpreadFunctionList.h>
-
+#include <ImageWriter.h>
 
 #if defined(_WIN32) // Turn off deprecation warnings in Visual Studio
 #pragma warning( disable : 4996 )
@@ -35,6 +35,7 @@
 #include <vtkBYUWriter.h>
 #include <vtkCamera.h>
 #include <vtkContourFilter.h>
+#include <vtkImageExtractComponents.h>
 #include <vtkImageAppend.h>
 #include <vtkImageShiftScale.h>
 #include <vtkImageWriter.h>
@@ -1121,29 +1122,25 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty())
     return;
 
-  // Set the file name pattern
-  QString fileNamePattern(selectedFileName.left(selectedFileName.length()-4));
-  fileNamePattern.append("%04d.tif");
-
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
   double originalDepth = fluoroSim->GetFocalPlaneDepth();
 
-  // Cast to unsigned short
-  vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
-  scaler->SetOutputScalarTypeToUnsignedShort();
-  scaler->ClampOverflowOn();
+  vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+  extractor->SetComponents(0);
 
   vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
-  scaler->SetInput(rawStack);
+  extractor->SetInput(rawStack);
   rawStack->Delete();
 
-  // Write out to file
-  vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
-  writer->SetCompressionToNoCompression();
-  writer->SetInputConnection(scaler->GetOutputPort());
-  writer->SetFileDimensionality(2);
-  writer->SetFilePattern(fileNamePattern.toStdString().c_str());
-  writer->Write();
+  try {
+    ImageWriter writer;
+    writer.SetFileName(selectedFileName.toStdString());
+    writer.SetInputConnection(extractor->GetOutputPort());
+    writer.WriteUShortImage();
+  } catch (itk::ExceptionObject e) {
+    std::cout << "Error on write:" << std::endl;
+    std::cout << e.GetDescription() << std::endl;
+  }
 
   // Reset to original focal plane depth
   fluoroSim->SetFocalPlaneDepth(originalDepth);
