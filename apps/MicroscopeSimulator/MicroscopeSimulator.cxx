@@ -1161,7 +1161,26 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimCopyStackSettingsButton_clicked() {
-  
+  ImageModelObject* mo = m_Simulation->GetComparisonImageModelObject();
+  if (!mo)
+    return;
+
+  int dims[3];
+  mo->GetDimensions(dims);
+
+  double spacing[3];
+  mo->GetSpacing(spacing);
+
+  FluorescenceSimulation* sim = m_Simulation->GetFluorescenceSimulation();
+  sim->SetImageWidth(dims[0]);
+  sim->SetImageHeight(dims[1]);
+  sim->SetPixelSize(spacing[0]);
+
+  sim->SetFocalPlaneDepthMinimum(0.0);
+  sim->SetFocalPlaneDepthMaximum(static_cast<double>((dims[2]-1)*spacing[2]));
+  sim->SetFocalPlaneDepthSpacing(spacing[2]);
+
+  RefreshUI();
 }
 
 
@@ -1199,6 +1218,7 @@ MicroscopeSimulator
   gui->fluoroSimFocusSlider->setMaximum(maxIndex);
   gui->fluoroSimFocusMinEdit->setText(QString().sprintf("%0.1f", minValue));
   gui->fluoroSimFocusMaxEdit->setText(QString().sprintf("%0.1f", maxValue));
+  gui->fluoroSimFocusSpacingEdit->setText(QString().sprintf("%0.1f", spacing));
 
   m_Simulation->GetFluorescenceSimulation()->
     SetFocalPlaneDepthSpacing(gui->fluoroSimFocusSpacingEdit->text().toDouble());
