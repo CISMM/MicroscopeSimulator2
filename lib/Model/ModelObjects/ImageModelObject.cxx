@@ -21,8 +21,7 @@ ImageModelObject
   SetName("Image");
   SetPickable(false);
 
-  // Image input object
-  m_ImageIO = new ImageIO();
+  m_ImageReader = new ImageReader();
 
   // Image changer info object
   m_InfoChanger = vtkSmartPointer<vtkImageChangeInformation>::New();
@@ -40,7 +39,7 @@ ImageModelObject
 
 ImageModelObject
 ::~ImageModelObject() {
-  delete m_ImageIO;
+  delete m_ImageReader;
 }
 
 
@@ -49,7 +48,7 @@ ImageModelObject
 ::LoadFile(const std::string& fileName) {
   GetProperty(FILE_NAME_PROP)->SetStringValue(fileName);
 
-  m_InfoChanger->SetInputConnection(m_ImageIO->GetImageOutputPort(fileName));
+  m_InfoChanger->SetInputConnection(m_ImageReader->GetImageOutputPort(fileName));
 }
 
 
@@ -60,10 +59,10 @@ ImageModelObject
 }
 
 
-ImageIO::ImageType*
+ImageReader::ImageType*
 ImageModelObject
 ::GetITKImage() {
-  return m_ImageIO->GetITKImage();
+  return m_ImageReader->GetITKImage();
 }
 
 

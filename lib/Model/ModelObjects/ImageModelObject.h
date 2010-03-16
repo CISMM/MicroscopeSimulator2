@@ -1,7 +1,7 @@
 #ifndef _IMAGE_MODEL_OBJECT_H_
 #define _IMAGE_MODEL_OBJECT_H_
 
-#include <ImageIO.h>
+#include <ImageReader.h>
 #include <ModelObject.h>
 
 #include <vtkImageChangeInformation.h>
@@ -29,7 +29,7 @@ class ImageModelObject : public ModelObject {
 
   vtkImageData* GetImageData();
 
-  ImageIO::ImageType* GetITKImage();
+  ImageReader::ImageType* GetITKImage();
 
   void GetDimensions(int dim[3]);
 
@@ -50,7 +50,7 @@ class ImageModelObject : public ModelObject {
 
   ModelObjectPropertyList* CreateProperties();
 
-  ImageIO*                                   m_ImageIO;
+  ImageReader*                               m_ImageReader;
   vtkSmartPointer<vtkImageChangeInformation> m_InfoChanger;
   vtkSmartPointer<vtkContourFilter>          m_IsosurfaceSource;
 };
