@@ -26,9 +26,9 @@ public:
   void Update();
 	
 protected:
-  typename itk::VTKImageExport<TImage>::Pointer exporter;
+  typename itk::VTKImageExport<TImage>::Pointer m_Exporter;
 
-  vtkImageImport* importer;
+  vtkImageImport* m_Importer;
 	
 };
 

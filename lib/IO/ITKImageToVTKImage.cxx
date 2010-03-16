@@ -1,7 +1,7 @@
 #ifndef _ITK_IMAGE_TO_VTK_IMAGE_CXX_
 #define _ITK_IMAGE_TO_VTK_IMAGE_CXX_
 
-#include "ITKImageToVTKImage.h"
+#include <ITKImageToVTKImage.h>
 
 #include <vtkImageData.h>
 #include <vtkImageImport.h>
@@ -10,28 +10,28 @@
 template <class TImage>
 ITKImageToVTKImage<TImage>
 ::ITKImageToVTKImage() {
-  this->exporter = itk::VTKImageExport<TImage>::New();
+  m_Exporter = itk::VTKImageExport<TImage>::New();
 
-  this->importer = vtkImageImport::New();
-  this->importer->SetUpdateInformationCallback(exporter->GetUpdateInformationCallback());
-  this->importer->SetPipelineModifiedCallback(exporter->GetPipelineModifiedCallback());
-  this->importer->SetWholeExtentCallback(exporter->GetWholeExtentCallback());
-  this->importer->SetSpacingCallback(exporter->GetSpacingCallback());
-  this->importer->SetOriginCallback(exporter->GetOriginCallback());
-  this->importer->SetScalarTypeCallback(exporter->GetScalarTypeCallback());
-  this->importer->SetNumberOfComponentsCallback(exporter->GetNumberOfComponentsCallback());
-  this->importer->SetPropagateUpdateExtentCallback(exporter->GetPropagateUpdateExtentCallback());
-  this->importer->SetUpdateDataCallback(exporter->GetUpdateDataCallback());
-  this->importer->SetDataExtentCallback(exporter->GetDataExtentCallback());
-  this->importer->SetBufferPointerCallback(exporter->GetBufferPointerCallback());
-  this->importer->SetCallbackUserData(exporter->GetCallbackUserData());
+  m_Importer = vtkImageImport::New();
+  m_Importer->SetUpdateInformationCallback(m_Exporter->GetUpdateInformationCallback());
+  m_Importer->SetPipelineModifiedCallback(m_Exporter->GetPipelineModifiedCallback());
+  m_Importer->SetWholeExtentCallback(m_Exporter->GetWholeExtentCallback());
+  m_Importer->SetSpacingCallback(m_Exporter->GetSpacingCallback());
+  m_Importer->SetOriginCallback(m_Exporter->GetOriginCallback());
+  m_Importer->SetScalarTypeCallback(m_Exporter->GetScalarTypeCallback());
+  m_Importer->SetNumberOfComponentsCallback(m_Exporter->GetNumberOfComponentsCallback());
+  m_Importer->SetPropagateUpdateExtentCallback(m_Exporter->GetPropagateUpdateExtentCallback());
+  m_Importer->SetUpdateDataCallback(m_Exporter->GetUpdateDataCallback());
+  m_Importer->SetDataExtentCallback(m_Exporter->GetDataExtentCallback());
+  m_Importer->SetBufferPointerCallback(m_Exporter->GetBufferPointerCallback());
+  m_Importer->SetCallbackUserData(m_Exporter->GetCallbackUserData());
 }
 
 
 template <class TImage>
 ITKImageToVTKImage<TImage>
 ::~ITKImageToVTKImage() {
-  this->importer->Delete();
+  m_Importer->Delete();
 }
 
 
@@ -39,7 +39,7 @@ template <class TImage>
 void
 ITKImageToVTKImage<TImage>
 ::SetInput(typename TImage::Pointer input) {
-  this->exporter->SetInput(input);
+  m_Exporter->SetInput(input);
 }
 
 
@@ -47,7 +47,7 @@ template <class TImage>
 vtkAlgorithmOutput*
 ITKImageToVTKImage<TImage>
 ::GetOutputPort() {
-  return this->importer->GetOutputPort();
+  return m_Importer->GetOutputPort();
 }
 
 
@@ -55,7 +55,7 @@ template <class TImage>
 vtkImageData*
 ITKImageToVTKImage<TImage>
 ::GetOutput() {
-  return this->importer->GetOutput();
+  return m_Importer->GetOutput();
 }
 
 
@@ -63,7 +63,7 @@ template <class TImage>
 void
 ITKImageToVTKImage<TImage>
 ::Modified() {
-  this->importer->Modified();
+  m_Importer->Modified();
 }
 
 
@@ -71,7 +71,7 @@ template <class TImage>
 void
 ITKImageToVTKImage<TImage>
 ::Update() {
-  this->importer->Update();
+  m_Importer->Update();
 }
 
 #endif // _ITK_IMAGE_TO_VTK_IMAGE_CXX_ 
