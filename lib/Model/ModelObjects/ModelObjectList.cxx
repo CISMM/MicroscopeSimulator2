@@ -143,6 +143,9 @@ ModelObjectList
 ModelObjectPtr
 ModelObjectList
 ::GetModelObjectAtIndex(int index) {
+  if (index < 0)
+    return NULL;
+
   int i = 0;
   ModelObjectListIterator iter;
   for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
@@ -159,6 +162,9 @@ ModelObjectList
 ModelObjectPtr
 ModelObjectList
 ::GetModelObjectAtIndex(int index, const std::string& objectType) {
+  if (index < 0)
+    return NULL;
+
   int i = 0;
   ModelObjectListIterator iter;
   for (iter = m_ObjectList.begin(); iter != m_ObjectList.end(); iter++) {
