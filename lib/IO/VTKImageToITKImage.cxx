@@ -74,6 +74,14 @@ VTKImageToITKImage<TImage>
 template <class TImage>
 void
 VTKImageToITKImage<TImage>
+::GraftOutput(ImageTypePointer image) {
+  m_ITKImporter->GraftOutput(image);
+}
+
+
+template <class TImage>
+void
+VTKImageToITKImage<TImage>
 ::Modified() {
   m_ITKImporter->Modified();
 }

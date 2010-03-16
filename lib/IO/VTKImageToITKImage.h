@@ -25,6 +25,8 @@ class VTKImageToITKImage {
 
   ImageTypePointer GetOutput();
 
+  void GraftOutput(ImageTypePointer image);
+
   void Modified();
 
   void Update();
