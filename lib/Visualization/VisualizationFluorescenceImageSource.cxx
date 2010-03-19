@@ -86,15 +86,20 @@ VisualizationFluorescenceImageSource
   int index = 0;
   for (unsigned int i = 0; i < mol->GetSize(); i++) {
     ModelObject* mo = mol->GetModelObjectAtIndex(i);
+    bool paramChanged = false;
 
     ModelObjectPropertyList* mopl = mo->GetPropertyList();
     for (int prop = 0; prop < mopl->GetSize(); prop++) {
       ModelObjectProperty* property = mopl->GetProperty(prop);
       if (property->IsOptimizable() && property->GetOptimize()) {
         property->SetDoubleValue(params[index++]);
-        mo->Sully();
+        paramChanged = true;
       }
     }
+
+    // Sully the model object if a parameter has been changed
+    if (paramChanged)
+      mo->Sully();
   }
 }
 
