@@ -151,6 +151,7 @@ Visualization
     vtkImageData* image = GenerateFluorescenceImage();
     vtkSmartPointer<vtkImageData> imageCopy = vtkSmartPointer<vtkImageData>::New();
     imageCopy->DeepCopy(image);
+    image->Delete();
 
     appender->AddInput(imageCopy);
   }
