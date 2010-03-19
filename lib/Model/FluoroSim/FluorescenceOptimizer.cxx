@@ -7,10 +7,7 @@
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
 
-// TEMP
-#include <itkImageFileWriter.h>
-#include <itkCastImageFilter.h>
-// END TEMP
+#include <itkExceptionObject.h>
 
 
 FluorescenceOptimizer
@@ -56,72 +53,56 @@ FluorescenceOptimizer
 
   ModelObjectPtr mo = m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME);
   m_ComparisonImageModelObject = static_cast<ImageModelObject*>(mo);
+
+  // Connect comparison image to optimization machinery
+  m_CostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage());
 }
 
 
 void
 FluorescenceOptimizer
 ::Optimize() {
-  // Make sure to set the fluorescence image source.
-  m_FluorescenceImageSource->
-    SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
 
-  typedef ParameterizedCostFunctionType::ParametersMaskType
-    ParametersMaskType;
-  ParametersMaskType* mask = m_CostFunction->GetParametersMask();
-
-  // Pluck out the active parameters
-  typedef ParameterizedCostFunctionType::ParametersType ParametersType;
-  ParametersType activeParameters
-    = ParametersType(m_CostFunction->GetNumberOfParameters());
-  int activeIndex = 0;
-  for (unsigned int i = 0; i < mask->Size(); i++) {
-    if (mask->GetElement(i)) {
-      // TODO - The right hand side is slower than it has to be. Make it faster
-      activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
-    }
-  }
-
-  // Connect to the cost function, set the initial parameters, and optimize.
-  m_ImageToImageCostFunction
-    ->SetFixedImageRegion(m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
-  m_Optimizer->SetCostFunction(m_CostFunction);
-  m_Optimizer->SetFunctionConvergenceTolerance(1e-3);
-  m_Optimizer->SetInitialPosition(activeParameters);
-  m_Optimizer->StartOptimization();
-
-
-
-
-
-  /* Test writing out a TIF file. */
-  typedef SyntheticImageSourceType::OutputImageType ImageType;
-  typedef unsigned short UnsignedShortPixelType;
-  typedef itk::Image<UnsignedShortPixelType, ImageType::ImageDimension> OutputImageType;
-  typedef itk::CastImageFilter<ImageType, OutputImageType> CastFilterType;
-
-  CastFilterType::Pointer caster = CastFilterType::New();
-  caster->SetInput(m_FluorescenceImageSource->GetOutput());
-
-  itk::ImageFileWriter<OutputImageType>::Pointer writer =
-    itk::ImageFileWriter<OutputImageType>::New();
-  writer->SetInput(caster->GetOutput());
-  writer->SetFileName("/Users/cquammen/Desktop/ITK.tif");
   try {
-    writer->Write();
-  } catch (itk::ExceptionObject e) {
-    std::cout << "Error on write:" << std::endl;
-    std::cout << e.GetDescription() << std::endl;
-  }
-  /* End test writing out a TIF file. */
 
-#if 0
-  for (double x = 0; x < 3000.0; x += 100) {
-    double params[1];
-    params[0]= x;
-    SetParameters(params);
+    // Make sure to set the fluorescence image source and moving image.
+    m_FluorescenceImageSource->
+      SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
+    m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
+
+    typedef ParameterizedCostFunctionType::ParametersMaskType
+      ParametersMaskType;
+    ParametersMaskType* mask = m_CostFunction->GetParametersMask();
+    
+    // Pluck out the active parameters
+    typedef ParameterizedCostFunctionType::ParametersType ParametersType;
+    ParametersType activeParameters
+      = ParametersType(m_CostFunction->GetNumberOfParameters());
+    int activeIndex = 0;
+    for (unsigned int i = 0; i < mask->Size(); i++) {
+      if (mask->GetElement(i)) {
+        // TODO - The right hand side is slower than it has to be. Make it faster
+        activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
+      }
+    }
+
+    std::cout << "Starting parameters: " << activeParameters << std::endl;
+    
+    // Connect to the cost function, set the initial parameters, and optimize.
+    m_ImageToImageCostFunction
+      ->SetFixedImageRegion(m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
+
+    m_Optimizer = OptimizerType::New();
+    m_Optimizer->SetMaximumNumberOfIterations(10); // TODO - remove this line
+    m_Optimizer->SetCostFunction(m_CostFunction);
+    m_Optimizer->SetFunctionConvergenceTolerance(1e-3);
+    m_Optimizer->SetInitialPosition(activeParameters);
+    m_Optimizer->StartOptimization();
+    
+  } catch (itk::ExceptionObject exception) {
+    std::cout << "Optimizer exception: " << exception.GetDescription() << std::endl;
   }
-#endif
+
 }
 
 
