@@ -112,7 +112,10 @@ template <typename TOutputImage>
 unsigned int
 FluorescenceImageSource<TOutputImage>
 ::GetNumberOfParameters() const {
-  return m_ImageSource->GetNumberOfParameters();
+  if (m_ImageSource)
+    return m_ImageSource->GetNumberOfParameters();
+
+  return 0;
 }
 
 
