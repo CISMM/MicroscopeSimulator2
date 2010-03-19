@@ -64,15 +64,15 @@ ImageToParameterizedImageSourceMetric<TFixedImage,TMovingImageSource>
   if (this->m_MovingImageSource != source) {
     this->m_MovingImageSource = source;
     this->Modified();
+  }
     
-    // Now reinitialize the parameter mask array to match the number
-    // of the parameters in the moving image source.
-    m_ParametersMask = ParametersMaskType(source->GetNumberOfParameters());
+  // Now reinitialize the parameter mask array to match the number
+  // of the parameters in the moving image source.
+  m_ParametersMask = ParametersMaskType(source->GetNumberOfParameters());
     
-    // Initialize to have all active parameters.
-    for (unsigned int i = 0; i < m_ParametersMask.Size(); i++) {
-      m_ParametersMask[i] = 1;
-    }
+  // Initialize to have all active parameters.
+  for (unsigned int i = 0; i < m_ParametersMask.Size(); i++) {
+    m_ParametersMask[i] = 1;
   }
 }
 
