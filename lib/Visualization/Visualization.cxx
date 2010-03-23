@@ -125,7 +125,7 @@ vtkImageData*
 Visualization
 ::GenerateFluorescenceImage() {
   vtkImageData* imageData = vtkImageData::New();
-  imageData->ShallowCopy(m_FluorescenceRenderView->GetImage());
+  imageData->DeepCopy(m_FluorescenceRenderView->GetImage());
 
   return imageData;
 }
@@ -149,11 +149,8 @@ Visualization
     FluorescenceViewRender();
 
     vtkImageData* image = GenerateFluorescenceImage();
-    vtkSmartPointer<vtkImageData> imageCopy = vtkSmartPointer<vtkImageData>::New();
-    imageCopy->DeepCopy(image);
+    appender->AddInput(image);
     image->Delete();
-
-    appender->AddInput(imageCopy);
   }
 
   appender->Update();
