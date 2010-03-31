@@ -1,4 +1,13 @@
-#include <FluorescenceOptimizer.h>
+#include <itkAmoebaOptimizer.cxx>
+#include <itkExceptionObject.h>
+#include <itkFluorescenceImageSource.cxx>
+#include <itkGradientDescentOptimizer.cxx>
+#include <itkImage.txx>
+#include <itkImageToParameterizedImageSourceMetric.cxx>
+#include <itkMeanSquaresImageToImageMetric.txx>
+#include <itkNormalizedCorrelationImageToImageMetric.txx>
+#include <itkPoissonNoiseImageToImageMetric.cxx>
+#include <itkSingleValuedNonLinearOptimizer.cxx>
 
 #include <vtkImageData.h>
 
@@ -7,7 +16,8 @@
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
 
-#include <itkExceptionObject.h>
+
+#include <FluorescenceOptimizer.h>
 
 
 FluorescenceOptimizer

@@ -1,17 +1,18 @@
 #ifndef _FLUORESCENCE_OPTIMIZER_H_
 #define _FLUORESCENCE_OPTIMIZER_H_
 
-#include <itkFluorescenceImageSource.h>
-#include <itkImage.h>
 
+#define ITK_MANUAL_INSTANTIATION
 #include <itkAmoebaOptimizer.h>
+#include <itkFluorescenceImageSource.h>
 #include <itkGradientDescentOptimizer.h>
+#include <itkImage.h>
+#include <itkImageToParameterizedImageSourceMetric.h>
 #include <itkMeanSquaresImageToImageMetric.h>
 #include <itkNormalizedCorrelationImageToImageMetric.h>
 #include <itkPoissonNoiseImageToImageMetric.h>
 #include <itkSingleValuedNonLinearOptimizer.h>
-
-#include <itkImageToParameterizedImageSourceMetric.h>
+#undef ITK_MANUAL_INSTANTIATION
 
 
 class FluorescenceSimulation;
