@@ -86,7 +86,7 @@ QModelObjectPropertyListTableModel
 
   ModelObjectProperty* prop = m_ModelObject->GetProperty(index.row());
 
-  if (role == Qt::DisplayRole) {
+  if (role == Qt::DisplayRole || role == Qt::EditRole) {
     if (col == 0) {
       return QVariant(prop->GetName().c_str());
     } else if (col == 1) {
