@@ -144,7 +144,10 @@ public slots:
   virtual void on_fluoroSimComparisonImageComboBox_currentIndexChanged(int selected);
   virtual void on_fluoroSimCopyStackSettingsButton_clicked();
 
+  virtual void on_fluoroSimOptimizationMethodComboBox_currentIndexChanged(int selected);
   virtual void on_fluoroSimOptimizerSettingsButton_clicked();
+
+  virtual void on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected);
   
   virtual void on_fluoroSimOptimizeButton_clicked();
 
@@ -166,6 +169,8 @@ protected:
   void OpenSimulationFile(const std::string& fileName);
   void SaveSimulationFile(const std::string& fileName);
   
+  void AddNewModelObject(const std::string& objectName);
+
   void UpdateFocalPlaneUIControls(float minValue, float maxValue, float spacing);
 
   int PromptToSaveChanges();
@@ -198,6 +203,8 @@ private:
 
   Preferences*       m_Preferences;
   PreferencesDialog* m_PreferencesDialog;
+
+  QModelIndex m_SelectedModelObjectIndex;
 };
 
 #endif // _MICROSCOPE_SIMULATOR_H_

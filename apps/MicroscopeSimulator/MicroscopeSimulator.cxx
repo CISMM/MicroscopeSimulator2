@@ -2,6 +2,7 @@
 #include <Simulation.h>
 #include <Visualization.h>
 #include <Version.h>
+#include <FluorescenceOptimizer.h>
 #include <FluorescenceSimulation.h>
 #include <FluorophoreModelObjectProperty.h>
 #include <PointSpreadFunctionList.h>
@@ -16,10 +17,12 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QImageListModel.h>
+#include <QItemEditorFactory>
 #include <QItemSelectionModel>
 #include <QMessageBox>
 #include <QPSFListModel.h>
 #include <QSettings>
+#include <QStandardItemEditorCreator>
 #include <QVariant>
 
 #include <ErrorLogDialog.h>
@@ -64,6 +67,12 @@ MicroscopeSimulator
 
   gui = new Ui_MainWindow();
   gui->setupUi(this);
+
+  // Change the double item editor to QLineEdit
+  QItemEditorFactory* factory = new QItemEditorFactory();
+  factory->registerEditor(QVariant::Double, new QStandardItemEditorCreator<QLineEdit>());
+  factory->registerEditor(QVariant::String, new QStandardItemEditorCreator<QLineEdit>());
+  QItemEditorFactory::setDefaultFactory(factory);
 
   // Instantiate visualization pipelines.
   m_Visualization = new Visualization();
@@ -225,7 +234,6 @@ MicroscopeSimulator
   delete m_ViewModeActionGroup;
   delete m_InteractionActionGroup;
   delete m_ModelObjectPropertyListTableModel;
-  delete m_ModelObjectListSelectionModel;
 
   delete gui;
 }
@@ -392,6 +400,21 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::AddNewModelObject(const std::string& objectName) {
+  m_Simulation->AddNewModelObject(objectName);
+
+  RefreshModelObjectViews();
+  m_ModelObjectListModel->Refresh();
+
+  // m_SelectedModelObjectIndex is set anytime the selection in the
+  // model object list changes
+  m_ModelObjectListSelectionModel->
+    select(m_SelectedModelObjectIndex, QItemSelectionModel::Select);
+}
+
+
+void
+MicroscopeSimulator
 ::on_actionExit_triggered() {
   // Ask if user really wants to quit if the simulation has been modified.
   if (m_SimulationNeedsSaving) {
@@ -408,72 +431,56 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionAddCylinder_triggered() {
-  m_Simulation->AddNewModelObject("CylinderModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("CylinderModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddHollowCylinder_triggered() {
-  m_Simulation->AddNewModelObject("HollowCylinderModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("HollowCylinderModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddDisk_triggered() {
-  m_Simulation->AddNewModelObject("DiskModel");
-  
-  RefreshModelObjectViews();
+  AddNewModelObject("DiskModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddFlexibleTube_triggered() {
-  m_Simulation->AddNewModelObject("FlexibleTubeModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("FlexibleTubeModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddPlane_triggered() {
-  m_Simulation->AddNewModelObject("PlaneModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("PlaneModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddPointSet_triggered() {
-  m_Simulation->AddNewModelObject("PointSetModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("PointSetModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddSphere_triggered() {
-  m_Simulation->AddNewModelObject("SphereModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("SphereModel");
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionAddTorus_triggered() {
-  m_Simulation->AddNewModelObject("TorusModel");
-
-  RefreshModelObjectViews();
+  AddNewModelObject("TorusModel");
 }
 
 
@@ -708,6 +715,7 @@ MicroscopeSimulator
     mol->Delete(mol->GetModelObjectAtIndex(row));
 
     RefreshModelObjectViews();
+    m_ModelObjectListModel->Refresh();
   }
   m_ModelObjectPropertyListTableModel->SetModelObject(NULL);
   m_ModelObjectPropertyListTableModel->Refresh();
@@ -720,6 +728,8 @@ MicroscopeSimulator
 ::handle_ModelObjectListSelectionModel_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
   QModelIndexList indexes = selected.indexes();
   if (!indexes.isEmpty() && indexes[0].row() >= 0) {
+    m_SelectedModelObjectIndex = indexes[0];
+
     ModelObjectListPtr mol = m_Simulation->GetModelObjectList();
     ModelObjectPtr mo = mol->GetModelObjectAtIndex(indexes[0].row());
 
@@ -762,6 +772,10 @@ void
 MicroscopeSimulator
 ::handle_ModelObjectPropertyListTableModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
   RefreshModelObjectViews();
+
+  // This ensures that when an object's name is changed that it shows up
+  // immediately in the model object list.
+  gui->fluoroSimModelObjectList->update(m_ModelObjectListSelectionModel->currentIndex());
 }
 
 
@@ -1183,11 +1197,47 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimOptimizationMethodComboBox_currentIndexChanged(int selected) {
+  FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
+
+  if (selected == 0) {
+    optimizer->SetOptimizerToNelderMead();
+  } else if (selected == 1 || selected == 2) {
+    QMessageBox messageBox;
+    QString message("Optimization method '");
+    message.append(gui->fluoroSimOptimizationMethodComboBox->currentText());
+    message.append("' not yet implemented.");
+    messageBox.setText(message);
+    messageBox.setStandardButtons(QMessageBox::Ok);
+    messageBox.setDefaultButton(QMessageBox::Ok);
+    messageBox.exec();
+
+    gui->fluoroSimOptimizationMethodComboBox->setCurrentIndex(0);
+  } /* else if (selected == 1) {
+    optimizer->SetOptimizerToGradientDescent();
+    }*/
+
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimOptimizerSettingsButton_clicked() {
   m_OptimizerSettingsDialog->Update();
   int result = m_OptimizerSettingsDialog->exec();
-  if (result == QDialog::Accepted) {
-    
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected) {
+  FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
+  if (selected == 0) {
+    optimizer->SetCostFunctionToGaussianNoise();
+  } else if (selected == 1) {
+    optimizer->SetCostFunctionToPoissonNoise();
+  } else if (selected == 2) {
+    optimizer->SetCostFunctionToNormalizedCorrelation();
   }
 }
 
@@ -1284,7 +1334,6 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::RefreshModelObjectViews() {
-  m_ModelObjectListModel->Refresh();
   m_Visualization->RefreshModelObjectView();
 
   RenderViews();
