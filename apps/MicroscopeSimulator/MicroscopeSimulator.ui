@@ -183,7 +183,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-609</y>
+          <y>-735</y>
           <width>381</width>
           <height>1370</height>
          </rect>
@@ -997,14 +997,14 @@
                  <number>6</number>
                 </property>
                 <item>
-                 <widget class="QLabel" name="label_2">
+                 <widget class="QLabel" name="fluoroSimOptimizationMethodLabel">
                   <property name="text">
                    <string>Optimization method:</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="comboBox">
+                 <widget class="QComboBox" name="fluoroSimOptimizationMethodComboBox">
                   <item>
                    <property name="text">
                     <string>Nelder-Mead Downhill Simplex</string>
@@ -1030,17 +1030,22 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_3">
+                 <widget class="QLabel" name="fluoroSimObjectiveFunctionLabel">
                   <property name="text">
                    <string>Objective function:</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="comboBox_2">
+                 <widget class="QComboBox" name="fluoroSimObjectiveFunctionComboBox">
                   <item>
                    <property name="text">
-                    <string>Sum of Squared Differences</string>
+                    <string>Gaussian Noise Maximum Likelihood</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Poisson Noise Maximum LIkelihood</string>
                    </property>
                   </item>
                   <item>
