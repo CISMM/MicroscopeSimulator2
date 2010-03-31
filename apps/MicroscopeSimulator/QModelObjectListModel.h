@@ -26,8 +26,6 @@ class QModelObjectListModel : public QAbstractListModel {
 
   ModelObjectList* m_ModelObjectList;
 
-  int m_PreviousSize;
-
 };
 
 

@@ -7,7 +7,6 @@ QModelObjectListModel::QModelObjectListModel(QObject* parent) :
   QAbstractListModel(parent) {
 
   m_ModelObjectList = NULL;
-  m_PreviousSize = 0;
 }
 
 
