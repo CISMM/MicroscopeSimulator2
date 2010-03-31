@@ -3,8 +3,10 @@
 
 #include <vector>
 
+#define ITK_MANUAL_INSTANTIATION
 #include <itkGaussianImageSource.h>
 #include <ITKImageToVTKImage.h>
+#undef ITK_MANUAL_INSTANTIATION
 
 #include <PointSpreadFunction.h>
 

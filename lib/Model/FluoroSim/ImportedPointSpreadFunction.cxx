@@ -1,9 +1,13 @@
-#include <ImportedPointSpreadFunction.h>
-
 #include <XMLHelper.h>
 
 #include <vtkAlgorithmOutput.h>
 #include <vtkImageChangeInformation.h>
+
+#include <itkImageFileReader.txx>
+#include <ITKImageToVTKImage.cxx>
+
+#include <ImportedPointSpreadFunction.h>
+
 
 const std::string ImportedPointSpreadFunction::FILE_NAME_ATTRIBUTE  = "FileName";
 const std::string ImportedPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";

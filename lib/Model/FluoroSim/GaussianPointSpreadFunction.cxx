@@ -1,10 +1,14 @@
-#include <GaussianPointSpreadFunction.h>
+
+#include <itkGaussianImageSource.txx>
+#include <ITKImageToVTKImage.cxx>
 
 #include <vtkAlgorithm.h>
 #include <vtkAlgorithmOutput.h>
 #include <vtkImageData.h>
 
 #include <XMLHelper.h>
+
+#include <GaussianPointSpreadFunction.h>
 
 const std::string GaussianPointSpreadFunction::MEAN_ELEMENT    = "Mean";
 const std::string GaussianPointSpreadFunction::SIGMA_ELEMENT   = "Sigma";

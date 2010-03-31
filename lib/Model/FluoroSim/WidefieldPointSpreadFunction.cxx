@@ -1,3 +1,6 @@
+#include <itkGibsonLanniPSFImageSource.cxx>
+#include <ITKImageToVTKImage.cxx>
+
 #include <WidefieldPointSpreadFunction.h>
 
 #include <XMLHelper.h>
