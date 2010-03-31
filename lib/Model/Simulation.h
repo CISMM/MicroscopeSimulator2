@@ -62,6 +62,8 @@ public:
 
   FluorescenceSimulation* GetFluorescenceSimulation();
 
+  FluorescenceOptimizer* GetFluorescenceOptimizer();
+
   void SetComparisonImageModelObjectIndex(int index);
   ImageModelObject* GetComparisonImageModelObject();
 

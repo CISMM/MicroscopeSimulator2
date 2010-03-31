@@ -285,6 +285,13 @@ Simulation
 }
 
 
+FluorescenceOptimizer*
+Simulation
+::GetFluorescenceOptimizer() {
+  return m_FluoroOptimizer;
+}
+
+
 void
 Simulation
 ::SetComparisonImageModelObjectIndex(int index) {
