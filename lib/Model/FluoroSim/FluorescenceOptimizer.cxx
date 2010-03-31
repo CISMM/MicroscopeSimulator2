@@ -18,9 +18,14 @@ FluorescenceOptimizer
   
   m_FluorescenceImageSource = SyntheticImageSourceType::New();
 
-  m_ImageToImageCostFunction = ImageToImageCostFunctionType::New();
+  m_ImageToImageCostFunctionType = GAUSSIAN_NOISE_COST_FUNCTION;
+  m_OptimizerType = NELDER_MEAD_OPTIMIZER;
+
   m_CostFunction = ParameterizedCostFunctionType::New();
-  m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
+  
+  m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
+
+  SetUpOptimizer();
 }
 
 
@@ -65,9 +70,12 @@ FluorescenceOptimizer
 
   try {
 
+    SetUpOptimizer();
+
     // Make sure to set the fluorescence image source and moving image.
     m_FluorescenceImageSource->
       SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
+
     m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
 
     typedef ParameterizedCostFunctionType::ParametersMaskType
@@ -92,10 +100,9 @@ FluorescenceOptimizer
     m_ImageToImageCostFunction
       ->SetFixedImageRegion(m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
 
-    m_Optimizer = OptimizerType::New();
-    m_Optimizer->SetMaximumNumberOfIterations(10); // TODO - remove this line
+    m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
+
     m_Optimizer->SetCostFunction(m_CostFunction);
-    m_Optimizer->SetFunctionConvergenceTolerance(1e-3);
     m_Optimizer->SetInitialPosition(activeParameters);
     m_Optimizer->StartOptimization();
     
@@ -113,4 +120,36 @@ FluorescenceOptimizer
     return;
 
   m_FluoroSim->GetFluorescenceImageSource()->SetParameters(params);
+}
+
+
+void
+FluorescenceOptimizer
+::SetUpOptimizer() {
+
+  // Set up the cost function
+  if (m_ImageToImageCostFunctionType == GAUSSIAN_NOISE_COST_FUNCTION) {
+    m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
+    std::cout << "Gaussian noise cost function, ";
+  } else if (m_ImageToImageCostFunctionType == POISSON_NOISE_COST_FUNCTION) {
+    m_ImageToImageCostFunction = PoissonNoiseCostFunctionType::New();
+    std::cout << "Poisson noise cost function, ";
+  } else if (m_ImageToImageCostFunctionType == NORMALIZED_CORRELATION_COST_FUNCTION) {
+    m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
+    std::cout << "Normalized correlation cost function, ";
+  }
+
+  // Set up the optimizer
+  if (m_OptimizerType == NELDER_MEAD_OPTIMIZER) {
+    NelderMeadOptimizerType::Pointer optimizer = NelderMeadOptimizerType::New();
+    optimizer->SetFunctionConvergenceTolerance(1e-3);
+    m_Optimizer = optimizer;
+    std::cout << "Nelder-Mead optimizer";
+  } else if (m_OptimizerType == GRADIENT_DESCENT_OPTIMIZER) {
+    GradientDescentOptimizerType::Pointer optimizer = GradientDescentOptimizerType::New();
+    m_Optimizer = optimizer;
+    std::cout << "Gradient descent optimizer";
+  }
+
+  std::cout << std::endl;
 }
