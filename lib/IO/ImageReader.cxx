@@ -1,3 +1,7 @@
+#include <itkImage.txx>
+#include <itkImageFileReader.txx>
+#include <ITKImageToVTKImage.cxx>
+
 #include <ImageReader.h>
 
 

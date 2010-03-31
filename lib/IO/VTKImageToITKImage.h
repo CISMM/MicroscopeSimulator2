@@ -38,6 +38,8 @@ class VTKImageToITKImage {
 	
 };
 
+#ifndef ITK_MANUAL_INSTANTIATION
 #include "VTKImageToITKImage.cxx"
+#endif
 
 #endif // _VTK_IMAGE_TO_ITK_IMAGE_H_

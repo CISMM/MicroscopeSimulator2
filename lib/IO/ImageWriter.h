@@ -1,11 +1,13 @@
 #ifndef _IMAGE_WRITER_H_
 #define _IMAGE_WRITER_H_
 
+#define ITK_MANUAL_INSTANTIATION
 #include <itkImage.h>
 #include <itkImageFileWriter.h>
 #include <itkShiftScaleImageFilter.h>
 
 #include <VTKImageToITKImage.h>
+#undef ITK_MANUAL_INSTANTIATION
 
 
 class ImageWriter {

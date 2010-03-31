@@ -1,6 +1,12 @@
-#include <ImageWriter.h>
+#include <itkImage.txx>
+#include <itkImageFileWriter.txx>
+#include <itkShiftScaleImageFilter.txx>
+
+#include <VTKImageToITKImage.cxx>
 
 #include <vtkAlgorithmOutput.h>
+
+#include <ImageWriter.h>
 
 
 ImageWriter

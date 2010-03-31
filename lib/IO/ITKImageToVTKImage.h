@@ -4,6 +4,7 @@
 #include <itkImage.h>
 #include <itkVTKImageExport.h>
 
+
 class vtkImageData;
 class vtkImageImport;
 class vtkAlgorithmOutput;
@@ -32,6 +33,8 @@ protected:
 	
 };
 
+#ifndef ITK_MANUAL_INSTANTIATION
 #include "ITKImageToVTKImage.cxx"
+#endif
 
 #endif // _ITK_IMAGE_TO_VTK_IMAGE_H_

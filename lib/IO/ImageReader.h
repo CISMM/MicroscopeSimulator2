@@ -1,9 +1,11 @@
 #ifndef _IMAGE_READER_H_
 #define _IMAGE_READER_H_
 
+#define ITK_MANUAL_INSTANTIATION
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <ITKImageToVTKImage.h>
+#undef ITK_MANUAL_INSTANTIATION
 
 class vtkAlgorithmOutput;
 class vtkImageData;
