@@ -3,6 +3,7 @@
 #include <vtkAlgorithmOutput.h>
 #include <vtkImageChangeInformation.h>
 
+#include <itkChangeInformationImageFilter.txx>
 #include <itkImageFileReader.txx>
 #include <ITKImageToVTKImage.cxx>
 
@@ -18,14 +19,6 @@ ImportedPointSpreadFunction
   m_ImageReader = ImageSourceType::New();
   m_PointCenter[0] = m_PointCenter[1] = m_PointCenter[2] = 0.0;
 
-  m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
-  m_ITKToVTKFilter->SetInput(m_ImageReader->GetOutput());
-
-  m_ChangeInformationFilter = vtkSmartPointer<vtkImageChangeInformation>::New();
-  m_ChangeInformationFilter->SetInputConnection(m_ITKToVTKFilter->GetOutputPort());
-  m_ChangeInformationFilter->SetOutputSpacing(65.0, 65.0, 200.0);
-  m_ChangeInformationFilter->SetOutputOrigin(0.0, 0.0, 0.0);
-
   // Set up parameter names
   m_ParameterNames.push_back("X Size (voxels)");
   m_ParameterNames.push_back("Y Size (voxels)");
@@ -36,6 +29,30 @@ ImportedPointSpreadFunction
   m_ParameterNames.push_back("X Center (nm)");
   m_ParameterNames.push_back("Y Center (nm)");
   m_ParameterNames.push_back("Z Center (nm)");
+
+  m_ChangeInformationFilter = ChangeInfoFilterType::New();
+  m_ChangeInformationFilter->ChangeDirectionOff();
+  m_ChangeInformationFilter->ChangeOriginOn();
+  m_ChangeInformationFilter->ChangeRegionOff();
+  m_ChangeInformationFilter->ChangeSpacingOn();
+  ImageType::SpacingType spacing;
+  spacing[0] = 65.0;
+  spacing[1] = 65.0;
+  spacing[2] = 200.0;
+  m_ChangeInformationFilter->SetOutputSpacing(spacing);
+  ImageType::PointType origin;
+  origin[0] = 0.0;
+  origin[1] = 0.0;
+  origin[2] = 0.0;
+  m_ChangeInformationFilter->SetOutputOrigin(origin);
+  m_ChangeInformationFilter->SetInput(m_ImageReader->GetOutput());
+
+  m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
+  m_ITKToVTKFilter->SetInput(m_ChangeInformationFilter->GetOutput());
+
+  m_DerivativeX->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_DerivativeY->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_DerivativeZ->SetInput(m_ChangeInformationFilter->GetOutput());
 }
 
 
@@ -51,7 +68,7 @@ ImportedPointSpreadFunction
   m_FileName = fileName;
   m_ImageReader->SetFileName(m_FileName);
   m_ImageReader->UpdateLargestPossibleRegion();
-  m_ChangeInformationFilter->UpdateWholeExtent();
+  m_ChangeInformationFilter->UpdateLargestPossibleRegion();
 }
 
 
@@ -72,18 +89,18 @@ ImportedPointSpreadFunction
 vtkImageData*
 ImportedPointSpreadFunction
 ::GetOutput() {
+  m_ChangeInformationFilter->UpdateLargestPossibleRegion();
   m_ITKToVTKFilter->Modified();
-  m_ChangeInformationFilter->UpdateWholeExtent();
-  return m_ChangeInformationFilter->GetOutput();
+  return m_ITKToVTKFilter->GetOutput();
 }
 
 
 vtkAlgorithmOutput*
 ImportedPointSpreadFunction
 ::GetOutputPort() {
+  m_ChangeInformationFilter->UpdateLargestPossibleRegion();
   m_ITKToVTKFilter->Modified();
-  m_ChangeInformationFilter->UpdateWholeExtent();
-  return m_ChangeInformationFilter->GetOutputPort();
+  return m_ITKToVTKFilter->GetOutputPort();
 }
 
 
@@ -130,10 +147,10 @@ ImportedPointSpreadFunction
 void
 ImportedPointSpreadFunction
 ::SetParameterValue(int index, double value) {
-  double outputSpacing[3];
-  m_ChangeInformationFilter->GetOutputSpacing(outputSpacing);
-  double outputOrigin[3];
-  m_ChangeInformationFilter->GetOutputOrigin(outputOrigin);
+  ImageType::SpacingType outputSpacing = 
+    m_ChangeInformationFilter->GetOutputSpacing();
+  ImageType::PointType outputOrigin =
+    m_ChangeInformationFilter->GetOutputOrigin();
 
   switch(index) {
   case 0:

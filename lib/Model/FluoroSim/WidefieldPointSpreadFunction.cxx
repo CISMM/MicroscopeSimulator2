@@ -59,6 +59,10 @@ WidefieldPointSpreadFunction
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GibsonLanniSource->GetOutput());
 
+  m_DerivativeX->SetInput(m_GibsonLanniSource->GetOutput());
+  m_DerivativeY->SetInput(m_GibsonLanniSource->GetOutput());
+  m_DerivativeZ->SetInput(m_GibsonLanniSource->GetOutput());
+
   RecenterImage();
 }
 

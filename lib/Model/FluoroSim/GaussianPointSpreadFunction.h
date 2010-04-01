@@ -31,8 +31,8 @@ class GaussianPointSpreadFunction : public PointSpreadFunction {
   virtual void GetXMLConfiguration(xmlNodePtr node);
   virtual void RestoreFromXML(xmlNodePtr node);
 
-  typedef float                               PixelType;
-  typedef itk::Image<PixelType, 3>            ImageType;
+  typedef PointSpreadFunction::PixelType      PixelType;
+  typedef PointSpreadFunction::ImageType      ImageType;
   typedef itk::GaussianImageSource<ImageType> ImageSourceType;
   typedef ImageSourceType::Pointer            ImageSourceTypePointer;
 

@@ -4,13 +4,12 @@
 #include <vector>
 
 #define ITK_MANUAL_INSTANTIATION
+#include <itkChangeInformationImageFilter.h>
 #include <itkImageFileReader.h>
 #include <ITKImageToVTKImage.h>
 #undef ITK_MANUAL_INSTANTIATION
 
 #include <vtkSmartPointer.h>
-
-class vtkImageChangeInformation;
 
 #include <PointSpreadFunction.h>
 
@@ -44,18 +43,19 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   typedef float                                     PixelType;
   typedef itk::Image<PixelType, 3>                  ImageType;
   typedef itk::ImageFileReader<ImageType>           ImageSourceType;
-  typedef ImageSourceType::Pointer                  ImageSourceTypePointer;
-
+  typedef itk::ChangeInformationImageFilter<ImageType> ChangeInfoFilterType;
+  
  protected:
   std::vector<std::string> m_ParameterNames;
 
   std::string m_FileName;
-  double m_PointCenter[3];
+  double      m_PointCenter[3];
 
-  ImageSourceTypePointer m_ImageReader;
+  ImageSourceType::Pointer       m_ImageReader;
+
   ITKImageToVTKImage<ImageType>* m_ITKToVTKFilter;
 
-  vtkSmartPointer<vtkImageChangeInformation> m_ChangeInformationFilter;
+  ChangeInfoFilterType::Pointer  m_ChangeInformationFilter;
 
   void RecenterImage();
 };

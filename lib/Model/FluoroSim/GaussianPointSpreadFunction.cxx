@@ -44,6 +44,10 @@ GaussianPointSpreadFunction
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GaussianSource->GetOutput());
 
+  m_DerivativeX->SetInput(m_GaussianSource->GetOutput());
+  m_DerivativeY->SetInput(m_GaussianSource->GetOutput());
+  m_DerivativeZ->SetInput(m_GaussianSource->GetOutput());
+
   RecenterImage();
 }
 

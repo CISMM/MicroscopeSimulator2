@@ -1,3 +1,7 @@
+#include <itkRecursiveGaussianImageFilter.txx>
+
+#include <vtkImageAppendComponents.h>
+
 #include <PointSpreadFunction.h>
 
 const std::string PointSpreadFunction::NAME_ATTRIBUTE  = "Name";
@@ -10,12 +14,41 @@ const std::string PointSpreadFunction::Z_ATTRIBUTE     = "Z";
 
 PointSpreadFunction
 ::PointSpreadFunction() {
+  SetSigma(200.0);
+
+  m_DerivativeX = DerivativeFilterType::New();
+  m_DerivativeX->SetDirection(0);
+  m_DerivativeX->SetSigma(m_Sigma);
+  m_DerivativeX->SetOrder(DerivativeFilterType::FirstOrder);
+  m_VTKDerivativeX = new ITKImageToVTKImage<ImageType>();
+  m_VTKDerivativeX->SetInput(m_DerivativeX->GetOutput());
+
+  m_DerivativeY = DerivativeFilterType::New();
+  m_DerivativeY->SetDirection(1);
+  m_DerivativeY->SetSigma(m_Sigma);
+  m_DerivativeY->SetOrder(DerivativeFilterType::FirstOrder);
+  m_VTKDerivativeY = new ITKImageToVTKImage<ImageType>();
+  m_VTKDerivativeY->SetInput(m_DerivativeY->GetOutput());
+
+  m_DerivativeZ = DerivativeFilterType::New();
+  m_DerivativeZ->SetDirection(2);
+  m_DerivativeZ->SetSigma(m_Sigma);
+  m_DerivativeZ->SetOrder(DerivativeFilterType::FirstOrder);
+  m_VTKDerivativeZ = new ITKImageToVTKImage<ImageType>();
+  m_VTKDerivativeZ->SetInput(m_DerivativeZ->GetOutput());
+
+  m_VTKGradient = vtkSmartPointer<vtkImageAppendComponents>::New();
+  m_VTKGradient->SetInputConnection(0, m_VTKDerivativeX->GetOutputPort());
+  m_VTKGradient->AddInputConnection(0, m_VTKDerivativeY->GetOutputPort());
+  m_VTKGradient->AddInputConnection(0, m_VTKDerivativeZ->GetOutputPort());
 }
 
 
 PointSpreadFunction
 ::~PointSpreadFunction() {
-
+  delete m_VTKDerivativeX;
+  delete m_VTKDerivativeY;
+  delete m_VTKDerivativeZ;
 }
 
 
@@ -30,4 +63,32 @@ std::string&
 PointSpreadFunction
 ::GetName() {
   return m_Name;
+}
+
+
+vtkImageData*
+PointSpreadFunction
+::GetGradientOutput() {
+  return m_VTKGradient->GetOutput();
+}
+
+
+vtkAlgorithmOutput*
+PointSpreadFunction
+::GetGradientOutputPort() {
+  return m_VTKGradient->GetOutputPort();
+}
+
+
+void
+PointSpreadFunction
+::SetSigma(double sigma) {
+  m_Sigma = sigma;
+}
+
+
+double
+PointSpreadFunction
+::GetSigma() {
+  return m_Sigma;
 }
