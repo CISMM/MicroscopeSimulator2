@@ -68,7 +68,8 @@ ImportedPointSpreadFunction
   m_FileName = fileName;
   m_ImageReader->SetFileName(m_FileName);
   m_ImageReader->UpdateLargestPossibleRegion();
-  m_ChangeInformationFilter->UpdateLargestPossibleRegion();
+
+  RecenterImage();
 }
 
 
@@ -133,9 +134,9 @@ ImportedPointSpreadFunction
   case 3: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
   case 4: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
   case 5: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
-  case 6: return m_ChangeInformationFilter->GetOutputOrigin()[0]; break;
-  case 7: return m_ChangeInformationFilter->GetOutputOrigin()[1]; break;
-  case 8: return m_ChangeInformationFilter->GetOutputOrigin()[2]; break;
+  case 6: return m_PointCenter[0]; break;
+  case 7: return m_PointCenter[1]; break;
+  case 8: return m_PointCenter[2]; break;
 
   default: return 0.0;
   }
@@ -163,12 +164,14 @@ ImportedPointSpreadFunction
   case 5:
     outputSpacing[index-3] = value;
     m_ChangeInformationFilter->SetOutputSpacing(outputSpacing);
+    RecenterImage();
+    break;
     
   case 6: 
   case 7:
   case 8:
-    outputOrigin[index-6] = value;
-    m_ChangeInformationFilter->SetOutputOrigin(outputOrigin);
+    m_PointCenter[index-6] = value;
+    RecenterImage();
   default: break;
   }
 }
@@ -245,5 +248,15 @@ ImportedPointSpreadFunction
 void
 ImportedPointSpreadFunction
 ::RecenterImage() {
-  
+  // Change the origin here
+  ImageType::RegionType region = m_ChangeInformationFilter->GetOutput()->GetLargestPossibleRegion();
+  ImageType::SpacingType spacing = m_ChangeInformationFilter->GetOutputSpacing();
+
+  ImageType::PointType origin;
+  for (unsigned int i = 0; i < ImageType::GetImageDimension(); i++) {
+    origin[i] = -0.5*(region.GetSize(static_cast<unsigned long>(i))-1)*spacing[i] - m_PointCenter[i];
+  }
+  m_ChangeInformationFilter->SetOutputOrigin(origin);
+
+  m_ChangeInformationFilter->UpdateLargestPossibleRegion();
 }
