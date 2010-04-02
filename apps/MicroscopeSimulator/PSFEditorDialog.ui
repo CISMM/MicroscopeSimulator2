@@ -94,9 +94,6 @@
                   <string>Point-Spread Functions</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
-                  <property name="spacing">
-                   <number>6</number>
-                  </property>
                   <property name="margin">
                    <number>6</number>
                   </property>
@@ -185,7 +182,7 @@
                      <number>160</number>
                     </attribute>
                     <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
+                     <bool>false</bool>
                     </attribute>
                     <attribute name="verticalHeaderVisible">
                      <bool>false</bool>
@@ -193,13 +190,15 @@
                     <attribute name="verticalHeaderDefaultSectionSize">
                      <number>16</number>
                     </attribute>
+                    <attribute name="horizontalHeaderStretchLastSection">
+                     <bool>false</bool>
+                    </attribute>
                    </widget>
                   </item>
                  </layout>
                 </widget>
                </item>
               </layout>
-              <zorder>gui_PSFListGroupBox</zorder>
               <zorder>gui_PSFParametersGroupBox</zorder>
               <zorder>gui_PSFListGroupBox</zorder>
              </widget>
@@ -573,7 +572,6 @@
                 </spacer>
                </item>
               </layout>
-              <zorder>gui_ControlPanelSplitter</zorder>
               <zorder>gui_ImagePlanesGroupBox</zorder>
               <zorder>gui_ContrastGroupBox</zorder>
               <zorder>gui_CameraGroupBox</zorder>
