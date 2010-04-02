@@ -37,6 +37,8 @@ QPointSpreadFunctionPropertyTableModel
 ::setData(const QModelIndex& index, const QVariant& value, int role) {
   m_PSF->SetParameterValue(index.row(), value.toDouble());
 
+  reset();
+
   // Notify Qt items that the data has changed.
   emit dataChanged(index, index);
 
@@ -56,7 +58,7 @@ QPointSpreadFunctionPropertyTableModel
   if (row < 0 || row >= this->rowCount() || col < 0 || col >= this->columnCount())
     return QVariant();
 
-  if (role == Qt::DisplayRole) {
+  if (role == Qt::DisplayRole || role == Qt::EditRole) {
     if (col == 0) {
       return QVariant(m_PSF->GetParameterName(row).c_str());
     } else if (col == 1) {
@@ -74,8 +76,7 @@ Qt::ItemFlags
 QPointSpreadFunctionPropertyTableModel
 ::flags(const QModelIndex& index) const {
   if (index.column() == 1) {
-    Qt::ItemFlags flag = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    flag = flag | Qt::ItemIsEditable;
+    Qt::ItemFlags flag = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
     return flag;
   }
 
