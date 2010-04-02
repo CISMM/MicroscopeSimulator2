@@ -53,10 +53,6 @@ public:
   // Fluorescence-related stuff
   void GetFluorescenceScalarRange(double scalarRange[2]);
 
-  // Set the PSF
-  void SetPSF(PointSpreadFunction* psf);
-  void SetPSFImage(vtkImageData* image);
-
   void FocusOnObject(ModelObject* object);
 
 protected:

@@ -227,20 +227,6 @@ Visualization
 
 void
 Visualization
-::SetPSF(PointSpreadFunction* psf) {
-  SetPSFImage(psf->GetOutput());
-}
-
-
-void
-Visualization
-::SetPSFImage(vtkImageData* image) {
-  m_FluorescenceRenderView->SetPSFImage(image);
-}
-
-
-void
-Visualization
 ::FocusOnObject(ModelObject* object) {
   vtkPolyDataAlgorithm* geometrySource = object->GetAllGeometryTransformed();
   geometrySource->GetOutput()->Update();
