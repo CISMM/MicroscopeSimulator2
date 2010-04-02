@@ -34,8 +34,6 @@ vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->RenderWindow = vtkRenderWindow::New();
   this->RenderWindow->AddRenderer(this->Renderer);
 
-  this->PSFImage = NULL;
-
   this->PSFTexture = vtkSmartPointer<vtkOpenGL3DTexture>::New();
 }
 
@@ -49,9 +47,6 @@ vtkFluorescenceRenderView::~vtkFluorescenceRenderView() {
     this->RenderWindow->Delete();
   }
 }
-
-
-vtkCxxSetObjectMacro(vtkFluorescenceRenderView, PSFImage, vtkImageData);
 
 
 void vtkFluorescenceRenderView::SetFluorescenceSimulation(FluorescenceSimulation* simulation) {
@@ -98,7 +93,6 @@ vtkAlgorithmOutput* vtkFluorescenceRenderView::GetImageOutputPort() {
 void vtkFluorescenceRenderView::PrepareForRendering() {
   this->Update();
   
-  this->PSFTexture->SetInput(this->PSFImage);
   PointSpreadFunction* psf = this->Simulation->GetActivePointSpreadFunction();
 
   if (psf) {

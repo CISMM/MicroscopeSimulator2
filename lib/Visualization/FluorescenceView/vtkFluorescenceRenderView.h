@@ -33,11 +33,6 @@ class vtkFluorescenceRenderView : public vtkView {
   void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
 
   // Description:
-  // Set/get the PSF image.
-  vtkGetObjectMacro(PSFImage, vtkImageData);
-  void SetPSFImage(vtkImageData* psfImage);
-
-  // Description:
   // Gets the renderer for this view.
   vtkGetObjectMacro(Renderer, vtkFluorescenceRenderer);
   
