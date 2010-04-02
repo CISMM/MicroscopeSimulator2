@@ -16,5 +16,6 @@
     <ApplicationUniform name="psfSampler" type="int" number_of_elements="1"/>
     <ApplicationUniform name="ptsSampler" type="int" number_of_elements="1"/>
     <ApplicationUniform name="exposure" type="double" number_of_elements="1"/>
+    <ApplicationUniform name="maxTexCoords" type="double" number_of_elements="3"/>
   </Shader>
 </Material>
