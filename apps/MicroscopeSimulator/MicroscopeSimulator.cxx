@@ -70,6 +70,7 @@ MicroscopeSimulator
 
   // Change the double item editor to QLineEdit
   QItemEditorFactory* factory = new QItemEditorFactory();
+  factory->registerEditor(QVariant::Int,    new QStandardItemEditorCreator<QLineEdit>());
   factory->registerEditor(QVariant::Double, new QStandardItemEditorCreator<QLineEdit>());
   factory->registerEditor(QVariant::String, new QStandardItemEditorCreator<QLineEdit>());
   QItemEditorFactory::setDefaultFactory(factory);
@@ -309,36 +310,6 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_actionOpenImage_triggered() {
-  // Ask if user really wants to quit if the simulation has been modified.
-  if (m_SimulationNeedsSaving) {
-    int selected = PromptToSaveChanges();
-    if (selected == QMessageBox::Cancel)
-      return;
-  }
-
-  // Locate file.
-  QString fileName = QFileDialog::getOpenFileName(this, "Open Image Data", "", "TIF Images (*.tif);;VTK Images (*.vtk);;LSM Images (*.lsm);;");
-
-  // Now read the file
-  if (fileName == "") {
-    return;
-  }
-
-  OpenSimulationFile(fileName.toStdString());
-
-  // Set up visualization pipeline.
-
-  // Refresh the UI
-  RefreshUI();
-
-  // Reset camera
-  m_ModelObjectRenderer->ResetCamera();
-}
-
-
-void
-MicroscopeSimulator
 ::NewSimulation() {
   // Ask if user really wants to quit if the simulation has been modified.
   if (m_SimulationNeedsSaving) {
@@ -369,7 +340,8 @@ MicroscopeSimulator
     m_Simulation->SetSimulationAlreadySaved(true);
     m_Simulation->SetSimulationFileName(fileName);
     m_SimulationNeedsSaving = false;
-    
+
+    m_ModelObjectListModel->Refresh();    
     RefreshModelObjectViews();
     RefreshUI();
   }
@@ -507,6 +479,12 @@ MicroscopeSimulator
   }
 
   RefreshModelObjectViews();
+  m_ModelObjectListModel->Refresh();
+
+  // m_SelectedModelObjectIndex is set anytime the selection in the
+  // model object list changes
+  m_ModelObjectListSelectionModel->
+    select(m_SelectedModelObjectIndex, QItemSelectionModel::Select);
 }
 
 

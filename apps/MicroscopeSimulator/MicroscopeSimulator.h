@@ -62,7 +62,6 @@ public slots:
   virtual void on_actionOpenSimulation_triggered();
   virtual void on_actionSaveSimulation_triggered();
   virtual void on_actionSaveSimulationAs_triggered();
-  virtual void on_actionOpenImage_triggered();
   virtual void on_actionExit_triggered();
 
   // Add geometry

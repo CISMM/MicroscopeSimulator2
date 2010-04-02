@@ -95,8 +95,6 @@
     <addaction name="actionSaveSimulation"/>
     <addaction name="actionSaveSimulationAs"/>
     <addaction name="separator"/>
-    <addaction name="actionOpenImage"/>
-    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuWindows">
@@ -183,7 +181,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-735</y>
+          <y>0</y>
           <width>381</width>
           <height>1370</height>
          </rect>
@@ -846,6 +844,9 @@
                 </item>
                 <item row="10" column="0" colspan="4">
                  <widget class="QSlider" name="fluoroSimMinLevelSlider">
+                  <property name="minimum">
+                   <number>0</number>
+                  </property>
                   <property name="maximum">
                    <number>4095</number>
                   </property>
