@@ -3,13 +3,14 @@
 
 uniform sampler3D     psfSampler; // TexUnit0
 uniform sampler2DRect ptsSampler; // TexUnit1
-uniform int startIndex;
-uniform int endIndex;
-uniform int pointTexDim;
-uniform vec3 psfShift;
-uniform vec3 psfScale;
+uniform int   startIndex;
+uniform int   endIndex;
+uniform int   pointTexDim;
+uniform vec3  psfShift;
+uniform vec3  psfScale;
 uniform float focalDepth;
 uniform float exposure;
+uniform vec3  maxTexCoords;
 
 varying vec4 screenPosition;
 
@@ -21,7 +22,6 @@ void main() {
    
    // 3-vectors for checking whether texture coordinate is valid
    vec3 zero = vec3(0.0);
-   vec3 one  = vec3(1.0);
   
    // Initialize counter
    int index = startIndex;
@@ -40,7 +40,7 @@ void main() {
          vec3 texCoord = (pixelPos - origin) * psfScale;
 
          // Lookup PSF value in texture
-         if (all(greaterThanEqual(texCoord, zero)) && all(lessThanEqual(texCoord, one))) {
+         if (all(greaterThanEqual(texCoord, zero)) && all(lessThanEqual(texCoord, maxTexCoords))) {
             vec3 sampleValue = texture3D(psfSampler, texCoord).rgb;
             sum += sampleValue;
          }
