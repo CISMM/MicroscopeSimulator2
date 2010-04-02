@@ -8,6 +8,10 @@
 
 #include <XMLHelper.h>
 
+// WARNING: Always include the header file for this class AFTER
+// including the ITK headers. Otherwise, the ITK headers will be included
+// without including the implementation files, and you will have many linker
+// errors.
 #include <GaussianPointSpreadFunction.h>
 
 const std::string GaussianPointSpreadFunction::MEAN_ELEMENT    = "Mean";
