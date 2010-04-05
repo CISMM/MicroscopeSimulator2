@@ -72,8 +72,7 @@ ImportedPointSpreadFunction
   m_FileName = fileName;
   m_ImageReader->SetFileName(m_FileName);
   m_ImageReader->UpdateLargestPossibleRegion();
-
-  RecenterImage();
+  m_ChangeInformationFilter->UpdateLargestPossibleRegion();
 }
 
 
@@ -201,11 +200,11 @@ ImportedPointSpreadFunction
   xmlNewProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   xmlNodePtr pointCenterNode = xmlNewChild(root, NULL, BAD_CAST POINT_CENTER_ELEMENT.c_str(), NULL);
-  sprintf(buf, doubleFormat, m_ChangeInformationFilter->GetOutputOrigin()[0]);
+  sprintf(buf, doubleFormat, m_PointCenter[0]);
   xmlNewProp(pointCenterNode, BAD_CAST X_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_ChangeInformationFilter->GetOutputOrigin()[1]);
+  sprintf(buf, doubleFormat, m_PointCenter[1]);
   xmlNewProp(pointCenterNode, BAD_CAST Y_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_ChangeInformationFilter->GetOutputOrigin()[2]);
+  sprintf(buf, doubleFormat, m_PointCenter[2]);
   xmlNewProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
 }
 
@@ -239,13 +238,13 @@ ImportedPointSpreadFunction
     char* y = (char*) xmlGetProp(pointCenterNode, BAD_CAST Y_ATTRIBUTE.c_str());
     char* z = (char*) xmlGetProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str());
     if (x && y && z) {
-      double pointCenter[3];
-      pointCenter[0] = atof(x);
-      pointCenter[1] = atof(y);
-      pointCenter[2] = atof(z);
-      m_ChangeInformationFilter->SetOutputOrigin(pointCenter);
+      m_PointCenter[0] = atof(x);
+      m_PointCenter[1] = atof(y);
+      m_PointCenter[2] = atof(z);
     }
   }
+
+  RecenterImage();
 }
 
 
