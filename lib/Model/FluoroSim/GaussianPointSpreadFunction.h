@@ -13,9 +13,7 @@
 
 class GaussianPointSpreadFunction : public PointSpreadFunction {
  public:
-  static const std::string MEAN_ELEMENT;
   static const std::string SIGMA_ELEMENT;
-
 
   GaussianPointSpreadFunction();
   virtual ~GaussianPointSpreadFunction();
