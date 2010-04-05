@@ -57,6 +57,14 @@ vtkFluorescenceWidgetsRepresentation
 }
 
 
+int
+vtkFluorescenceWidgetsRepresentation
+::RequestData(vtkInformation* request, vtkInformationVector** inputVector,
+              vtkInformationVector* outputVector) {
+  return 1;
+}
+
+
 void
 vtkFluorescenceWidgetsRepresentation
 ::PrepareForRendering(vtkRenderView* view) {

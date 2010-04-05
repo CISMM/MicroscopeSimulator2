@@ -24,6 +24,8 @@ class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
   // Sets the FluorescenceSimulation
   void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
 
+  int RequestData(vtkInformation* request, vtkInformationVector** inputVector,
+                  vtkInformationVector* outputVector);
 
  protected:
   vtkFluorescenceWidgetsRepresentation();
