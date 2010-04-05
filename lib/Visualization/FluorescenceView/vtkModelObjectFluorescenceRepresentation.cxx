@@ -33,18 +33,6 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
   this->GatherMapper->SetPointsPerPass(3000);
   this->GatherMapper->SetPixelSize(65.0, 65.0);
 
-  this->GatherProperty = vtkSmartPointer<vtkProperty>::New();
-  this->GatherProperty->LoadMaterial("lib/shaders/gather.xml");
-  this->GatherProperty->ShadingOn();
-  this->GatherProperty->SetColor(0.0, 1.0, 0.0);
-  this->GatherProperty->AddShaderVariable("startIndex", 0);
-  this->GatherProperty->AddShaderVariable("endIndex", 0);
-  this->GatherProperty->AddShaderVariable("pointTexDim", 0);
-  this->GatherProperty->AddShaderVariable("focalDepth", 0.0);
-  this->GatherProperty->AddShaderVariable("psfSampler", 0);
-  this->GatherProperty->AddShaderVariable("ptsSampler", 1);
-  this->GatherProperty->AddShaderVariable("exposure", 1.0);
-
   this->BlendingMapper = vtkSmartPointer<vtkBlendingFluorescencePolyDataMapper>::New();
   // TODO - finish setting up this property
 
@@ -52,7 +40,6 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
 
   // Use gather mapper by default.
   this->Actor->SetMapper(this->GatherMapper);
-  this->Actor->SetProperty(this->GatherProperty);
 }
 
 
@@ -128,7 +115,6 @@ vtkModelObjectFluorescenceRepresentation
 void vtkModelObjectFluorescenceRepresentation::UseGatherMapper() {
   this->MapperType = GATHER_MAPPER;
   this->Actor->SetMapper(this->GatherMapper);
-  this->Actor->SetProperty(this->GatherProperty);
 }
 
 

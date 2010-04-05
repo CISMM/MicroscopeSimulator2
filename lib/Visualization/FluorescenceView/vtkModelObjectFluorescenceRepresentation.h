@@ -60,7 +60,6 @@ class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresenta
   vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>   GatherMapper;
   vtkSmartPointer<vtkBlendingFluorescencePolyDataMapper> BlendingMapper; 
   vtkSmartPointer<vtkActor>                              Actor;
-  vtkSmartPointer<vtkProperty>                           GatherProperty;
   vtkSmartPointer<vtkProperty>                           BlendingProperty;
   
   // Description:
