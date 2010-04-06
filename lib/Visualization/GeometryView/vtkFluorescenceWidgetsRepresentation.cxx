@@ -16,6 +16,8 @@ vtkStandardNewMacro(vtkFluorescenceWidgetsRepresentation);
 
 vtkFluorescenceWidgetsRepresentation
 ::vtkFluorescenceWidgetsRepresentation() {
+  this->SetNumberOfInputConnections(0,0);
+
   this->Simulation = NULL;
 
   vtkSmartPointer<vtkProperty> focalPlaneProperty = vtkSmartPointer<vtkProperty>::New();
