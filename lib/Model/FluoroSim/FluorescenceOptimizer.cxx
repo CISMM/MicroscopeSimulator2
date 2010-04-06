@@ -77,6 +77,13 @@ FluorescenceOptimizer
 }
 
 
+ImageModelObject*
+FluorescenceOptimizer
+::GetComparisonImageModelObject() {
+  return m_ComparisonImageModelObject;
+}
+
+
 void
 FluorescenceOptimizer
 ::Optimize() {

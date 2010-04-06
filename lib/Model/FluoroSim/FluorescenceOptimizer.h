@@ -65,6 +65,7 @@ class FluorescenceOptimizer {
 
   void SetModelObjectList(ModelObjectList* list);
   void SetComparisonImageModelObjectIndex(int index);
+  ImageModelObject* GetComparisonImageModelObject();
 
   void SetCostFunctionToGaussianNoise() {
     m_ImageToImageCostFunctionType = GAUSSIAN_NOISE_COST_FUNCTION;
