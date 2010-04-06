@@ -82,7 +82,7 @@ Visualization
   m_GeometryRepresentation->SetModelObjectList(simulation->GetModelObjectList());
   m_FluorescenceRepresentation->SetModelObjectList(simulation->GetModelObjectList());
   m_FluorescenceWidgetsRepresentation->SetFluorescenceSimulation(simulation->GetFluorescenceSimulation());
-  m_FluorescenceRenderView->SetFluorescenceSimulation(simulation->GetFluorescenceSimulation());
+  m_FluorescenceRenderView->SetSimulation(simulation);
 }
 
 
