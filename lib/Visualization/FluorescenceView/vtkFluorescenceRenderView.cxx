@@ -1,7 +1,10 @@
 #include <vtkFluorescenceRenderView.h>
 
+#include <FluorescenceOptimizer.h>
 #include <FluorescenceSimulation.h>
+#include <ImageModelObject.h>
 #include <PointSpreadFunction.h>
+#include <Simulation.h>
 
 #include <vtkImageData.h>
 #include <vtkFluorescenceRenderer.h>
@@ -34,8 +37,6 @@ vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->Renderer->AddFramebufferTexture(this->SyntheticImageTexture);
 
   this->GradientRenderer = vtkFluorescencePointsGradientRenderer::New();
-  this->GradientRenderer->SetBackground(1.0, 0.0, 0.0);
-  this->GradientRenderer->SetViewport(0.0, 0.0, 0.5, 0.5); // TODO - remove this line
   this->GradientRenderer->AddFramebufferTexture(this->SyntheticImageTexture);
 
   this->RenderWindow = vtkRenderWindow::New();
@@ -50,23 +51,24 @@ vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->PSFGradientTexture->InterpolateOn();
   this->PSFGradientTexture->RepeatOff();
 
-  this->ComputeGradients = 0;
+  this->ExperimentalImageTexture = vtkSmartPointer<vtkOpenGL3DTexture>::New();
+  this->ExperimentalImageTexture->InterpolateOn();
+  this->ExperimentalImageTexture->RepeatOff();
+
+  this->ComputeGradients = 1;
 }
 
 
 vtkFluorescenceRenderView::~vtkFluorescenceRenderView() {
-  if (this->Renderer) {
-    //this->Renderer->Delete(); // This lines causes a crash for unknown reasons
-  }
-
   if (this->RenderWindow) {
     this->RenderWindow->Delete();
   }
 }
 
 
-void vtkFluorescenceRenderView::SetFluorescenceSimulation(FluorescenceSimulation* simulation) {
-  this->Simulation = simulation;
+void vtkFluorescenceRenderView::SetSimulation(Simulation* simulation) {
+  this->Sim = simulation;
+  this->FluoroSim = simulation->GetFluorescenceSimulation();
 }
 
 
@@ -109,7 +111,7 @@ vtkAlgorithmOutput* vtkFluorescenceRenderView::GetImageOutputPort() {
 void vtkFluorescenceRenderView::PrepareForRendering() {
   this->Update();
   
-  PointSpreadFunction* psf = this->Simulation->GetActivePointSpreadFunction();
+  PointSpreadFunction* psf = this->FluoroSim->GetActivePointSpreadFunction();
 
   if (psf) {
     this->PSFTexture->SetInputConnection(psf->GetOutputPort());
@@ -121,8 +123,16 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
   this->PSFTexture->Update();
   this->PSFGradientTexture->Update();
 
-  this->Renderer->SetMapsToZero(this->Simulation->GetMinimumIntensityLevel());
-  this->Renderer->SetMapsToOne(this->Simulation->GetMaximumIntensityLevel());
+  this->Renderer->SetMapsToZero(this->FluoroSim->GetMinimumIntensityLevel());
+  this->Renderer->SetMapsToOne(this->FluoroSim->GetMaximumIntensityLevel());
+
+  ImageModelObject* comparisonImage = this->Sim->
+    GetFluorescenceOptimizer()->GetComparisonImageModelObject();
+  if (comparisonImage) {
+    this->ExperimentalImageTexture->SetInput(comparisonImage->GetImageData());
+    this->GradientRenderer->
+      SetExperimentalImageTexture(this->ExperimentalImageTexture);
+  }
 
   for (int i = 0; i < this->GetNumberOfRepresentations(); ++i) {
     vtkModelObjectFluorescenceRepresentation* rep = 
@@ -133,12 +143,11 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
       vtkFluorescencePolyDataMapper* fluorMapper = 
         vtkFluorescencePolyDataMapper::SafeDownCast(rep->GetActor()->GetMapper());
       if (fluorMapper) {
-        fluorMapper->SetFocalPlaneDepth(this->Simulation->GetFocalPlaneDepth());
-        fluorMapper->SetExposure(this->Simulation->GetExposure());
-        fluorMapper->SetPixelSize(this->Simulation->GetPixelSize(),
-                                  this->Simulation->GetPixelSize());
-        //fluorMapper->SetPSFTexture(this->PSFTexture);
-        fluorMapper->SetPSFTexture(this->PSFGradientTexture);
+        fluorMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlaneDepth());
+        fluorMapper->SetExposure(this->FluoroSim->GetExposure());
+        fluorMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
+                                  this->FluoroSim->GetPixelSize());
+        fluorMapper->SetPSFTexture(this->PSFTexture);
       } else {
         vtkErrorMacro(<< "Expected a vtkFluorescencePolyDataMapper");
       }
@@ -147,10 +156,10 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
         vtkFluorescencePointsGradientPolyDataMapper* gradientMapper =
           vtkFluorescencePointsGradientPolyDataMapper::SafeDownCast(rep->GetGradientActor()->GetMapper());
         if (gradientMapper) {
-          gradientMapper->SetFocalPlaneDepth(this->Simulation->GetFocalPlaneDepth());
-          gradientMapper->SetExposure(this->Simulation->GetExposure());
-          gradientMapper->SetPixelSize(this->Simulation->GetPixelSize(),
-                                       this->Simulation->GetPixelSize());
+          gradientMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlaneDepth());
+          gradientMapper->SetExposure(this->FluoroSim->GetExposure());
+          gradientMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
+                                       this->FluoroSim->GetPixelSize());
           gradientMapper->SetPSFTexture(this->PSFGradientTexture);
         }
       }

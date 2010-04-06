@@ -20,6 +20,7 @@ class vtkTransformCoordinateSystems;
 class vtkFluorescenceRenderer;
 
 class FluorescenceSimulation;
+class Simulation;
 
 // .NAME vtkFluorescenceRenderView - A fluorescent view of objects.
 //
@@ -32,11 +33,15 @@ class vtkFluorescenceRenderView : public vtkView {
   vtkTypeRevisionMacro(vtkFluorescenceRenderView, vtkView);
   void PrintSelf(ostream& os, vtkIndent indent);
   
-  void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
+  void SetSimulation(Simulation* simulation);
 
   // Description:
-  // Gets the renderer for this view.
+  // Gets the fluorescence renderer for this view.
   vtkGetObjectMacro(Renderer, vtkFluorescenceRenderer);
+
+  // Description:
+  // Gets the points gradient renderer for this view.
+  vtkGetObjectMacro(GradientRenderer, vtkFluorescencePointsGradientRenderer);
   
   // Description:
   // Get a handle to the render window.
@@ -73,11 +78,17 @@ protected:
   vtkFluorescenceRenderView();
   ~vtkFluorescenceRenderView();
 
-  FluorescenceSimulation* Simulation;
+  Simulation*             Sim;
+  FluorescenceSimulation* FluoroSim;
 
+  // Holds the single-channel PSF texture.
   vtkSmartPointer<vtkOpenGL3DTexture> PSFTexture;
 
+  // Holds the 3-component gradient of the PSF
   vtkSmartPointer<vtkOpenGL3DTexture> PSFGradientTexture;
+
+  // Holds the single-channel comparison image.
+  vtkSmartPointer<vtkOpenGL3DTexture> ExperimentalImageTexture;
 
   // If true, the render view will compute point gradients
   int ComputeGradients;
