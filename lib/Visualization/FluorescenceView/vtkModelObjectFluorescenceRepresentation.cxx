@@ -3,9 +3,9 @@
 #include <vtkActor.h>
 #include <vtkBlendingFluorescencePolyDataMapper.h>
 #include <vtkGatherFluorescencePolyDataMapper.h>
+#include <vtkFluorescencePointsGradientPolyDataMapper.h>
 #include <vtkFluorescenceRenderView.h>
 #include <vtkFluorescenceRenderer.h>
-#include <vtkOpenGL3DTexture.h>
 #include <vtkPolyDataAlgorithm.h>
 #include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkProperty.h>
@@ -34,12 +34,19 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
   this->GatherMapper->SetPixelSize(65.0, 65.0);
 
   this->BlendingMapper = vtkSmartPointer<vtkBlendingFluorescencePolyDataMapper>::New();
-  // TODO - finish setting up this property
+  // TODO - finish setting up this mapper
 
-  this->Actor = vtkSmartPointer<vtkActor>::New();
+  this->GradientMapper = vtkSmartPointer<vtkFluorescencePointsGradientPolyDataMapper>::New();
+  this->GradientMapper->ImmediateModeRenderingOn();
+  // TODO - finish setting up this mapper
 
   // Use gather mapper by default.
+  this->Actor = vtkSmartPointer<vtkActor>::New();
   this->Actor->SetMapper(this->GatherMapper);
+
+  // Use points gradient mapper.
+  this->GradientActor = vtkSmartPointer<vtkActor>::New();
+  this->GradientActor->SetMapper(this->GradientMapper);
 }
 
 
@@ -121,7 +128,6 @@ void vtkModelObjectFluorescenceRepresentation::UseGatherMapper() {
 void vtkModelObjectFluorescenceRepresentation::UseBlendingMapper() {
   this->MapperType = BLENDING_MAPPER;
   this->Actor->SetMapper(this->BlendingMapper);
-  this->Actor->SetProperty(this->BlendingProperty);
 }
 
 
@@ -132,6 +138,11 @@ vtkModelObjectFluorescenceRepresentation::Mapper_t vtkModelObjectFluorescenceRep
 
 vtkActor* vtkModelObjectFluorescenceRepresentation::GetActor() {
   return this->Actor;
+}
+
+
+vtkActor* vtkModelObjectFluorescenceRepresentation::GetGradientActor() {
+  return this->GradientActor;
 }
 
 

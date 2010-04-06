@@ -10,6 +10,7 @@ class vtkActor;
 class vtkBlendingFluorescencePolyDataMapper;
 class vtkGatherFluorescencePolyDataMapper;
 class vtkOpenGL3DTexture;
+class vtkFluorescencePointsGradientPolyDataMapper;
 class vtkProperty;
 class vtkRenderView;
 class vtkTransformFilter;
@@ -47,6 +48,11 @@ class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresenta
   // Gets the vtkActor used to represent the ModelObject.
   vtkActor* GetActor();
 
+  // Description:
+  // Gets the vtkActor used to represent points in the gradient computation
+  vtkActor* GetGradientActor();
+
+
  protected:
   vtkModelObjectFluorescenceRepresentation();
   ~vtkModelObjectFluorescenceRepresentation();
@@ -59,9 +65,16 @@ class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresenta
   vtkUniformPointSampler*                                Sampler;
   vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>   GatherMapper;
   vtkSmartPointer<vtkBlendingFluorescencePolyDataMapper> BlendingMapper; 
-  vtkSmartPointer<vtkActor>                              Actor;
-  vtkSmartPointer<vtkProperty>                           BlendingProperty;
-  
+
+  // Mapper for computing point set gradient
+  vtkSmartPointer<vtkFluorescencePointsGradientPolyDataMapper> GradientMapper;
+
+  // This is the actor for generating the synthetic image
+  vtkSmartPointer<vtkActor> Actor;
+
+  // This is the actor for generating the points gradient
+  vtkSmartPointer<vtkActor> GradientActor;                   
+
   // Description:
   // Sets the input pipeline connection to this representation.
   virtual int RequestData(vtkInformation* request,
