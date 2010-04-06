@@ -65,6 +65,8 @@ class PointSpreadFunction : public XMLStorable {
   ITKImageToVTKImage<ImageType>* m_VTKDerivativeZ;
 
   vtkSmartPointer<vtkImageAppendComponents> m_VTKGradient;
+
+  void UpdateGradientImage();
 };
 
 

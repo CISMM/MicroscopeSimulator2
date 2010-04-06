@@ -6,6 +6,7 @@
 #include <vtkAlgorithm.h>
 #include <vtkAlgorithmOutput.h>
 #include <vtkImageData.h>
+#include <vtkImageAppendComponents.h>
 
 #include <XMLHelper.h>
 
@@ -156,6 +157,8 @@ GaussianPointSpreadFunction
 
   default: break;
   }
+
+  UpdateGradientImage();
 }
 
 

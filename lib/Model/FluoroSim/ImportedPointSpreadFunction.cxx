@@ -177,6 +177,8 @@ ImportedPointSpreadFunction
     RecenterImage();
   default: break;
   }
+
+  UpdateGradientImage();
 }
 
 

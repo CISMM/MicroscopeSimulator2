@@ -96,3 +96,17 @@ PointSpreadFunction
 ::GetSigma() {
   return m_Sigma;
 }
+
+
+void
+PointSpreadFunction
+::UpdateGradientImage() {
+  m_DerivativeX->Modified();
+  m_DerivativeY->Modified();
+  m_DerivativeZ->Modified();
+  m_VTKDerivativeX->Modified();
+  m_VTKDerivativeY->Modified();
+  m_VTKDerivativeZ->Modified();
+  m_VTKGradient->Modified();
+  m_VTKGradient->Update();
+}

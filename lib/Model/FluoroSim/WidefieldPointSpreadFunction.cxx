@@ -263,6 +263,8 @@ WidefieldPointSpreadFunction
     break;
   }
 
+  UpdateGradientImage();
+
 }
 
 
