@@ -113,6 +113,8 @@ PointSetModelObject
   }
 
   GetGeometrySubAssembly("Points")->GetInput()->Modified();
+
+  m_Points->Modified();
 }
 
 
