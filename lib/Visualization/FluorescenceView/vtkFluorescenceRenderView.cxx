@@ -18,23 +18,39 @@
 #include <vtkGatherFluorescencePolyDataMapper.h>
 #include <vtkBlendingFluorescencePolyDataMapper.h>
 
+#include <vtkFluorescencePointsGradientRenderer.h>
+#include <vtkFluorescencePointsGradientPolyDataMapper.h>
+
 
 vtkCxxRevisionMacro(vtkFluorescenceRenderView, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkFluorescenceRenderView);
 
 
 vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
-  vtkSmartPointer<vtkFramebufferObjectTexture> renderTexture =
-    vtkSmartPointer<vtkFramebufferObjectTexture>::New();
-  renderTexture->AutomaticDimensionsOn();
+  this->SyntheticImageTexture = vtkFramebufferObjectTexture::New();
+  this->SyntheticImageTexture->AutomaticDimensionsOn();
 
   this->Renderer = vtkFluorescenceRenderer::New();
-  this->Renderer->AddFramebufferTexture(renderTexture);
+  this->Renderer->AddFramebufferTexture(this->SyntheticImageTexture);
+
+  this->GradientRenderer = vtkFluorescencePointsGradientRenderer::New();
+  this->GradientRenderer->SetBackground(1.0, 0.0, 0.0);
+  this->GradientRenderer->SetViewport(0.0, 0.0, 0.5, 0.5); // TODO - remove this line
+  this->GradientRenderer->AddFramebufferTexture(this->SyntheticImageTexture);
 
   this->RenderWindow = vtkRenderWindow::New();
   this->RenderWindow->AddRenderer(this->Renderer);
+  this->RenderWindow->AddRenderer(this->GradientRenderer);
 
   this->PSFTexture = vtkSmartPointer<vtkOpenGL3DTexture>::New();
+  this->PSFTexture->InterpolateOn();
+  this->PSFTexture->RepeatOff();
+
+  this->PSFGradientTexture = vtkSmartPointer<vtkOpenGL3DTexture>::New();
+  this->PSFGradientTexture->InterpolateOn();
+  this->PSFGradientTexture->RepeatOff();
+
+  this->ComputeGradients = 0;
 }
 
 
@@ -96,11 +112,14 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
   PointSpreadFunction* psf = this->Simulation->GetActivePointSpreadFunction();
 
   if (psf) {
-    this->PSFTexture->SetInput(psf->GetOutput());
+    this->PSFTexture->SetInputConnection(psf->GetOutputPort());
+    this->PSFGradientTexture->SetInputConnection(psf->GetGradientOutputPort());
   } else {
-    this->PSFTexture->SetInput(NULL);
+    this->PSFTexture->SetInputConnection(NULL);
+    this->PSFGradientTexture->SetInputConnection(NULL);
   }
   this->PSFTexture->Update();
+  this->PSFGradientTexture->Update();
 
   this->Renderer->SetMapsToZero(this->Simulation->GetMinimumIntensityLevel());
   this->Renderer->SetMapsToOne(this->Simulation->GetMaximumIntensityLevel());
@@ -111,15 +130,29 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
     if (rep) {
       rep->PrepareForRendering(this);
 
-      vtkActor* actor = rep->GetActor();
-      actor->SetTexture(this->PSFTexture);
-
-      vtkFluorescencePolyDataMapper* fluorMapper = vtkFluorescencePolyDataMapper::SafeDownCast(actor->GetMapper());
+      vtkFluorescencePolyDataMapper* fluorMapper = 
+        vtkFluorescencePolyDataMapper::SafeDownCast(rep->GetActor()->GetMapper());
       if (fluorMapper) {
         fluorMapper->SetFocalPlaneDepth(this->Simulation->GetFocalPlaneDepth());
         fluorMapper->SetExposure(this->Simulation->GetExposure());
         fluorMapper->SetPixelSize(this->Simulation->GetPixelSize(),
                                   this->Simulation->GetPixelSize());
+        //fluorMapper->SetPSFTexture(this->PSFTexture);
+        fluorMapper->SetPSFTexture(this->PSFGradientTexture);
+      } else {
+        vtkErrorMacro(<< "Expected a vtkFluorescencePolyDataMapper");
+      }
+
+      if (this->ComputeGradients) {
+        vtkFluorescencePointsGradientPolyDataMapper* gradientMapper =
+          vtkFluorescencePointsGradientPolyDataMapper::SafeDownCast(rep->GetGradientActor()->GetMapper());
+        if (gradientMapper) {
+          gradientMapper->SetFocalPlaneDepth(this->Simulation->GetFocalPlaneDepth());
+          gradientMapper->SetExposure(this->Simulation->GetExposure());
+          gradientMapper->SetPixelSize(this->Simulation->GetPixelSize(),
+                                       this->Simulation->GetPixelSize());
+          gradientMapper->SetPSFTexture(this->PSFGradientTexture);
+        }
       }
     }
   }

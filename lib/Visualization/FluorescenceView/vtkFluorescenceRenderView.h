@@ -7,6 +7,8 @@
 
 
 class vtkAlgorithmOutput;
+class vtkFluorescencePointsGradientRenderer;
+class vtkFramebufferObjectTexture;
 class vtkImageData;
 class vtkInteractorObserver;
 class vtkOpenGL3DTexture;
@@ -41,6 +43,12 @@ class vtkFluorescenceRenderView : public vtkView {
   vtkGetObjectMacro(RenderWindow, vtkRenderWindow);
 
   // Description:
+  // Enable/disabled computing gradients
+  vtkSetMacro(ComputeGradients,int);
+  vtkGetMacro(ComputeGradients,int);
+  vtkBooleanMacro(ComputeGradients,int);
+
+  // Description:
   // Updates the representations, then calls Render() on the render window
   // associated with this view.
   virtual void Render();
@@ -67,16 +75,22 @@ protected:
 
   FluorescenceSimulation* Simulation;
 
-  vtkImageData* PSFImage;
-
   vtkSmartPointer<vtkOpenGL3DTexture> PSFTexture;
+
+  vtkSmartPointer<vtkOpenGL3DTexture> PSFGradientTexture;
+
+  // If true, the render view will compute point gradients
+  int ComputeGradients;
 
   // Description:
   // Called by the view when the renderer is about to render.
   virtual void PrepareForRendering();
   
-  vtkFluorescenceRenderer* Renderer;
-  vtkRenderWindow*         RenderWindow;
+  vtkFluorescenceRenderer*               Renderer;
+  vtkFluorescencePointsGradientRenderer* GradientRenderer;
+  vtkRenderWindow*                       RenderWindow;
+
+  vtkFramebufferObjectTexture*           SyntheticImageTexture;
 
 private:
   vtkFluorescenceRenderView(const vtkFluorescenceRenderView&);  // Not implemented.
