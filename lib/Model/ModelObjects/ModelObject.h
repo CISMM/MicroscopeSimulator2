@@ -16,6 +16,7 @@ class ModelObjectPropertyList;
 typedef ModelObjectProperty* ModelObjectPropertyPtr;
 
 class vtkActor;
+class vtkPoints;
 class vtkPolyDataAlgorithm;
 
 
@@ -71,6 +72,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
 
   void AddProperty(ModelObjectProperty* property);
   void PopProperty();
+  void DeleteAndPopProperty();
   ModelObjectProperty* GetProperty(const std::string name);
   ModelObjectProperty* GetProperty(int index);
 
@@ -93,6 +95,21 @@ class ModelObject : public DirtyListener, public XMLStorable {
   vtkPolyDataAlgorithm* GetAllGeometry();
   vtkPolyDataAlgorithm* GetAllGeometryTransformed();
   vtkPolyDataAlgorithm* GetGeometrySubAssembly(const std::string& name);
+
+  /** Gets a sampling of surface points on the geometry. */
+  virtual vtkPoints* GetSurfaceSamplePoints();
+  virtual int        GetNumberOfSurfaceSamplePoints();
+
+  /** Gets a sampling of points within the volume bounded by the geometry. */
+  virtual vtkPoints* GetVolumeSamplePoints();
+  virtual int        GetNumberOfVolumeSamplePoints();
+
+  /** Applies forces at sample points to geometry and/or sample points
+      themselves. The size of the forces array should be three times the
+      number of points returned by GetNumberOfSurfaceSamplePoints()/
+      GetNumberOfVolumeSamplePoints(). */
+  virtual void ApplySurfaceSampleForces(double* forces);
+  virtual void ApplyVolumeSampleForces(double* forces);
 
   virtual void Update() = 0;
 

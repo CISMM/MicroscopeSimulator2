@@ -5,6 +5,7 @@
 #include <XMLHelper.h>
 
 #include <vtkAppendPolyData.h>
+#include <vtkPoints.h>
 #include <vtkPolyDataAlgorithm.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
@@ -223,6 +224,13 @@ ModelObject
 }
 
 
+void
+ModelObject
+::DeleteAndPopProperty() {
+  m_Properties->DeleteAndPopProperty();
+}
+
+
 ModelObjectProperty*
 ModelObject
 ::GetProperty(const std::string name) {
@@ -392,4 +400,44 @@ void
 ModelObject
 ::SetGeometrySubAssembly(const std::string& name, vtkPolyDataAlgorithm* assembly) {
   m_SubAssemblies[name] = assembly;
+}
+
+
+vtkPoints*
+ModelObject
+::GetSurfaceSamplePoints() {
+  return NULL;
+}
+
+
+int
+ModelObject
+::GetNumberOfSurfaceSamplePoints() {
+  return 0;
+}
+
+
+vtkPoints*
+ModelObject
+::GetVolumeSamplePoints() {
+  return NULL;
+}
+
+
+int
+ModelObject
+::GetNumberOfVolumeSamplePoints() {
+  return 0;
+}
+
+
+void
+ModelObject
+::ApplySurfaceSampleForces(double* forces) {
+}
+
+
+void
+ModelObject
+::ApplyVolumeSampleForces(double* forces) {
 }
