@@ -94,27 +94,33 @@ PointSetModelObject
 
   for (int i = 1; i <= numPoints; i++) {
     char buf[128];
-    double xyz[3];
+    double xyz[3] = {0.0, 0.0, 0.0};
+    ModelObjectProperty* prop;
 
     sprintf(buf, "X%d", i);
-    xyz[0] = GetProperty(std::string(buf))->GetDoubleValue();
+    prop = GetProperty(std::string(buf));
+    if (prop)
+      xyz[0] = prop->GetDoubleValue();
 
     sprintf(buf, "Y%d", i);
-    xyz[1] = GetProperty(std::string(buf))->GetDoubleValue();
+    prop = GetProperty(std::string(buf));
+    if (prop)
+      xyz[1] = prop->GetDoubleValue();
 
     sprintf(buf, "Z%d", i);
-    xyz[2] = GetProperty(std::string(buf))->GetDoubleValue();
+    prop = GetProperty(std::string(buf));
+    if (prop)
+      xyz[2] = prop->GetDoubleValue();
 
     double* currXYZ = m_Points->GetPoint(static_cast<vtkIdType>(i-1));
 
     if (xyz[0] != currXYZ[0] || xyz[1] != currXYZ[1] || xyz[2] != currXYZ[2]) {
       m_Points->SetPoint(static_cast<vtkIdType>(i-1), xyz);
+      m_Points->Modified();
     }
   }
 
   GetGeometrySubAssembly("Points")->GetInput()->Modified();
-
-  m_Points->Modified();
 }
 
 
@@ -172,18 +178,9 @@ PointSetModelObject
   } else if (diff < 0) {
     // Remove properties
     for (int i = previousNumPoints; i > newNumPoints; i--) {
-      sprintf(buf, "X%d", i);
-      delete GetProperty(std::string(buf));
-
-      sprintf(buf, "Y%d", i);
-      delete GetProperty(std::string(buf));
-
-      sprintf(buf, "Z%d", i);
-      delete GetProperty(std::string(buf));
-
-      PopProperty();
-      PopProperty();
-      PopProperty();
+      DeleteAndPopProperty();
+      DeleteAndPopProperty();
+      DeleteAndPopProperty();
     }
   }
 }
