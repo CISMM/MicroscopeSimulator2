@@ -16,7 +16,7 @@ vtkStandardNewMacro(vtkFluorescenceWidgetsRepresentation);
 
 vtkFluorescenceWidgetsRepresentation
 ::vtkFluorescenceWidgetsRepresentation() {
-  this->SetNumberOfInputConnections(0,0);
+  this->SetNumberOfInputPorts(0);
 
   this->Simulation = NULL;
 
