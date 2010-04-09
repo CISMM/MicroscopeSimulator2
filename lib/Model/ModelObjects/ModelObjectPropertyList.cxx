@@ -53,6 +53,15 @@ ModelObjectPropertyList
 }
 
 
+void
+ModelObjectPropertyList
+::DeleteAndPopProperty() {
+  ModelObjectProperty* prop = m_List.back();
+  delete prop;
+  m_List.pop_back();
+}
+
+
 ModelObjectProperty*
 ModelObjectPropertyList
 ::GetProperty(const std::string& name) {

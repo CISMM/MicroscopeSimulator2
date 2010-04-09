@@ -19,6 +19,8 @@ class ModelObjectPropertyList {
 
   void PopProperty();
 
+  void DeleteAndPopProperty();
+
   ModelObjectProperty* GetProperty(int i);
 
   ModelObjectProperty* GetProperty(const std::string& name);
