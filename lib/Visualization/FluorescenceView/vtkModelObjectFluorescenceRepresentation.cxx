@@ -39,6 +39,7 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
 
   this->GradientMapper = vtkSmartPointer<vtkFluorescencePointsGradientPolyDataMapper>::New();
   this->GradientMapper->ImmediateModeRenderingOn();
+  this->GradientMapper->SetPixelSize(65.0, 65.0);
   // TODO - finish setting up this mapper
 
   // Use gather mapper by default.
