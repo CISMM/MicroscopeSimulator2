@@ -42,6 +42,9 @@ GaussianPointSpreadFunction
   sigma[1] = 100.0;
   sigma[2] = 200.0;
   m_GaussianSource->SetSigma(sigma);
+
+  double mean[3] = {0.0, 0.0, 0.0};
+  m_GaussianSource->SetMean(mean);
   
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_GaussianSource->GetOutput());
