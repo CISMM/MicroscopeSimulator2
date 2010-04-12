@@ -13,6 +13,7 @@
 #include <vtkRenderWindow.h>
 
 #include <ImagePlaneVisualizationPipeline.h>
+#include <OutlineVisualizationPipeline.h>
 #include <PointSpreadFunction.h>
 #include <PointSpreadFunctionList.h>
 
@@ -53,11 +54,18 @@ PSFEditorDialog
   m_ZImagePlaneVisualization->SetMapsToBlack(0.0);
   m_ZImagePlaneVisualization->SetMapsToWhite(1.0);
 
-  m_Renderer = vtkRenderer::New();
-  m_RenderWindow = vtkRenderWindow::New();
+  m_OutlineVisualization = new OutlineVisualizationPipeline();
+
+  m_Renderer = vtkSmartPointer<vtkRenderer>::New();
+  m_Renderer->SetBackground(0.3, 0.3, 0.3);
+
+  m_RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
   m_RenderWindow->AddRenderer(m_Renderer);
 
+  m_RenderWindow->SetInteractor(gui_PSFDisplayQvtkWidget->GetInteractor());
   gui_PSFDisplayQvtkWidget->SetRenderWindow(m_RenderWindow);
+
+  m_FirstRender = true;
 }
 
 
@@ -66,6 +74,7 @@ PSFEditorDialog
   delete m_XImagePlaneVisualization;
   delete m_YImagePlaneVisualization;
   delete m_ZImagePlaneVisualization;
+  delete m_OutlineVisualization;
 }
 
 
@@ -220,7 +229,6 @@ void
 PSFEditorDialog
 ::on_gui_ZPlaneEdit_textChanged(QString text) {
   int slice = text.toInt();
-  std::cout << "Slice value: " << slice << std::endl;
   UpdatePlane(slice, m_ZImagePlaneVisualization, gui_ZPlaneSlider);
 }
 
@@ -357,7 +365,7 @@ PSFEditorDialog
 ::handle_PSFListModel_dataChanged(const QModelIndex&, const QModelIndex&) {
   UpdateImage();
   UpdateSliders();
-  UpdatePSFVisualization();
+  m_RenderWindow->Render();
 }
 
 
@@ -433,6 +441,8 @@ PSFEditorDialog
   m_ZImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
   m_ZImagePlaneVisualization->SetToZPlane();
   m_ZImagePlaneVisualization->Update();
+
+  m_OutlineVisualization->SetInputConnection(activePSF->GetOutputPort());
 }
 
 
@@ -465,7 +475,13 @@ PSFEditorDialog
   m_XImagePlaneVisualization->AddToRenderer(m_Renderer);
   m_YImagePlaneVisualization->AddToRenderer(m_Renderer);
   m_ZImagePlaneVisualization->AddToRenderer(m_Renderer);
-  m_Renderer->ResetCamera();  
+  m_OutlineVisualization->AddToRenderer(m_Renderer);
+  
+  if (m_FirstRender) {
+    m_Renderer->ResetCamera();
+    m_FirstRender = false;
+  }
+  m_Renderer->ResetCameraClippingRange();
   m_RenderWindow->Render();
 }
 

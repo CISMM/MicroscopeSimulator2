@@ -7,11 +7,13 @@
 #include <QMessageBox>
 
 class ImagePlaneVisualizationPipeline;
+class OutlineVisualizationPipeline;
 class QWidget;
 class QPSFListModel;
 class QPointSpreadFunctionPropertyTableModel;
 class PointSpreadFunctionList;
 
+#include <vtkSmartPointer.h>
 class vtkRenderer;
 
 
@@ -70,12 +72,15 @@ Q_OBJECT
 
   QPointSpreadFunctionPropertyTableModel* m_PSFTableModel;
 
-  vtkRenderer* m_Renderer;
-  vtkRenderWindow* m_RenderWindow;
+  vtkSmartPointer<vtkRenderer>     m_Renderer;
+  vtkSmartPointer<vtkRenderWindow> m_RenderWindow;
+
+  bool m_FirstRender;
 
   ImagePlaneVisualizationPipeline* m_XImagePlaneVisualization;
   ImagePlaneVisualizationPipeline* m_YImagePlaneVisualization;
   ImagePlaneVisualizationPipeline* m_ZImagePlaneVisualization;
+  OutlineVisualizationPipeline*    m_OutlineVisualization;
 
   int IntensityToSliderValue(double intensity, const QSlider& slider);
   double SliderValueToIntensity(int value, const QSlider& slider);
