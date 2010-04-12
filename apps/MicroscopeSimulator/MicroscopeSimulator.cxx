@@ -206,11 +206,16 @@ MicroscopeSimulator
 
   // Restore inter-session GUI settings.
   ReadProgramSettings();
-
   RefreshUI();
   RefreshModelObjectViews();
   on_actionResetCamera_triggered();
   gui->modelObjectQvtkWidget->GetRenderWindow()->Render();
+
+  // Some of the above steps invoke the Sully() method which sets
+  // m_SimulationNeedsSaving to true. We'll assume if the user makes
+  // no changes, then he/she won't want to save the default settings.
+  m_SimulationNeedsSaving = false;
+  UpdateMainWindowTitle();
 }
 
 
@@ -249,6 +254,10 @@ MicroscopeSimulator
 
   RefreshModelObjectViews();
   RefreshUI();
+
+  on_actionResetCamera_triggered();
+  m_SimulationNeedsSaving = false;
+  UpdateMainWindowTitle();
 }
 
 
@@ -345,6 +354,9 @@ MicroscopeSimulator
     RefreshModelObjectViews();
     on_actionResetCamera_triggered();
     RefreshUI();
+
+    m_SimulationNeedsSaving = false;
+    UpdateMainWindowTitle();
   }
 }
 
