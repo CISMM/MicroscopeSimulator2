@@ -343,6 +343,7 @@ MicroscopeSimulator
 
     m_ModelObjectListModel->Refresh();    
     RefreshModelObjectViews();
+    on_actionResetCamera_triggered();
     RefreshUI();
   }
 }
@@ -1362,6 +1363,12 @@ MicroscopeSimulator
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
   gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
   gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());
+
+  gui->fluorescenceQvtkWidget->setMinimumWidth(fluoroSim->GetImageWidth());
+  gui->fluorescenceQvtkWidget->setMaximumWidth(fluoroSim->GetImageWidth());
+  gui->fluorescenceQvtkWidget->setMinimumHeight(fluoroSim->GetImageHeight());
+  gui->fluorescenceQvtkWidget->setMaximumHeight(fluoroSim->GetImageHeight());
+
   gui->fluoroSimAddGaussianNoiseCheckBox->setChecked(QVariant(fluoroSim->GetAddGaussianNoise()).toBool());
   gui->fluoroSimStdDevEdit->setText(QVariant(fluoroSim->GetNoiseStdDev()).toString());
   gui->fluoroSimMeanEdit->setText(QVariant(fluoroSim->GetNoiseMean()).toString());
