@@ -32,14 +32,12 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
   this->GatherMapper = vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>::New();
   this->GatherMapper->ImmediateModeRenderingOn();
   this->GatherMapper->SetPointsPerPass(3000);
-  this->GatherMapper->SetPixelSize(65.0, 65.0);
 
   this->BlendingMapper = vtkSmartPointer<vtkBlendingFluorescencePolyDataMapper>::New();
   // TODO - finish setting up this mapper
 
   this->GradientMapper = vtkSmartPointer<vtkFluorescencePointsGradientPolyDataMapper>::New();
   this->GradientMapper->ImmediateModeRenderingOn();
-  this->GradientMapper->SetPixelSize(65.0, 65.0);
   // TODO - finish setting up this mapper
 
   // Use gather mapper by default.
