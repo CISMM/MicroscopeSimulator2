@@ -1370,6 +1370,9 @@ MicroscopeSimulator
   int focusSliderValue = (int) ((fluoroSim->GetFocalPlaneDepth() / fluoroSim->GetFocalPlaneDepthSpacing()));
   gui->fluoroSimFocusSlider->setValue(focusSliderValue);
 
+  gui->fluoroSimPSFMenuComboBox->
+    setCurrentIndex(fluoroSim->GetActivePSFIndex()+1);
+
   // Simulator Settings group box
   gui->fluoroSimExposureEdit->setText(QVariant(fluoroSim->GetExposure()).toString());
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
