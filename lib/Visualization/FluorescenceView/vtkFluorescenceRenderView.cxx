@@ -132,6 +132,8 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
     this->ExperimentalImageTexture->SetInput(comparisonImage->GetImageData());
     this->GradientRenderer->
       SetExperimentalImageTexture(this->ExperimentalImageTexture);
+  } else {
+    this->GradientRenderer->SetExperimentalImageTexture(NULL);
   }
 
   for (int i = 0; i < this->GetNumberOfRepresentations(); ++i) {
