@@ -66,6 +66,7 @@ FluorescenceOptimizer
 ::SetComparisonImageModelObjectIndex(int index) {
   if (index < 0) {
     m_ComparisonImageModelObject = NULL;
+    m_CostFunction->SetFixedImage(NULL);
     return;
   }
 
