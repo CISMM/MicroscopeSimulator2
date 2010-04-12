@@ -10,6 +10,7 @@ const char* FluorescenceSimulation::FOCAL_DEPTH_MAX_ATT = "focalDepthMax";
 const char* FluorescenceSimulation::FOCAL_DEPTH_SPACING_ATT = "focalDepthSpacing";
 const char* FluorescenceSimulation::EXPOSURE_TIME_ATT = "exposureTime";
 const char* FluorescenceSimulation::PIXEL_SIZE_ATT = "pixelSize";
+const char* FluorescenceSimulation::PSF_NAME_ATT = "psfName";
 const char* FluorescenceSimulation::IMAGE_WIDTH_ATT = "imageWidth";
 const char* FluorescenceSimulation::IMAGE_HEIGHT_ATT = "imageHeight";
 const char* FluorescenceSimulation::ADD_GAUSSIAN_NOISE_ATT = "addGaussianNoise";
@@ -48,7 +49,7 @@ FluorescenceSimulation
   m_FocalPlaneDepthMinimum = -5000.0;
   m_FocalPlaneDepthMaximum =  5000.0;
   m_FocalPlaneDepthSpacing =   200.0;
-  m_ActivePSFIndex = 0;
+  m_ActivePSFIndex = -1;
   m_Exposure    = 1.0;
   m_PixelSize   = 65.0;
   m_ImageWidth  = 200;
@@ -84,6 +85,15 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST EXPOSURE_TIME_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetPixelSize());
   xmlNewProp(node, BAD_CAST PIXEL_SIZE_ATT, BAD_CAST buf);
+
+  PointSpreadFunction* activePSF = this->GetActivePointSpreadFunction();
+  if (activePSF == NULL) {
+    sprintf(buf, "None");
+  } else {
+    sprintf(buf, "%s", activePSF->GetName().c_str());
+  }
+  xmlNewProp(node, BAD_CAST PSF_NAME_ATT, BAD_CAST buf);
+
   sprintf(buf, "%d", GetImageWidth());
   xmlNewProp(node, BAD_CAST IMAGE_WIDTH_ATT, BAD_CAST buf);
   sprintf(buf, "%d", GetImageHeight());
@@ -150,6 +160,11 @@ FluorescenceSimulation
   if (pixelSizeStr) {
     double pixelSize = atof(pixelSizeStr);
     SetPixelSize(pixelSize);
+  }
+
+  char* psfNameStr = (char*) xmlGetProp(node, BAD_CAST PSF_NAME_ATT);
+  if (psfNameStr) {
+    SetActivePSFByName(std::string(psfNameStr));
   }
 
   char* imageWidthStr = (char*) xmlGetProp(node, BAD_CAST IMAGE_WIDTH_ATT);
@@ -265,4 +280,19 @@ FluorescenceSimulation
     return m_PSFList->GetPointSpreadFunctionAt(m_ActivePSFIndex);
   }
   return NULL;
+}
+
+
+void
+FluorescenceSimulation
+::SetActivePSFByName(const std::string& psfName) {
+  for (int i = 0; i < m_PSFList->GetSize(); i++) {
+    PointSpreadFunction* psf = m_PSFList->GetPointSpreadFunctionAt(i);
+    if (psf && psfName == psf->GetName()) {
+      SetActivePSFIndex(i);
+      return;
+    }
+  }
+
+  SetActivePSFIndex(-1);
 }

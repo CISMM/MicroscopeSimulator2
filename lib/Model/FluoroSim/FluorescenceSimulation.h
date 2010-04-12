@@ -19,6 +19,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* FOCAL_DEPTH_SPACING_ATT;
   static const char* EXPOSURE_TIME_ATT;
   static const char* PIXEL_SIZE_ATT;
+  static const char* PSF_NAME_ATT;
   static const char* IMAGE_WIDTH_ATT;
   static const char* IMAGE_HEIGHT_ATT;
   static const char* ADD_GAUSSIAN_NOISE_ATT;
@@ -78,6 +79,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   }
 
   SetGetMacro(PSFListSettingsFileName, std::string);
+
+  void SetActivePSFByName(const std::string& psfName);
 
  protected:
   DirtyListener* m_DirtyListener;
