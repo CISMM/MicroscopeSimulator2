@@ -108,8 +108,8 @@ class ModelObject : public DirtyListener, public XMLStorable {
       themselves. The size of the forces array should be three times the
       number of points returned by GetNumberOfSurfaceSamplePoints()/
       GetNumberOfVolumeSamplePoints(). */
-  virtual void ApplySurfaceSampleForces(double* forces);
-  virtual void ApplyVolumeSampleForces(double* forces);
+  virtual void ApplySurfaceSampleForces(float* forces);
+  virtual void ApplyVolumeSampleForces(float* forces);
 
   virtual void Update() = 0;
 

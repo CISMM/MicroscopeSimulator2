@@ -433,11 +433,11 @@ ModelObject
 
 void
 ModelObject
-::ApplySurfaceSampleForces(double* forces) {
+::ApplySurfaceSampleForces(float* forces) {
 }
 
 
 void
 ModelObject
-::ApplyVolumeSampleForces(double* forces) {
+::ApplyVolumeSampleForces(float* forces) {
 }
