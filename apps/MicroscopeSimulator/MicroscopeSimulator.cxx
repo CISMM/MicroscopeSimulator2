@@ -1193,7 +1193,9 @@ MicroscopeSimulator
 
   if (selected == 0) {
     optimizer->SetOptimizerToNelderMead();
-  } else if (selected == 1 || selected == 2) {
+  } else if (selected == 2) {
+    optimizer->SetOptimizerToPointsGradientDescent();
+  } else {
     QMessageBox messageBox;
     QString message("Optimization method '");
     message.append(gui->fluoroSimOptimizationMethodComboBox->currentText());
