@@ -52,6 +52,9 @@ class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresenta
   // Gets the vtkActor used to represent points in the gradient computation
   vtkActor* GetGradientActor();
 
+  // Description:
+  // Gets points gradient from the gradient actor
+  float* GetPointsGradient(int& numPoints);
 
  protected:
   vtkModelObjectFluorescenceRepresentation();

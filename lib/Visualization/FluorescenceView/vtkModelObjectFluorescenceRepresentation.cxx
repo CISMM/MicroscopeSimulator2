@@ -146,6 +146,11 @@ vtkActor* vtkModelObjectFluorescenceRepresentation::GetGradientActor() {
 }
 
 
+float* vtkModelObjectFluorescenceRepresentation::GetPointsGradient(int& numPoints) {
+  return this->GradientMapper->GetPointsGradient(numPoints);
+}
+
+
 int vtkModelObjectFluorescenceRepresentation
 ::RequestData(vtkInformation* request,
               vtkInformationVector** inputVector,
