@@ -152,6 +152,44 @@ PointSetModelObject
 
 void
 PointSetModelObject
+::ApplySurfaceSampleForces(float* forces) {
+  int numPoints = 
+    GetProperty(PointSetModelObject::NUMBER_OF_POINTS_PROP)->GetIntValue();
+
+  for (int i = 1; i <= numPoints; i++) {
+    char buf[128];
+    double xyz[3] = {0.0, 0.0, 0.0};
+
+    sprintf(buf, "X%d", i);
+    ModelObjectProperty* prop1 = GetProperty(std::string(buf));
+    sprintf(buf, "Y%d", i);
+    ModelObjectProperty* prop2 = GetProperty(std::string(buf));
+    sprintf(buf, "Z%d", i);
+    ModelObjectProperty* prop3 = GetProperty(std::string(buf));
+
+    if (prop1 && prop2 && prop3) {
+      double x = prop1->GetDoubleValue();
+      double y = prop2->GetDoubleValue();
+      double z = prop3->GetDoubleValue();
+      prop1->SetDoubleValue(x + forces[(i-1)*3 + 0]);
+      prop2->SetDoubleValue(y + forces[(i-1)*3 + 1]);
+      prop3->SetDoubleValue(z + forces[(i-1)*3 + 2]);
+    }
+
+  }
+
+  Update();
+}
+
+
+void
+PointSetModelObject
+::ApplyVolumeSampleForces(float* forces) {
+}
+
+
+void
+PointSetModelObject
 ::UpdatePointProperties() {
 
   // Update the number of point properties according to the number of points
