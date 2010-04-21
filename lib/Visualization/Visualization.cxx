@@ -164,6 +164,39 @@ Visualization
 
 void
 Visualization
+::ComputeFluorescencePointsGradient() {
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+  if (!fluoroSim)
+    return;
+
+  m_FluorescenceRenderView->ComputePointGradientsOn();
+
+  // We just have to zip through the stack. The 
+  // vtkFluorescencePointsGradientPolyDataMapper will take care of the gradient
+  // computation.
+  double minDepth = fluoroSim->GetFocalPlaneDepthMinimum();
+  double maxDepth = fluoroSim->GetFocalPlaneDepthMaximum();
+  double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
+  bool firstRender = true;
+  for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
+    if (firstRender) {
+      // Make sure we clear the point gradient mapper prior to the first render
+      m_FluorescenceRenderView->ClearPointsGradientBuffersOn();
+      firstRender = false;
+    } else {
+      m_FluorescenceRenderView->ClearPointsGradientBuffersOff();
+    }
+
+    fluoroSim->SetFocalPlaneDepth(depth);
+    FluorescenceViewRender();
+  }
+
+  m_FluorescenceRenderView->ComputePointGradientsOff();
+}
+
+
+void
+Visualization
 ::ResetModelObjectCamera() {
   vtkCamera* camera = m_ModelObjectRenderView->GetRenderer()->GetActiveCamera();
   camera->SetPosition(0.0, 0.0, 1.0);
@@ -239,3 +272,9 @@ Visualization
   }
 }
 
+
+float*
+Visualization
+::GetPointsGradientForModelObjectAtIndex(int i, int& numPoints) {
+  return m_FluorescenceRepresentation->GetPointsGradientForRepresentation(i, numPoints);
+}

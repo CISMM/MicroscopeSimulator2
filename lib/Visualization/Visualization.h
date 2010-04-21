@@ -44,6 +44,8 @@ public:
   virtual vtkImageData* GenerateFluorescenceImage();
   virtual vtkImageData* GenerateFluorescenceStackImage();
 
+  void ComputeFluorescencePointsGradient();
+
   void ResetModelObjectCamera();
   void RefreshModelObjectView();
 
@@ -54,6 +56,8 @@ public:
   void GetFluorescenceScalarRange(double scalarRange[2]);
 
   void FocusOnObject(ModelObject* object);
+
+  float* GetPointsGradientForModelObjectAtIndex(int i, int& numPoints);
 
 protected:
   Simulation* m_Simulation;
