@@ -15,6 +15,7 @@
 #include <FluorescenceSimulation.h>
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
+#include <VisualizationFluorescenceImageSource.h>
 
 // WARNING: Always include the header file for this class AFTER
 // including the ITK headers. Otherwise, the ITK headers will be included
@@ -89,48 +90,91 @@ void
 FluorescenceOptimizer
 ::Optimize() {
 
-  try {
+  if (m_OptimizerType == POINTS_GRADIENT_DESCENT_OPTIMIZER) {
 
-    SetUpOptimizer();
-
-    // Make sure to set the fluorescence image source and moving image.
-    m_FluorescenceImageSource->
-      SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
-
-    m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
-
-    typedef ParameterizedCostFunctionType::ParametersMaskType
-      ParametersMaskType;
-    ParametersMaskType* mask = m_CostFunction->GetParametersMask();
+    // TODO - set the cost function in the fluorescence image source. Currently,
+    // only the Gaussian and Poisson noise cost functions are supported.
     
-    // Pluck out the active parameters
-    typedef ParameterizedCostFunctionType::ParametersType ParametersType;
-    ParametersType activeParameters
-      = ParametersType(m_CostFunction->GetNumberOfParameters());
-    int activeIndex = 0;
-    for (unsigned int i = 0; i < mask->Size(); i++) {
-      if (mask->GetElement(i)) {
-        // TODO - The right hand side is slower than it has to be. Make it faster
-        activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
+
+    // TODO - figure out convergence criteria
+
+    for (int i = 0; i < 100; i++) {
+
+        // Compute the gradient. We don't need to read or process image data here.
+        // It is all done on the GPU.
+        VisualizationFluorescenceImageSource* imageSource =
+          dynamic_cast<VisualizationFluorescenceImageSource*>
+           (m_FluoroSim->GetFluorescenceImageSource());
+         imageSource->ComputePointsGradient();
+         
+         // Loop over the model objects. For each model object, get the
+         // gradient of its points and tell the model object about the gradient.
+         // We assume the model object will know how to adjust its parameters
+         // given the point gradient.
+         int numPoints;
+         float* gradientSrc = imageSource->
+           GetPointsGradientForModelObjectAtIndex(0, numPoints);
+         float* gradient = new float[3*numPoints];
+         memcpy(gradient, gradientSrc, sizeof(float)*3*numPoints);
+
+         // Scale the gradient
+         float t = 20.0;
+         for (int i = 0; i < numPoints; i++) {
+           gradient[i] *= t;
+         }
+
+         m_ModelObjectList->GetModelObjectAtIndex(0)->
+           ApplySurfaceSampleForces(gradient);
+
+         delete[] gradient;
+     }
+
+
+  } else {
+
+    try {
+      
+      SetUpOptimizer();
+      
+      // Make sure to set the fluorescence image source and moving image.
+      m_FluorescenceImageSource->
+        SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
+      
+      m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
+      
+      typedef ParameterizedCostFunctionType::ParametersMaskType
+        ParametersMaskType;
+      ParametersMaskType* mask = m_CostFunction->GetParametersMask();
+      
+      // Pluck out the active parameters
+      typedef ParameterizedCostFunctionType::ParametersType ParametersType;
+      ParametersType activeParameters
+        = ParametersType(m_CostFunction->GetNumberOfParameters());
+      int activeIndex = 0;
+      for (unsigned int i = 0; i < mask->Size(); i++) {
+        if (mask->GetElement(i)) {
+          // TODO - The right hand side is slower than it has to be. Make it faster
+          activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
+        }
       }
+      
+      std::cout << "Starting parameters: " << activeParameters << std::endl;
+      
+      // Connect to the cost function, set the initial parameters, and optimize.
+      m_ImageToImageCostFunction
+        ->SetFixedImageRegion(m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
+      
+      m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
+      
+      m_Optimizer->SetCostFunction(m_CostFunction);
+      m_Optimizer->SetInitialPosition(activeParameters);
+      m_Optimizer->StartOptimization();
+      
+    } catch (itk::ExceptionObject exception) {
+      std::cout << "Optimizer exception: " << exception.GetDescription() << std::endl;
     }
-
-    std::cout << "Starting parameters: " << activeParameters << std::endl;
     
-    // Connect to the cost function, set the initial parameters, and optimize.
-    m_ImageToImageCostFunction
-      ->SetFixedImageRegion(m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
-
-    m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
-
-    m_Optimizer->SetCostFunction(m_CostFunction);
-    m_Optimizer->SetInitialPosition(activeParameters);
-    m_Optimizer->StartOptimization();
-    
-  } catch (itk::ExceptionObject exception) {
-    std::cout << "Optimizer exception: " << exception.GetDescription() << std::endl;
   }
-
 }
 
 

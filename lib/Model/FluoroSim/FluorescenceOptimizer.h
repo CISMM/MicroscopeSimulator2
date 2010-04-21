@@ -32,7 +32,8 @@ class FluorescenceOptimizer {
 
   typedef enum {
     NELDER_MEAD_OPTIMIZER,
-    GRADIENT_DESCENT_OPTIMIZER
+    GRADIENT_DESCENT_OPTIMIZER,
+    POINTS_GRADIENT_DESCENT_OPTIMIZER
   } Optimizer_t;
 
   typedef float PixelType;
@@ -85,6 +86,10 @@ class FluorescenceOptimizer {
 
   void SetOptimizerToGradientDescent() {
     m_OptimizerType = GRADIENT_DESCENT_OPTIMIZER;
+  }
+
+  void SetOptimizerToPointsGradientDescent() {
+    m_OptimizerType = POINTS_GRADIENT_DESCENT_OPTIMIZER;
   }
 
   void Optimize();
