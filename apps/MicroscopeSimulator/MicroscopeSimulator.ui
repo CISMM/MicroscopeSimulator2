@@ -181,7 +181,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-59</y>
+          <y>-733</y>
           <width>381</width>
           <height>1368</height>
          </rect>
@@ -1018,7 +1018,7 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>Flow-driven Deformation</string>
+                    <string>Point-based Gradient Descent</string>
                    </property>
                   </item>
                  </widget>
