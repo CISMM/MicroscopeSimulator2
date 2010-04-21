@@ -1,7 +1,7 @@
 #ifndef _FLUORESCENCE_REPRESENTATION_H_
 #define _FLUORESCENCE_REPRESENTATION_H_
 
-#include <list>
+#include <vector>
 
 class FluorophoreModelObjectProperty;
 class FluorescenceSimulation;
@@ -28,11 +28,13 @@ class FluorescenceRepresentation {
 
   void Update();
 
+  float* GetPointsGradientForRepresentation(int repIndex, int& numPoints);
+
  protected:
   ModelObjectList* m_ModelObjectList;
   FluorescenceSimulation* m_Simulation;
 
-  std::list<vtkModelObjectFluorescenceRepresentation*> m_FluorescenceReps;
+  std::vector<vtkModelObjectFluorescenceRepresentation*> m_FluorescenceReps;
 
   vtkModelObjectFluorescenceRepresentation*
     CreateRepresentation(ModelObject* object,

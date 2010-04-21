@@ -51,7 +51,7 @@ FluorescenceRepresentation
 void
 FluorescenceRepresentation
 ::AddToView(vtkView* view) {
-  std::list<vtkModelObjectFluorescenceRepresentation*>::iterator iter;
+  std::vector<vtkModelObjectFluorescenceRepresentation*>::iterator iter;
   for (iter = m_FluorescenceReps.begin(); iter != m_FluorescenceReps.end(); iter++) {
     (*iter)->Update();
     view->AddRepresentation(*iter);
@@ -64,6 +64,13 @@ FluorescenceRepresentation
 ::Update() {
   UpdateRepresentation();
   UpdateSources();
+}
+
+
+float*
+FluorescenceRepresentation
+::GetPointsGradientForRepresentation(int repIndex, int& numPoints) {
+  return m_FluorescenceReps[repIndex]->GetPointsGradient(numPoints);
 }
 
 
@@ -108,11 +115,17 @@ FluorescenceRepresentation
   
   if (necessaryReps != m_FluorescenceReps.size()) {
     // Rebuild the whole geometry list
+    for (unsigned int i = 0; i < m_FluorescenceReps.size(); i++) {
+      m_FluorescenceReps[i]->Delete();
+    }
+    m_FluorescenceReps.clear();
+#if 0
     while (!m_FluorescenceReps.empty()) {
       vtkModelObjectFluorescenceRepresentation* rep = m_FluorescenceReps.front();
       rep->Delete();
       m_FluorescenceReps.pop_front();
     }
+#endif
 
     for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
       ModelObject* object = m_ModelObjectList->GetModelObjectAtIndex(i);
@@ -127,7 +140,7 @@ FluorescenceRepresentation
 void
 FluorescenceRepresentation
 ::UpdateSources() {
-  std::list<vtkModelObjectFluorescenceRepresentation*>::iterator iter;
+  std::vector<vtkModelObjectFluorescenceRepresentation*>::iterator iter;
   for (iter = m_FluorescenceReps.begin(); iter != m_FluorescenceReps.end(); iter++) {
     (*iter)->Update();
   }
