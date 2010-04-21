@@ -18,6 +18,13 @@ class VisualizationFluorescenceImageSource : public FluorescenceImageSource {
   virtual vtkImageData* GenerateFluorescenceImage();
   virtual vtkImageData* GenerateFluorescenceStackImage();
 
+  // Computes gradients for the point samples from all the
+  // model objects.
+  virtual void ComputePointsGradient();
+
+  // Get point gradient for a model object.
+  virtual float* GetPointsGradientForModelObjectAtIndex(int i, int& numPoints);
+
   virtual int GetNumberOfParameters();
 
   virtual void SetParameters(double* params);

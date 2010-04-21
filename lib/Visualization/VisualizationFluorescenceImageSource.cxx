@@ -48,6 +48,22 @@ VisualizationFluorescenceImageSource
 }
 
 
+void
+VisualizationFluorescenceImageSource
+::ComputePointsGradient() {
+  m_Visualization->ComputeFluorescencePointsGradient();
+}
+
+
+float*
+VisualizationFluorescenceImageSource
+::GetPointsGradientForModelObjectAtIndex(int i, int& numPoints) {
+  if (!m_Visualization) return 0;
+
+  return m_Visualization->GetPointsGradientForModelObjectAtIndex(i, numPoints);
+}
+
+
 int
 VisualizationFluorescenceImageSource
 ::GetNumberOfParameters() {
