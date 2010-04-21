@@ -48,10 +48,16 @@ class vtkFluorescenceRenderView : public vtkView {
   vtkGetObjectMacro(RenderWindow, vtkRenderWindow);
 
   // Description:
-  // Enable/disabled computing gradients
-  vtkSetMacro(ComputeGradients,int);
-  vtkGetMacro(ComputeGradients,int);
-  vtkBooleanMacro(ComputeGradients,int);
+  // Enable/disable computing gradients
+  vtkSetMacro(ComputePointGradients,int);
+  vtkGetMacro(ComputePointGradients,int);
+  vtkBooleanMacro(ComputePointGradients,int);
+
+  // Description:
+  // Enable/disable clearing of the gradient buffer prior to rendering
+  vtkSetMacro(ClearPointsGradientBuffers,int);
+  vtkGetMacro(ClearPointsGradientBuffers,int);
+  vtkBooleanMacro(ClearPointsGradientBuffers,int);
 
   // Description:
   // Updates the representations, then calls Render() on the render window
@@ -91,7 +97,12 @@ protected:
   vtkSmartPointer<vtkOpenGL3DTexture> ExperimentalImageTexture;
 
   // If true, the render view will compute point gradients
-  int ComputeGradients;
+  int ComputePointGradients;
+
+  // Description:
+  // Flag that indicates whether the gradient mappers should clear their
+  // gradient buffer prior to rendering.
+  int ClearPointsGradientBuffers;
 
   // Description:
   // Called by the view when the renderer is about to render.

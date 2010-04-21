@@ -55,7 +55,7 @@ vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->ExperimentalImageTexture->InterpolateOn();
   this->ExperimentalImageTexture->RepeatOff();
 
-  this->ComputeGradients = 1;
+  this->ComputePointGradients = 0;
 }
 
 
@@ -154,7 +154,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
         vtkErrorMacro(<< "Expected a vtkFluorescencePolyDataMapper");
       }
 
-      if (this->ComputeGradients) {
+      if (this->ComputePointGradients) {
         vtkFluorescencePointsGradientPolyDataMapper* gradientMapper =
           vtkFluorescencePointsGradientPolyDataMapper::SafeDownCast(rep->GetGradientActor()->GetMapper());
         if (gradientMapper) {
@@ -163,6 +163,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
           gradientMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                        this->FluoroSim->GetPixelSize());
           gradientMapper->SetPSFTexture(this->PSFGradientTexture);
+          gradientMapper->SetClearTextureTarget(this->ClearPointsGradientBuffers);
         }
       }
     }
