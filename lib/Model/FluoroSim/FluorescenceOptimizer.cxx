@@ -98,7 +98,7 @@ FluorescenceOptimizer
 
     // TODO - figure out convergence criteria
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 50; i++) {
 
         // Compute the gradient. We don't need to read or process image data here.
         // It is all done on the GPU.
@@ -120,7 +120,9 @@ FluorescenceOptimizer
          // Scale the gradient
          float t = 20.0;
          for (int i = 0; i < numPoints; i++) {
-           gradient[i] *= t;
+           gradient[3*i + 0] *= t;
+		   gradient[3*i + 1] *= t;
+		   gradient[3*i + 2] *= t;
          }
 
          m_ModelObjectList->GetModelObjectAtIndex(0)->
