@@ -9,6 +9,8 @@
 class vtkActor;
 class vtkBlendingFluorescencePolyDataMapper;
 class vtkGatherFluorescencePolyDataMapper;
+class vtkInformation;
+class vtkInformationVector;
 class vtkOpenGL3DTexture;
 class vtkFluorescencePointsGradientPolyDataMapper;
 class vtkProperty;
