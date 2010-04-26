@@ -8,8 +8,6 @@ SET( QTDLLS
   )
 INSTALL( FILES ${QTDLLS} DESTINATION bin )
 
-MESSAGE( WARNING ${LIBXML2_LIBRARIES})
-
 # This should work, but seems to prevent other files from being written 
 # into the bin directory in the installation tree.
 #SET(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${VTK_BINARY_DIR};VTK;ALL;/")
