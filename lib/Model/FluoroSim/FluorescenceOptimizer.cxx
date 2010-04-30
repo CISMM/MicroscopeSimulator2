@@ -121,8 +121,8 @@ FluorescenceOptimizer
          float t = 20.0;
          for (int i = 0; i < numPoints; i++) {
            gradient[3*i + 0] *= t;
-		   gradient[3*i + 1] *= t;
-		   gradient[3*i + 2] *= t;
+           gradient[3*i + 1] *= t;
+           gradient[3*i + 2] *= t;
          }
 
          m_ModelObjectList->GetModelObjectAtIndex(0)->
