@@ -7,6 +7,7 @@
 #include <DiskModelObject.h>
 #include <FlexibleTubeModelObject.h>
 #include <PlaneModelObject.h>
+#include <PointRingModelObject.h>
 #include <PointSetModelObject.h>
 #include <SphereModelObject.h>
 #include <TorusModelObject.h>
@@ -39,6 +40,8 @@ ModelObjectFactory
     object = new FlexibleTubeModelObject(m_DirtyListener);
   } else if (objectName == PlaneModelObject::OBJECT_TYPE_NAME) {
     object = new PlaneModelObject(m_DirtyListener);
+  } else if (objectName == PointRingModelObject::OBJECT_TYPE_NAME) {
+    object = new PointRingModelObject(m_DirtyListener);
   } else if (objectName == PointSetModelObject::OBJECT_TYPE_NAME) {
     object = new PointSetModelObject(m_DirtyListener);
   } else if (objectName == SphereModelObject::OBJECT_TYPE_NAME) {
