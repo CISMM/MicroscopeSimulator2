@@ -119,6 +119,7 @@
     <addaction name="actionAddDisk"/>
     <addaction name="actionAddFlexibleTube"/>
     <addaction name="actionAddPlane"/>
+    <addaction name="actionAddPointRing"/>
     <addaction name="actionAddPointSet"/>
     <addaction name="actionAddSphere"/>
     <addaction name="actionAddTorus"/>
@@ -181,7 +182,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-733</y>
+          <y>0</y>
           <width>381</width>
           <height>1368</height>
          </rect>
@@ -1575,6 +1576,11 @@
   <action name="actionAddHollowCylinder">
    <property name="text">
     <string>Add Hollow Cylinder</string>
+   </property>
+  </action>
+  <action name="actionAddPointRing">
+   <property name="text">
+    <string>Add Point Ring</string>
    </property>
   </action>
  </widget>

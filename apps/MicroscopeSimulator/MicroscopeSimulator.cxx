@@ -450,6 +450,13 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_actionAddPointRing_triggered() {
+  AddNewModelObject("PointRingModel");
+}
+
+
+void
+MicroscopeSimulator
 ::on_actionAddPointSet_triggered() {
   AddNewModelObject("PointSetModel");
 }

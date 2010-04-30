@@ -70,6 +70,7 @@ public slots:
   virtual void on_actionAddDisk_triggered();
   virtual void on_actionAddFlexibleTube_triggered();
   virtual void on_actionAddPlane_triggered();
+  virtual void on_actionAddPointRing_triggered();
   virtual void on_actionAddPointSet_triggered();
   virtual void on_actionAddSphere_triggered();
   virtual void on_actionAddTorus_triggered();
