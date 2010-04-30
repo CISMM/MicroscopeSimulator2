@@ -30,6 +30,8 @@ SET(modelModelObjectsSrc
   ModelObjects/HollowCylinderModelObject.cxx
   ModelObjects/PlaneModelObject.h
   ModelObjects/PlaneModelObject.cxx
+  ModelObjects/PointRingModelObject.h
+  ModelObjects/PointRingModelObject.cxx
   ModelObjects/PointSetModelObject.h
   ModelObjects/PointSetModelObject.cxx
   ModelObjects/SphereModelObject.h
