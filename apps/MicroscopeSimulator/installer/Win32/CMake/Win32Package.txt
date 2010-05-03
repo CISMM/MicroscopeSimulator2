@@ -23,10 +23,6 @@ INSTALL( FILES "D:/cquammen/build/libxml2/lib/libxml2.dll" DESTINATION bin )
 FILE( GLOB VTKMS_DLLS "${VTKMS_LIBRARY_DIRS}/release/vtkms*.dll" )
 INSTALL( FILES ${VTKMS_DLLS} DESTINATION bin )
 
-# Shader files
-FILE( GLOB VTKMS_SHADERS "${MicroscopeSimulator_SOURCE_DIR}/lib/Shaders/*" )
-INSTALL( FILES ${VTKMS_SHADERS} DESTINATION lib/shaders )
-
 # ITK DLLs
 FILE( GLOB ITK_DLLS "${ITK_LIBRARY_DIRS}/release/ITKCommon.dll" )
 INSTALL( FILES ${ITK_DLLS} DESTINATION bin )
