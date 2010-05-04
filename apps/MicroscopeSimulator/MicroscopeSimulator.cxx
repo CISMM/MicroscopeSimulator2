@@ -1059,6 +1059,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimScaleToFullDynamicRange_clicked() {
+  m_Visualization->FluorescenceViewRender();
   double scalarRange[2];
   m_Visualization->GetFluorescenceScalarRange(scalarRange);
 
