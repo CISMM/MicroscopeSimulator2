@@ -68,7 +68,8 @@ Visualization
 
 Visualization
 ::~Visualization() {
-
+  delete m_ImageSource;
+  delete m_GeometryRepresentation;
 }
 
 
@@ -124,6 +125,9 @@ Visualization
 vtkImageData*
 Visualization
 ::GenerateFluorescenceImage() {
+  // TODO - REALLY want to remove the line below to prevent double-rendering
+  FluorescenceViewRender();
+
   vtkImageData* imageData = vtkImageData::New();
   imageData->DeepCopy(m_FluorescenceRenderView->GetImage());
 

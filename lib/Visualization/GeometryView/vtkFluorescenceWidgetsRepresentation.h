@@ -8,7 +8,9 @@
 
 // Forward declarations
 class vtkActor;
+class vtkImageShiftScale;
 class vtkOutlineSource;
+class vtkPlaneSource;
 class vtkPolyDataMapper;
 class vtkReferenceGridSource;
 class vtkRenderView;
@@ -32,6 +34,12 @@ class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
   virtual ~vtkFluorescenceWidgetsRepresentation();
 
   FluorescenceSimulation* Simulation;
+
+  vtkSmartPointer<vtkImageShiftScale>     FocalPlaneImageShiftScale;
+  vtkSmartPointer<vtkTexture>             FocalPlaneTexture;
+  vtkSmartPointer<vtkPlaneSource>         FocalPlaneSource;
+  vtkSmartPointer<vtkPolyDataMapper>      FocalPlaneMapper;
+  vtkSmartPointer<vtkActor>               FocalPlaneActor;
 
   vtkSmartPointer<vtkReferenceGridSource> FocalPlaneGrid;
   vtkSmartPointer<vtkPolyDataMapper>      FocalPlaneGridMapper;
