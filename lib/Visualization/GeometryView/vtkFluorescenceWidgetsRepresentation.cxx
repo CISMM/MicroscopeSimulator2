@@ -126,8 +126,12 @@ vtkFluorescenceWidgetsRepresentation
 
       FluorescenceImageSource* imageSource = 
         this->Simulation->GetFluorescenceImageSource();
+
+      vtkDataObject* oldImage = this->FocalPlaneImageShiftScale->GetInput();
       vtkImageData* fluorescenceImage = imageSource->GenerateFluorescenceImage();
       this->FocalPlaneImageShiftScale->SetInput(fluorescenceImage);
+      if (oldImage)
+        oldImage->Delete();
       this->FocalPlaneTexture->Modified();
       this->FocalPlaneTexture->Update();
                                                 
