@@ -1170,7 +1170,7 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimCopyStackSettingsButton_clicked() {
+::on_fluoroSimCopyImageSettingsButton_clicked() {
   ImageModelObject* mo = m_Simulation->GetComparisonImageModelObject();
   if (!mo)
     return;
