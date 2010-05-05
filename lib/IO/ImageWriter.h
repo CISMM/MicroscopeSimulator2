@@ -2,6 +2,7 @@
 #define _IMAGE_WRITER_H_
 
 #define ITK_MANUAL_INSTANTIATION
+#include <itkFlipImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileWriter.h>
 #include <itkShiftScaleImageFilter.h>
@@ -20,6 +21,9 @@ class ImageWriter {
   
   typedef float                           FloatPixelType;
   typedef itk::Image<FloatPixelType, 3>   FloatImageType;
+
+  typedef itk::FlipImageFilter<FloatImageType> FloatFlipType;
+  typedef FloatFlipType::Pointer               FloatFlipTypePointer;
 
   typedef itk::ShiftScaleImageFilter<FloatImageType, UShortImageType> FloatCastFilterType;
   typedef FloatCastFilterType::Pointer                                FloatCastFilterTypePointer;
@@ -44,9 +48,11 @@ class ImageWriter {
  protected:
   VTKImageToITKImage<FloatImageType>* m_FloatVTKToITKFilter;
 
+  FloatFlipTypePointer       m_Flipper;
+
   FloatCastFilterTypePointer m_FloatCaster;
 
-  UShortWriterTypePointer m_UShortWriter;
+  UShortWriterTypePointer    m_UShortWriter;
 };
 
 
