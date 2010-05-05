@@ -125,7 +125,6 @@ Visualization
 vtkImageData*
 Visualization
 ::GenerateFluorescenceImage() {
-  // TODO - REALLY want to remove the line below to prevent double-rendering
   FluorescenceViewRender();
 
   vtkImageData* imageData = vtkImageData::New();
@@ -150,7 +149,6 @@ Visualization
   double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
   for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
     fluoroSim->SetFocalPlaneDepth(depth);
-    FluorescenceViewRender();
 
     vtkImageData* image = GenerateFluorescenceImage();
     appender->AddInput(image);
