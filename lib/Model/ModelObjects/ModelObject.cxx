@@ -370,8 +370,8 @@ ModelObject
   GetRotation(rotation);
   double position[3];
   GetPosition(position);
-  transform->RotateWXYZ(rotation[0], rotation[1], rotation[2], rotation[3]);
   transform->Translate(position);
+  transform->RotateWXYZ(rotation[0], rotation[1], rotation[2], rotation[3]);
   
   vtkTransformPolyDataFilter* transformFilter = vtkTransformPolyDataFilter::New();
   transformFilter->SetTransform(transform);
