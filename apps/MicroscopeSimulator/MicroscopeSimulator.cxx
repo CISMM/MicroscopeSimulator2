@@ -888,6 +888,9 @@ MicroscopeSimulator
       gui->fluoroSimPSFMenuComboBox->setCurrentIndex(index);
     }
   }
+
+  // Save the PSF file
+  WritePSFSettings();
 }
 
 
@@ -1472,7 +1475,13 @@ MicroscopeSimulator
   settings.setValue("windowSplitterSizes", windowSplitterSizes);
 
   settings.endGroup();
+  WritePSFSettings();
+}
 
+
+void
+MicroscopeSimulator
+::WritePSFSettings() {
   // Write out PSF list settings
   
   /* Create a new XML DOM tree, to which the XML document will be written. */
@@ -1542,6 +1551,13 @@ MicroscopeSimulator
 
   settings.endGroup();
 
+  ReadPSFSettings();
+}
+
+
+void
+MicroscopeSimulator
+::ReadPSFSettings() {
   // Read PSF list XML file
   QString psfSettingsFileName(m_Preferences->GetDataDirectoryPath().c_str());
   psfSettingsFileName.append(QDir::separator()).append("PSFList.xml");

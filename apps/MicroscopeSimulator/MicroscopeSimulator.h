@@ -51,7 +51,9 @@ protected:
   Ui_MainWindow* gui;
 
   void WriteProgramSettings();
+  void WritePSFSettings();
   void ReadProgramSettings();
+  void ReadPSFSettings();
 
 public slots:
 
