@@ -115,9 +115,16 @@
                    </widget>
                   </item>
                   <item>
+                   <widget class="QPushButton" name="gui_ImportWidefieldPSFSettingsButton">
+                    <property name="text">
+                     <string>Import Widefield PSF Settings...</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QPushButton" name="gui_ImportPSFButton">
                     <property name="text">
-                     <string>Import PSF...</string>
+                     <string>Import PSF Image...</string>
                     </property>
                    </widget>
                   </item>
@@ -190,9 +197,13 @@
                     <attribute name="verticalHeaderDefaultSectionSize">
                      <number>16</number>
                     </attribute>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>false</bool>
-                    </attribute>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="gui_ApplyButton">
+                    <property name="text">
+                     <string>Apply</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
