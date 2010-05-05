@@ -135,9 +135,22 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
+::on_gui_ImportWidefieldPSFSettingsButton_clicked() {
+  QString fileName = QFileDialog::
+    getOpenFileName(this, tr("Import Widefield PSF Settings"), QString(),
+                    tr("VPO Files (*.vpo);;All Files (*)"));
+  if (fileName == "")
+    return;
+
+  
+}
+
+
+void
+PSFEditorDialog
 ::on_gui_ImportPSFButton_clicked() {
   QString fileName = QFileDialog::
-    getOpenFileName(this, tr("Open PSF Image"), QString(), 
+    getOpenFileName(this, tr("Import PSF Image"), QString(), 
                     tr("TIF Files (*.tif *.tiff);;LSM Files (*.lsm)"));
   if (fileName == "")
     return;
@@ -169,6 +182,16 @@ PSFEditorDialog
     m_PSFListModel->GetPSFList()->DeletePointSpreadFunction(selected);
     m_PSFListModel->Refresh();
   }
+}
+
+
+void
+PSFEditorDialog
+::on_gui_ApplyButton_clicked() {
+  m_PSFTableModel->CopyCacheToPSF();
+  UpdateImage();
+  UpdateSliders();
+  m_RenderWindow->Render();
 }
 
 

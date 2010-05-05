@@ -34,8 +34,10 @@ Q_OBJECT
  public slots:
   virtual void on_gui_AddCalculatedGaussianPSFButton_clicked();
   virtual void on_gui_AddCalculatedWidefieldPSFButton_clicked();
+  virtual void on_gui_ImportWidefieldPSFSettingsButton_clicked();
   virtual void on_gui_ImportPSFButton_clicked();
   virtual void on_gui_DeletePSFButton_clicked();
+  virtual void on_gui_ApplyButton_clicked();
 
   virtual void on_gui_ShowXPlaneCheckBox_toggled(bool value);
   virtual void on_gui_XPlaneEdit_textChanged(QString text);
