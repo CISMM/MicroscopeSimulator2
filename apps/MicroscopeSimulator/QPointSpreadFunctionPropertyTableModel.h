@@ -2,6 +2,7 @@
 #define _Q_POINT_SPREAD_FUNCTION_PROPERTY_TABLE_MODEL_H_
 
 #include <QAbstractTableModel>
+#include <QList>
 
 // Forward declarations
 class PointSpreadFunction;
@@ -31,8 +32,13 @@ class QPointSpreadFunctionPropertyTableModel : public QAbstractTableModel {
 
   void Refresh();
 
+  void CopyCacheToPSF();
+  void CopyPSFToCache();
+
  protected:
   PointSpreadFunction* m_PSF;
+
+  double* m_ParameterCache;
 
 };
 

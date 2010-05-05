@@ -7,12 +7,14 @@ QPointSpreadFunctionPropertyTableModel
   : QAbstractTableModel(parent) {
 
   m_PSF = NULL;
+  m_ParameterCache = NULL;
 }
 
 
 QPointSpreadFunctionPropertyTableModel
 ::~QPointSpreadFunctionPropertyTableModel() {
-
+  if (m_ParameterCache)
+    delete[] m_ParameterCache;
 }
 
 
@@ -21,6 +23,11 @@ QPointSpreadFunctionPropertyTableModel
 ::SetPointSpreadFunction(PointSpreadFunction* psf) {
   m_PSF = psf;
 
+  if (psf) {
+    m_ParameterCache = new double[psf->GetNumberOfProperties()];
+  }
+  
+  CopyPSFToCache();
   Refresh();
 }
 
@@ -35,7 +42,7 @@ QPointSpreadFunctionPropertyTableModel
 bool
 QPointSpreadFunctionPropertyTableModel
 ::setData(const QModelIndex& index, const QVariant& value, int role) {
-  m_PSF->SetParameterValue(index.row(), value.toDouble());
+  m_ParameterCache[index.row()] = value.toDouble();
 
   reset();
 
@@ -62,7 +69,7 @@ QPointSpreadFunctionPropertyTableModel
     if (col == 0) {
       return QVariant(m_PSF->GetParameterName(row).c_str());
     } else if (col == 1) {
-      return QVariant(m_PSF->GetParameterValue(row));
+      return QVariant(m_ParameterCache[row]);
     } else {
       return QVariant();
     }
@@ -121,4 +128,28 @@ void
 QPointSpreadFunctionPropertyTableModel
 ::Refresh() {
   reset();
+}
+
+
+void
+QPointSpreadFunctionPropertyTableModel
+::CopyCacheToPSF() {
+  if (!m_PSF)
+    return;
+
+  for (int i = 0; i < m_PSF->GetNumberOfProperties(); i++) {
+    m_PSF->SetParameterValue(i, m_ParameterCache[i]);
+  }
+}
+
+
+void
+QPointSpreadFunctionPropertyTableModel
+::CopyPSFToCache() {
+  if (!m_PSF)
+    return;
+
+  for (int i = 0; i < m_PSF->GetNumberOfProperties(); i++) {
+    m_ParameterCache[i] = m_PSF->GetParameterValue(i);
+  }
 }
