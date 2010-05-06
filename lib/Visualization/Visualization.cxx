@@ -22,6 +22,7 @@
 #include <vtkFluorescenceRenderView.h>
 #include <vtkImageAppend.h>
 #include <vtkImageData.h>
+#include <vtkImagePlaneWidgetRepresentation.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkInteractorStyleTrackballActor.h>
 #include <vtkFluorescenceWidgetsRepresentation.h>
@@ -46,6 +47,7 @@ Visualization
   m_GeometryRepresentation = new GeometryRepresentation();
   m_FluorescenceRepresentation = new FluorescenceRepresentation();
   m_FluorescenceWidgetsRepresentation = vtkSmartPointer<vtkFluorescenceWidgetsRepresentation>::New();
+  m_ImagePlaneWidgetRepresentation = vtkSmartPointer<vtkImagePlaneWidgetRepresentation>::New();
 
   // Set up the model object view.
   m_ModelObjectRenderView = vtkSmartPointer<vtkRenderView>::New();
@@ -216,6 +218,12 @@ Visualization
   m_GeometryRepresentation->Update();
   m_GeometryRepresentation->AddToView(m_ModelObjectRenderView);
   m_ModelObjectRenderView->AddRepresentation(m_FluorescenceWidgetsRepresentation);
+  m_ModelObjectRenderView->AddRepresentation(m_ImagePlaneWidgetRepresentation);
+
+  if (m_Simulation && m_Simulation->GetComparisonImageModelObject()) {
+    m_ImagePlaneWidgetRepresentation->
+      SetInput(m_Simulation->GetComparisonImageModelObject()->GetImageData());
+  }
 
   m_FluorescenceRenderView->RemoveAllRepresentations();
   m_FluorescenceRepresentation->Update();
