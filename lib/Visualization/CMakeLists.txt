@@ -22,6 +22,8 @@ SET(visualizationViewsSrc
   GeometryView/vtkVisualizationInteractionObserver.cxx
   GeometryView/vtkFluorescenceWidgetsRepresentation.h
   GeometryView/vtkFluorescenceWidgetsRepresentation.cxx
+  GeometryView/vtkImagePlaneWidgetRepresentation.h
+  GeometryView/vtkImagePlaneWidgetRepresentation.cxx
   GeometryView/vtkReferenceGridSource.h
   GeometryView/vtkReferenceGridSource.cxx
   FluorescenceView/FluorescenceRepresentation.h
