@@ -40,7 +40,7 @@ vtkFluorescenceWidgetsRepresentation
   table->Build();
 
   this->FocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
-  this->FocalPlaneTexture->InterpolateOn();
+  this->FocalPlaneTexture->InterpolateOff();
   this->FocalPlaneTexture->RepeatOff();
   this->FocalPlaneTexture->SetLookupTable(table);
   this->FocalPlaneTexture->
