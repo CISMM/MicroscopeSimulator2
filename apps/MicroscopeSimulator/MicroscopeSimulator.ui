@@ -187,7 +187,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-160</y>
           <width>381</width>
           <height>1350</height>
          </rect>
@@ -727,7 +727,7 @@
                 <item row="4" column="0" colspan="4">
                  <widget class="QGroupBox" name="fluoroSimNoiseGroupBox">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="title">
                    <string>Noise</string>
@@ -739,7 +739,7 @@
                    <item row="0" column="0" colspan="3">
                     <widget class="QCheckBox" name="fluoroSimAddGaussianNoiseCheckBox">
                      <property name="enabled">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                      <property name="text">
                       <string>Add Gaussian noise</string>
@@ -762,7 +762,7 @@
                    <item row="1" column="1">
                     <widget class="QLineEdit" name="fluoroSimStdDevEdit">
                      <property name="enabled">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                      <property name="text">
                       <string>0</string>
@@ -785,7 +785,7 @@
                    <item row="1" column="3">
                     <widget class="QLineEdit" name="fluoroSimMeanEdit">
                      <property name="enabled">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                      <property name="text">
                       <string>0</string>
@@ -921,14 +921,6 @@
                     </widget>
                    </item>
                   </layout>
-                  <zorder>fluoroSimMinLevelLabel</zorder>
-                  <zorder>fluoroSimMinLevelLabel</zorder>
-                  <zorder>fluoroSimMinLevelEdit</zorder>
-                  <zorder>fluoroSimMinLevelSlider</zorder>
-                  <zorder>fluoroSimMaxLevelLabel</zorder>
-                  <zorder>fluoroSimMaxLevelEdit</zorder>
-                  <zorder>fluoroSimMaxLevelSlider</zorder>
-                  <zorder>fluoroSimScaleToFullDynamicRange</zorder>
                  </widget>
                 </item>
                 <item>
