@@ -125,6 +125,14 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
 
   this->Renderer->SetMapsToZero(this->FluoroSim->GetMinimumIntensityLevel());
   this->Renderer->SetMapsToOne(this->FluoroSim->GetMaximumIntensityLevel());
+  if (this->FluoroSim->GetAddGaussianNoise()) {
+    this->Renderer->GenerateNoiseOn();
+    this->Renderer->SetNoiseMean(this->FluoroSim->GetNoiseMean());
+    this->Renderer->SetNoiseStdDev(this->FluoroSim->GetNoiseStdDev());
+  } else {
+    this->Renderer->GenerateNoiseOff();
+  }
+  
 
   ImageModelObject* comparisonImage = this->Sim->
     GetFluorescenceOptimizer()->GetComparisonImageModelObject();
