@@ -46,9 +46,9 @@ void
 FluorescenceSimulation
 ::NewSimulation() {
   m_FocalPlaneDepth = 0.0;
-  m_FocalPlaneDepthMinimum = -5000.0;
-  m_FocalPlaneDepthMaximum =  5000.0;
-  m_FocalPlaneDepthSpacing =   200.0;
+  m_FocalPlaneDepthMinimum =    0.0;
+  m_FocalPlaneDepthMaximum = 5000.0;
+  m_FocalPlaneDepthSpacing =  200.0;
   m_ActivePSFIndex = -1;
   m_Exposure    = 1.0;
   m_PixelSize   = 65.0;
