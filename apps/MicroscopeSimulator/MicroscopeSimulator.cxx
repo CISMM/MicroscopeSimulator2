@@ -14,6 +14,7 @@
 
 #include <QActionGroup>
 #include <QApplication>
+#include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QImageListModel.h>
@@ -265,11 +266,24 @@ void
 MicroscopeSimulator
 ::on_actionOpenSimulation_triggered() {
   NewSimulation();
-  
-  // Prompt for simulation file to open.
-  QString selectedFileName = 
-      QFileDialog::getOpenFileName(this, "Open Simulation File", "", "XML Files (*.xml);;");
-  if (selectedFileName == "") {
+
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory = prefs.value("OpenSimulationDirectory").toString();
+
+  QFileDialog fileDialog(this, "Open Simulation File", directory,
+                         "XML Files (*.xml);;");
+  fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+  int result = fileDialog.exec();
+  prefs.setValue("OpenSimulationDirectory", fileDialog.directory().absolutePath());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected) 
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+
+  if (selectedFileName.isEmpty()) {
     return;
   }
 
@@ -285,34 +299,39 @@ MicroscopeSimulator
   std::string fileName;
   if (m_Simulation->GetSimulationAlreadySaved()) {
     fileName = m_Simulation->GetSimulationFileName();
+    SaveSimulationFile(fileName);
   } else {
-    // Get a file name.
-    QString selectedFileName = 
-      QFileDialog::getSaveFileName(this, "Save Simulation File", "", "XML Files (*.xml);;");
-
-    // Now read the file
-    if (selectedFileName == "") {
-      return;
-    }
-    fileName = selectedFileName.toStdString();
+    on_actionSaveSimulationAs_triggered();
   }
-
-  SaveSimulationFile(fileName);
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionSaveSimulationAs_triggered() {
-  // Always get a new file name.
-  QString selectedFileName = 
-    QFileDialog::getSaveFileName(this, "Save Simulation File As", "", "XML Files (*.xml);;");
+  // Get a file name.
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory = prefs.value("SaveSimulationDirectory").toString();
+  
+  QFileDialog fileDialog(this, "Save Simulation File As", directory, 
+                         "XML Files (*.xml);;");
+  fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+  int result = fileDialog.exec();
+  prefs.setValue("SaveSimulationDirectory",
+                 fileDialog.directory().absolutePath());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected)
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
 
   // Now read the file
   if (selectedFileName == "") {
     return;
   }
-  
+    
   SaveSimulationFile(selectedFileName.toStdString());
 }
 
@@ -479,10 +498,22 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionImportImageData_triggered() {
-  QString selectedFileName = 
-    QFileDialog::getOpenFileName(this, "Open Image File", "", 
-                                 "TIF Files (*.tif);;LSM Files (*.lsm);;All Files (*)");
-  if (selectedFileName == "") {
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory = prefs.value("ImportImageDataDirectory").toString();
+
+  QFileDialog fileDialog(this, "Open Image File", directory, 
+                         "TIF Files (*.tif);;LSM Files (*.lsm);;All Files (*)");
+  fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+  int result = fileDialog.exec();
+  prefs.setValue("ImportImageDataDirectory", fileDialog.directory().absolutePath());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected)
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+  if (selectedFileName.isEmpty()) {
     return;
   }
   
@@ -535,25 +566,38 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionSaveImage_triggered() {
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory = prefs.value("SaveImageDirectory").toString();
+
   // Get a file name.
-  QString selectedFileName = 
-    QFileDialog::getSaveFileName(this, "Save Image File", "", "PNG Files (*.png);;");
+  QFileDialog fileDialog(this, "Save Image File", directory, 
+                         "PNG Files (*.png);;");
+  fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+  int result = fileDialog.exec();
 
-  if (selectedFileName.toStdString() != "") {
-    // Grab screen shot and save it.
-    vtkSmartPointer<vtkWindowToImageFilter> w2if = 
-      vtkSmartPointer<vtkWindowToImageFilter>::New();
-    w2if->SetInput(gui->modelObjectQvtkWidget->GetRenderWindow());
-    w2if->SetMagnification(1);
-    w2if->Update();
+  prefs.setValue("SaveImageDirectory", fileDialog.directory().absolutePath());
+  prefs.endGroup();
 
-    vtkSmartPointer<vtkPNGWriter> pngWriter =
-      vtkSmartPointer<vtkPNGWriter>::New();
-    pngWriter->SetInputConnection(w2if->GetOutputPort());
-    pngWriter->SetFileName(selectedFileName.toStdString().c_str());
-    pngWriter->Write();
-  }
+  if (result == QDialog::Rejected)
+    return;
 
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+  if (selectedFileName.isEmpty())
+    return;
+
+  // Grab screen shot and save it.
+  vtkSmartPointer<vtkWindowToImageFilter> w2if = 
+    vtkSmartPointer<vtkWindowToImageFilter>::New();
+  w2if->SetInput(gui->modelObjectQvtkWidget->GetRenderWindow());
+  w2if->SetMagnification(1);
+  w2if->Update();
+  
+  vtkSmartPointer<vtkPNGWriter> pngWriter =
+    vtkSmartPointer<vtkPNGWriter>::New();
+  pngWriter->SetInputConnection(w2if->GetOutputPort());
+  pngWriter->SetFileName(selectedFileName.toStdString().c_str());
+  pngWriter->Write();
 }
 
 
@@ -1076,11 +1120,21 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimExportImageButton_clicked() {
-  QFileDialog fileDialog(this, tr("Export Fluorescence Image"), tr(""),
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory  = prefs.value("ExportImageDirectory").toString();
+  QString nameFilter = prefs.value("ExportImageNameFilter").toString();
+
+  QFileDialog fileDialog(this, tr("Export Fluorescence Image"), directory,
                          "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
-  fileDialog.setDefaultSuffix(tr("tif"));
+  fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-  if (fileDialog.exec() == QDialog::Rejected)
+  int result = fileDialog.exec();
+  prefs.setValue("ExportImageDirectory", fileDialog.directory().absolutePath());
+  prefs.setValue("ExportImageNameFilter", fileDialog.selectedNameFilter());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected)
     return;
 
   QString selectedFileName = fileDialog.selectedFiles()[0];
@@ -1127,12 +1181,20 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimExportStackButton_clicked() {
-  QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), tr(""),
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory  = prefs.value("ExportStackDirectory").toString();
+  QString nameFilter = prefs.value("ExportStackNameFilter").toString();
+  
+  QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
                          "16-bit TIFF File (*.tif);;All (*.*)");
-  fileDialog.setDefaultSuffix(tr("tif"));
+  fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   if (fileDialog.exec() == QDialog::Rejected)
     return;
+  prefs.setValue("ExportStackDirectory", fileDialog.directory().absolutePath());
+  prefs.setValue("ExportStackNameFilter", fileDialog.selectedNameFilter());
+  prefs.endGroup();
 
   QString selectedFileName = fileDialog.selectedFiles()[0];
   if (selectedFileName.isEmpty())
@@ -1228,7 +1290,7 @@ void
 MicroscopeSimulator
 ::on_fluoroSimOptimizerSettingsButton_clicked() {
   m_OptimizerSettingsDialog->Update();
-  int result = m_OptimizerSettingsDialog->exec();
+  m_OptimizerSettingsDialog->exec();
 }
 
 
@@ -1378,8 +1440,6 @@ MicroscopeSimulator
   UpdateFocalPlaneUIControls(fluoroSim->GetFocalPlaneDepthMinimum(),
                              fluoroSim->GetFocalPlaneDepthMaximum(),
                              fluoroSim->GetFocalPlaneDepthSpacing());
-  int minValue = fluoroSim->GetFocalPlaneDepthMinimum();
-  int maxValue = fluoroSim->GetFocalPlaneDepthMaximum();
   int focusSliderValue = (int) ((fluoroSim->GetFocalPlaneDepth() / fluoroSim->GetFocalPlaneDepthSpacing()));
   gui->fluoroSimFocusSlider->setValue(focusSliderValue);
 
