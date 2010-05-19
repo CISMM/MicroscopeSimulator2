@@ -49,8 +49,6 @@ QPSFListModel
   if (strValue == "")
     return false;
 
-  //PointSpreadFunction* psf = m_PSFList->GetPointSpreadFunctionAt(index.row());
-  //psf->SetName(strValue);
   m_PSFList->SetPointSpreadFunctionName(index.row(), strValue);
 
   return true;
