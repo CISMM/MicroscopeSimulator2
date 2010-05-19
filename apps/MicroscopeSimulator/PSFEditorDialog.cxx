@@ -449,6 +449,7 @@ void
 PSFEditorDialog
 ::UpdateImage() {
   PointSpreadFunction* activePSF = m_PSFTableModel->GetPointSpreadFunction();
+  activePSF->Update();
   activePSF->GetOutputPort()->GetProducer()->Update();
   activePSF->GetOutputPort()->GetProducer()->UpdateWholeExtent();
   activePSF->GetOutput()->Update();
