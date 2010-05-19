@@ -140,6 +140,8 @@ QPointSpreadFunctionPropertyTableModel
   for (int i = 0; i < m_PSF->GetNumberOfProperties(); i++) {
     m_PSF->SetParameterValue(i, m_ParameterCache[i]);
   }
+
+  m_PSF->Update();
 }
 
 
