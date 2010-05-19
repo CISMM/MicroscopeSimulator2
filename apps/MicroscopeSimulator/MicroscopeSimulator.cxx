@@ -1635,3 +1635,10 @@ MicroscopeSimulator
   
   xmlFreeDoc(doc);
 }
+
+
+void
+MicroscopeSimulator
+::closeEvent(QCloseEvent* event) {
+  on_actionExit_triggered();
+}

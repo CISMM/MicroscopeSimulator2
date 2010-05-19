@@ -55,6 +55,9 @@ protected:
   void ReadProgramSettings();
   void ReadPSFSettings();
 
+  // Override the closeEvent handler.
+  void closeEvent(QCloseEvent* event);
+
 public slots:
 
   // Use Qt's auto-connect magic to tie GUI widgets to slots.
