@@ -21,9 +21,11 @@ const std::string ImportedPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCent
 ImportedPointSpreadFunction
 ::ImportedPointSpreadFunction() : PointSpreadFunction() {
   m_ImageReader = ImageSourceType::New();
+
   m_PointCenter[0] = m_PointCenter[1] = m_PointCenter[2] = 0.0;
 
   // Set up parameter names
+  m_ParameterNames.push_back("Summed Intensity");
   m_ParameterNames.push_back("X Size (voxels)");
   m_ParameterNames.push_back("Y Size (voxels)");
   m_ParameterNames.push_back("Z Size (voxels)");
@@ -51,12 +53,16 @@ ImportedPointSpreadFunction
   m_ChangeInformationFilter->SetOutputOrigin(origin);
   m_ChangeInformationFilter->SetInput(m_ImageReader->GetOutput());
 
-  m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
-  m_ITKToVTKFilter->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_Statistics->SetInput(m_ChangeInformationFilter->GetOutput());
 
-  m_DerivativeX->SetInput(m_ChangeInformationFilter->GetOutput());
-  m_DerivativeY->SetInput(m_ChangeInformationFilter->GetOutput());
-  m_DerivativeZ->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_ScaleFilter->SetInput(m_ChangeInformationFilter->GetOutput());
+
+  m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
+  m_ITKToVTKFilter->SetInput(m_ScaleFilter->GetOutput());
+
+  m_DerivativeX->SetInput(m_ScaleFilter->GetOutput());
+  m_DerivativeY->SetInput(m_ScaleFilter->GetOutput());
+  m_DerivativeZ->SetInput(m_ScaleFilter->GetOutput());
 }
 
 
@@ -131,15 +137,16 @@ double
 ImportedPointSpreadFunction
 ::GetParameterValue(int index) {
   switch (index) {
-  case 0: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[0]; break;
-  case 1: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[1]; break;
-  case 2: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[2]; break;
-  case 3: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
-  case 4: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
-  case 5: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
-  case 6: return m_PointCenter[0]; break;
-  case 7: return m_PointCenter[1]; break;
-  case 8: return m_PointCenter[2]; break;
+  case 0: return m_SummedIntensity;
+  case 1: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[0]; break;
+  case 2: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[1]; break;
+  case 3: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[2]; break;
+  case 4: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
+  case 5: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
+  case 6: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
+  case 7: return m_PointCenter[0]; break;
+  case 8: return m_PointCenter[1]; break;
+  case 9: return m_PointCenter[2]; break;
 
   default: return 0.0;
   }
@@ -158,22 +165,26 @@ ImportedPointSpreadFunction
 
   switch(index) {
   case 0:
+    m_SummedIntensity = value;
+    break;
+
   case 1:
-  case 2: 
+  case 2:
+  case 3:
     break; // Not editable
 
-  case 3: 
   case 4: 
-  case 5:
-    outputSpacing[index-3] = value;
+  case 5: 
+  case 6:
+    outputSpacing[index-4] = value;
     m_ChangeInformationFilter->SetOutputSpacing(outputSpacing);
     RecenterImage();
     break;
     
-  case 6: 
   case 7:
   case 8:
-    m_PointCenter[index-6] = value;
+  case 9:
+    m_PointCenter[index-7] = value;
     RecenterImage();
   default: break;
   }
@@ -192,6 +203,8 @@ ImportedPointSpreadFunction
 
   xmlNewProp(root, BAD_CAST NAME_ATTRIBUTE.c_str(), BAD_CAST m_Name.c_str());
   xmlNewProp(root, BAD_CAST FILE_NAME_ATTRIBUTE.c_str(), BAD_CAST m_FileName.c_str());
+  sprintf(buf, "%f", GetSummedIntensity());
+  xmlNewProp(root, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   xmlNodePtr spacingNode = xmlNewChild(root, NULL, BAD_CAST SPACING_ELEMENT.c_str(), NULL);
   sprintf(buf, doubleFormat, m_ChangeInformationFilter->GetOutputSpacing()[0]);
@@ -219,6 +232,11 @@ ImportedPointSpreadFunction
 
   char* fileName = (char*) xmlGetProp(node, BAD_CAST FILE_NAME_ATTRIBUTE.c_str());
   SetFileName(std::string(fileName));
+
+  char* summedIntensityStr = (char*) xmlGetProp(node, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str());
+  if (summedIntensityStr) {
+    SetSummedIntensity(atof(summedIntensityStr));
+  }
 
   xmlNodePtr spacingNode = xmlGetFirstElementChildWithName(node, BAD_CAST SPACING_ELEMENT.c_str());
   if (spacingNode) {

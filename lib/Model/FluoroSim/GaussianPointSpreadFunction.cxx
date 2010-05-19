@@ -22,6 +22,7 @@ const std::string GaussianPointSpreadFunction::SIGMA_ELEMENT   = "Sigma";
 GaussianPointSpreadFunction
 ::GaussianPointSpreadFunction() {
   // Set up parameter names and default parameters
+  m_ParameterNames.push_back("Summed Intensity");
   m_ParameterNames.push_back("X Size (voxels)");
   m_ParameterNames.push_back("Y Size (voxels)");
   m_ParameterNames.push_back("Z Size (voxels)");
@@ -33,6 +34,7 @@ GaussianPointSpreadFunction
   m_ParameterNames.push_back("Z Standard Deviation");
 
   m_GaussianSource = ImageSourceType::New();
+
   unsigned long size[] = {64, 64, 64};
   m_GaussianSource->SetSize(size);
   double spacing[] = {65.0, 65.0, 200.0};
@@ -45,13 +47,17 @@ GaussianPointSpreadFunction
 
   double mean[3] = {0.0, 0.0, 0.0};
   m_GaussianSource->SetMean(mean);
+
+  m_Statistics->SetInput(m_GaussianSource->GetOutput());
+
+  m_ScaleFilter->SetInput(m_GaussianSource->GetOutput());
   
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
-  m_ITKToVTKFilter->SetInput(m_GaussianSource->GetOutput());
+  m_ITKToVTKFilter->SetInput(m_ScaleFilter->GetOutput());
 
-  m_DerivativeX->SetInput(m_GaussianSource->GetOutput());
-  m_DerivativeY->SetInput(m_GaussianSource->GetOutput());
-  m_DerivativeZ->SetInput(m_GaussianSource->GetOutput());
+  m_DerivativeX->SetInput(m_ScaleFilter->GetOutput());
+  m_DerivativeY->SetInput(m_ScaleFilter->GetOutput());
+  m_DerivativeZ->SetInput(m_ScaleFilter->GetOutput());
 
   RecenterImage();
 }
@@ -100,15 +106,16 @@ double
 GaussianPointSpreadFunction
 ::GetParameterValue(int index) {
   switch (index) {
-  case 0: return m_GaussianSource->GetSize()[0];    break;
-  case 1: return m_GaussianSource->GetSize()[1];    break;
-  case 2: return m_GaussianSource->GetSize()[2];    break;
-  case 3: return m_GaussianSource->GetSpacing()[0]; break;
-  case 4: return m_GaussianSource->GetSpacing()[1]; break;
-  case 5: return m_GaussianSource->GetSpacing()[2]; break;
-  case 6: return m_GaussianSource->GetSigma()[0];   break;
-  case 7: return m_GaussianSource->GetSigma()[1];   break;
-  case 8: return m_GaussianSource->GetSigma()[2];   break;
+  case 0: return m_SummedIntensity; break;
+  case 1: return m_GaussianSource->GetSize()[0];    break;
+  case 2: return m_GaussianSource->GetSize()[1];    break;
+  case 3: return m_GaussianSource->GetSize()[2];    break;
+  case 4: return m_GaussianSource->GetSpacing()[0]; break;
+  case 5: return m_GaussianSource->GetSpacing()[1]; break;
+  case 6: return m_GaussianSource->GetSpacing()[2]; break;
+  case 7: return m_GaussianSource->GetSigma()[0];   break;
+  case 8: return m_GaussianSource->GetSigma()[1];   break;
+  case 9: return m_GaussianSource->GetSigma()[2];   break;
 
   default: return 0.0;
   }
@@ -130,31 +137,35 @@ GaussianPointSpreadFunction
 
   switch (index) {
   case 0:
+    m_SummedIntensity = value;
+    break;
+
   case 1:
   case 2:
+  case 3:
     constSize = m_GaussianSource->GetSize();
     for (i = 0; i < 3; i++) {
       size[i] = constSize[i];
     }
-    size[index] = static_cast<unsigned long>(value);
+    size[index-1] = static_cast<unsigned long>(value);
     m_GaussianSource->SetSize(size);
     RecenterImage();
     break;
 
-  case 3:
   case 4:
   case 5:
+  case 6:
     spacing = m_GaussianSource->GetSpacing();
-    spacing[index-3] = value;
+    spacing[index-4] = value;
     m_GaussianSource->SetSpacing(spacing);
     RecenterImage();
     break;
 
-  case 6:
   case 7:
   case 8:
+  case 9:
     sigma = m_GaussianSource->GetSigma();
-    sigma[index-6] = value;
+    sigma[index-7] = value;
     m_GaussianSource->SetSigma(sigma);
     break;
 
@@ -190,6 +201,8 @@ GaussianPointSpreadFunction
   char buf[128];
 
   xmlNewProp(root, BAD_CAST NAME_ATTRIBUTE.c_str(), BAD_CAST m_Name.c_str());
+  sprintf(buf, "%f", GetSummedIntensity());
+  xmlNewProp(root, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   xmlNodePtr sizeNode = xmlNewChild(root, NULL, BAD_CAST SIZE_ELEMENT.c_str(), NULL);
   sprintf(buf, intFormat, m_GaussianSource->GetSize()[0]);
@@ -223,6 +236,11 @@ GaussianPointSpreadFunction
   const char* name =
     (const char*) xmlGetProp(node, BAD_CAST NAME_ATTRIBUTE.c_str());
   SetName(name);
+
+  char* summedIntensityStr = (char*) xmlGetProp(node, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str());
+  if (summedIntensityStr) {
+    SetSummedIntensity(atof(summedIntensityStr));
+  }
 
   ImageSourceType::SizeType    size;
   xmlNodePtr sizeNode = xmlGetFirstElementChildWithName(node, BAD_CAST SIZE_ELEMENT.c_str());

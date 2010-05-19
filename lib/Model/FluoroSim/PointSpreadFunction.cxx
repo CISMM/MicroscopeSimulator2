@@ -1,4 +1,6 @@
 #include <itkRecursiveGaussianImageFilter.txx>
+#include <itkStatisticsImageFilter.h>
+#include <itkShiftScaleImageFilter.h>
 
 #include <vtkImageAppendComponents.h>
 
@@ -9,6 +11,7 @@
 #include <PointSpreadFunction.h>
 
 const std::string PointSpreadFunction::NAME_ATTRIBUTE  = "Name";
+const std::string PointSpreadFunction::SUMMED_INTENSITY_ATTRIBUTE = "SummedIntensity";
 const std::string PointSpreadFunction::SIZE_ELEMENT    = "Size";
 const std::string PointSpreadFunction::SPACING_ELEMENT = "Spacing";
 const std::string PointSpreadFunction::X_ATTRIBUTE     = "X";
@@ -18,7 +21,12 @@ const std::string PointSpreadFunction::Z_ATTRIBUTE     = "Z";
 
 PointSpreadFunction
 ::PointSpreadFunction() {
+  SetSummedIntensity(1.0);
   SetSigma(200.0);
+
+  m_Statistics = StatisticsType::New();
+  
+  m_ScaleFilter = ScaleFilterType::New();
 
   m_DerivativeX = DerivativeFilterType::New();
   m_DerivativeX->SetDirection(0);
@@ -70,6 +78,14 @@ PointSpreadFunction
 }
 
 
+void
+PointSpreadFunction
+::Update() {
+  m_Statistics->Update();
+  m_ScaleFilter->SetScale(m_SummedIntensity / m_Statistics->GetSum());
+}
+
+
 vtkImageData*
 PointSpreadFunction
 ::GetGradientOutput() {
@@ -81,6 +97,20 @@ vtkAlgorithmOutput*
 PointSpreadFunction
 ::GetGradientOutputPort() {
   return m_VTKGradient->GetOutputPort();
+}
+
+
+void
+PointSpreadFunction
+::SetSummedIntensity(double intensity) {
+  m_SummedIntensity = intensity;
+}
+
+
+double
+PointSpreadFunction
+::GetSummedIntensity() {
+  return  m_SummedIntensity;
 }
 
 
