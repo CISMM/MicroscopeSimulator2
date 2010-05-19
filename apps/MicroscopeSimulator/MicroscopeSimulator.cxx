@@ -420,15 +420,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionExit_triggered() {
-  // Ask if user really wants to quit if the simulation has been modified.
-  if (m_SimulationNeedsSaving) {
-    int selected = PromptToSaveChanges();
-    if (selected == QMessageBox::Cancel)
-      return;
-  }
-
-  WriteProgramSettings();
-  qApp->exit();
+  Exit();
 }
 
 
@@ -1502,6 +1494,21 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::Exit() {
+  // Ask if user really wants to quit if the simulation has been modified.
+  if (m_SimulationNeedsSaving) {
+    int selected = PromptToSaveChanges();
+    if (selected == QMessageBox::Cancel)
+      return;
+  }
+
+  WriteProgramSettings();
+  qApp->exit();
+}
+
+
+void
+MicroscopeSimulator
 ::WriteProgramSettings() {
   QSettings settings;
 
@@ -1640,5 +1647,8 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::closeEvent(QCloseEvent* event) {
-  on_actionExit_triggered();
+  Exit();
+
+  // If we made it past the call above, the user clicked cancel.
+  event->ignore();
 }

@@ -50,6 +50,7 @@ public:
 protected:
   Ui_MainWindow* gui;
 
+  void Exit();
   void WriteProgramSettings();
   void WritePSFSettings();
   void ReadProgramSettings();
