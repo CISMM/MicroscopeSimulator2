@@ -155,3 +155,72 @@ FluorophoreModelObjectProperty
 
   return props->GetVolume();
 }
+
+
+void
+FluorophoreModelObjectProperty
+::GetXMLConfiguration(xmlNodePtr root) {
+  std::string nodeName(SqueezeString(m_Name));
+  xmlNodePtr node = xmlNewChild(root, NULL, BAD_CAST nodeName.c_str(), NULL);
+
+  char value[256];
+  sprintf(value, "%f", GetDensity());
+  xmlNewProp(node, BAD_CAST "density", BAD_CAST value);
+
+  sprintf(value, "%s", GetEnabled() ? "true" : "false");
+  xmlNewProp(node, BAD_CAST "enabled", BAD_CAST value);
+
+  switch (GetFluorophoreChannel()) {
+  case RED_CHANNEL:
+    sprintf(value, "red");
+    break;
+
+  case GREEN_CHANNEL:
+    sprintf(value, "green");
+    break;
+
+  case BLUE_CHANNEL:
+    sprintf(value, "blue");
+    break;
+
+  case ALL_CHANNELS:
+    sprintf(value, "all");
+    break;
+
+  default:
+    sprintf(value, "none");
+    break;
+  }
+  xmlNewProp(node, BAD_CAST "channel", BAD_CAST value);
+
+}
+
+
+void
+FluorophoreModelObjectProperty
+::RestoreFromXML(xmlNodePtr root) {
+  char* value = (char*) xmlGetProp(root, BAD_CAST "density");
+  if (value) {
+    SetDensity(atof(value));
+  }
+
+  value = (char*) xmlGetProp(root, BAD_CAST "enabled");
+  if (value) {
+    std::string valueStr(value);
+    SetEnabled(valueStr == "true");
+  }
+
+  value = (char*) xmlGetProp(root, BAD_CAST "channel");
+  if (value) {
+    std::string valueStr(value);
+    if (valueStr == "red") {
+      SetFluorophoreChannelToRed();
+    } else if (valueStr == "green") {
+      SetFluorophoreChannelToGreen();
+    } else if (valueStr == "blue") {
+      SetFluorophoreChannelToBlue();
+    } else if (valueStr == "all") {
+      SetFluorophoreChannelToAll();
+    }
+  }
+}

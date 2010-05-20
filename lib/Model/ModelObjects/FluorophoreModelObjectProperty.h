@@ -42,6 +42,9 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   double GetGeometryArea();
   double GetGeometryVolume();
 
+  virtual void GetXMLConfiguration(xmlNodePtr root);
+  virtual void RestoreFromXML(xmlNodePtr root);
+
  protected:
 
   FluorophoreModelType   m_FluorophoreModelType;
