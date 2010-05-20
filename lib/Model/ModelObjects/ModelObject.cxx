@@ -1,4 +1,5 @@
 #include <ModelObject.h>
+#include <FluorophoreModelObjectProperty.h>
 #include <ModelObjectProperty.h>
 #include <ModelObjectPropertyList.h>
 #include <FluorophoreModelTypes.h>
@@ -242,6 +243,14 @@ ModelObjectProperty*
 ModelObject
 ::GetProperty(int index) {
   return m_Properties->GetProperty(index);
+}
+
+
+FluorophoreModelObjectProperty*
+ModelObject
+::GetFluorophoreProperty(int index) {
+  return dynamic_cast<FluorophoreModelObjectProperty*>
+    (m_FluorophoreProperties->GetProperty(index));
 }
 
 

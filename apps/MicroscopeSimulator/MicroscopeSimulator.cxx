@@ -272,7 +272,7 @@ MicroscopeSimulator
   QString directory = prefs.value("OpenSimulationDirectory").toString();
 
   QFileDialog fileDialog(this, "Open Simulation File", directory,
-                         "XML Files (*.xml);;");
+                         "XML Files (*.xml);;All Files (*)");
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   int result = fileDialog.exec();
   prefs.setValue("OpenSimulationDirectory", fileDialog.directory().absolutePath());
@@ -315,7 +315,7 @@ MicroscopeSimulator
   QString directory = prefs.value("SaveSimulationDirectory").toString();
   
   QFileDialog fileDialog(this, "Save Simulation File As", directory, 
-                         "XML Files (*.xml);;");
+                         "XML Files (*.xml);;All Files (*)");
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   int result = fileDialog.exec();
   prefs.setValue("SaveSimulationDirectory",
@@ -383,7 +383,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::SaveSimulationFile(const std::string& fileName) {
-  QString message = tr("Saved image '").append(fileName.c_str()).append("'.");
+  QString message = tr("Saved simulation '").append(fileName.c_str()).append("'.");
   SetStatusMessage(message.toStdString());
   
   if (m_Simulation->SaveXMLConfiguration(fileName) < 0) {
@@ -420,15 +420,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionExit_triggered() {
-  // Ask if user really wants to quit if the simulation has been modified.
-  if (m_SimulationNeedsSaving) {
-    int selected = PromptToSaveChanges();
-    if (selected == QMessageBox::Cancel)
-      return;
-  }
-
-  WriteProgramSettings();
-  qApp->exit();
+  Exit();
 }
 
 
@@ -528,6 +520,40 @@ MicroscopeSimulator
   } else {
     gui->fluoroSimComparisonImageComboBox->setCurrentIndex(index);
   }
+
+  RefreshModelObjectViews();
+  m_ModelObjectListModel->Refresh();
+
+  // m_SelectedModelObjectIndex is set anytime the selection in the
+  // model object list changes
+  m_ModelObjectListSelectionModel->
+    select(m_SelectedModelObjectIndex, QItemSelectionModel::Select);
+}
+
+
+void
+MicroscopeSimulator
+::on_actionImportGeometryFile_triggered() {
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory = prefs.value("ImportGeometryFileDirectory").toString();
+
+  QFileDialog fileDialog(this, "Import Geometry File", directory,
+                         "VTK Files (*.vtk);;VTK Poly Data XML Files (*.vtp);;OBJ Files (*.obj);;PLY Files (*.ply)");
+  fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+  int result = fileDialog.exec();
+  prefs.setValue("ImportGeometryFileDirectory", fileDialog.directory().absolutePath());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected)
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+  if (selectedFileName.isEmpty()) {
+    return;
+  }
+
+  m_Simulation->ImportModelObject("ImportedGeometry", selectedFileName.toStdString());
 
   RefreshModelObjectViews();
   m_ModelObjectListModel->Refresh();
@@ -710,7 +736,7 @@ MicroscopeSimulator
   }
 
   QString selectedFileName = 
-    QFileDialog::getSaveFileName(this, "Export Model Geometry", "", "VTK File (*.vtk);;PLY File (*.ply);;BYU File (*.byu)");
+    QFileDialog::getSaveFileName(this, "Export Model Geometry", "", "VTK File (*.vtk);;VTK Poly Data File (*.vtp);;PLY File (*.ply);;BYU File (*.byu)");
   if (selectedFileName.isEmpty())
     return;
 
@@ -801,6 +827,7 @@ MicroscopeSimulator
 
           // Save the dialog values to the fluorophore model property
           dialog->SaveSettingsToProperty();
+          Sully();
           RefreshModelObjectViews();
           RenderViews();
         }
@@ -1155,7 +1182,7 @@ MicroscopeSimulator
   scaler->SetScale(255.0 / (maxIntensity - minIntensity));
 
   vtkSmartPointer<vtkImageWriter> writer;
-  QString extension = QFileInfo(selectedFileName).suffix().toLower();
+  QString extension = fileDialog.selectedNameFilter().right(4).left(3).toLower();
   if (extension == QString("png")) {
     writer = vtkSmartPointer<vtkPNGWriter>::New();
   } else if (extension == QString("bmp")) {
@@ -1171,10 +1198,12 @@ MicroscopeSimulator
     scaler->SetScale(1.0);
     scaler->SetOutputScalarTypeToUnsignedShort();
   }
-
-  writer->SetInputConnection(scaler->GetOutputPort());
-  writer->SetFileName(selectedFileName.toStdString().c_str());
-  writer->Write();
+  
+  if (writer) {
+    writer->SetInputConnection(scaler->GetOutputPort());
+    writer->SetFileName(selectedFileName.toStdString().c_str());
+    writer->Write();
+  }
 }
 
 
@@ -1187,7 +1216,7 @@ MicroscopeSimulator
   QString nameFilter = prefs.value("ExportStackNameFilter").toString();
   
   QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
-                         "16-bit TIFF File (*.tif);;All (*.*)");
+                         "16-bit TIFF File (*.tif)");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   if (fileDialog.exec() == QDialog::Rejected)
@@ -1502,6 +1531,21 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::Exit() {
+  // Ask if user really wants to quit if the simulation has been modified.
+  if (m_SimulationNeedsSaving) {
+    int selected = PromptToSaveChanges();
+    if (selected == QMessageBox::Cancel)
+      return;
+  }
+
+  WriteProgramSettings();
+  qApp->exit();
+}
+
+
+void
+MicroscopeSimulator
 ::WriteProgramSettings() {
   QSettings settings;
 
@@ -1640,5 +1684,8 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::closeEvent(QCloseEvent* event) {
-  on_actionExit_triggered();
+  Exit();
+
+  // If we made it past the call above, the user clicked cancel.
+  event->ignore();
 }

@@ -37,6 +37,8 @@
 #include <vtkTriangleFilter.h>
 #include <vtkVisualizationInteractionObserver.h>
 
+//#define IMAGE_PLANE_WIDGETS
+
 
 Visualization
 ::Visualization() {
@@ -47,7 +49,9 @@ Visualization
   m_GeometryRepresentation = new GeometryRepresentation();
   m_FluorescenceRepresentation = new FluorescenceRepresentation();
   m_FluorescenceWidgetsRepresentation = vtkSmartPointer<vtkFluorescenceWidgetsRepresentation>::New();
+#ifdef IMAGE_PLANE_WIDGETS
   m_ImagePlaneWidgetRepresentation = vtkSmartPointer<vtkImagePlaneWidgetRepresentation>::New();
+#endif
 
   // Set up the model object view.
   m_ModelObjectRenderView = vtkSmartPointer<vtkRenderView>::New();
@@ -218,12 +222,14 @@ Visualization
   m_GeometryRepresentation->Update();
   m_GeometryRepresentation->AddToView(m_ModelObjectRenderView);
   m_ModelObjectRenderView->AddRepresentation(m_FluorescenceWidgetsRepresentation);
+#ifdef IMAGE_PLANE_WIDGETS
   m_ModelObjectRenderView->AddRepresentation(m_ImagePlaneWidgetRepresentation);
 
   if (m_Simulation && m_Simulation->GetComparisonImageModelObject()) {
     m_ImagePlaneWidgetRepresentation->
       SetInput(m_Simulation->GetComparisonImageModelObject()->GetImageData());
   }
+#endif
 
   m_FluorescenceRenderView->RemoveAllRepresentations();
   m_FluorescenceRepresentation->Update();

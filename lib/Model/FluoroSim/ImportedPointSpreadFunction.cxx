@@ -265,6 +265,9 @@ ImportedPointSpreadFunction
   }
 
   RecenterImage();
+
+  // It is critical to call this to ensure that the PSF is normalized after loading
+  Update();
 }
 
 

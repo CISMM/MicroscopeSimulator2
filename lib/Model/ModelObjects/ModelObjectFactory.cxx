@@ -3,16 +3,17 @@
 #include <DirtyListener.h>
 
 #include <CylinderModelObject.h>
-#include <HollowCylinderModelObject.h>
 #include <DiskModelObject.h>
 #include <FlexibleTubeModelObject.h>
+#include <HollowCylinderModelObject.h>
+#include <ImageModelObject.h>
+#include <ImportedGeometryModelObject.h>
 #include <PlaneModelObject.h>
 #include <PointRingModelObject.h>
 #include <PointSetModelObject.h>
 #include <SphereModelObject.h>
 #include <TorusModelObject.h>
 
-#include <ImageModelObject.h>
 
 
 ModelObjectFactory
@@ -48,8 +49,13 @@ ModelObjectFactory
     object = new SphereModelObject(m_DirtyListener);
   } else if (objectName == TorusModelObject::OBJECT_TYPE_NAME) {
     object = new TorusModelObject(m_DirtyListener);
+
+  // We need the following to create model objects of this type
+  // when opening a simulation file.
   } else if (objectName == ImageModelObject::OBJECT_TYPE_NAME) {
     object = new ImageModelObject(m_DirtyListener);
+  } else if (objectName == ImportedGeometryModelObject::OBJECT_TYPE_NAME) {
+    object = new ImportedGeometryModelObject(m_DirtyListener);
   }
   return object;
 }
@@ -64,6 +70,11 @@ ModelObjectFactory
     imageModel->LoadFile(fileName);
 
     object = imageModel;
+  } else if (objectName == ImportedGeometryModelObject::OBJECT_TYPE_NAME) {
+    ImportedGeometryModelObject* geometryModel = new ImportedGeometryModelObject(m_DirtyListener);
+    geometryModel->LoadFile(fileName);
+
+    object = geometryModel;
   }
 
   return object;

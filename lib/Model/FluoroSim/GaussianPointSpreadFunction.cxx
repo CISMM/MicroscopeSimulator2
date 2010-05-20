@@ -266,4 +266,7 @@ GaussianPointSpreadFunction
   RecenterImage();
 
   m_GaussianSource->Update();
+
+  // It is critical to call this to ensure that the PSF is normalized after loading
+  Update();
 }
