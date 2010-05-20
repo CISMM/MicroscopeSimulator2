@@ -11,6 +11,7 @@
 
 // Forward declarations
 class GeometrySource;
+class FluorophoreModelObjectProperty;
 class ModelObjectProperty;
 class ModelObjectPropertyList;
 typedef ModelObjectProperty* ModelObjectPropertyPtr;
@@ -75,6 +76,8 @@ class ModelObject : public DirtyListener, public XMLStorable {
   void DeleteAndPopProperty();
   ModelObjectProperty* GetProperty(const std::string name);
   ModelObjectProperty* GetProperty(int index);
+
+  FluorophoreModelObjectProperty* GetFluorophoreProperty(int index);
 
   ModelObjectPropertyList* GetPropertyList();
   int GetNumberOfProperties();
