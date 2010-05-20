@@ -1174,7 +1174,7 @@ MicroscopeSimulator
   scaler->SetScale(255.0 / (maxIntensity - minIntensity));
 
   vtkSmartPointer<vtkImageWriter> writer;
-  QString extension = QFileInfo(selectedFileName).suffix().toLower();
+  QString extension = fileDialog.selectedNameFilter().right(4).left(3).toLower();
   if (extension == QString("png")) {
     writer = vtkSmartPointer<vtkPNGWriter>::New();
   } else if (extension == QString("bmp")) {
@@ -1190,10 +1190,12 @@ MicroscopeSimulator
     scaler->SetScale(1.0);
     scaler->SetOutputScalarTypeToUnsignedShort();
   }
-
-  writer->SetInputConnection(scaler->GetOutputPort());
-  writer->SetFileName(selectedFileName.toStdString().c_str());
-  writer->Write();
+  
+  if (writer) {
+    writer->SetInputConnection(scaler->GetOutputPort());
+    writer->SetFileName(selectedFileName.toStdString().c_str());
+    writer->Write();
+  }
 }
 
 
@@ -1206,7 +1208,7 @@ MicroscopeSimulator
   QString nameFilter = prefs.value("ExportStackNameFilter").toString();
   
   QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
-                         "16-bit TIFF File (*.tif);;All (*.*)");
+                         "16-bit TIFF File (*.tif);;");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   if (fileDialog.exec() == QDialog::Rejected)
