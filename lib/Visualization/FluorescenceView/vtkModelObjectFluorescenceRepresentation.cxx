@@ -89,8 +89,6 @@ void vtkModelObjectFluorescenceRepresentation
     surfaceSampler->SetInputConnection(triangulizer->GetOutputPort());
     surfaceSampler->Update();
     surfaceSampler->GetOutput()->Update();
-    std::cout << "Surface point samples: " << surfaceSampler->GetOutput()->GetNumberOfPoints()
-              << std::endl;
     this->Sampler = surfaceSampler;
 
     this->SetInputConnection(this->Sampler->GetOutputPort());
@@ -197,7 +195,6 @@ void vtkModelObjectFluorescenceRepresentation::UpdateRepresentation() {
   if (this->Sampler) {
     this->Sampler->SetDensity(this->FluorophoreProperty->GetDensity() / divisor);
     this->Sampler->GetOutput()->Update();
-    std::cout << "Density: " << this->FluorophoreProperty->GetDensity() / divisor << std::endl;
   }
     
   bool visible = this->ModelObject->GetVisible() && 
