@@ -272,7 +272,7 @@ MicroscopeSimulator
   QString directory = prefs.value("OpenSimulationDirectory").toString();
 
   QFileDialog fileDialog(this, "Open Simulation File", directory,
-                         "XML Files (*.xml);;");
+                         "XML Files (*.xml);;All Files (*)");
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   int result = fileDialog.exec();
   prefs.setValue("OpenSimulationDirectory", fileDialog.directory().absolutePath());
@@ -315,7 +315,7 @@ MicroscopeSimulator
   QString directory = prefs.value("SaveSimulationDirectory").toString();
   
   QFileDialog fileDialog(this, "Save Simulation File As", directory, 
-                         "XML Files (*.xml);;");
+                         "XML Files (*.xml);;All Files (*)");
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   int result = fileDialog.exec();
   prefs.setValue("SaveSimulationDirectory",
@@ -1208,7 +1208,7 @@ MicroscopeSimulator
   QString nameFilter = prefs.value("ExportStackNameFilter").toString();
   
   QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
-                         "16-bit TIFF File (*.tif);;");
+                         "16-bit TIFF File (*.tif)");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   if (fileDialog.exec() == QDialog::Rejected)
