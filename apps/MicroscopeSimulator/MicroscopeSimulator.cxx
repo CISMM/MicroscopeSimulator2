@@ -539,7 +539,7 @@ MicroscopeSimulator
   QString directory = prefs.value("ImportGeometryFileDirectory").toString();
 
   QFileDialog fileDialog(this, "Import Geometry File", directory,
-                         "VTK Files (*.vtk);;OBJ Files (*.obj);;PLY Files (*.ply);;All Files (*)");
+                         "VTK Files (*.vtk);;VTK Poly Data XML Files (*.vtp);;OBJ Files (*.obj);;PLY Files (*.ply)");
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   int result = fileDialog.exec();
   prefs.setValue("ImportGeometryFileDirectory", fileDialog.directory().absolutePath());
@@ -553,7 +553,15 @@ MicroscopeSimulator
     return;
   }
 
-  //ImportGeometryModelObject(selectedFileName.toStdString());
+  m_Simulation->ImportModelObject("ImportedGeometry", selectedFileName.toStdString());
+
+  RefreshModelObjectViews();
+  m_ModelObjectListModel->Refresh();
+
+  // m_SelectedModelObjectIndex is set anytime the selection in the
+  // model object list changes
+  m_ModelObjectListSelectionModel->
+    select(m_SelectedModelObjectIndex, QItemSelectionModel::Select);
 }
 
 
@@ -728,7 +736,7 @@ MicroscopeSimulator
   }
 
   QString selectedFileName = 
-    QFileDialog::getSaveFileName(this, "Export Model Geometry", "", "VTK File (*.vtk);;PLY File (*.ply);;BYU File (*.byu)");
+    QFileDialog::getSaveFileName(this, "Export Model Geometry", "", "VTK File (*.vtk);;VTK Poly Data File (*.vtp);;PLY File (*.ply);;BYU File (*.byu)");
   if (selectedFileName.isEmpty())
     return;
 
