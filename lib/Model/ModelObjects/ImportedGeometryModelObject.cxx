@@ -115,8 +115,10 @@ ImportedGeometryModelObject
 ::Update() {
   double s = GetProperty(SCALE_PROP)->GetDoubleValue();
 
-  m_Transform->Identity();
-  m_Transform->Scale(s, s, s);
+  if (s != m_Transform->GetScale()[0]) {
+    m_Transform->Identity();
+    m_Transform->Scale(s, s, s);
+  }
 
   m_TransformFilter->Update();
   m_TriangleFilter->Update();
