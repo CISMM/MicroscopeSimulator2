@@ -383,7 +383,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::SaveSimulationFile(const std::string& fileName) {
-  QString message = tr("Saved image '").append(fileName.c_str()).append("'.");
+  QString message = tr("Saved simulation '").append(fileName.c_str()).append("'.");
   SetStatusMessage(message.toStdString());
   
   if (m_Simulation->SaveXMLConfiguration(fileName) < 0) {
@@ -528,6 +528,32 @@ MicroscopeSimulator
   // model object list changes
   m_ModelObjectListSelectionModel->
     select(m_SelectedModelObjectIndex, QItemSelectionModel::Select);
+}
+
+
+void
+MicroscopeSimulator
+::on_actionImportGeometryFile_triggered() {
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory = prefs.value("ImportGeometryFileDirectory").toString();
+
+  QFileDialog fileDialog(this, "Import Geometry File", directory,
+                         "VTK Files (*.vtk);;OBJ Files (*.obj);;PLY Files (*.ply);;All Files (*)");
+  fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+  int result = fileDialog.exec();
+  prefs.setValue("ImportGeometryFileDirectory", fileDialog.directory().absolutePath());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected)
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
+  if (selectedFileName.isEmpty()) {
+    return;
+  }
+
+  //ImportGeometryModelObject(selectedFileName.toStdString());
 }
 
 
@@ -793,6 +819,7 @@ MicroscopeSimulator
 
           // Save the dialog values to the fluorophore model property
           dialog->SaveSettingsToProperty();
+          Sully();
           RefreshModelObjectViews();
           RenderViews();
         }

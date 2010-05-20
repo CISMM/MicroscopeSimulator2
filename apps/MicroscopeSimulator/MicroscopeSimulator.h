@@ -83,6 +83,7 @@ public slots:
 
   // Import
   virtual void on_actionImportImageData_triggered();
+  virtual void on_actionImportGeometryFile_triggered();
 
   virtual void on_actionShowErrors_toggled(bool visible);
   virtual void handle_ErrorLogDialog_accepted();
