@@ -1551,34 +1551,17 @@ MicroscopeSimulator
 
   // Save size and position of the main window.
   settings.beginGroup("MainWindow");
-  settings.setValue("size", this->size());
-  settings.setValue("pos", this->pos());
+  settings.setValue("WindowSettings", saveState());
+  settings.setValue("Geometry", saveGeometry());
+  settings.setValue("ModelObjectPanelSplitterSizes",
+                    gui->fluoroSimModelObjectSplitter->saveState());
   settings.endGroup();
-
-  // Save geometry and docking info of dock widgets
-  QList<QDockWidget*> widgets = this->findChildren<QDockWidget*>();
-  QListIterator<QDockWidget*> iterator(widgets);
-  while (iterator.hasNext()) {
-    QDockWidget* dockWidget = iterator.next();
-    settings.beginGroup(dockWidget->objectName());
-    settings.setValue("size", dockWidget->size());
-    settings.setValue("pos", dockWidget->pos());
-    settings.setValue("visible", dockWidget->isVisible());
-    settings.setValue("floating", dockWidget->isFloating());
-    settings.setValue("dockArea", this->dockWidgetArea(dockWidget));
-    settings.endGroup();
-  }
 
   // Save PSF editor geometry
   settings.beginGroup("PSFEditorDialog");
-  settings.setValue("size", m_PSFEditorDialog->size());
-  settings.setValue("pos", m_PSFEditorDialog->pos());
-
-  QList<QVariant> windowSplitterSizes = 
-    m_PSFEditorDialog->GetWindowSplitterSizes();
-  settings.setValue("windowSplitterSizes", windowSplitterSizes);
-
+  settings.setValue("Geometry", m_PSFEditorDialog->saveGeometry());
   settings.endGroup();
+
   WritePSFSettings();
 }
 
@@ -1622,37 +1605,16 @@ MicroscopeSimulator
 
   // Read main window settings
   settings.beginGroup("MainWindow");
-  this->resize(settings.value("size", QSize(1000, 743)).toSize());
-  this->move(settings.value("pos", QPoint(0, 20)).toPoint());
+  restoreState(settings.value("WindowSettings").toByteArray());
+  restoreGeometry(settings.value("Geometry").toByteArray());
+  gui->fluoroSimModelObjectSplitter->
+    restoreState(settings.value("ModelObjectPanelSplitterSizes").toByteArray());
   settings.endGroup();
 
-  // Read geometry from the docks
-  QList<QDockWidget*> widgets = this->findChildren<QDockWidget*>();
-  QListIterator<QDockWidget*> iterator(widgets);
-  while (iterator.hasNext()) {
-    QDockWidget* dockWidget = iterator.next();
-    settings.beginGroup(dockWidget->objectName());
-    dockWidget->resize(settings.value("size", QSize(340, 200)).toSize());
-    dockWidget->move(settings.value("pos", QPoint(0, 0)).toPoint());
-    dockWidget->setVisible(settings.value("visible", true).toBool());
-    dockWidget->setFloating(settings.value("floating", false).toBool());
-    this->addDockWidget(static_cast<Qt::DockWidgetArea>(settings.value("dockArea", Qt::LeftDockWidgetArea).toUInt()), dockWidget);
-    settings.endGroup();
-  }
 
   // Read PSF editor geometry
   settings.beginGroup("PSFEditorDialog");
-  m_PSFEditorDialog->
-    resize(settings.value("size", QSize(640, 480)).toSize());
-  m_PSFEditorDialog->
-    move(settings.value("pos", QPoint(0, 0)).toPoint());
-
-  QList<QVariant> defaultWindowSplitterSizes;
-  defaultWindowSplitterSizes.push_back(QVariant(300));
-  defaultWindowSplitterSizes.push_back(QVariant(340));
-  m_PSFEditorDialog->SetWindowSplitterSizes
-    (settings.value("windowSplitterSizes", defaultWindowSplitterSizes).toList());
-
+  m_PSFEditorDialog->restoreGeometry(settings.value("Geometry").toByteArray());
   settings.endGroup();
 
   ReadPSFSettings();
