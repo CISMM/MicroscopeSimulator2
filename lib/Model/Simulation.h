@@ -62,6 +62,9 @@ public:
 
   FluorescenceSimulation* GetFluorescenceSimulation();
 
+  void SetFluorescenceOptimizerToGradientDescent();
+  void SetFluorescenceOptimizerToNelderMead();
+  void SetFluorescenceOptimizerToPointsGradient();
   FluorescenceOptimizer* GetFluorescenceOptimizer();
 
   void SetComparisonImageModelObjectIndex(int index);

@@ -14,7 +14,9 @@
 #include <Simulation.h>
 
 #include <FluorescenceSimulation.h>
-#include <FluorescenceOptimizer.h>
+#include <GradientDescentFluorescenceOptimizer.h>
+#include <NelderMeadFluorescenceOptimizer.h>
+#include <PointsGradientFluorescenceOptimizer.h>
 
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
@@ -43,7 +45,7 @@ Simulation
 
   m_FluoroSim = new FluorescenceSimulation(this);
 
-  m_FluoroOptimizer = new FluorescenceOptimizer();
+  m_FluoroOptimizer = new NelderMeadFluorescenceOptimizer();
   m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 
@@ -282,6 +284,36 @@ FluorescenceSimulation*
 Simulation
 ::GetFluorescenceSimulation() {
   return m_FluoroSim;
+}
+
+
+void
+Simulation
+::SetFluorescenceOptimizerToGradientDescent() {
+  if (m_FluoroOptimizer)
+    delete m_FluoroOptimizer;
+
+  m_FluoroOptimizer = new GradientDescentFluorescenceOptimizer();
+  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+}
+
+
+void
+Simulation
+::SetFluorescenceOptimizerToNelderMead() {
+  m_FluoroOptimizer = new NelderMeadFluorescenceOptimizer();
+  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+}
+
+
+void
+Simulation
+::SetFluorescenceOptimizerToPointsGradient() {
+  m_FluoroOptimizer = new PointsGradientFluorescenceOptimizer();
+  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 }
 
 
