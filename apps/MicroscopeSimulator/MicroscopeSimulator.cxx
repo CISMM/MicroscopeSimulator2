@@ -208,6 +208,7 @@ MicroscopeSimulator
   // Restore inter-session GUI settings.
   ReadProgramSettings();
   RefreshUI();
+  RefreshObjectiveFunctions();
   RefreshModelObjectViews();
   on_actionResetCamera_triggered();
   gui->modelObjectQvtkWidget->GetRenderWindow()->Render();
@@ -1291,12 +1292,12 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimOptimizationMethodComboBox_currentIndexChanged(int selected) {
-  FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
-
   if (selected == 0) {
-    optimizer->SetOptimizerToNelderMead();
+    m_Simulation->SetFluorescenceOptimizerToNelderMead();
+  } else if (selected == 1) {
+    m_Simulation->SetFluorescenceOptimizerToGradientDescent();
   } else if (selected == 2) {
-    optimizer->SetOptimizerToPointsGradientDescent();
+    m_Simulation->SetFluorescenceOptimizerToPointsGradient();
   } else {
     QMessageBox messageBox;
     QString message("Optimization method '");
@@ -1308,10 +1309,9 @@ MicroscopeSimulator
     messageBox.exec();
 
     gui->fluoroSimOptimizationMethodComboBox->setCurrentIndex(0);
-  } /* else if (selected == 1) {
-    optimizer->SetOptimizerToGradientDescent();
-    }*/
+  }
 
+  RefreshObjectiveFunctions();
 }
 
 
@@ -1328,11 +1328,11 @@ MicroscopeSimulator
 ::on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected) {
   FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
   if (selected == 0) {
-    optimizer->SetCostFunctionToGaussianNoise();
+    //optimizer->SetCostFunctionToGaussianNoise();
   } else if (selected == 1) {
-    optimizer->SetCostFunctionToPoissonNoise();
+    //optimizer->SetCostFunctionToPoissonNoise();
   } else if (selected == 2) {
-    optimizer->SetCostFunctionToNormalizedCorrelation();
+    //optimizer->SetCostFunctionToNormalizedCorrelation();
   }
 }
 
@@ -1502,6 +1502,29 @@ MicroscopeSimulator
   RenderViews();
 }
 
+void
+MicroscopeSimulator
+::RefreshObjectiveFunctions() {
+  QString selectedObjectiveFunction = gui->fluoroSimObjectiveFunctionComboBox->currentText();
+  gui->fluoroSimObjectiveFunctionComboBox->clear();
+
+  FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
+  if (!optimizer)
+    return;
+
+  // Repopulate by the objective functions available in the optimizer
+  for (int i = 0; i < optimizer->GetNumberOfAvailableObjectiveFunctions(); i++) {
+    std::string name = optimizer->GetAvailableObjectiveFunctionName(i);
+    gui->fluoroSimObjectiveFunctionComboBox->addItem(QString(name.c_str()));
+
+    if (name == selectedObjectiveFunction.toStdString()) {
+      gui->fluoroSimObjectiveFunctionComboBox->setCurrentIndex(i);
+    }
+  }
+
+
+}
+
 
 void
 MicroscopeSimulator
@@ -1593,7 +1616,7 @@ MicroscopeSimulator
   // Now save PSF list file
   QString psfSettingsFileName(m_Preferences->GetDataDirectoryPath().c_str());
   psfSettingsFileName.append(QDir::separator()).append("PSFList.xml");
-  int rc = xmlSaveFileEnc(psfSettingsFileName.toStdString().c_str(), doc, "ISO-8859-1");
+  xmlSaveFileEnc(psfSettingsFileName.toStdString().c_str(), doc, "ISO-8859-1");
   xmlFreeDoc(doc);
 }
 
