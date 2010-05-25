@@ -49,6 +49,14 @@ SET(modelFluoroSimSrc
   FluoroSim/FluorescenceSimulation.cxx
   FluoroSim/FluorescenceOptimizer.h
   FluoroSim/FluorescenceOptimizer.cxx
+  FluoroSim/ITKFluorescenceOptimizer.h
+  FluoroSim/ITKFluorescenceOptimizer.cxx
+  FluoroSim/GradientDescentFluorescenceOptimizer.h
+  FluoroSim/GradientDescentFluorescenceOptimizer.cxx
+  FluoroSim/NelderMeadFluorescenceOptimizer.h
+  FluoroSim/NelderMeadFluorescenceOptimizer.cxx
+  FluoroSim/PointsGradientFluorescenceOptimizer.h
+  FluoroSim/PointsGradientFluorescenceOptimizer.cxx
   FluoroSim/PointSpreadFunction.h
   FluoroSim/PointSpreadFunction.cxx
   FluoroSim/GaussianPointSpreadFunction.h
