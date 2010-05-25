@@ -187,7 +187,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-684</y>
           <width>381</width>
           <height>1319</height>
          </rect>
@@ -1093,23 +1093,7 @@
                     <number>6</number>
                    </property>
                    <item>
-                    <widget class="QComboBox" name="fluoroSimObjectiveFunctionComboBox">
-                     <item>
-                      <property name="text">
-                       <string>Gaussian Noise Maximum Likelihood</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Poisson Noise Maximum LIkelihood</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Normalized Cross Correlation</string>
-                      </property>
-                     </item>
-                    </widget>
+                    <widget class="QComboBox" name="fluoroSimObjectiveFunctionComboBox"/>
                    </item>
                    <item>
                     <widget class="QPushButton" name="fluoroSimExploreObjectiveFunction">
