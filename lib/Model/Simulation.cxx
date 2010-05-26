@@ -220,25 +220,34 @@ Simulation
   // Restore fluorescence simulation
   xmlNodePtr fluoroSimNode =
     xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::FLUORO_SIM_ELEM);
-  m_FluoroSim->RestoreFromXML(fluoroSimNode);
+  if (fluoroSimNode) {
+    m_FluoroSim->RestoreFromXML(fluoroSimNode);
+  }
 
   xmlNodePtr gradientDescentOptimizerNode =
     xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM);
-  m_GradientDescentFluoroOptimizer->RestoreFromXML(gradientDescentOptimizerNode);
+  if (gradientDescentOptimizerNode) {
+    m_GradientDescentFluoroOptimizer->RestoreFromXML(gradientDescentOptimizerNode);
+  }
 
   xmlNodePtr nelderMeadOptimizerNode =
     xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM);
-  m_NelderMeadFluoroOptimizer->RestoreFromXML(nelderMeadOptimizerNode);
+  if (nelderMeadOptimizerNode) {
+    m_NelderMeadFluoroOptimizer->RestoreFromXML(nelderMeadOptimizerNode);
+  }
 
   xmlNodePtr pointsGradientOptimizerNode =
     xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM);
-  m_PointsGradientFluoroOptimizer->RestoreFromXML(pointsGradientOptimizerNode);
+  if (pointsGradientOptimizerNode) {
+    m_PointsGradientFluoroOptimizer->RestoreFromXML(pointsGradientOptimizerNode);
+  }
 
   // Restore model object list
   xmlNodePtr molNode = 
     xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM);
-  m_ModelObjectList->RestoreFromXML(molNode);
-
+  if (molNode) {
+    m_ModelObjectList->RestoreFromXML(molNode);
+  }
 }
 
 
