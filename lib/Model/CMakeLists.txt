@@ -87,4 +87,5 @@ TARGET_LINK_LIBRARIES( msimModel
   ITKBasicFilters
   ITKIO
   ITKNumerics
+  msimUtilities
 )
