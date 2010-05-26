@@ -60,7 +60,6 @@ FluorescenceOptimizer
 void
 FluorescenceOptimizer
 ::RestoreFromXML(xmlNodePtr node) {
-  char buf[128];
   for (int i = 0; i < GetNumberOfOptimizerParameters(); i++) {
     Parameter p = GetOptimizerParameter(i);
 
@@ -73,23 +72,25 @@ FluorescenceOptimizer
       continue;
     
     char* value = (char *) xmlGetProp(parameterNode, BAD_CAST "value");
-
     if (!value)
       continue;
 
+    FluorescenceOptimizer::Variant newValue = p.value;
     switch (p.type) {
     case INT_TYPE:
-      p.value.iValue = atoi(value);
+      newValue.iValue = atoi(value);
       break;
 
     case FLOAT_TYPE:
-      p.value.fValue = atof(value);
+      newValue.fValue = atof(value);
       break;
 
     case DOUBLE_TYPE:
-      p.value.dValue = atof(value);
+      newValue.dValue = atof(value);
       break;
     }
+
+    SetOptimizerParameterValue(i, newValue);
   }
 }
 
