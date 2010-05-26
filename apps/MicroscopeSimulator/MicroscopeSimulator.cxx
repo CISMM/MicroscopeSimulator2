@@ -169,6 +169,7 @@ MicroscopeSimulator
 
   m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
   m_OptimizerSettingsDialog->setModal(true);
+  m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
 
   m_Preferences = new Preferences();
   
@@ -1318,6 +1319,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimOptimizerSettingsButton_clicked() {
+  m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
   m_OptimizerSettingsDialog->Update();
   m_OptimizerSettingsDialog->exec();
 }
@@ -1580,10 +1582,8 @@ MicroscopeSimulator
                     gui->fluoroSimModelObjectSplitter->saveState());
   settings.endGroup();
 
-  // Save PSF editor geometry
-  settings.beginGroup("PSFEditorDialog");
-  settings.setValue("Geometry", m_PSFEditorDialog->saveGeometry());
-  settings.endGroup();
+  m_PSFEditorDialog->SaveGUISettings();
+  m_OptimizerSettingsDialog->SaveGUISettings();
 
   WritePSFSettings();
 }
@@ -1634,11 +1634,8 @@ MicroscopeSimulator
     restoreState(settings.value("ModelObjectPanelSplitterSizes").toByteArray());
   settings.endGroup();
 
-
-  // Read PSF editor geometry
-  settings.beginGroup("PSFEditorDialog");
-  m_PSFEditorDialog->restoreGeometry(settings.value("Geometry").toByteArray());
-  settings.endGroup();
+  m_PSFEditorDialog->LoadGUISettings();
+  m_OptimizerSettingsDialog->LoadGUISettings();
 
   ReadPSFSettings();
 }
