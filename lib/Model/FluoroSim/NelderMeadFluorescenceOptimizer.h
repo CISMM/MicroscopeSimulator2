@@ -9,6 +9,8 @@
 class NelderMeadFluorescenceOptimizer : public ITKFluorescenceOptimizer {
 
  public:
+  
+  static const char* OPTIMIZER_ELEM;
 
   typedef itk::AmoebaOptimizer NelderMeadOptimizerType;
 

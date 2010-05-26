@@ -7,9 +7,14 @@
 #include <ImageModelObject.h>
 
 
+const char* NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM = "NelderMeadFluorescenceOptimizer";
+
+
 NelderMeadFluorescenceOptimizer
 ::NelderMeadFluorescenceOptimizer() {
-
+  Variant maxIterations;
+  maxIterations.iValue = 100;
+  AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);
 }
 
 
