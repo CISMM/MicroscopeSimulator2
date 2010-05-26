@@ -1,4 +1,5 @@
 #include <FluorophoreModelObjectProperty.h>
+#include <StringUtils.h>
 
 #include <vtkMassProperties.h>
 #include <vtkSmartPointer.h>
