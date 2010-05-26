@@ -4,7 +4,11 @@
 #include <ui_OptimizerSettingsDialog.h>
 #include <QDialog>
 
+
+class FluorescenceOptimizer;
 class ModelObjectList;
+
+class QFluorescenceOptimizerSettingsTableModel;
 
 
 class OptimizerSettingsDialog : public QDialog, 
@@ -15,11 +19,17 @@ Q_OBJECT
   OptimizerSettingsDialog(QWidget* parent=0);
   virtual ~OptimizerSettingsDialog();
 
+  void SetFluorescenceOptimizer(FluorescenceOptimizer* optimizer);
+
   void Update();
+
+  void SaveGUISettings();
+  void LoadGUISettings();
 
  public slots:
   
  protected:
+  QFluorescenceOptimizerSettingsTableModel* m_FluorescenceOptimizerTableModel;
 
 };
 
