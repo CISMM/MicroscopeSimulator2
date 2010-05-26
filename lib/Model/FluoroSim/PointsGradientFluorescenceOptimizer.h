@@ -7,6 +7,9 @@
 class PointsGradientFluorescenceOptimizer : public FluorescenceOptimizer {
 
  public:
+
+  static const char* OPTIMIZER_ELEM;
+
   PointsGradientFluorescenceOptimizer();
   virtual ~PointsGradientFluorescenceOptimizer();
 

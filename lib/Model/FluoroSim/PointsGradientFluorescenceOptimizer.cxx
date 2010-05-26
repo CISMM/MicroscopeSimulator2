@@ -5,10 +5,21 @@
 #include <VisualizationFluorescenceImageSource.h>
 
 
+const char* PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM = "PointsGradientFluorescenceOptimizer";
+
+
 PointsGradientFluorescenceOptimizer
 ::PointsGradientFluorescenceOptimizer() {
   AddObjectiveFunctionName(std::string("Gaussian Noise Maximum Likelihood"));
   AddObjectiveFunctionName(std::string("Poisson Noise Maximum Likelihood"));
+
+  Variant scaleFactor;
+  scaleFactor.dValue = 1.0;
+  AddOptimizerParameter(std::string("Scale Factor"), DOUBLE_TYPE, scaleFactor);
+
+  Variant maxIterations;
+  maxIterations.iValue = 100;
+  AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);
 }
 
 
