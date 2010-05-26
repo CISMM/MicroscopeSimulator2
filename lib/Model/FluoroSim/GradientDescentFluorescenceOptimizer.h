@@ -10,6 +10,8 @@ class GradientDescentFluorescenceOptimizer : public ITKFluorescenceOptimizer {
 
  public:
 
+  static const char* OPTIMIZER_ELEM;
+
   typedef itk::GradientDescentOptimizer GradientDescentOptimizerType;
 
   /** Constructor/destructor. */

@@ -7,9 +7,14 @@
 #include <ImageModelObject.h>
 
 
+const char* GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM = "GradientDescentFluorescenceOptimizer";
+
+
 GradientDescentFluorescenceOptimizer
 ::GradientDescentFluorescenceOptimizer() {
-
+  Variant maxIterations;
+  maxIterations.iValue = 100;
+  AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);
 }
 
 
