@@ -2,6 +2,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 
 #include <QPSFListModel.h>
 #include <QPointSpreadFunctionPropertyTableModel.h>
@@ -95,25 +96,23 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
-::SetWindowSplitterSizes(QList<QVariant> sizes) {
-  QList<int> intSizes;
-  for (QList<QVariant>::iterator iter = sizes.begin(); iter != sizes.end(); iter++) {
-    intSizes.push_back((*iter).toInt());
-  }
-  gui_WindowSplitter->setSizes(intSizes);
+::SaveGUISettings() {
+  QSettings settings;
+
+  settings.beginGroup("PSFEditorDialog");
+  settings.setValue("Geometry", saveGeometry());
+  settings.endGroup();
 }
 
 
-QList<QVariant>
+void
 PSFEditorDialog
-::GetWindowSplitterSizes() {
-  QList<int> sizes = gui_WindowSplitter->sizes();
-  QList<QVariant> variantSizes;
-  for (QList<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++) {
-    variantSizes.push_back(QVariant(*iter));
-  }
+::LoadGUISettings() {
+  QSettings settings;
 
-  return variantSizes;
+  settings.beginGroup("PSFEditorDialog");
+  restoreGeometry(settings.value("Geometry").toByteArray());
+  settings.endGroup();
 }
 
 

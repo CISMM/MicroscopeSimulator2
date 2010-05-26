@@ -28,8 +28,8 @@ Q_OBJECT
   void SetPSFList(PointSpreadFunctionList* list);
   PointSpreadFunctionList* GetPSFList();
 
-  void SetWindowSplitterSizes(QList<QVariant> sizes);
-  QList<QVariant> GetWindowSplitterSizes();
+  void SaveGUISettings();
+  void LoadGUISettings();
 
  public slots:
   virtual void on_gui_AddCalculatedGaussianPSFButton_clicked();
