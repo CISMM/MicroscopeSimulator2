@@ -105,6 +105,7 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   msimIO
   msimModel
   msimVisualization
+  msimUtilities
 )
 
 IF( WIN32 )
