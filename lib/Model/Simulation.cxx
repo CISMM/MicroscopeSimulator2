@@ -45,9 +45,19 @@ Simulation
 
   m_FluoroSim = new FluorescenceSimulation(this);
 
-  m_FluoroOptimizer = new NelderMeadFluorescenceOptimizer();
-  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
-  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+  m_GradientDescentFluoroOptimizer = new GradientDescentFluorescenceOptimizer();
+  m_GradientDescentFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_GradientDescentFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
+  m_NelderMeadFluoroOptimizer      = new NelderMeadFluorescenceOptimizer();
+  m_NelderMeadFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_NelderMeadFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
+  m_PointsGradientFluoroOptimizer  = new PointsGradientFluorescenceOptimizer();
+  m_PointsGradientFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_PointsGradientFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
+  m_FluoroOptimizer = m_NelderMeadFluoroOptimizer;
 
   // ITK will detect the number of cores on the system and set it by default.
   // Here we can override that setting if the proper environment variable is
@@ -67,7 +77,9 @@ Simulation
 ::~Simulation() {
   delete m_ModelObjectList;
   delete m_FluoroSim;
-  delete m_FluoroOptimizer;
+  delete m_GradientDescentFluoroOptimizer;
+  delete m_NelderMeadFluoroOptimizer;
+  delete m_PointsGradientFluoroOptimizer;
 }
 
 
@@ -170,6 +182,18 @@ Simulation
   xmlNodePtr fluoroSimNode = xmlNewChild(node, NULL, BAD_CAST Simulation::FLUORO_SIM_ELEM, NULL);
   m_FluoroSim->GetXMLConfiguration(fluoroSimNode);
 
+  xmlNodePtr gradientDescentOptimizerNode = 
+    xmlNewChild(fluoroSimNode, NULL, BAD_CAST GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
+  m_GradientDescentFluoroOptimizer->GetXMLConfiguration(gradientDescentOptimizerNode);
+
+  xmlNodePtr nelderMeadOptimizerNode =
+    xmlNewChild(fluoroSimNode, NULL, BAD_CAST NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
+  m_NelderMeadFluoroOptimizer->GetXMLConfiguration(nelderMeadOptimizerNode);
+
+  xmlNodePtr pointsGradientOptimizerNode =
+    xmlNewChild(fluoroSimNode, NULL, BAD_CAST PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
+  m_PointsGradientFluoroOptimizer->GetXMLConfiguration(pointsGradientOptimizerNode);
+
   xmlNodePtr molNode = xmlNewChild(node, NULL, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM, NULL);
   m_ModelObjectList->GetXMLConfiguration(molNode);
 
@@ -197,6 +221,18 @@ Simulation
   xmlNodePtr fluoroSimNode =
     xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::FLUORO_SIM_ELEM);
   m_FluoroSim->RestoreFromXML(fluoroSimNode);
+
+  xmlNodePtr gradientDescentOptimizerNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM);
+  m_GradientDescentFluoroOptimizer->RestoreFromXML(gradientDescentOptimizerNode);
+
+  xmlNodePtr nelderMeadOptimizerNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM);
+  m_NelderMeadFluoroOptimizer->RestoreFromXML(nelderMeadOptimizerNode);
+
+  xmlNodePtr pointsGradientOptimizerNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM);
+  m_PointsGradientFluoroOptimizer->RestoreFromXML(pointsGradientOptimizerNode);
 
   // Restore model object list
   xmlNodePtr molNode = 
@@ -290,30 +326,21 @@ Simulation
 void
 Simulation
 ::SetFluorescenceOptimizerToGradientDescent() {
-  if (m_FluoroOptimizer)
-    delete m_FluoroOptimizer;
-
-  m_FluoroOptimizer = new GradientDescentFluorescenceOptimizer();
-  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
-  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+  m_FluoroOptimizer = m_GradientDescentFluoroOptimizer;
 }
 
 
 void
 Simulation
 ::SetFluorescenceOptimizerToNelderMead() {
-  m_FluoroOptimizer = new NelderMeadFluorescenceOptimizer();
-  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
-  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+  m_FluoroOptimizer = m_NelderMeadFluoroOptimizer;
 }
 
 
 void
 Simulation
 ::SetFluorescenceOptimizerToPointsGradient() {
-  m_FluoroOptimizer = new PointsGradientFluorescenceOptimizer();
-  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
-  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+  m_FluoroOptimizer = m_PointsGradientFluoroOptimizer;
 }
 
 
