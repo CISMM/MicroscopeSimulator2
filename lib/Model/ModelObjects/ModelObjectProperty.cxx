@@ -1,4 +1,5 @@
 #include <ModelObjectProperty.h>
+#include <StringUtils.h>
 
 #include <iostream>
 
@@ -228,17 +229,4 @@ ModelObjectProperty
     else
       SetOptimize(false);
   }
-}
-
-
-std::string
-ModelObjectProperty
-::SqueezeString(const std::string& str) {
-  std::string squeezed(str);
-  size_t pos;
-  while ((pos = squeezed.find_first_of(' ')) != std::string::npos) {
-    squeezed = squeezed.erase(pos, 1);
-  }
-
-  return squeezed;
 }
