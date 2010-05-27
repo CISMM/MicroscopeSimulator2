@@ -1501,6 +1501,24 @@ MicroscopeSimulator
   gui->fluoroSimMinLevelSlider->setValue((int) fluoroSim->GetMinimumIntensityLevel());
   gui->fluoroSimMaxLevelSlider->setValue((int) fluoroSim->GetMaximumIntensityLevel());
 
+  // Select the chosen fluorescence comparison image model object
+  ImageModelObject* comparisonImage = m_Simulation->GetComparisonImageModelObject();
+  if (!comparisonImage) {
+    gui->fluoroSimComparisonImageComboBox->setCurrentIndex(0);
+  } else {
+    for (int i = 1; i < m_ImageListModel->rowCount(); i++) {
+      QModelIndex index = m_ImageListModel->index(i, 0);
+      QVariant data = m_ImageListModel->data(index);
+      if (data.isValid()) {
+        QString name = m_ImageListModel->data(index).toString();
+        if (name.toStdString() == comparisonImage->GetName()) {
+          gui->fluoroSimComparisonImageComboBox->setCurrentIndex(i);
+          break;
+        }
+      }
+    }
+  }
+
   RenderViews();
 }
 
