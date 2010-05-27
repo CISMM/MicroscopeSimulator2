@@ -197,6 +197,19 @@ Simulation
   xmlNodePtr molNode = xmlNewChild(node, NULL, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM, NULL);
   m_ModelObjectList->GetXMLConfiguration(molNode);
 
+  ModelObject* comparisonImageModelObject = 
+    m_FluoroOptimizer->GetComparisonImageModelObject();
+  std::string comparisonImageName = "None";
+  if (comparisonImageModelObject) {
+    comparisonImageName = comparisonImageModelObject->GetName();
+  }
+
+  xmlNodePtr fluorescenceComparisonImageNode = xmlNewChild
+    (fluoroSimNode, NULL, BAD_CAST "FluorescenceComparisonImageModelObject",
+     NULL);
+
+  xmlNewProp(fluorescenceComparisonImageNode, BAD_CAST "name",
+             BAD_CAST comparisonImageName.c_str());
 }
 
 
@@ -248,6 +261,17 @@ Simulation
   if (molNode) {
     m_ModelObjectList->RestoreFromXML(molNode);
   }
+
+  // Restoring the fluorescence comparison image must be done AFTER the
+  // model object list is restored.
+  xmlNodePtr fluorescenceComparisonImageNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST "FluorescenceComparisonImageModelObject");
+  if (fluorescenceComparisonImageNode) {
+    std::string modelObjectName((char*) xmlGetProp(fluorescenceComparisonImageNode, BAD_CAST "name"));
+    ModelObject* comparisonModelObject = m_ModelObjectList->GetModelObjectByName(modelObjectName);
+    m_FluoroOptimizer->SetComparisonImageModelObject(comparisonModelObject);
+  }                                 
+
 }
 
 
@@ -367,16 +391,13 @@ Simulation
     return;
 
   m_FluoroOptimizer->SetComparisonImageModelObjectIndex(index);
-
-  m_ComparisonImageModelObject = static_cast<ImageModelObject*>
-    (m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME));
 }
 
 
 ImageModelObject*
 Simulation
 ::GetComparisonImageModelObject() {
-  return m_ComparisonImageModelObject;
+  return m_FluoroOptimizer->GetComparisonImageModelObject();
 }
 
 

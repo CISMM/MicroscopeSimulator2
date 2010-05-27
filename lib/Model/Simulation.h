@@ -105,7 +105,6 @@ protected:
   FluorescenceOptimizer* m_FluoroOptimizer;
 
   ModelObjectList* m_ModelObjectList;
-  ImageModelObject* m_ComparisonImageModelObject;
 
  private:
   Simulation() {};
