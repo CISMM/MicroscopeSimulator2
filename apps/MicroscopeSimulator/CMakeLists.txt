@@ -21,6 +21,7 @@ SET (QtGuiSrcs
   PSFEditorDialog.cxx
   Preferences.cxx
   PreferencesDialog.cxx
+  QCopyPasteTableView.cxx
   QFluorescenceOptimizerSettingsTableModel.cxx
   QImageListModel.cxx
   QModelObjectListModel.cxx
@@ -57,6 +58,7 @@ SET (ApplicationHeaders
   OptimizerSettingsDialog.h
   PSFEditorDialog.h
   PreferencesDialog.h
+  QCopyPasteTableView.h
   QFluorescenceOptimizerSettingsTableModel.h
   QImageListModel.h
   QModelObjectListModel.h
