@@ -134,19 +134,6 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
-::on_gui_ImportWidefieldPSFSettingsButton_clicked() {
-  QString fileName = QFileDialog::
-    getOpenFileName(this, tr("Import Widefield PSF Settings"), QString(),
-                    tr("VPO Files (*.vpo);;All Files (*)"));
-  if (fileName == "")
-    return;
-
-  
-}
-
-
-void
-PSFEditorDialog
 ::on_gui_ImportPSFButton_clicked() {
   QString fileName = QFileDialog::
     getOpenFileName(this, tr("Import PSF Image"), QString(), 
