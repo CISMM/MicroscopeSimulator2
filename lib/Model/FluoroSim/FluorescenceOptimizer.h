@@ -9,7 +9,9 @@
 
 class FluorescenceSimulation;
 class ImageModelObject;
+class ModelObject;
 class ModelObjectList;
+
 
 class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
 
@@ -46,6 +48,7 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
   void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
 
   void SetModelObjectList(ModelObjectList* list);
+  void SetComparisonImageModelObject(ModelObject* object);
   void SetComparisonImageModelObjectIndex(int index);
   ImageModelObject* GetComparisonImageModelObject();
 

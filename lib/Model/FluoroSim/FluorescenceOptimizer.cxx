@@ -3,6 +3,7 @@
 #include <FluorescenceImageSource.h>
 #include <FluorescenceSimulation.h>
 #include <ImageModelObject.h>
+#include <ModelObject.h>
 #include <ModelObjectList.h>
 #include <StringUtils.h>
 #include <VisualizationFluorescenceImageSource.h>
@@ -167,6 +168,13 @@ FluorescenceOptimizer
 
 void
 FluorescenceOptimizer
+::SetComparisonImageModelObject(ModelObject* object) {
+  m_ComparisonImageModelObject = static_cast<ImageModelObject*>(object);
+}
+
+
+void
+FluorescenceOptimizer
 ::SetComparisonImageModelObjectIndex(int index) {
   if (index < 0) {
     m_ComparisonImageModelObject = NULL;
@@ -174,7 +182,7 @@ FluorescenceOptimizer
   }
 
   ModelObjectPtr mo = m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME);
-  m_ComparisonImageModelObject = static_cast<ImageModelObject*>(mo);
+  SetComparisonImageModelObject(mo);
 }
 
 
