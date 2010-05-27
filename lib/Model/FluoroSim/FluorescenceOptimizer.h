@@ -36,7 +36,7 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
   } Parameter;
   
   /** Constructor/destructor. */
-  FluorescenceOptimizer();
+  FluorescenceOptimizer(DirtyListener* listener);
   virtual ~FluorescenceOptimizer();
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
@@ -70,6 +70,10 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
   Parameter GetOptimizerParameter(int index);
 
  protected:
+  FluorescenceOptimizer() {};
+
+  DirtyListener* m_DirtyListener;
+
   FluorescenceSimulation* m_FluoroSim;
 
   ModelObjectList* m_ModelObjectList;

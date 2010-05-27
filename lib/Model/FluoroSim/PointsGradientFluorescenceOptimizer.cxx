@@ -9,7 +9,8 @@ const char* PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM = "PointsGradien
 
 
 PointsGradientFluorescenceOptimizer
-::PointsGradientFluorescenceOptimizer() {
+::PointsGradientFluorescenceOptimizer(DirtyListener* listener)
+  : FluorescenceOptimizer(listener) {
   AddObjectiveFunctionName(std::string("Gaussian Noise Maximum Likelihood"));
   AddObjectiveFunctionName(std::string("Poisson Noise Maximum Likelihood"));
 

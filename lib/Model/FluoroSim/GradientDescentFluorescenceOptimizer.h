@@ -15,10 +15,13 @@ class GradientDescentFluorescenceOptimizer : public ITKFluorescenceOptimizer {
   typedef itk::GradientDescentOptimizer GradientDescentOptimizerType;
 
   /** Constructor/destructor. */
-  GradientDescentFluorescenceOptimizer();
+  GradientDescentFluorescenceOptimizer(DirtyListener* listener);
   virtual ~GradientDescentFluorescenceOptimizer();
 
   virtual void Optimize();
+
+ protected:
+  GradientDescentFluorescenceOptimizer() {}
 
 };
 

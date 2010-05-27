@@ -11,7 +11,8 @@ const char* GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM = "GradientDesc
 
 
 GradientDescentFluorescenceOptimizer
-::GradientDescentFluorescenceOptimizer() {
+::GradientDescentFluorescenceOptimizer(DirtyListener* listener)
+  : ITKFluorescenceOptimizer(listener) {
   Variant maxIterations;
   maxIterations.iValue = 100;
   AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);

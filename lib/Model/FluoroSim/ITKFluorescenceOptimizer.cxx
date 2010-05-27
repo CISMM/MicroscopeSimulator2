@@ -13,7 +13,8 @@
 
 
 ITKFluorescenceOptimizer
-::ITKFluorescenceOptimizer() {
+::ITKFluorescenceOptimizer(DirtyListener* listener) 
+  : FluorescenceOptimizer(listener) {
   m_FluorescenceImageSource = SyntheticImageSourceType::New();
 
   m_CostFunction = ParameterizedCostFunctionType::New();

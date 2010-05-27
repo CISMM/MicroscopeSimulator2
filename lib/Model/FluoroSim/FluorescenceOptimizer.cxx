@@ -17,7 +17,8 @@
 
 
 FluorescenceOptimizer
-::FluorescenceOptimizer() {
+::FluorescenceOptimizer(DirtyListener* listener) {
+  m_DirtyListener = listener;
   m_FluoroSim = NULL;
   m_ModelObjectList = NULL;
   m_ComparisonImageModelObject = NULL;
@@ -99,14 +100,16 @@ FluorescenceOptimizer
 void
 FluorescenceOptimizer
 ::Sully() {
-
+  if (m_DirtyListener)
+    m_DirtyListener->Sully();
 }
 
 
 void
 FluorescenceOptimizer
 ::SetStatusMessage(const std::string& status) {
-
+  if (m_DirtyListener)
+    m_DirtyListener->SetStatusMessage(status);
 }
 
 
@@ -128,6 +131,8 @@ void
 FluorescenceOptimizer
 ::SetOptimizerParameterNumericType(int index, NumericType type) {
   m_OptimizerParameters[index].type = type;
+
+  Sully();
 }
 
 
@@ -142,6 +147,8 @@ void
 FluorescenceOptimizer
 ::SetOptimizerParameterValue(int index, Variant value) {
   m_OptimizerParameters[index].value = value;
+  
+  Sully();
 }
 
 
@@ -170,6 +177,8 @@ void
 FluorescenceOptimizer
 ::SetComparisonImageModelObject(ModelObject* object) {
   m_ComparisonImageModelObject = static_cast<ImageModelObject*>(object);
+
+  Sully();
 }
 
 
@@ -183,6 +192,8 @@ FluorescenceOptimizer
 
   ModelObjectPtr mo = m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME);
   SetComparisonImageModelObject(mo);
+
+  Sully();
 }
 
 
@@ -200,6 +211,8 @@ FluorescenceOptimizer
     return;
 
   m_FluoroSim->GetFluorescenceImageSource()->SetParameters(params);
+
+  Sully();
 }
 
 

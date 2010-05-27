@@ -41,7 +41,7 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
     NormalizedCorrelationCostFunctionType;
 
   /** Constructor/destructor. */
-  ITKFluorescenceOptimizer();
+  ITKFluorescenceOptimizer(DirtyListener* listener);
   virtual ~ITKFluorescenceOptimizer();
 
   void SetCostFunctionToGaussianNoise() {
@@ -69,6 +69,9 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
   CostFunction_t m_ImageToImageCostFunctionType;
 
   void SetUpCostFunction();
+
+ protected:
+  ITKFluorescenceOptimizer();
 
 };
 

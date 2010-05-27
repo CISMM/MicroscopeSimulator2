@@ -10,10 +10,13 @@ class PointsGradientFluorescenceOptimizer : public FluorescenceOptimizer {
 
   static const char* OPTIMIZER_ELEM;
 
-  PointsGradientFluorescenceOptimizer();
+  PointsGradientFluorescenceOptimizer(DirtyListener* listener);
   virtual ~PointsGradientFluorescenceOptimizer();
 
   virtual void Optimize();
+
+ protected:
+  PointsGradientFluorescenceOptimizer() {};
 
 };
 

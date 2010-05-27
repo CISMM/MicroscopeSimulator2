@@ -11,7 +11,8 @@ const char* NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM = "NelderMeadFluores
 
 
 NelderMeadFluorescenceOptimizer
-::NelderMeadFluorescenceOptimizer() {
+::NelderMeadFluorescenceOptimizer(DirtyListener* listener) 
+  : ITKFluorescenceOptimizer(listener) {
   Variant maxIterations;
   maxIterations.iValue = 100;
   AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);
@@ -20,7 +21,6 @@ NelderMeadFluorescenceOptimizer
 
 NelderMeadFluorescenceOptimizer
 ::~NelderMeadFluorescenceOptimizer() {
-
 }
 
 

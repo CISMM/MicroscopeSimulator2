@@ -15,10 +15,13 @@ class NelderMeadFluorescenceOptimizer : public ITKFluorescenceOptimizer {
   typedef itk::AmoebaOptimizer NelderMeadOptimizerType;
 
   /** Constructor/destructor. */
-  NelderMeadFluorescenceOptimizer();
+  NelderMeadFluorescenceOptimizer(DirtyListener* listener);
   virtual ~NelderMeadFluorescenceOptimizer();
 
   virtual void Optimize();
+
+ protected:
+  NelderMeadFluorescenceOptimizer() {};
 
 };
 
