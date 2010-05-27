@@ -45,15 +45,18 @@ Simulation
 
   m_FluoroSim = new FluorescenceSimulation(this);
 
-  m_GradientDescentFluoroOptimizer = new GradientDescentFluorescenceOptimizer();
+  m_GradientDescentFluoroOptimizer = 
+    new GradientDescentFluorescenceOptimizer(dirtyListener);
   m_GradientDescentFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_GradientDescentFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 
-  m_NelderMeadFluoroOptimizer      = new NelderMeadFluorescenceOptimizer();
+  m_NelderMeadFluoroOptimizer = 
+    new NelderMeadFluorescenceOptimizer(dirtyListener);
   m_NelderMeadFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_NelderMeadFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 
-  m_PointsGradientFluoroOptimizer  = new PointsGradientFluorescenceOptimizer();
+  m_PointsGradientFluoroOptimizer = 
+    new PointsGradientFluorescenceOptimizer(dirtyListener);
   m_PointsGradientFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_PointsGradientFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 
