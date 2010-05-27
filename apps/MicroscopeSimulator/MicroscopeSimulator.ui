@@ -131,7 +131,16 @@
     <addaction name="actionImportImageData"/>
     <addaction name="actionImportGeometryFile"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuModel"/>
    <addaction name="menuImport"/>
    <addaction name="menuWindows"/>
@@ -187,9 +196,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-684</y>
+          <y>-650</y>
           <width>381</width>
-          <height>1319</height>
+          <height>1285</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1096,13 +1105,6 @@
                     <widget class="QComboBox" name="fluoroSimObjectiveFunctionComboBox"/>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="fluoroSimExploreObjectiveFunction">
-                     <property name="text">
-                      <string>Explore Objective Function...</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QPushButton" name="fluoroSimOptimizeButton">
                      <property name="text">
                       <string>Optimize...</string>
@@ -1242,10 +1244,13 @@
          <bool>false</bool>
         </attribute>
         <attribute name="verticalHeaderDefaultSectionSize">
-         <number>16</number>
+         <number>30</number>
         </attribute>
         <attribute name="verticalHeaderHighlightSections">
          <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>30</number>
         </attribute>
        </widget>
       </widget>
@@ -1622,6 +1627,46 @@
   <action name="actionAddPointRing">
    <property name="text">
     <string>Add Point Ring</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>
