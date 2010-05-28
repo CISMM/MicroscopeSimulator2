@@ -89,7 +89,6 @@ void vtkModelObjectGeometryRepresentation::SetModelObject(ModelObject* modelObje
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->PickableOff();
-    actor->GetProperty()->SetColor(1.0, 1.0, 0.0);
     actor->SetMapper(mapper);
 
     this->FluorophoreActors->AddItem(actor);
@@ -219,13 +218,37 @@ void vtkModelObjectGeometryRepresentation::UpdateFluorophoreRepresentation() {
 
     vtkCollectionSimpleIterator iter;
     this->FluorophoreActors->InitTraversal(iter);
+    int fluorophorePropertyIndex = 0;
     vtkActor* fluorophoreActor;
     while ((fluorophoreActor = this->FluorophoreActors->GetNextActor(iter)) != NULL) {
-      fluorophoreActor->SetVisibility(this->ShowFluorophores);
-
       fluorophoreActor->SetOrientation(0.0, 0.0, 0.0);
       fluorophoreActor->RotateWXYZ(rotation[0], rotation[1], rotation[2], rotation[3]);
       fluorophoreActor->SetPosition(position);
+
+      FluorophoreModelObjectProperty* fmop = dynamic_cast<FluorophoreModelObjectProperty*>
+        (m_ModelObject->GetFluorophorePropertyList()->GetProperty(fluorophorePropertyIndex));
+      fluorophorePropertyIndex++;
+
+      fluorophoreActor->SetVisibility(((bool) this->ShowFluorophores) && fmop->GetEnabled());
+
+      vtkProperty* property = fluorophoreActor->GetProperty();
+      switch (fmop->GetFluorophoreChannel()) {
+      case RED_CHANNEL:
+        property->SetColor(1.0, 0.0, 0.0);
+        break;
+
+      case GREEN_CHANNEL:
+        property->SetColor(0.0, 1.0, 0.0);
+        break;
+
+      case BLUE_CHANNEL:
+        property->SetColor(0.0, 0.0, 1.0);
+        break;
+
+      default:
+        property->SetColor(1.0, 1.0, 1.0);
+        break;
+      }
     }
   }
 }
