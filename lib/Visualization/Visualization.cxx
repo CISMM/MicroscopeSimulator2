@@ -128,6 +128,13 @@ Visualization
 }
 
 
+void
+Visualization
+::SetShowFluorophoresInModelObjectRenderer(bool flag) {
+  m_GeometryRepresentation->SetShowFluorophores(flag);
+}
+
+
 vtkImageData*
 Visualization
 ::GenerateFluorescenceImage() {
