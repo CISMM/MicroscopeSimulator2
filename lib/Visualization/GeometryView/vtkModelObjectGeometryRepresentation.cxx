@@ -1,19 +1,28 @@
 #include <vtkModelObjectGeometryRepresentation.h>
 
+#include <FluorophoreModelObjectProperty.h>
 #include <ModelObject.h>
+#include <ModelObjectProperty.h>
+#include <ModelObjectPropertyList.h>
 
 #include <vtkActor.h>
+#include <vtkActorCollection.h>
 #include <vtkApplyColors.h>
+#include <vtkCollection.h>
 #include <vtkGeometryFilter.h>
+#include <vtkGlyph3D.h>
+#include <vtkInteractorStyleTrackballActor.h>
 #include <vtkObjectFactory.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
-#include <vtkTransformFilter.h>
+#include <vtkRenderer.h>
 #include <vtkRenderView.h>
 #include <vtkRenderedSurfaceRepresentation.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleTrackballActor.h>
+#include <vtkSphereSource.h>
+#include <vtkTransformFilter.h>
+
 #include <vtkModelObjectActorPickObserver.h>
 
 
@@ -33,6 +42,10 @@ vtkModelObjectGeometryRepresentation::vtkModelObjectGeometryRepresentation()
 
   this->Actor->GetProperty()->SetInterpolationToPhong();
   this->Actor->GetProperty()->ShadingOff();
+
+  this->ShowFluorophores = 0;
+  
+  this->FluorophoreActors = vtkSmartPointer<vtkActorCollection>::New();
 }
 
 //----------------------------------------------------------------------------
@@ -51,6 +64,36 @@ void vtkModelObjectGeometryRepresentation::SetModelObject(ModelObject* modelObje
   this->Actor->SetPickable(m_ModelObject->GetPickable() ? 1 : 0);
 
   this->SetInputConnection(m_ModelObject->GetGeometrySubAssembly("All")->GetOutputPort());
+
+  // Clear out fluorophore actors and generate new ones
+  this->FluorophoreActors->RemoveAllItems();
+
+  ModelObjectPropertyList* mopList = m_ModelObject->GetFluorophorePropertyList();
+  for (int i = 0; i < mopList->GetSize(); i++) {
+    FluorophoreModelObjectProperty* fmop = 
+      dynamic_cast<FluorophoreModelObjectProperty*>(mopList->GetProperty(i));
+
+    if (!fmop)
+      continue;
+
+    vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
+    sphereSource->SetRadius(20.0);
+
+    vtkSmartPointer<vtkGlyph3D> glypher = vtkSmartPointer<vtkGlyph3D>::New();
+    glypher->ScalingOff();
+    glypher->SetInputConnection(fmop->GetFluorophoreOutput()->GetOutputPort());
+    glypher->SetSourceConnection(sphereSource->GetOutputPort());
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputConnection(glypher->GetOutputPort());
+
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    actor->PickableOff();
+    actor->GetProperty()->SetColor(1.0, 1.0, 0.0);
+    actor->SetMapper(mapper);
+
+    this->FluorophoreActors->AddItem(actor);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -102,6 +145,49 @@ void vtkModelObjectGeometryRepresentation::PrepareForRendering(vtkRenderView* vi
     }
   }
 
+  UpdateFluorophoreRepresentation();
+
+}
+
+//----------------------------------------------------------------------------
+bool vtkModelObjectGeometryRepresentation::AddToView(vtkView* view) {
+  vtkRenderView* rv = vtkRenderView::SafeDownCast(view);
+  if (!rv)
+    {
+    vtkErrorMacro("Can only add to a subclass of vtkRenderView.");
+    return false;
+    }
+  rv->GetRenderer()->AddActor(this->Actor);
+
+  vtkCollectionSimpleIterator iter;
+  this->FluorophoreActors->InitTraversal(iter);
+  vtkActor* fluorophoreActor;
+  while ((fluorophoreActor = this->FluorophoreActors->GetNextActor(iter)) != NULL) {
+    rv->GetRenderer()->AddActor(fluorophoreActor);
+  }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkModelObjectGeometryRepresentation::RemoveFromView(vtkView* view) {
+  vtkRenderView* rv = vtkRenderView::SafeDownCast(view);
+  if (!rv)
+    {
+    vtkErrorMacro("Can only add to a subclass of vtkRenderView.");
+    return false;
+    }
+
+  rv->GetRenderer()->RemoveViewProp(this->Actor);
+
+  vtkCollectionSimpleIterator iter;
+  this->FluorophoreActors->InitTraversal(iter);
+  vtkActor* fluorophoreActor;
+  while ((fluorophoreActor = this->FluorophoreActors->GetNextActor(iter)) != NULL) {
+    rv->GetRenderer()->RemoveViewProp(fluorophoreActor);
+  }
+
+  return true;
 }
 
 //----------------------------------------------------------------------------
@@ -120,6 +206,28 @@ void vtkModelObjectGeometryRepresentation::UpdateRepresentation() {
     this->SetRotationWXYZ(rotation);
   }
   
+}
+
+//----------------------------------------------------------------------------
+void vtkModelObjectGeometryRepresentation::UpdateFluorophoreRepresentation() {
+  if (this->m_ModelObject) {
+    double* position;
+    double* rotation;
+
+    position = this->Actor->GetPosition();
+    rotation = this->Actor->GetOrientationWXYZ();
+
+    vtkCollectionSimpleIterator iter;
+    this->FluorophoreActors->InitTraversal(iter);
+    vtkActor* fluorophoreActor;
+    while ((fluorophoreActor = this->FluorophoreActors->GetNextActor(iter)) != NULL) {
+      fluorophoreActor->SetVisibility(this->ShowFluorophores);
+
+      fluorophoreActor->SetOrientation(0.0, 0.0, 0.0);
+      fluorophoreActor->RotateWXYZ(rotation[0], rotation[1], rotation[2], rotation[3]);
+      fluorophoreActor->SetPosition(position);
+    }
+  }
 }
 
 //----------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 #define _VTK_MODEL_OBJECT_GEOMETRY_REPRESENTATION_H_
 
 #include <vtkActor.h>
+#include <vtkActorCollection.h>
 #include <vtkCommand.h>
 #include <vtkRenderedSurfaceRepresentation.h>
 
@@ -23,6 +24,10 @@ class vtkModelObjectGeometryRepresentation : public vtkRenderedSurfaceRepresenta
   void SetModelObject(ModelObject* modelObject);
   ModelObject* GetModelObject();
 
+  vtkSetMacro(ShowFluorophores, int);
+  vtkGetMacro(ShowFluorophores, int);
+  vtkBooleanMacro(ShowFluorophores, int);
+
  protected:
   vtkModelObjectGeometryRepresentation();
   ~vtkModelObjectGeometryRepresentation();
@@ -31,9 +36,17 @@ class vtkModelObjectGeometryRepresentation : public vtkRenderedSurfaceRepresenta
 
   vtkSmartPointer<vtkModelObjectActorPickObserver> ActorPickObserver;
 
+  int ShowFluorophores;
+
+  vtkSmartPointer<vtkActorCollection> FluorophoreActors;
+
   virtual void PrepareForRendering(vtkRenderView* view);
 
+  virtual bool AddToView(vtkView* view);
+  virtual bool RemoveFromView(vtkView* view);
+
   virtual void UpdateRepresentation();
+  virtual void UpdateFluorophoreRepresentation();
 
   void SetPosition(double position[3]);
   void SetRotationWXYZ(double rotation[4]);
