@@ -23,6 +23,8 @@ class GeometryRepresentation {
 
   void SetInteractionObserver(vtkCommand* observer);
 
+  void SetShowFluorophores(bool value);
+
   void AddToView(vtkView* view);
 
   void Update();
