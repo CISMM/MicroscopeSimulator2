@@ -640,42 +640,48 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionViewModelOnly_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewModelAndPoints_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(true);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewModelAndScan_triggered(){
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewAFMScanOnly_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewModelsWithFluorescenceComparison_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewFluorescenceComparisonOnly_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
