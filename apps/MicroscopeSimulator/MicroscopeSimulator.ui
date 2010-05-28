@@ -1244,13 +1244,13 @@
          <bool>false</bool>
         </attribute>
         <attribute name="verticalHeaderDefaultSectionSize">
-         <number>30</number>
+         <number>16</number>
         </attribute>
         <attribute name="verticalHeaderHighlightSections">
          <bool>true</bool>
         </attribute>
         <attribute name="verticalHeaderDefaultSectionSize">
-         <number>30</number>
+         <number>16</number>
         </attribute>
        </widget>
       </widget>
