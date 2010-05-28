@@ -50,6 +50,7 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   virtual void RestoreFromXML(xmlNodePtr root);
 
  protected:
+  FluorophoreModelObjectProperty();
 
   FluorophoreModelType   m_FluorophoreModelType;
   vtkPolyDataAlgorithm*  m_GeometrySource;
