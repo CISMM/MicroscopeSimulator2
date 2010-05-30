@@ -1,5 +1,5 @@
 #include <PlaneModelObject.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <SurfaceUniformFluorophoreProperty.h>
 
 #include <vtkPlaneSource.h>
 #include <vtkTriangleFilter.h>
@@ -31,9 +31,9 @@ PlaneModelObject
   // Set up properties
   AddProperty(new ModelObjectProperty(WIDTH_PROP,  100.0, "nanometers"));
   AddProperty(new ModelObjectProperty(HEIGHT_PROP, 100.0, "nanometers"));
-  AddProperty(new FluorophoreModelObjectProperty(SURFACE_FLUOR_PROP,
-                                                 UNIFORM_RANDOM_SURFACE_SAMPLE,
-                                                 m_GeometrySource));
+
+  AddProperty(new SurfaceUniformFluorophoreProperty
+              (SURFACE_FLUOR_PROP, m_GeometrySource));
 
   // Must call this after setting up properties
   Update();

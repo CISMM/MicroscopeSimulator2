@@ -1,5 +1,6 @@
 #include <HollowCylinderModelObject.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <SurfaceUniformFluorophoreProperty.h>
+#include <VolumeUniformFluorophoreProperty.h>
 
 #include <vtkDiskSource.h>
 #include <vtkLinearExtrusionFilter.h>
@@ -57,12 +58,10 @@ HollowCylinderModelObject
   AddProperty(new ModelObjectProperty(THICKNESS_PROP,     10.0, "nanometers"));
   AddProperty(new ModelObjectProperty(LENGTH_PROP,      1000.0, "nanometers"));
 
-  AddProperty(new FluorophoreModelObjectProperty(SURFACE_FLUOR_PROP,
-                                                 UNIFORM_RANDOM_SURFACE_SAMPLE,
-                                                 m_GeometrySource));
-  AddProperty(new FluorophoreModelObjectProperty(VOLUME_FLUOR_PROP,
-                                                 UNIFORM_RANDOM_VOLUME_SAMPLE,
-                                                 m_GeometrySource));
+  AddProperty(new SurfaceUniformFluorophoreProperty
+              (SURFACE_FLUOR_PROP, m_GeometrySource));
+  AddProperty(new VolumeUniformFluorophoreProperty
+              (VOLUME_FLUOR_PROP, m_GeometrySource));
 
   // Must call this after setting up properties
   Update();
