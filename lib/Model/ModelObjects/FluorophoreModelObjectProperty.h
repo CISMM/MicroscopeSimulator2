@@ -14,18 +14,11 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
  public:
 
   FluorophoreModelObjectProperty(const std::string& name,
-                                 FluorophoreModelType type,
                                  vtkPolyDataAlgorithm* geometry,
                                  bool editable = false,
                                  bool optimizable = true);
 
   virtual ~FluorophoreModelObjectProperty();
-
-  void SetFluorophoreModelType(FluorophoreModelType type);
-  void SetFluorophoreModelTypeToGeometryVertices();
-  void SetFluorophoreModelTypeToUniformRandomSurfaceSample();
-  void SetFluorophoreModelTypeToUniformRandomVolumeSample();
-  FluorophoreModelType GetFluorophoreModelType();
 
   virtual void SetDensity(double density);
   virtual double GetDensity();
@@ -50,7 +43,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
  protected:
   FluorophoreModelObjectProperty();
 
-  FluorophoreModelType   m_FluorophoreModelType;
   vtkPolyDataAlgorithm*  m_GeometrySource;
   double                 m_Density;
   bool                   m_Enabled;

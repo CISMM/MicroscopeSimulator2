@@ -11,14 +11,12 @@
 
 FluorophoreModelObjectProperty
 ::FluorophoreModelObjectProperty(const std::string& name,
-                                 FluorophoreModelType type,
                                  vtkPolyDataAlgorithm* geometry,
                                  bool editable, bool optimizable)
   : ModelObjectProperty(name, ModelObjectProperty::FLUOROPHORE_MODEL_TYPE,
                         "-", editable, optimizable) {
   m_GeometrySource = geometry;
   m_FluorophoreOutput = NULL;
-  SetFluorophoreModelType(type);
   SetEnabled(true);
   SetFluorophoreChannelToAll();
   SetDensity(1000.0);
@@ -28,80 +26,6 @@ FluorophoreModelObjectProperty
 FluorophoreModelObjectProperty
 ::~FluorophoreModelObjectProperty() {
 
-}
-
-
-void 
-FluorophoreModelObjectProperty
-::SetFluorophoreModelType(FluorophoreModelType type) {
-  m_FluorophoreModelType = type;
-
-  switch (type) {
-  case GEOMETRY_VERTICES:
-    SetFluorophoreModelTypeToGeometryVertices();
-    break;
-
-  case UNIFORM_RANDOM_SURFACE_SAMPLE:
-    SetFluorophoreModelTypeToUniformRandomSurfaceSample();
-    break;
-
-  case UNIFORM_RANDOM_VOLUME_SAMPLE:
-    SetFluorophoreModelTypeToUniformRandomVolumeSample();
-    break;
-  }
-}
-
-
-void 
-FluorophoreModelObjectProperty
-::SetFluorophoreModelTypeToGeometryVertices() {
-  m_FluorophoreModelType = GEOMETRY_VERTICES;
-
-  m_FluorophoreOutput = m_GeometrySource;
-}
-
-
-void
-FluorophoreModelObjectProperty
-::SetFluorophoreModelTypeToUniformRandomSurfaceSample() {
-  m_FluorophoreModelType = UNIFORM_RANDOM_SURFACE_SAMPLE;
-
-  vtkSmartPointer<vtkTriangleFilter> triangulizer = vtkSmartPointer<vtkTriangleFilter>::New();
-  triangulizer->PassLinesOff();
-  triangulizer->PassVertsOff();
-  triangulizer->SetInputConnection(m_GeometrySource->GetOutputPort());
-  
-  vtkSmartPointer<vtkSurfaceUniformPointSampler> surfaceSampler = 
-    vtkSmartPointer<vtkSurfaceUniformPointSampler>::New();
-  surfaceSampler->SetInputConnection(triangulizer->GetOutputPort());
-  surfaceSampler->Update();
-  surfaceSampler->GetOutput()->Update();
-
-  m_FluorophoreOutput = surfaceSampler;
-}
-
-
-void
-FluorophoreModelObjectProperty
-::SetFluorophoreModelTypeToUniformRandomVolumeSample() {
-  m_FluorophoreModelType = UNIFORM_RANDOM_VOLUME_SAMPLE;
-
-  vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
-    vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
-  tetrahedralizer->SetInputConnection(m_GeometrySource->GetOutputPort());
-  
-  vtkSmartPointer<vtkVolumeUniformPointSampler> volumeSampler = 
-    vtkSmartPointer<vtkVolumeUniformPointSampler>::New();
-  volumeSampler->SetInputConnection(tetrahedralizer->GetOutputPort());
-
-  m_FluorophoreOutput = volumeSampler;
-}
-
-
-FluorophoreModelType
-FluorophoreModelObjectProperty
-::GetFluorophoreModelType() {
-  return m_FluorophoreModelType;
 }
 
 
