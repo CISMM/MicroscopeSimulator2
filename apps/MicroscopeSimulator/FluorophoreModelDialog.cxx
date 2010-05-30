@@ -1,5 +1,7 @@
 #include <FluorophoreModelDialog.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <GeometryVerticesFluorophoreProperty.h>
+#include <SurfaceUniformFluorophoreProperty.h>
+#include <VolumeUniformFluorophoreProperty.h>
 
 
 FluorophoreModelDialog
@@ -47,10 +49,14 @@ FluorophoreModelDialog
   }
   gui_ColorChannelComboBox->setCurrentIndex(colorChannelIndex);
 
+  GeometryVerticesFluorophoreProperty* geometryProperty
+    = dynamic_cast<GeometryVerticesFluorophoreProperty*>(property);
+  SurfaceUniformFluorophoreProperty* surfaceProperty
+    = dynamic_cast<SurfaceUniformFluorophoreProperty*>(property);
+  VolumeUniformFluorophoreProperty* volumeProperty
+    = dynamic_cast<VolumeUniformFluorophoreProperty*>(property);
 
-  FluorophoreModelType type = property->GetFluorophoreModelType();
-
-  if (type == GEOMETRY_VERTICES) {
+  if (geometryProperty) {
 
     gui_GroupBox->setTitle(tr("Fixed Points Fluorophore Model"));
     gui_AreaLabel->setHidden(true);
@@ -61,11 +67,11 @@ FluorophoreModelDialog
     gui_NumberOfFluorophoresEdit->setHidden(true);
     gui_NumberOfFluorophoresSlider->setHidden(true);
 
-  } else if (type == UNIFORM_RANDOM_SURFACE_SAMPLE) {
+  } else if (surfaceProperty) {
 
     gui_GroupBox->setTitle(tr("Uniform Random Surface Labeling"));
     gui_AreaLabel->setText(tr("Surface area (fluorophores/micron^2)"));
-    double area = property->GetGeometryArea() * 1.0e-6;
+    double area = surfaceProperty->GetGeometryArea() * 1.0e-6;
     gui_AreaEdit->setText(QString().sprintf("%.6f", area));
     gui_DensityLabel->setText(tr("Density (fluorophores/micron^2)"));
     gui_DensityEdit->setText(QVariant(property->GetDensity()).toString());
@@ -74,11 +80,11 @@ FluorophoreModelDialog
     gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
     gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
 
-  } else if (type == UNIFORM_RANDOM_VOLUME_SAMPLE) {
+  } else if (volumeProperty) {
 
     gui_GroupBox->setTitle(tr("Uniform Random Volume Labeling"));
     gui_AreaLabel->setText(tr("Volume (fluorophores/micron^3)"));
-    double volume = property->GetGeometryVolume() * 1.0e-9;
+    double volume = volumeProperty->GetGeometryVolume() * 1.0e-9;
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
     gui_DensityLabel->setText(tr("Density (fluorophores / micron^3)"));
     gui_DensityEdit->setText(QVariant(property->GetDensity()).toString());
@@ -86,6 +92,7 @@ FluorophoreModelDialog
     int numFluorophores = DensityToNumberOfFluorophores(property->GetDensity());
     gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
     gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
+
   }
 }
 
@@ -162,14 +169,18 @@ FluorophoreModelDialog
 int
 FluorophoreModelDialog
 ::DensityToNumberOfFluorophores(double density) {
-  FluorophoreModelType type = m_FluorophoreProperty->GetFluorophoreModelType();
-  if (type == UNIFORM_RANDOM_SURFACE_SAMPLE) {
+  SurfaceUniformFluorophoreProperty* surfaceProperty =
+    dynamic_cast<SurfaceUniformFluorophoreProperty*>(m_FluorophoreProperty);
+  VolumeUniformFluorophoreProperty* volumeProperty =
+    dynamic_cast<VolumeUniformFluorophoreProperty*>(m_FluorophoreProperty);
+
+  if (surfaceProperty) {
     // Scale area from square nanometers to square micrometers
-    double area = m_FluorophoreProperty->GetGeometryArea() * 1e-6;
+    double area = surfaceProperty->GetGeometryArea() * 1e-6;
     return static_cast<int>(density * area);
-  } else if (type == UNIFORM_RANDOM_VOLUME_SAMPLE) {
+  } else if (volumeProperty) {
     // Scale area from cubic nanometers to cubic micrometers
-    double volume = m_FluorophoreProperty->GetGeometryVolume() * 1e-9;
+    double volume = volumeProperty->GetGeometryVolume() * 1e-9;
     return static_cast<int>(density * volume);
   }
 
@@ -180,14 +191,18 @@ FluorophoreModelDialog
 double
 FluorophoreModelDialog
 ::NumberOfFluorophoresToDensity(int fluorophores) {
-  FluorophoreModelType type = m_FluorophoreProperty->GetFluorophoreModelType();
-  if (type == UNIFORM_RANDOM_SURFACE_SAMPLE) {
+  SurfaceUniformFluorophoreProperty* surfaceProperty =
+    dynamic_cast<SurfaceUniformFluorophoreProperty*>(m_FluorophoreProperty);
+  VolumeUniformFluorophoreProperty* volumeProperty =
+    dynamic_cast<VolumeUniformFluorophoreProperty*>(m_FluorophoreProperty);
+
+  if (surfaceProperty) {
     // Scale area from square nanometers to square micrometers
-    double area = m_FluorophoreProperty->GetGeometryArea() * 1e-6;
+    double area = surfaceProperty->GetGeometryArea() * 1e-6;
     return static_cast<double>(fluorophores) / area;
-  } else if (type == UNIFORM_RANDOM_VOLUME_SAMPLE) {
+  } else if (volumeProperty) {
     // Scale area from cubic nanometers to cubic micrometers
-    double volume = m_FluorophoreProperty->GetGeometryVolume() * 1e-9;
+    double volume = volumeProperty->GetGeometryVolume() * 1e-9;
     return static_cast<double>(fluorophores) / volume;
   }
 
