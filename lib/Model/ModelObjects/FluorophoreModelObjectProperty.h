@@ -2,7 +2,7 @@
 #define _FLUOROHORE_MODEL_OBJECT_PROPERTY_H_
 
 #include <ModelObjectProperty.h>
-#include <FluorophoreModelTypes.h>
+#include <FluorophoreModelChannels.h>
 
 #include <vtkSmartPointer.h>
 
