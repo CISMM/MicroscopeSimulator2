@@ -41,8 +41,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   FluorophoreChannelType GetFluorophoreChannel();
 
   vtkPolyDataAlgorithm* GetGeometry();
-  double GetGeometryArea();
-  double GetGeometryVolume();
 
   vtkPolyDataAlgorithm* GetFluorophoreOutput();
 

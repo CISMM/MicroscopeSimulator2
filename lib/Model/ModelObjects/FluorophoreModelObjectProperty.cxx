@@ -195,26 +195,6 @@ FluorophoreModelObjectProperty
 }
 
 
-double
-FluorophoreModelObjectProperty
-::GetGeometryArea() {
-  vtkSmartPointer<vtkMassProperties> props = vtkSmartPointer<vtkMassProperties>::New();
-  props->SetInputConnection(m_GeometrySource->GetOutputPort());
-
-  return props->GetSurfaceArea();
-}
-
-
-double
-FluorophoreModelObjectProperty
-::GetGeometryVolume() {
-  vtkSmartPointer<vtkMassProperties> props = vtkSmartPointer<vtkMassProperties>::New();
-  props->SetInputConnection(m_GeometrySource->GetOutputPort());
-
-  return props->GetVolume();
-}
-
-
 vtkPolyDataAlgorithm*
 FluorophoreModelObjectProperty
 ::GetFluorophoreOutput() {
