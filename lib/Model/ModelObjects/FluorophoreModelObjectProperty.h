@@ -27,8 +27,8 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   void SetFluorophoreModelTypeToUniformRandomVolumeSample();
   FluorophoreModelType GetFluorophoreModelType();
 
-  void SetDensity(double density);
-  double GetDensity();
+  virtual void SetDensity(double density);
+  virtual double GetDensity();
 
   void SetEnabled(bool enabled);
   bool GetEnabled();
