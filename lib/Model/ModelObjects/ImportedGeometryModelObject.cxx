@@ -9,7 +9,7 @@
 #include <vtkXMLPolyDataReader.h>
 
 #include <ImportedGeometryModelObject.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <SurfaceUniformFluorophoreProperty.h>
 #include <ModelObjectPropertyList.h>
 
 
@@ -40,9 +40,8 @@ ImportedGeometryModelObject
   // Set up properties
   AddProperty(new ModelObjectProperty(SCALE_PROP, 1.0, "-", true, true));
   AddProperty(new ModelObjectProperty(FILE_NAME_PROP, ModelObjectProperty::STRING_TYPE, "-", false, false));
-  AddProperty(new FluorophoreModelObjectProperty(SURFACE_FLUOR_PROP,
-                                                 UNIFORM_RANDOM_SURFACE_SAMPLE,
-                                                 m_TransformFilter));
+  AddProperty(new SurfaceUniformFluorophoreProperty
+              (SURFACE_FLUOR_PROP, m_TransformFilter));
 
   // Must call this after setting up properties
   Update();
