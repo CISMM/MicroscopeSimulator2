@@ -2,7 +2,6 @@
 #include <FluorophoreModelObjectProperty.h>
 #include <ModelObjectProperty.h>
 #include <ModelObjectPropertyList.h>
-#include <FluorophoreModelTypes.h>
 #include <XMLHelper.h>
 
 #include <vtkAppendPolyData.h>
