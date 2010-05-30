@@ -71,7 +71,7 @@ FluorophoreModelDialog
 
     gui_GroupBox->setTitle(tr("Uniform Random Surface Labeling"));
     gui_AreaLabel->setText(tr("Surface area (fluorophores/micron^2)"));
-    double area = surfaceProperty->GetGeometryArea() * 1.0e-6;
+    double area = surfaceProperty->GetGeometryArea();
     gui_AreaEdit->setText(QString().sprintf("%.6f", area));
     gui_DensityLabel->setText(tr("Density (fluorophores/micron^2)"));
     gui_DensityEdit->setText(QVariant(property->GetDensity()).toString());
@@ -84,7 +84,7 @@ FluorophoreModelDialog
 
     gui_GroupBox->setTitle(tr("Uniform Random Volume Labeling"));
     gui_AreaLabel->setText(tr("Volume (fluorophores/micron^3)"));
-    double volume = volumeProperty->GetGeometryVolume() * 1.0e-9;
+    double volume = volumeProperty->GetGeometryVolume();
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
     gui_DensityLabel->setText(tr("Density (fluorophores / micron^3)"));
     gui_DensityEdit->setText(QVariant(property->GetDensity()).toString());
@@ -176,12 +176,12 @@ FluorophoreModelDialog
 
   if (surfaceProperty) {
     // Scale area from square nanometers to square micrometers
-    double area = surfaceProperty->GetGeometryArea() * 1e-6;
-    return static_cast<int>(density * area);
+    double area = surfaceProperty->GetGeometryArea();
+    return static_cast<int>(density * area + 0.5);
   } else if (volumeProperty) {
     // Scale area from cubic nanometers to cubic micrometers
-    double volume = volumeProperty->GetGeometryVolume() * 1e-9;
-    return static_cast<int>(density * volume);
+    double volume = volumeProperty->GetGeometryVolume();
+    return static_cast<int>(density * volume + 0.5);
   }
 
   return 0;
@@ -198,11 +198,11 @@ FluorophoreModelDialog
 
   if (surfaceProperty) {
     // Scale area from square nanometers to square micrometers
-    double area = surfaceProperty->GetGeometryArea() * 1e-6;
+    double area = surfaceProperty->GetGeometryArea();
     return static_cast<double>(fluorophores) / area;
   } else if (volumeProperty) {
     // Scale area from cubic nanometers to cubic micrometers
-    double volume = volumeProperty->GetGeometryVolume() * 1e-9;
+    double volume = volumeProperty->GetGeometryVolume();
     return static_cast<double>(fluorophores) / volume;
   }
 
