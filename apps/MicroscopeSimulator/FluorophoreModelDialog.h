@@ -4,7 +4,7 @@
 #include <ui_FluorophoreModelDialog.h>
 #include <QDialog>
 
-#include <FluorophoreModelTypes.h>
+#include <FluorophoreModelChannels.h>
 
 // Forward declarations
 class FluorophoreModelObjectProperty;
