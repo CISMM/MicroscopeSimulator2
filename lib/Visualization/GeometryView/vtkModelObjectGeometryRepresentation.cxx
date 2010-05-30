@@ -204,7 +204,8 @@ void vtkModelObjectGeometryRepresentation::UpdateRepresentation() {
     this->m_ModelObject->GetRotation(rotation);
     this->SetRotationWXYZ(rotation);
   }
-  
+
+  UpdateFluorophoreRepresentation();
 }
 
 //----------------------------------------------------------------------------
@@ -229,7 +230,10 @@ void vtkModelObjectGeometryRepresentation::UpdateFluorophoreRepresentation() {
         (m_ModelObject->GetFluorophorePropertyList()->GetProperty(fluorophorePropertyIndex));
       fluorophorePropertyIndex++;
 
-      fluorophoreActor->SetVisibility(((bool) this->ShowFluorophores) && fmop->GetEnabled());
+      bool visible = fmop->GetEnabled() &&
+        m_ModelObject->GetProperty(ModelObject::VISIBLE_PROP)->GetBoolValue() &&
+        (bool) this->ShowFluorophores;
+      fluorophoreActor->SetVisibility(visible ? 1 : 0);
 
       vtkProperty* property = fluorophoreActor->GetProperty();
       switch (fmop->GetFluorophoreChannel()) {
