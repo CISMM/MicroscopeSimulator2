@@ -56,6 +56,8 @@ FluorophoreModelDialog
   VolumeUniformFluorophoreProperty* volumeProperty
     = dynamic_cast<VolumeUniformFluorophoreProperty*>(property);
 
+  int numFluorophores = 0;
+  double density = 0.0;
   if (geometryProperty) {
 
     gui_GroupBox->setTitle(tr("Fixed Points Fluorophore Model"));
@@ -70,46 +72,88 @@ FluorophoreModelDialog
   } else if (surfaceProperty) {
 
     gui_GroupBox->setTitle(tr("Uniform Random Surface Labeling"));
+
+    gui_useFixedDensity->setChecked(surfaceProperty->GetUseFixedDensity());
+    gui_useFixedNumberOfFluorophores->setChecked(surfaceProperty->GetUseFixedNumberOfFluorophores());
+
     gui_AreaLabel->setText(tr("Surface area (fluorophores/micron^2)"));
     double area = surfaceProperty->GetGeometryArea();
     gui_AreaEdit->setText(QString().sprintf("%.6f", area));
     gui_DensityLabel->setText(tr("Density (fluorophores/micron^2)"));
-    gui_DensityEdit->setText(QVariant(property->GetDensity()).toString());
 
-    int numFluorophores = DensityToNumberOfFluorophores(property->GetDensity());
-    gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
-    gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
+    if (surfaceProperty->GetUseFixedNumberOfFluorophores()) {
+      numFluorophores = surfaceProperty->GetNumberOfFluorophores();
+      density = NumberOfFluorophoresToDensity(numFluorophores);
+    } else {
+      numFluorophores = DensityToNumberOfFluorophores(surfaceProperty->GetDensity());
+      density = surfaceProperty->GetDensity();
+    }
 
   } else if (volumeProperty) {
 
     gui_GroupBox->setTitle(tr("Uniform Random Volume Labeling"));
+
+    gui_useFixedDensity->setChecked(volumeProperty->GetUseFixedDensity());
+    gui_useFixedNumberOfFluorophores->setChecked(volumeProperty->GetUseFixedNumberOfFluorophores());
+
     gui_AreaLabel->setText(tr("Volume (fluorophores/micron^3)"));
     double volume = volumeProperty->GetGeometryVolume();
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
     gui_DensityLabel->setText(tr("Density (fluorophores / micron^3)"));
-    gui_DensityEdit->setText(QVariant(property->GetDensity()).toString());
 
-    int numFluorophores = DensityToNumberOfFluorophores(property->GetDensity());
+    if (volumeProperty->GetUseFixedNumberOfFluorophores()) {
+      numFluorophores = volumeProperty->GetNumberOfFluorophores();
+      density = NumberOfFluorophoresToDensity(numFluorophores);
+    } else {
+      numFluorophores = DensityToNumberOfFluorophores(volumeProperty->GetDensity());
+      density = volumeProperty->GetDensity();
+    }
+
+    gui_DensityEdit->setText(QVariant(volumeProperty->GetDensity()).toString());
+
+    int numFluorophores = DensityToNumberOfFluorophores(volumeProperty->GetDensity());
     gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
     gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
 
   }
+
+  gui_DensityEdit->setText(QVariant(density).toString());
+  gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
+  gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
+
 }
 
 
 void
 FluorophoreModelDialog
 ::SaveSettingsToProperty() {
-  m_FluorophoreProperty->SetDensity(GetDensity());
+  SurfaceUniformFluorophoreProperty* surfaceProperty
+    = dynamic_cast<SurfaceUniformFluorophoreProperty*>(m_FluorophoreProperty);
+  VolumeUniformFluorophoreProperty* volumeProperty
+    = dynamic_cast<VolumeUniformFluorophoreProperty*>(m_FluorophoreProperty);  
+
+  if (surfaceProperty) {
+    surfaceProperty->SetDensity(GetDensity());
+    surfaceProperty->SetNumberOfFluorophores(GetNumberOfFluorophores());
+    if (GetUseFixedNumberOfFluorophores()) {
+      surfaceProperty->UseFixedNumberOfFluorophores();
+    } else {
+      surfaceProperty->UseFixedDensity();
+    }
+  }
+
+  if (volumeProperty) {
+    volumeProperty->SetDensity(GetDensity());
+    volumeProperty->SetNumberOfFluorophores(GetNumberOfFluorophores());
+    if (GetUseFixedNumberOfFluorophores()) {
+      volumeProperty->UseFixedNumberOfFluorophores();
+    } else {
+      volumeProperty->UseFixedDensity();
+    }
+  }
+
   m_FluorophoreProperty->SetEnabled(GetEnabled());
   m_FluorophoreProperty->SetFluorophoreChannel(GetFluorophoreChannel());
-}
-
-
-double
-FluorophoreModelDialog
-::GetDensity() {
-  return gui_DensityEdit->text().toDouble();
 }
 
 
@@ -130,6 +174,27 @@ FluorophoreModelDialog
   case 3: return ALL_CHANNELS; break;
   default: return ALL_CHANNELS; break;
   }
+}
+
+
+bool
+FluorophoreModelDialog
+::GetUseFixedNumberOfFluorophores() {
+  return gui_useFixedNumberOfFluorophores->isChecked();
+}
+
+
+double
+FluorophoreModelDialog
+::GetDensity() {
+  return gui_DensityEdit->text().toDouble();
+}
+
+
+int
+FluorophoreModelDialog
+::GetNumberOfFluorophores() {
+  return gui_NumberOfFluorophoresEdit->text().toInt();
 }
 
 
