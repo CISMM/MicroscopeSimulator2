@@ -101,12 +101,9 @@ FluorophoreModelObjectProperty
 void
 FluorophoreModelObjectProperty
 ::GetXMLConfiguration(xmlNodePtr root) {
-  std::string nodeName(SqueezeString(m_Name));
-  xmlNodePtr node = xmlNewChild(root, NULL, BAD_CAST nodeName.c_str(), NULL);
-
   char value[256];
   sprintf(value, "%s", GetEnabled() ? "true" : "false");
-  xmlNewProp(node, BAD_CAST "enabled", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST "enabled", BAD_CAST value);
 
   switch (GetFluorophoreChannel()) {
   case RED_CHANNEL:
@@ -129,7 +126,7 @@ FluorophoreModelObjectProperty
     sprintf(value, "none");
     break;
   }
-  xmlNewProp(node, BAD_CAST "channel", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST "channel", BAD_CAST value);
 
 }
 

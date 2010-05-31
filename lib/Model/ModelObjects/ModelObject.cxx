@@ -120,9 +120,13 @@ ModelObject
 void
 ModelObject
 ::GetXMLConfiguration(xmlNodePtr node) {
-  xmlNodePtr childNode = xmlNewChild(node, NULL, BAD_CAST GetObjectTypeName().c_str(), NULL);
+  xmlNodePtr modelObjectNode = xmlNewChild(node, NULL, BAD_CAST GetObjectTypeName().c_str(), NULL);
   for (int i = 0; i < GetNumberOfProperties(); i++) {
-    GetProperty(i)->GetXMLConfiguration(childNode);
+    ModelObjectProperty* mop = GetProperty(i);
+    std::string elementName = mop->GetXMLElementName();
+    xmlNodePtr propertyNode = 
+      xmlNewChild(modelObjectNode, NULL, BAD_CAST elementName.c_str(), NULL);
+    mop->GetXMLConfiguration(propertyNode);
   }
 }
 
@@ -135,7 +139,7 @@ ModelObject
     std::string elementName = mop->GetXMLElementName();
     xmlNodePtr propertyNode =
       xmlGetFirstElementChildWithName(node, BAD_CAST elementName.c_str());
-    GetProperty(i)->RestoreFromXML(propertyNode);
+    mop->RestoreFromXML(propertyNode);
   }
 }
 
