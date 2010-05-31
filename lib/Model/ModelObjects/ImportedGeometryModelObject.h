@@ -5,6 +5,7 @@
 
 #include <vtkSmartPointer.h>
 
+class vtkCleanPolyData;
 class vtkTransform;
 class vtkTransformPolyDataFilter;
 class vtkTriangleFilter;
@@ -18,6 +19,7 @@ public:
   static const char* FILE_NAME_PROP;
   static const char* SCALE_PROP;
   static const char* SURFACE_FLUOR_PROP;
+  static const char* VOLUME_FLUOR_PROP;
 
   ImportedGeometryModelObject(DirtyListener* dirtyListener);
   virtual ~ImportedGeometryModelObject();
@@ -33,11 +35,11 @@ public:
 protected:
   ImportedGeometryModelObject() {};
 
-  vtkSmartPointer<vtkTriangleFilter>  m_TriangleFilter;
-
-  vtkSmartPointer<vtkTransform>       m_Transform;
+  vtkSmartPointer<vtkTransform>               m_Transform;
   vtkSmartPointer<vtkTransformPolyDataFilter> m_TransformFilter;
 
+  vtkSmartPointer<vtkTriangleFilter>  m_TriangleFilter;
+  vtkSmartPointer<vtkCleanPolyData>   m_CleanPolyData;
 };
 
 typedef ImportedGeometryModelObject* ImportedGeometryModelObjectPtr;
