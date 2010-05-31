@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
+    <width>363</width>
     <height>359</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
        <number>6</number>
       </property>
       <item row="1" column="0" colspan="2">
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="gui_ColorChannelGroupBox">
         <property name="title">
          <string>Channel</string>
         </property>
@@ -95,7 +95,7 @@
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="gui_samplingModeGroupBox">
         <property name="title">
          <string>Sampling Mode</string>
         </property>
@@ -107,7 +107,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QRadioButton" name="radioButton">
+          <widget class="QRadioButton" name="gui_useFixedDensity">
            <property name="text">
             <string>Use Fixed Density</string>
            </property>
@@ -117,7 +117,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="radioButton_2">
+          <widget class="QRadioButton" name="gui_useFixedNumberOfFluorophores">
            <property name="text">
             <string>Use Fixed Number of Fluorophores</string>
            </property>
