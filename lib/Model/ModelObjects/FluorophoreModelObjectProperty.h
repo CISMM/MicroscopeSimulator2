@@ -20,9 +20,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
 
   virtual ~FluorophoreModelObjectProperty();
 
-  virtual void SetDensity(double density);
-  virtual double GetDensity();
-
   void SetEnabled(bool enabled);
   bool GetEnabled();
 
@@ -44,7 +41,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   FluorophoreModelObjectProperty();
 
   vtkPolyDataAlgorithm*  m_GeometrySource;
-  double                 m_Density;
   bool                   m_Enabled;
   FluorophoreChannelType m_Channel;
 

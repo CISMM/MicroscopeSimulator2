@@ -19,40 +19,12 @@ FluorophoreModelObjectProperty
   m_FluorophoreOutput = NULL;
   SetEnabled(true);
   SetFluorophoreChannelToAll();
-  SetDensity(1000.0);
 }
 
 
 FluorophoreModelObjectProperty
 ::~FluorophoreModelObjectProperty() {
 
-}
-
-
-void
-FluorophoreModelObjectProperty
-::SetDensity(double density) {
-  m_Density = density;
-
-  // Hack for now
-  vtkSurfaceUniformPointSampler* surfaceSampler = 
-    dynamic_cast<vtkSurfaceUniformPointSampler*>(m_FluorophoreOutput.GetPointer());
-  if (surfaceSampler) {
-    surfaceSampler->SetDensity(m_Density * 1e-6);
-  }
-
-  vtkVolumeUniformPointSampler* volumeSampler =
-    dynamic_cast<vtkVolumeUniformPointSampler*>(m_FluorophoreOutput.GetPointer());
-  if (volumeSampler) {
-    volumeSampler->SetDensity(m_Density * 1e-9);
-  }
-}
-
-
-double
-FluorophoreModelObjectProperty
-::GetDensity() {
-  return m_Density;
 }
 
 
@@ -133,9 +105,6 @@ FluorophoreModelObjectProperty
   xmlNodePtr node = xmlNewChild(root, NULL, BAD_CAST nodeName.c_str(), NULL);
 
   char value[256];
-  sprintf(value, "%f", GetDensity());
-  xmlNewProp(node, BAD_CAST "density", BAD_CAST value);
-
   sprintf(value, "%s", GetEnabled() ? "true" : "false");
   xmlNewProp(node, BAD_CAST "enabled", BAD_CAST value);
 
@@ -168,12 +137,7 @@ FluorophoreModelObjectProperty
 void
 FluorophoreModelObjectProperty
 ::RestoreFromXML(xmlNodePtr root) {
-  char* value = (char*) xmlGetProp(root, BAD_CAST "density");
-  if (value) {
-    SetDensity(atof(value));
-  }
-
-  value = (char*) xmlGetProp(root, BAD_CAST "enabled");
+  char* value = (char*) xmlGetProp(root, BAD_CAST "enabled");
   if (value) {
     std::string valueStr(value);
     SetEnabled(valueStr == "true");
