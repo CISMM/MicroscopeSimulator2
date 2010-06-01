@@ -1,7 +1,8 @@
 #include <FlexibleTubeModelObject.h>
+#include <SurfaceUniformFluorophoreProperty.h>
+#include <VolumeUniformFluorophoreProperty.h>
 
 #include <DirtyListener.h>
-#include <FluorophoreModelObjectProperty.h>
 #include <ModelObjectPropertyList.h>
 #include <XMLHelper.h>
 
@@ -53,12 +54,11 @@ FlexibleTubeModelObject
   // Set up properties
   AddProperty(new ModelObjectProperty(RADIUS_PROP, 50.0, "nanometers"));
   AddProperty(new ModelObjectProperty(NUMBER_OF_POINTS_PROP, 2, "-", true, false));
-  AddProperty(new FluorophoreModelObjectProperty(SURFACE_FLUOR_PROP,
-                                                       UNIFORM_RANDOM_SURFACE_SAMPLE,
-                                                       m_TubeSource));
-  AddProperty(new FluorophoreModelObjectProperty(VOLUME_FLUOR_PROP,
-                                                       UNIFORM_RANDOM_VOLUME_SAMPLE,
-                                                       m_TubeSource));
+
+  AddProperty(new SurfaceUniformFluorophoreProperty
+              (SURFACE_FLUOR_PROP, m_TubeSource));
+  AddProperty(new VolumeUniformFluorophoreProperty
+              (VOLUME_FLUOR_PROP, m_TubeSource));
 
 
   m_PointPropertyStartingIndex = GetPropertyList()->GetSize();

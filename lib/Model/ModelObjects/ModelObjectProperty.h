@@ -83,8 +83,6 @@ class ModelObjectProperty : public XMLStorable {
 
   std::string m_Units;
 
-  std::string SqueezeString(const std::string& str);
-  
  private:
   ModelObjectProperty();
 

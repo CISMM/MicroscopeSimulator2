@@ -42,6 +42,8 @@ public:
   void ModelObjectViewRender();
   void FluorescenceViewRender();
 
+  void SetShowFluorophoresInModelObjectRenderer(bool flag);
+
   virtual vtkImageData* GenerateFluorescenceImage();
   virtual vtkImageData* GenerateFluorescenceStackImage();
 
@@ -76,6 +78,8 @@ protected:
   vtkSmartPointer<vtkInteractorStyleTrackballCamera>   m_CameraInteractor;
   vtkSmartPointer<vtkInteractorStyleTrackballActor>    m_ActorInteractor;
   vtkSmartPointer<vtkVisualizationInteractionObserver> m_InteractionObserver;
+
+  bool ShowFluorophoresInModelObjectRenderer;
 
   // Fluorescence render view
   vtkSmartPointer<vtkFluorescenceRenderView> m_FluorescenceRenderView;

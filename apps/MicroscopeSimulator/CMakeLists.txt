@@ -21,6 +21,8 @@ SET (QtGuiSrcs
   PSFEditorDialog.cxx
   Preferences.cxx
   PreferencesDialog.cxx
+  QCopyPasteTableView.cxx
+  QFluorescenceOptimizerSettingsTableModel.cxx
   QImageListModel.cxx
   QModelObjectListModel.cxx
   QModelObjectPropertyListTableModel.cxx
@@ -56,6 +58,8 @@ SET (ApplicationHeaders
   OptimizerSettingsDialog.h
   PSFEditorDialog.h
   PreferencesDialog.h
+  QCopyPasteTableView.h
+  QFluorescenceOptimizerSettingsTableModel.h
   QImageListModel.h
   QModelObjectListModel.h
   QModelObjectPropertyListTableModel.h
@@ -105,6 +109,7 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   msimIO
   msimModel
   msimVisualization
+  msimUtilities
 )
 
 IF( WIN32 )

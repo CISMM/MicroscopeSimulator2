@@ -67,7 +67,6 @@ class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresenta
 
   Mapper_t MapperType;
 
-  vtkUniformPointSampler*                                Sampler;
   vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>   GatherMapper;
   vtkSmartPointer<vtkBlendingFluorescencePolyDataMapper> BlendingMapper; 
 

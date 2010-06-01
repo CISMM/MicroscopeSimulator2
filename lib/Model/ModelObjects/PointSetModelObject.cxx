@@ -1,5 +1,5 @@
 #include <PointSetModelObject.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <GeometryVerticesFluorophoreProperty.h>
 
 #include <DirtyListener.h>
 #include <ModelObjectPropertyList.h>
@@ -51,9 +51,9 @@ PointSetModelObject
   // Set up properties
   AddProperty(new ModelObjectProperty(VISIBLE_RADIUS_PROP, 50.0, "nanometers", true, false));
   AddProperty(new ModelObjectProperty(NUMBER_OF_POINTS_PROP, 1, "-", true, false));
-  AddProperty(new FluorophoreModelObjectProperty(VERTICES_FLUOROPHORE_PROP,
-                                                 GEOMETRY_VERTICES,
-                                                 m_VertexSource));
+
+  AddProperty(new GeometryVerticesFluorophoreProperty
+              (VERTICES_FLUOROPHORE_PROP, m_VertexSource));
 
   m_PointPropertyStartingIndex = GetPropertyList()->GetSize();
 

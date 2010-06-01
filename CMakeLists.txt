@@ -77,6 +77,7 @@ INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometrySources
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometryView
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/FluorescenceView
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Utilities
     ${MicroscopeSimulator_BINARY_DIR}/lib)
 
 ADD_SUBDIRECTORY(lib)

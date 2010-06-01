@@ -1,4 +1,5 @@
 #include <ModelObjectProperty.h>
+#include <StringUtils.h>
 
 #include <iostream>
 
@@ -181,9 +182,6 @@ ModelObjectProperty
 void
 ModelObjectProperty
 ::GetXMLConfiguration(xmlNodePtr root) {
-  std::string nodeName(SqueezeString(m_Name));
-  xmlNodePtr node = xmlNewChild(root, NULL, BAD_CAST nodeName.c_str(), NULL);
-
   char value[256];
   if (m_Type != FLUOROPHORE_MODEL_TYPE) {
     if (m_Type == BOOL_TYPE) {
@@ -197,9 +195,9 @@ ModelObjectProperty
     } else {
       value[0] = '\0';
     }
-    xmlNewProp(node, BAD_CAST "value", BAD_CAST value);
+    xmlNewProp(root, BAD_CAST "value", BAD_CAST value);
     if (IsOptimizable())
-      xmlNewProp(node, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
+      xmlNewProp(root, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
   }
 }
 
@@ -228,17 +226,4 @@ ModelObjectProperty
     else
       SetOptimize(false);
   }
-}
-
-
-std::string
-ModelObjectProperty
-::SqueezeString(const std::string& str) {
-  std::string squeezed(str);
-  size_t pos;
-  while ((pos = squeezed.find_first_of(' ')) != std::string::npos) {
-    squeezed = squeezed.erase(pos, 1);
-  }
-
-  return squeezed;
 }

@@ -46,6 +46,16 @@ GeometryRepresentation
 
 void
 GeometryRepresentation
+::SetShowFluorophores(bool value) {
+  std::list<vtkModelObjectGeometryRepresentation*>::iterator iter;
+  for (iter = m_GeometryReps.begin(); iter != m_GeometryReps.end(); iter++) {
+    (*iter)->SetShowFluorophores(value ? 1 : 0);
+  }
+}
+
+
+void
+GeometryRepresentation
 ::AddToView(vtkView* view) {
   std::list<vtkModelObjectGeometryRepresentation*>::iterator iter;
   for (iter = m_GeometryReps.begin(); iter != m_GeometryReps.end(); iter++) {
@@ -97,7 +107,7 @@ GeometryRepresentation
 
     for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
       ModelObject* newModelObject = m_ModelObjectList->GetModelObjectAtIndex(i);
-      m_GeometryReps.push_back(CreateRepresentation(newModelObject));      
+      m_GeometryReps.push_back(CreateRepresentation(newModelObject));
     }
     
   }

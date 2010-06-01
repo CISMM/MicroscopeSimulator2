@@ -169,6 +169,7 @@ MicroscopeSimulator
 
   m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
   m_OptimizerSettingsDialog->setModal(true);
+  m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
 
   m_Preferences = new Preferences();
   
@@ -208,6 +209,7 @@ MicroscopeSimulator
   // Restore inter-session GUI settings.
   ReadProgramSettings();
   RefreshUI();
+  RefreshObjectiveFunctions();
   RefreshModelObjectViews();
   on_actionResetCamera_triggered();
   gui->modelObjectQvtkWidget->GetRenderWindow()->Render();
@@ -638,42 +640,48 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionViewModelOnly_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewModelAndPoints_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(true);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewModelAndScan_triggered(){
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewAFMScanOnly_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewModelsWithFluorescenceComparison_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
 void
 MicroscopeSimulator
 ::on_actionViewFluorescenceComparisonOnly_triggered() {
-
+  m_Visualization->SetShowFluorophoresInModelObjectRenderer(false);
+  m_Visualization->ModelObjectViewRender();
 }
 
 
@@ -1291,12 +1299,12 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimOptimizationMethodComboBox_currentIndexChanged(int selected) {
-  FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
-
   if (selected == 0) {
-    optimizer->SetOptimizerToNelderMead();
+    m_Simulation->SetFluorescenceOptimizerToNelderMead();
+  } else if (selected == 1) {
+    m_Simulation->SetFluorescenceOptimizerToGradientDescent();
   } else if (selected == 2) {
-    optimizer->SetOptimizerToPointsGradientDescent();
+    m_Simulation->SetFluorescenceOptimizerToPointsGradient();
   } else {
     QMessageBox messageBox;
     QString message("Optimization method '");
@@ -1308,16 +1316,16 @@ MicroscopeSimulator
     messageBox.exec();
 
     gui->fluoroSimOptimizationMethodComboBox->setCurrentIndex(0);
-  } /* else if (selected == 1) {
-    optimizer->SetOptimizerToGradientDescent();
-    }*/
+  }
 
+  RefreshObjectiveFunctions();
 }
 
 
 void
 MicroscopeSimulator
 ::on_fluoroSimOptimizerSettingsButton_clicked() {
+  m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
   m_OptimizerSettingsDialog->Update();
   m_OptimizerSettingsDialog->exec();
 }
@@ -1328,11 +1336,11 @@ MicroscopeSimulator
 ::on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected) {
   FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
   if (selected == 0) {
-    optimizer->SetCostFunctionToGaussianNoise();
+    //optimizer->SetCostFunctionToGaussianNoise();
   } else if (selected == 1) {
-    optimizer->SetCostFunctionToPoissonNoise();
+    //optimizer->SetCostFunctionToPoissonNoise();
   } else if (selected == 2) {
-    optimizer->SetCostFunctionToNormalizedCorrelation();
+    //optimizer->SetCostFunctionToNormalizedCorrelation();
   }
 }
 
@@ -1499,7 +1507,48 @@ MicroscopeSimulator
   gui->fluoroSimMinLevelSlider->setValue((int) fluoroSim->GetMinimumIntensityLevel());
   gui->fluoroSimMaxLevelSlider->setValue((int) fluoroSim->GetMaximumIntensityLevel());
 
+  // Select the chosen fluorescence comparison image model object
+  ImageModelObject* comparisonImage = m_Simulation->GetComparisonImageModelObject();
+  if (!comparisonImage) {
+    gui->fluoroSimComparisonImageComboBox->setCurrentIndex(0);
+  } else {
+    for (int i = 1; i < m_ImageListModel->rowCount(); i++) {
+      QModelIndex index = m_ImageListModel->index(i, 0);
+      QVariant data = m_ImageListModel->data(index);
+      if (data.isValid()) {
+        QString name = m_ImageListModel->data(index).toString();
+        if (name.toStdString() == comparisonImage->GetName()) {
+          gui->fluoroSimComparisonImageComboBox->setCurrentIndex(i);
+          break;
+        }
+      }
+    }
+  }
+
   RenderViews();
+}
+
+void
+MicroscopeSimulator
+::RefreshObjectiveFunctions() {
+  QString selectedObjectiveFunction = gui->fluoroSimObjectiveFunctionComboBox->currentText();
+  gui->fluoroSimObjectiveFunctionComboBox->clear();
+
+  FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
+  if (!optimizer)
+    return;
+
+  // Repopulate by the objective functions available in the optimizer
+  for (int i = 0; i < optimizer->GetNumberOfAvailableObjectiveFunctions(); i++) {
+    std::string name = optimizer->GetAvailableObjectiveFunctionName(i);
+    gui->fluoroSimObjectiveFunctionComboBox->addItem(QString(name.c_str()));
+
+    if (name == selectedObjectiveFunction.toStdString()) {
+      gui->fluoroSimObjectiveFunctionComboBox->setCurrentIndex(i);
+    }
+  }
+
+
 }
 
 
@@ -1551,34 +1600,15 @@ MicroscopeSimulator
 
   // Save size and position of the main window.
   settings.beginGroup("MainWindow");
-  settings.setValue("size", this->size());
-  settings.setValue("pos", this->pos());
+  settings.setValue("WindowSettings", saveState());
+  settings.setValue("Geometry", saveGeometry());
+  settings.setValue("ModelObjectPanelSplitterSizes",
+                    gui->fluoroSimModelObjectSplitter->saveState());
   settings.endGroup();
 
-  // Save geometry and docking info of dock widgets
-  QList<QDockWidget*> widgets = this->findChildren<QDockWidget*>();
-  QListIterator<QDockWidget*> iterator(widgets);
-  while (iterator.hasNext()) {
-    QDockWidget* dockWidget = iterator.next();
-    settings.beginGroup(dockWidget->objectName());
-    settings.setValue("size", dockWidget->size());
-    settings.setValue("pos", dockWidget->pos());
-    settings.setValue("visible", dockWidget->isVisible());
-    settings.setValue("floating", dockWidget->isFloating());
-    settings.setValue("dockArea", this->dockWidgetArea(dockWidget));
-    settings.endGroup();
-  }
+  m_PSFEditorDialog->SaveGUISettings();
+  m_OptimizerSettingsDialog->SaveGUISettings();
 
-  // Save PSF editor geometry
-  settings.beginGroup("PSFEditorDialog");
-  settings.setValue("size", m_PSFEditorDialog->size());
-  settings.setValue("pos", m_PSFEditorDialog->pos());
-
-  QList<QVariant> windowSplitterSizes = 
-    m_PSFEditorDialog->GetWindowSplitterSizes();
-  settings.setValue("windowSplitterSizes", windowSplitterSizes);
-
-  settings.endGroup();
   WritePSFSettings();
 }
 
@@ -1610,7 +1640,7 @@ MicroscopeSimulator
   // Now save PSF list file
   QString psfSettingsFileName(m_Preferences->GetDataDirectoryPath().c_str());
   psfSettingsFileName.append(QDir::separator()).append("PSFList.xml");
-  int rc = xmlSaveFileEnc(psfSettingsFileName.toStdString().c_str(), doc, "ISO-8859-1");
+  xmlSaveFileEnc(psfSettingsFileName.toStdString().c_str(), doc, "ISO-8859-1");
   xmlFreeDoc(doc);
 }
 
@@ -1622,38 +1652,14 @@ MicroscopeSimulator
 
   // Read main window settings
   settings.beginGroup("MainWindow");
-  this->resize(settings.value("size", QSize(1000, 743)).toSize());
-  this->move(settings.value("pos", QPoint(0, 20)).toPoint());
+  restoreState(settings.value("WindowSettings").toByteArray());
+  restoreGeometry(settings.value("Geometry").toByteArray());
+  gui->fluoroSimModelObjectSplitter->
+    restoreState(settings.value("ModelObjectPanelSplitterSizes").toByteArray());
   settings.endGroup();
 
-  // Read geometry from the docks
-  QList<QDockWidget*> widgets = this->findChildren<QDockWidget*>();
-  QListIterator<QDockWidget*> iterator(widgets);
-  while (iterator.hasNext()) {
-    QDockWidget* dockWidget = iterator.next();
-    settings.beginGroup(dockWidget->objectName());
-    dockWidget->resize(settings.value("size", QSize(340, 200)).toSize());
-    dockWidget->move(settings.value("pos", QPoint(0, 0)).toPoint());
-    dockWidget->setVisible(settings.value("visible", true).toBool());
-    dockWidget->setFloating(settings.value("floating", false).toBool());
-    this->addDockWidget(static_cast<Qt::DockWidgetArea>(settings.value("dockArea", Qt::LeftDockWidgetArea).toUInt()), dockWidget);
-    settings.endGroup();
-  }
-
-  // Read PSF editor geometry
-  settings.beginGroup("PSFEditorDialog");
-  m_PSFEditorDialog->
-    resize(settings.value("size", QSize(640, 480)).toSize());
-  m_PSFEditorDialog->
-    move(settings.value("pos", QPoint(0, 0)).toPoint());
-
-  QList<QVariant> defaultWindowSplitterSizes;
-  defaultWindowSplitterSizes.push_back(QVariant(300));
-  defaultWindowSplitterSizes.push_back(QVariant(340));
-  m_PSFEditorDialog->SetWindowSplitterSizes
-    (settings.value("windowSplitterSizes", defaultWindowSplitterSizes).toList());
-
-  settings.endGroup();
+  m_PSFEditorDialog->LoadGUISettings();
+  m_OptimizerSettingsDialog->LoadGUISettings();
 
   ReadPSFSettings();
 }

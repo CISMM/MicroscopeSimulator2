@@ -12,6 +12,9 @@
 // Forward declarations
 class FluorescenceSimulation;
 class FluorescenceOptimizer;
+class GradientDescentFluorescenceOptimizer;
+class NelderMeadFluorescenceOptimizer;
+class PointsGradientFluorescenceOptimizer;
 
 
 // This is the data model for the Microscope Simulator library.
@@ -31,7 +34,6 @@ class Simulation : public DirtyListener, public XMLStorable {
   static const char* NEW_FILE;
   static const char* ACTOR_INTERACTION_EVENT;
 
-  typedef std::pair<unsigned int, unsigned int> SimulationRegion;
 
 public:
   Simulation(DirtyListener* dirtyListener);
@@ -62,6 +64,9 @@ public:
 
   FluorescenceSimulation* GetFluorescenceSimulation();
 
+  void SetFluorescenceOptimizerToGradientDescent();
+  void SetFluorescenceOptimizerToNelderMead();
+  void SetFluorescenceOptimizerToPointsGradient();
   FluorescenceOptimizer* GetFluorescenceOptimizer();
 
   void SetComparisonImageModelObjectIndex(int index);
@@ -93,10 +98,13 @@ protected:
   DirtyListener* m_DirtyListener;
 
   FluorescenceSimulation* m_FluoroSim;
+
+  GradientDescentFluorescenceOptimizer* m_GradientDescentFluoroOptimizer;
+  NelderMeadFluorescenceOptimizer*      m_NelderMeadFluoroOptimizer;
+  PointsGradientFluorescenceOptimizer*  m_PointsGradientFluoroOptimizer;
   FluorescenceOptimizer* m_FluoroOptimizer;
 
   ModelObjectList* m_ModelObjectList;
-  ImageModelObject* m_ComparisonImageModelObject;
 
  private:
   Simulation() {};

@@ -14,7 +14,9 @@
 #include <Simulation.h>
 
 #include <FluorescenceSimulation.h>
-#include <FluorescenceOptimizer.h>
+#include <GradientDescentFluorescenceOptimizer.h>
+#include <NelderMeadFluorescenceOptimizer.h>
+#include <PointsGradientFluorescenceOptimizer.h>
 
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
@@ -43,9 +45,22 @@ Simulation
 
   m_FluoroSim = new FluorescenceSimulation(this);
 
-  m_FluoroOptimizer = new FluorescenceOptimizer();
-  m_FluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
-  m_FluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+  m_GradientDescentFluoroOptimizer = 
+    new GradientDescentFluorescenceOptimizer(dirtyListener);
+  m_GradientDescentFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_GradientDescentFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
+  m_NelderMeadFluoroOptimizer = 
+    new NelderMeadFluorescenceOptimizer(dirtyListener);
+  m_NelderMeadFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_NelderMeadFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
+  m_PointsGradientFluoroOptimizer = 
+    new PointsGradientFluorescenceOptimizer(dirtyListener);
+  m_PointsGradientFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
+  m_PointsGradientFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
+
+  m_FluoroOptimizer = m_NelderMeadFluoroOptimizer;
 
   // ITK will detect the number of cores on the system and set it by default.
   // Here we can override that setting if the proper environment variable is
@@ -65,7 +80,9 @@ Simulation
 ::~Simulation() {
   delete m_ModelObjectList;
   delete m_FluoroSim;
-  delete m_FluoroOptimizer;
+  delete m_GradientDescentFluoroOptimizer;
+  delete m_NelderMeadFluoroOptimizer;
+  delete m_PointsGradientFluoroOptimizer;
 }
 
 
@@ -168,9 +185,34 @@ Simulation
   xmlNodePtr fluoroSimNode = xmlNewChild(node, NULL, BAD_CAST Simulation::FLUORO_SIM_ELEM, NULL);
   m_FluoroSim->GetXMLConfiguration(fluoroSimNode);
 
+  xmlNodePtr gradientDescentOptimizerNode = 
+    xmlNewChild(fluoroSimNode, NULL, BAD_CAST GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
+  m_GradientDescentFluoroOptimizer->GetXMLConfiguration(gradientDescentOptimizerNode);
+
+  xmlNodePtr nelderMeadOptimizerNode =
+    xmlNewChild(fluoroSimNode, NULL, BAD_CAST NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
+  m_NelderMeadFluoroOptimizer->GetXMLConfiguration(nelderMeadOptimizerNode);
+
+  xmlNodePtr pointsGradientOptimizerNode =
+    xmlNewChild(fluoroSimNode, NULL, BAD_CAST PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
+  m_PointsGradientFluoroOptimizer->GetXMLConfiguration(pointsGradientOptimizerNode);
+
   xmlNodePtr molNode = xmlNewChild(node, NULL, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM, NULL);
   m_ModelObjectList->GetXMLConfiguration(molNode);
 
+  ModelObject* comparisonImageModelObject = 
+    m_FluoroOptimizer->GetComparisonImageModelObject();
+  std::string comparisonImageName = "None";
+  if (comparisonImageModelObject) {
+    comparisonImageName = comparisonImageModelObject->GetName();
+  }
+
+  xmlNodePtr fluorescenceComparisonImageNode = xmlNewChild
+    (fluoroSimNode, NULL, BAD_CAST "FluorescenceComparisonImageModelObject",
+     NULL);
+
+  xmlNewProp(fluorescenceComparisonImageNode, BAD_CAST "name",
+             BAD_CAST comparisonImageName.c_str());
 }
 
 
@@ -194,12 +236,44 @@ Simulation
   // Restore fluorescence simulation
   xmlNodePtr fluoroSimNode =
     xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::FLUORO_SIM_ELEM);
-  m_FluoroSim->RestoreFromXML(fluoroSimNode);
+  if (fluoroSimNode) {
+    m_FluoroSim->RestoreFromXML(fluoroSimNode);
+  }
+
+  xmlNodePtr gradientDescentOptimizerNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM);
+  if (gradientDescentOptimizerNode) {
+    m_GradientDescentFluoroOptimizer->RestoreFromXML(gradientDescentOptimizerNode);
+  }
+
+  xmlNodePtr nelderMeadOptimizerNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM);
+  if (nelderMeadOptimizerNode) {
+    m_NelderMeadFluoroOptimizer->RestoreFromXML(nelderMeadOptimizerNode);
+  }
+
+  xmlNodePtr pointsGradientOptimizerNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM);
+  if (pointsGradientOptimizerNode) {
+    m_PointsGradientFluoroOptimizer->RestoreFromXML(pointsGradientOptimizerNode);
+  }
 
   // Restore model object list
   xmlNodePtr molNode = 
     xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM);
-  m_ModelObjectList->RestoreFromXML(molNode);
+  if (molNode) {
+    m_ModelObjectList->RestoreFromXML(molNode);
+  }
+
+  // Restoring the fluorescence comparison image must be done AFTER the
+  // model object list is restored.
+  xmlNodePtr fluorescenceComparisonImageNode =
+    xmlGetFirstElementChildWithName(fluoroSimNode, BAD_CAST "FluorescenceComparisonImageModelObject");
+  if (fluorescenceComparisonImageNode) {
+    std::string modelObjectName((char*) xmlGetProp(fluorescenceComparisonImageNode, BAD_CAST "name"));
+    ModelObject* comparisonModelObject = m_ModelObjectList->GetModelObjectByName(modelObjectName);
+    m_FluoroOptimizer->SetComparisonImageModelObject(comparisonModelObject);
+  }                                 
 
 }
 
@@ -285,6 +359,27 @@ Simulation
 }
 
 
+void
+Simulation
+::SetFluorescenceOptimizerToGradientDescent() {
+  m_FluoroOptimizer = m_GradientDescentFluoroOptimizer;
+}
+
+
+void
+Simulation
+::SetFluorescenceOptimizerToNelderMead() {
+  m_FluoroOptimizer = m_NelderMeadFluoroOptimizer;
+}
+
+
+void
+Simulation
+::SetFluorescenceOptimizerToPointsGradient() {
+  m_FluoroOptimizer = m_PointsGradientFluoroOptimizer;
+}
+
+
 FluorescenceOptimizer*
 Simulation
 ::GetFluorescenceOptimizer() {
@@ -299,16 +394,13 @@ Simulation
     return;
 
   m_FluoroOptimizer->SetComparisonImageModelObjectIndex(index);
-
-  m_ComparisonImageModelObject = static_cast<ImageModelObject*>
-    (m_ModelObjectList->GetModelObjectAtIndex(index, ImageModelObject::OBJECT_TYPE_NAME));
 }
 
 
 ImageModelObject*
 Simulation
 ::GetComparisonImageModelObject() {
-  return m_ComparisonImageModelObject;
+  return m_FluoroOptimizer->GetComparisonImageModelObject();
 }
 
 

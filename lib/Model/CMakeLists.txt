@@ -18,6 +18,12 @@ SET(modelModelObjectsSrc
   ModelObjects/ModelObjectProperty.cxx
   ModelObjects/FluorophoreModelObjectProperty.h
   ModelObjects/FluorophoreModelObjectProperty.cxx
+  ModelObjects/GeometryVerticesFluorophoreProperty.h
+  ModelObjects/GeometryVerticesFluorophoreProperty.cxx
+  ModelObjects/SurfaceUniformFluorophoreProperty.h
+  ModelObjects/SurfaceUniformFluorophoreProperty.cxx
+  ModelObjects/VolumeUniformFluorophoreProperty.h
+  ModelObjects/VolumeUniformFluorophoreProperty.cxx
   ModelObjects/ModelObjectPropertyList.h
   ModelObjects/ModelObjectPropertyList.cxx
   ModelObjects/CylinderModelObject.h
@@ -49,6 +55,14 @@ SET(modelFluoroSimSrc
   FluoroSim/FluorescenceSimulation.cxx
   FluoroSim/FluorescenceOptimizer.h
   FluoroSim/FluorescenceOptimizer.cxx
+  FluoroSim/ITKFluorescenceOptimizer.h
+  FluoroSim/ITKFluorescenceOptimizer.cxx
+  FluoroSim/GradientDescentFluorescenceOptimizer.h
+  FluoroSim/GradientDescentFluorescenceOptimizer.cxx
+  FluoroSim/NelderMeadFluorescenceOptimizer.h
+  FluoroSim/NelderMeadFluorescenceOptimizer.cxx
+  FluoroSim/PointsGradientFluorescenceOptimizer.h
+  FluoroSim/PointsGradientFluorescenceOptimizer.cxx
   FluoroSim/PointSpreadFunction.h
   FluoroSim/PointSpreadFunction.cxx
   FluoroSim/GaussianPointSpreadFunction.h
@@ -79,4 +93,5 @@ TARGET_LINK_LIBRARIES( msimModel
   ITKBasicFilters
   ITKIO
   ITKNumerics
+  msimUtilities
 )

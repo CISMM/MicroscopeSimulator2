@@ -1,5 +1,6 @@
 #include <TorusModelObject.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <SurfaceUniformFluorophoreProperty.h>
+#include <VolumeUniformFluorophoreProperty.h>
 
 #include <vtkParametricTorus.h>
 #include <vtkParametricFunctionSource.h>
@@ -34,12 +35,11 @@ TorusModelObject
   // Set up properties
   AddProperty(new ModelObjectProperty(CROSS_SECTION_RADIUS_PROP, 100.0, "nanometers"));
   AddProperty(new ModelObjectProperty(RING_RADIUS_PROP, 500.0, "nanometers"));
-  AddProperty(new FluorophoreModelObjectProperty(SURFACE_FLUOR_PROP,
-                                                 UNIFORM_RANDOM_SURFACE_SAMPLE,
-                                                 m_GeometrySource));
-  AddProperty(new FluorophoreModelObjectProperty(VOLUME_FLUOR_PROP,
-                                                 UNIFORM_RANDOM_VOLUME_SAMPLE,
-                                                 m_GeometrySource));
+
+  AddProperty(new SurfaceUniformFluorophoreProperty
+              (SURFACE_FLUOR_PROP, m_GeometrySource));
+  AddProperty(new VolumeUniformFluorophoreProperty
+              (VOLUME_FLUOR_PROP, m_GeometrySource));
 
   // Must call this after setting up properties
   Update();

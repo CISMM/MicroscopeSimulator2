@@ -186,6 +186,7 @@ protected:
   void RenderViews();
   void RefreshSimulationDescription();
   void RefreshUI();
+  void RefreshObjectiveFunctions();
 
   void SetStatusMessage(const std::string& status);
   void Sully();

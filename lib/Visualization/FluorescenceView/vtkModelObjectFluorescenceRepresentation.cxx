@@ -11,10 +11,7 @@
 #include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkProperty.h>
 #include <vtkRenderView.h>
-#include <vtkSurfaceUniformPointSampler.h>
 #include <vtkTriangleFilter.h>
-#include <vtkUniformPointSampler.h>
-#include <vtkVolumeUniformPointSampler.h>
 
 #include <ModelObject.h>
 
@@ -26,8 +23,6 @@ vtkModelObjectFluorescenceRepresentation::vtkModelObjectFluorescenceRepresentati
   this->ModelObject = NULL;
   this->FluorophoreProperty = NULL;
   this->MapperType = GATHER_MAPPER;
-
-  this->Sampler = NULL;
 
   this->GatherMapper = vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>::New();
   this->GatherMapper->ImmediateModeRenderingOn();
@@ -69,44 +64,7 @@ ModelObjectPtr vtkModelObjectFluorescenceRepresentation::GetModelObject() {
 void vtkModelObjectFluorescenceRepresentation
 ::SetFluorophoreModelObjectProperty(FluorophoreModelObjectProperty* property) {
   this->FluorophoreProperty = property;
-  vtkPolyDataAlgorithm* geometry = property->GetGeometry();
-
-  FluorophoreModelType fluorType = property->GetFluorophoreModelType();
-  if (fluorType == GEOMETRY_VERTICES) {
-
-    geometry->GetOutput()->Update();
-    std::cout << "Geometry points: " << geometry->GetOutput()->GetNumberOfPoints() << std::endl;
-    this->SetInputConnection(geometry->GetOutputPort());
- 
-  } else if (fluorType == UNIFORM_RANDOM_SURFACE_SAMPLE) {
-
-    vtkSmartPointer<vtkTriangleFilter> triangulizer = vtkSmartPointer<vtkTriangleFilter>::New();
-    triangulizer->PassLinesOff();
-    triangulizer->PassVertsOff();
-    triangulizer->SetInputConnection(geometry->GetOutputPort());
-    
-    vtkSurfaceUniformPointSampler* surfaceSampler = vtkSurfaceUniformPointSampler::New();
-    surfaceSampler->SetInputConnection(triangulizer->GetOutputPort());
-    surfaceSampler->Update();
-    surfaceSampler->GetOutput()->Update();
-    this->Sampler = surfaceSampler;
-
-    this->SetInputConnection(this->Sampler->GetOutputPort());
-
-  } else if (fluorType == UNIFORM_RANDOM_VOLUME_SAMPLE) {
-
-    vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
-      vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
-    tetrahedralizer->SetInputConnection(geometry->GetOutputPort());
-
-    vtkVolumeUniformPointSampler* volumeSampler = vtkVolumeUniformPointSampler::New();
-    volumeSampler->SetInputConnection(tetrahedralizer->GetOutputPort());
-    std::cout << "Volume point samples: " << volumeSampler->GetOutput()->GetNumberOfPoints()
-              << std::endl;
-    this->Sampler = volumeSampler;
-
-    this->SetInputConnection(this->Sampler->GetOutputPort());
-  }
+  this->SetInputConnection(this->FluorophoreProperty->GetFluorophoreOutput()->GetOutputPort());
 }
 
 
@@ -186,17 +144,6 @@ void vtkModelObjectFluorescenceRepresentation::UpdateRepresentation() {
     this->GradientActor->GetProperty()->SetColor(1.0, 1.0, 1.0);
   }
 
-  double divisor = 1.0;
-  if (this->FluorophoreProperty->GetFluorophoreModelType() == UNIFORM_RANDOM_SURFACE_SAMPLE) {
-    divisor = 1.0e6;
-  } else if (this->FluorophoreProperty->GetFluorophoreModelType() == UNIFORM_RANDOM_VOLUME_SAMPLE) {
-    divisor = 1.0e9;
-  }
-  if (this->Sampler) {
-    this->Sampler->SetDensity(this->FluorophoreProperty->GetDensity() / divisor);
-    this->Sampler->GetOutput()->Update();
-  }
-    
   bool visible = this->ModelObject->GetVisible() && 
     this->FluorophoreProperty->GetEnabled();
   this->Actor->SetVisibility(visible ? 1 : 0);

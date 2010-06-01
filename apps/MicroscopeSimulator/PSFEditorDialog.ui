@@ -115,13 +115,6 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="gui_ImportWidefieldPSFSettingsButton">
-                    <property name="text">
-                     <string>Import Widefield PSF Settings...</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QPushButton" name="gui_ImportPSFButton">
                     <property name="text">
                      <string>Import PSF Image...</string>
@@ -169,7 +162,7 @@
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QTableView" name="gui_PSFParametersView">
+                   <widget class="QCopyPasteTableView" name="gui_PSFParametersView">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -183,7 +176,7 @@
                      <bool>true</bool>
                     </property>
                     <property name="selectionMode">
-                     <enum>QAbstractItemView::NoSelection</enum>
+                     <enum>QAbstractItemView::ContiguousSelection</enum>
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>160</number>
@@ -632,6 +625,11 @@
    <class>QVTKWidget</class>
    <extends>QWidget</extends>
    <header>QVTKWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QCopyPasteTableView</class>
+   <extends>QTableView</extends>
+   <header location="global">QCopyPasteTableView.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

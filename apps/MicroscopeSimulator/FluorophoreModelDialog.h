@@ -4,7 +4,7 @@
 #include <ui_FluorophoreModelDialog.h>
 #include <QDialog>
 
-#include <FluorophoreModelTypes.h>
+#include <FluorophoreModelChannels.h>
 
 // Forward declarations
 class FluorophoreModelObjectProperty;
@@ -23,9 +23,13 @@ Q_OBJECT
 
   void SaveSettingsToProperty();
 
-  double GetDensity();
-  bool GetEnabled();
+  bool                   GetEnabled();
+
   FluorophoreChannelType GetFluorophoreChannel();
+  bool                   GetUseFixedNumberOfFluorophores();
+
+  double                 GetDensity();
+  int                    GetNumberOfFluorophores();
   
  public slots:
   virtual void on_gui_DensityEdit_textEdited(const QString& string);

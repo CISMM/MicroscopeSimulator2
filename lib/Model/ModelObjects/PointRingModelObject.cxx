@@ -1,5 +1,5 @@
 #include <PointRingModelObject.h>
-#include <FluorophoreModelObjectProperty.h>
+#include <GeometryVerticesFluorophoreProperty.h>
 
 #include <DirtyListener.h>
 #include <ModelObjectPropertyList.h>
@@ -56,9 +56,9 @@ PointRingModelObject
   AddProperty(new ModelObjectProperty(VISIBLE_RADIUS_PROP, 50.0, "nanometers", true, false));
   AddProperty(new ModelObjectProperty(RING_RADIUS_PROP, 100.0, "nanometers", true, true));
   AddProperty(new ModelObjectProperty(NUMBER_OF_POINTS_PROP, 5, "-", true, false));
-  AddProperty(new FluorophoreModelObjectProperty(VERTICES_FLUOROPHORE_PROP,
-                                                 GEOMETRY_VERTICES,
-                                                 m_VertexSource));
+
+  AddProperty(new GeometryVerticesFluorophoreProperty
+              (VERTICES_FLUOROPHORE_PROP, m_VertexSource));
 
   // Update again.
   Update();

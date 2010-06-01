@@ -1,76 +1,30 @@
 #include <FluorophoreModelObjectProperty.h>
+#include <StringUtils.h>
 
 #include <vtkMassProperties.h>
+#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSmartPointer.h>
+#include <vtkSurfaceUniformPointSampler.h>
+#include <vtkTriangleFilter.h>
+#include <vtkVolumeUniformPointSampler.h>
 
 
 FluorophoreModelObjectProperty
 ::FluorophoreModelObjectProperty(const std::string& name,
-                                 FluorophoreModelType type,
                                  vtkPolyDataAlgorithm* geometry,
                                  bool editable, bool optimizable)
   : ModelObjectProperty(name, ModelObjectProperty::FLUOROPHORE_MODEL_TYPE,
                         "-", editable, optimizable) {
-  SetFluorophoreModelType(type);
   m_GeometrySource = geometry;
+  m_FluorophoreOutput = NULL;
   SetEnabled(true);
   SetFluorophoreChannelToAll();
-  SetDensity(1000.0);
 }
 
 
 FluorophoreModelObjectProperty
 ::~FluorophoreModelObjectProperty() {
 
-}
-
-
-void 
-FluorophoreModelObjectProperty
-::SetFluorophoreModelType(FluorophoreModelType type) {
-  m_FluorophoreModelType = type;
-}
-
-
-void 
-FluorophoreModelObjectProperty
-::SetFluorophoreModelTypeToGeometryVertices() {
-  SetFluorophoreModelType(GEOMETRY_VERTICES);
-}
-
-
-void
-FluorophoreModelObjectProperty
-::SetFluorophoreModelTypeToUniformRandomSurfaceSample() {
-  SetFluorophoreModelType(UNIFORM_RANDOM_SURFACE_SAMPLE);
-}
-
-
-void
-FluorophoreModelObjectProperty
-::SetFluorophoreModelTypeToUniformRandomVolumeSample() {
-  SetFluorophoreModelType(UNIFORM_RANDOM_VOLUME_SAMPLE);
-}
-
-
-FluorophoreModelType
-FluorophoreModelObjectProperty
-::GetFluorophoreModelType() {
-  return m_FluorophoreModelType;
-}
-
-
-void
-FluorophoreModelObjectProperty
-::SetDensity(double density) {
-  m_Density = density;
-}
-
-
-double
-FluorophoreModelObjectProperty
-::GetDensity() {
-  return m_Density;
 }
 
 
@@ -137,38 +91,19 @@ FluorophoreModelObjectProperty
 }
 
 
-double
+vtkPolyDataAlgorithm*
 FluorophoreModelObjectProperty
-::GetGeometryArea() {
-  vtkSmartPointer<vtkMassProperties> props = vtkSmartPointer<vtkMassProperties>::New();
-  props->SetInputConnection(m_GeometrySource->GetOutputPort());
-
-  return props->GetSurfaceArea();
-}
-
-
-double
-FluorophoreModelObjectProperty
-::GetGeometryVolume() {
-  vtkSmartPointer<vtkMassProperties> props = vtkSmartPointer<vtkMassProperties>::New();
-  props->SetInputConnection(m_GeometrySource->GetOutputPort());
-
-  return props->GetVolume();
+::GetFluorophoreOutput() {
+  return m_FluorophoreOutput;
 }
 
 
 void
 FluorophoreModelObjectProperty
 ::GetXMLConfiguration(xmlNodePtr root) {
-  std::string nodeName(SqueezeString(m_Name));
-  xmlNodePtr node = xmlNewChild(root, NULL, BAD_CAST nodeName.c_str(), NULL);
-
   char value[256];
-  sprintf(value, "%f", GetDensity());
-  xmlNewProp(node, BAD_CAST "density", BAD_CAST value);
-
   sprintf(value, "%s", GetEnabled() ? "true" : "false");
-  xmlNewProp(node, BAD_CAST "enabled", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST "enabled", BAD_CAST value);
 
   switch (GetFluorophoreChannel()) {
   case RED_CHANNEL:
@@ -191,7 +126,7 @@ FluorophoreModelObjectProperty
     sprintf(value, "none");
     break;
   }
-  xmlNewProp(node, BAD_CAST "channel", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST "channel", BAD_CAST value);
 
 }
 
@@ -199,12 +134,7 @@ FluorophoreModelObjectProperty
 void
 FluorophoreModelObjectProperty
 ::RestoreFromXML(xmlNodePtr root) {
-  char* value = (char*) xmlGetProp(root, BAD_CAST "density");
-  if (value) {
-    SetDensity(atof(value));
-  }
-
-  value = (char*) xmlGetProp(root, BAD_CAST "enabled");
+  char* value = (char*) xmlGetProp(root, BAD_CAST "enabled");
   if (value) {
     std::string valueStr(value);
     SetEnabled(valueStr == "true");

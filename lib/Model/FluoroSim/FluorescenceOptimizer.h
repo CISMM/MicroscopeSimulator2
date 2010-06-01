@@ -1,123 +1,96 @@
 #ifndef _FLUORESCENCE_OPTIMIZER_H_
 #define _FLUORESCENCE_OPTIMIZER_H_
 
+#include <string>
+#include <vector>
 
-#define ITK_MANUAL_INSTANTIATION
-#include <itkAmoebaOptimizer.h>
-#include <itkFluorescenceImageSource.h>
-#include <itkGradientDescentOptimizer.h>
-#include <itkImage.h>
-#include <itkImageToParameterizedImageSourceMetric.h>
-#include <itkMeanSquaresImageToImageMetric.h>
-#include <itkNormalizedCorrelationImageToImageMetric.h>
-#include <itkPoissonNoiseImageToImageMetric.h>
-#include <itkSingleValuedNonLinearOptimizer.h>
-#undef ITK_MANUAL_INSTANTIATION
-
+#include <DirtyListener.h>
+#include <XMLStorable.h>
 
 class FluorescenceSimulation;
 class ImageModelObject;
+class ModelObject;
 class ModelObjectList;
 
 
-class FluorescenceOptimizer {
+class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
 
  public:
 
   typedef enum {
-    GAUSSIAN_NOISE_COST_FUNCTION,
-    POISSON_NOISE_COST_FUNCTION,
-    NORMALIZED_CORRELATION_COST_FUNCTION
-  } CostFunction_t;
+    INT_TYPE,
+    FLOAT_TYPE,
+    DOUBLE_TYPE
+  } NumericType;
 
-  typedef enum {
-    NELDER_MEAD_OPTIMIZER,
-    GRADIENT_DESCENT_OPTIMIZER,
-    POINTS_GRADIENT_DESCENT_OPTIMIZER
-  } Optimizer_t;
+  typedef union _Variant {
+    int    iValue;
+    float  fValue;
+    double dValue;
+  } Variant;
 
-  typedef float PixelType;
-  typedef itk::Image<PixelType, 3> FluorescenceImageType;
-  typedef itk::FluorescenceImageSource<FluorescenceImageType> SyntheticImageSourceType;
-
-  // Types for optimization.
-  typedef itk::ImageToParameterizedImageSourceMetric<FluorescenceImageType, SyntheticImageSourceType>
-    ParameterizedCostFunctionType;
-
-  typedef itk::ImageToImageMetric<FluorescenceImageType, FluorescenceImageType>
-    ImageToImageCostFunctionType;
-  typedef itk::MeanSquaresImageToImageMetric<FluorescenceImageType, FluorescenceImageType>
-    GaussianNoiseCostFunctionType;
-  typedef itk::PoissonNoiseImageToImageMetric<FluorescenceImageType, FluorescenceImageType>
-    PoissonNoiseCostFunctionType;
-  typedef itk::NormalizedCorrelationImageToImageMetric<FluorescenceImageType, FluorescenceImageType>
-    NormalizedCorrelationCostFunctionType;
-    
-  typedef itk::SingleValuedNonLinearOptimizer OptimizerType;
-  typedef itk::AmoebaOptimizer               NelderMeadOptimizerType;
-  typedef itk::GradientDescentOptimizer      GradientDescentOptimizerType;
-
-
+  typedef struct _Parameter {
+    std::string name;
+    NumericType type;
+    Variant     value;
+  } Parameter;
+  
   /** Constructor/destructor. */
-  FluorescenceOptimizer();
+  FluorescenceOptimizer(DirtyListener* listener);
   virtual ~FluorescenceOptimizer();
+
+  virtual void GetXMLConfiguration(xmlNodePtr node);
+  virtual void RestoreFromXML(xmlNodePtr node);
+
+  virtual void Sully();
+  virtual void SetStatusMessage(const std::string& status);
 
   void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
 
   void SetModelObjectList(ModelObjectList* list);
+  void SetComparisonImageModelObject(ModelObject* object);
   void SetComparisonImageModelObjectIndex(int index);
   ImageModelObject* GetComparisonImageModelObject();
 
-  void SetCostFunctionToGaussianNoise() {
-    m_ImageToImageCostFunctionType = GAUSSIAN_NOISE_COST_FUNCTION;
-  }
-
-  void SetCostFunctionToPoissonNoise() {
-    m_ImageToImageCostFunctionType = POISSON_NOISE_COST_FUNCTION;
-  }
-
-  void SetCostFunctionToNormalizedCorrelation() {
-    m_ImageToImageCostFunctionType = NORMALIZED_CORRELATION_COST_FUNCTION;
-  }
-
-  void SetOptimizerToNelderMead() {
-    m_OptimizerType = NELDER_MEAD_OPTIMIZER;
-  }
-
-  void SetOptimizerToGradientDescent() {
-    m_OptimizerType = GRADIENT_DESCENT_OPTIMIZER;
-  }
-
-  void SetOptimizerToPointsGradientDescent() {
-    m_OptimizerType = POINTS_GRADIENT_DESCENT_OPTIMIZER;
-  }
-
-  void Optimize();
+  virtual void Optimize() = 0;
 
   void SetParameters(double* params);
 
+  virtual int GetNumberOfAvailableObjectiveFunctions() const;
+  virtual std::string GetAvailableObjectiveFunctionName(int index);
+
+  int GetNumberOfOptimizerParameters();
+
+  void        SetOptimizerParameterNumericType(int index, NumericType type);
+  NumericType GetOptimizerParameterNumericType(int index);
+
+  void    SetOptimizerParameterValue(int index, Variant value);
+  Variant GetOptimizerParameterValue(int index);
+
+  Parameter GetOptimizerParameter(int index);
+
  protected:
+  FluorescenceOptimizer() {};
+
+  DirtyListener* m_DirtyListener;
+
   FluorescenceSimulation* m_FluoroSim;
 
   ModelObjectList* m_ModelObjectList;
   ImageModelObject* m_ComparisonImageModelObject;
 
-  SyntheticImageSourceType::Pointer m_FluorescenceImageSource;
+  // List of available objective functions
+  std::vector<std::string> m_ObjectiveFunctionNames;
 
-  // The cost function used by the optimizer
-  ParameterizedCostFunctionType::Pointer m_CostFunction;
+  // The chosen objective function
+  std::string m_ObjectiveFunction;
 
-  // The delegate cost function used by m_CostFunction
-  ImageToImageCostFunctionType::Pointer  m_ImageToImageCostFunction;
+  // Optimizer parameters
+  std::vector<Parameter> m_OptimizerParameters;
 
-  CostFunction_t m_ImageToImageCostFunctionType;
-  
-  // The optimizer
-  OptimizerType::Pointer m_Optimizer;
+  void AddObjectiveFunctionName(const std::string& name);
 
-  Optimizer_t m_OptimizerType;
-
-  void SetUpOptimizer();
+  void AddOptimizerParameter(const std::string& name, NumericType type, Variant value);
 
 };
 
