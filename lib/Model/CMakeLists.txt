@@ -50,6 +50,11 @@ SET(modelModelObjectsSrc
   ModelObjects/ImportedGeometryModelObject.cxx
 )
 
+SET(modelAFMSimSrc
+  AFMSim/AFMSimulation.h
+  AFMSim/AFMSimulation.cxx
+)
+
 SET(modelFluoroSimSrc
   FluoroSim/FluorescenceSimulation.h
   FluoroSim/FluorescenceSimulation.cxx
@@ -75,7 +80,7 @@ SET(modelFluoroSimSrc
   FluoroSim/PointSpreadFunctionList.cxx
 )
 
-ADD_LIBRARY(msimModel ${modelSrc} ${modelModelObjectsSrc} ${modelFluoroSimSrc})
+ADD_LIBRARY(msimModel ${modelSrc} ${modelModelObjectsSrc} ${modelAFMSimSrc} ${modelFluoroSimSrc})
 
 TARGET_LINK_LIBRARIES( msimModel
   vtksys
