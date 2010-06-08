@@ -71,6 +71,7 @@ INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters/itk
     ${MicroscopeSimulator_SOURCE_DIR}/lib/IO
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/AFMSim
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/FluoroSim
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/ModelObjects
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization
@@ -86,3 +87,6 @@ ADD_SUBDIRECTORY(lib)
 # Applications
 #######################################
 ADD_SUBDIRECTORY(apps)
+
+INCLUDE(CTest)
+ENABLE_TESTING()
