@@ -196,7 +196,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-650</y>
+          <y>0</y>
           <width>381</width>
           <height>1285</height>
          </rect>
@@ -217,7 +217,7 @@
             <enum>QTabWidget::Rounded</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="iconSize">
             <size>
@@ -366,9 +366,9 @@
                  <widget class="QComboBox" name="afmSimCompareScanToComboBox"/>
                 </item>
                 <item row="2" column="0" colspan="2">
-                 <widget class="QCheckBox" name="afmSimWireframeDisplayCheckBox">
+                 <widget class="QCheckBox" name="afmSimDisplayAsWireframeCheckBox">
                   <property name="text">
-                   <string>Wireframe display</string>
+                   <string>Display as wireframe</string>
                   </property>
                  </widget>
                 </item>
@@ -1248,9 +1248,6 @@
         </attribute>
         <attribute name="verticalHeaderHighlightSections">
          <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderDefaultSectionSize">
-         <number>16</number>
         </attribute>
        </widget>
       </widget>
