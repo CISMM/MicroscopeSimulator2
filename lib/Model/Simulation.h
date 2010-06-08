@@ -10,6 +10,7 @@
 #include <ModelObjectList.h>
 
 // Forward declarations
+class AFMSimulation;
 class FluorescenceSimulation;
 class FluorescenceOptimizer;
 class GradientDescentFluorescenceOptimizer;
@@ -62,6 +63,7 @@ public:
   void SetSimulationCreationDate(const std::string& date);
   std::string& GetSimulationCreationDate();
 
+  AFMSimulation*          GetAFMSimulation();
   FluorescenceSimulation* GetFluorescenceSimulation();
 
   void SetFluorescenceOptimizerToGradientDescent();
@@ -97,6 +99,7 @@ protected:
 
   DirtyListener* m_DirtyListener;
 
+  AFMSimulation*          m_AFMSim;
   FluorescenceSimulation* m_FluoroSim;
 
   GradientDescentFluorescenceOptimizer* m_GradientDescentFluoroOptimizer;
