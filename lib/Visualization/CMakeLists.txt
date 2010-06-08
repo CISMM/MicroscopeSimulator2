@@ -14,6 +14,8 @@ SET(visualizationViewsSrc
   vtkModelObjectRepresentation.cxx
   GeometryView/GeometryRepresentation.h
   GeometryView/GeometryRepresentation.cxx
+  GeometryView/vtkGeometryRenderView.h
+  GeometryView/vtkGeometryRenderView.cxx
   GeometryView/vtkModelObjectGeometryRepresentation.h
   GeometryView/vtkModelObjectGeometryRepresentation.cxx
   GeometryView/vtkModelObjectActorPickObserver.h
