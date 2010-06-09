@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
-    <height>359</height>
+    <width>374</width>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -146,6 +146,16 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="gui_DensityEdit">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="0">
        <widget class="QLabel" name="gui_DensityLabel">
         <property name="text">
@@ -153,8 +163,8 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="gui_DensityEdit">
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="gui_NumberOfFluorophoresEdit">
         <property name="minimumSize">
          <size>
           <width>150</width>
@@ -170,16 +180,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="gui_NumberOfFluorophoresEdit">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
       <item row="6" column="0" colspan="2">
        <widget class="QSlider" name="gui_NumberOfFluorophoresSlider">
         <property name="maximum">
@@ -187,6 +187,68 @@
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gui_ClustersGroupBox">
+     <property name="title">
+      <string>Clusters</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+      </property>
+      <property name="margin">
+       <number>6</number>
+      </property>
+      <item row="0" column="0" colspan="2">
+       <widget class="QRadioButton" name="gui_UseSingleFluorophorePerSampleRadioButton">
+        <property name="text">
+         <string>Use one fluorophore per sample</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QRadioButton" name="gui_UseRingClusterRadioButton">
+        <property name="text">
+         <string>Use ring cluster per sample</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="gui_FluorophoresAroundRingLabel">
+        <property name="text">
+         <string>Fluorophores around ring:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="gui_FluorophoresAroundRingEdit"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="gui_RingRadiusLabel">
+        <property name="text">
+         <string>Ring radius:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="gui_RingRadiusEdit"/>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="gui_RandomizeRingOrientationsCheckBox">
+        <property name="text">
+         <string>Randomize ring orientations</string>
         </property>
        </widget>
       </item>
