@@ -30,7 +30,12 @@ Q_OBJECT
 
   double                 GetDensity();
   int                    GetNumberOfFluorophores();
-  
+ 
+  bool   GetUseOneFluorophorePerSample();
+  int    GetNumberOfFluorophoresAroundRing();
+  double GetRingRadius();
+  bool   GetRandomizeRingOrientation();
+ 
  public slots:
   virtual void on_gui_DensityEdit_textEdited(const QString& string);
   virtual void on_gui_NumberOfFluorophoresEdit_textEdited(const QString& string);
