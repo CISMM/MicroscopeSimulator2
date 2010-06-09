@@ -85,6 +85,9 @@ void
 Visualization
 ::SetSimulation(Simulation* simulation) {
   m_Simulation = simulation;
+
+  m_ModelObjectRenderView->SetSimulation(simulation);
+
   m_Simulation->GetFluorescenceSimulation()->
     SetFluorescenceImageSource(m_ImageSource);
 
