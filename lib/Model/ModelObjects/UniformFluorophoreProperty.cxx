@@ -1,10 +1,9 @@
 #include <UniformFluorophoreProperty.h>
 
 
-#include <vtkUniformPointSampler.h>
-
 #include <vtkPointRingSource.h>
 #include <vtkGlyph3D.h>
+#include <vtkUniformPointSampler.h>
 
 
 UniformFluorophoreProperty::
