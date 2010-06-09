@@ -20,6 +20,8 @@ SET(modelModelObjectsSrc
   ModelObjects/FluorophoreModelObjectProperty.cxx
   ModelObjects/GeometryVerticesFluorophoreProperty.h
   ModelObjects/GeometryVerticesFluorophoreProperty.cxx
+  ModelObjects/UniformFluorophoreProperty.h
+  ModelObjects/UniformFluorophoreProperty.cxx
   ModelObjects/SurfaceUniformFluorophoreProperty.h
   ModelObjects/SurfaceUniformFluorophoreProperty.cxx
   ModelObjects/VolumeUniformFluorophoreProperty.h
