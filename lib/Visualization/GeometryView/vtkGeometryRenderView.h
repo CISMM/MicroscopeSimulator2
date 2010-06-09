@@ -5,13 +5,18 @@
 #include <vtkRenderView.h>
 #include <vtkSmartPointer.h>
 
+class AFMSimulation;
+class Simulation;
 
+class vtkActor;
 class vtkAlgorithmOutput;
 class vtkFramebufferObjectTexture;
 class vtkFramebufferObjectRenderer;
 class vtkImageData;
 class vtkInteractorObserver;
 class vtkOpenGL3DTexture;
+class vtkPlaneSource;
+class vtkPolyDataMapper;
 class vtkRenderer;
 class vtkRenderWindow;
 class vtkRenderWindowInteractor;
@@ -31,6 +36,11 @@ class vtkGeometryRenderView : public vtkRenderView {
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
+  // Set/get the Simulation.
+  void SetSimulation(Simulation* simulation);
+  Simulation* GetSimulation();
+
+  // Description:
   // Gets a floating-point image containing the contents of the fluorescence
   // render window.
   //virtual vtkImageData* GetImage();
@@ -40,9 +50,17 @@ protected:
   vtkGeometryRenderView();
   ~vtkGeometryRenderView();
 
-  vtkSmartPointer<vtkFramebufferObjectTexture>  AFMTexture;
+  AFMSimulation* AFMSim;
+  Simulation*    Sim;
 
+  vtkSmartPointer<vtkFramebufferObjectTexture>  AFMTexture;
   vtkSmartPointer<vtkFramebufferObjectRenderer> AFMRenderer;
+
+  vtkSmartPointer<vtkPlaneSource>    AFMPlaneSource;
+  vtkSmartPointer<vtkPolyDataMapper> AFMPlaneMapper;
+  vtkSmartPointer<vtkActor>          AFMPlaneActor;
+
+  virtual void PrepareForRendering();
 
 private:
   vtkGeometryRenderView(const vtkGeometryRenderView&);  // Not implemented.
