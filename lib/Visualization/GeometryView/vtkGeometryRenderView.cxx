@@ -132,10 +132,12 @@ void vtkGeometryRenderView::PrepareForRendering() {
   this->AFMPlaneSource->SetPoint2(0.5 * pixelSize, pixelSize * (dImageHeight-0.5), 0.0);
   this->AFMPlaneSource->Update();
 
+#if 0
   // Re-write texture coordinates
   vtkPolyData* newSurface = vtkPolyData::New();
   newSurface->DeepCopy(this->AFMPlaneSource->GetOutput());
-  
+
+
   vtkFloatArray* newTCoords = vtkFloatArray::New();
   newTCoords->SetNumberOfComponents(2);
   newTCoords->Allocate(2*newSurface->GetPoints()->GetNumberOfPoints());
@@ -153,4 +155,5 @@ void vtkGeometryRenderView::PrepareForRendering() {
   newTCoords->Delete();
 
   this->AFMPlaneMapper->SetInput(newSurface);
+#endif
 }
