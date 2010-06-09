@@ -6,14 +6,13 @@
 #include <XMLHelper.h>
 
 #include <vtkGlyph3D.h>
+#include <vtkMath.h>
+#include <vtkPointRingSource.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
 #include <vtkVertexGlyphFilter.h>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 
 const char* PointRingModelObject::OBJECT_TYPE_NAME = "PointRingModel";
 
@@ -30,24 +29,20 @@ PointRingModelObject
   SetName("Point Ring");
 
   // Set up geometry
-  m_Points = vtkSmartPointer<vtkPoints>::New();
-  m_Points->Allocate(10, 10);
-  
-  m_PointSource = vtkSmartPointer<vtkPolyData>::New();
-  m_PointSource->SetPoints(m_Points);
-  
+  m_PointRingSource = vtkSmartPointer<vtkPointRingSource>::New();
+
   m_SphereSource = vtkSmartPointer<vtkSphereSource>::New();
   m_SphereSource->SetThetaResolution(16);
   m_SphereSource->SetPhiResolution(8);
 
   m_GlyphSource = vtkSmartPointer<vtkGlyph3D>::New();
-  m_GlyphSource->SetInput(m_PointSource);
+  m_GlyphSource->SetInputConnection(m_PointRingSource->GetOutputPort());
   m_GlyphSource->SetSourceConnection(m_SphereSource->GetOutputPort());
 
   // Need a vertex source for the points so that the fluorescence renderer
   // knows it has something to render.
   m_VertexSource = vtkSmartPointer<vtkVertexGlyphFilter>::New();
-  m_VertexSource->SetInput(m_PointSource);
+  m_VertexSource->SetInputConnection(m_SphereSource->GetOutputPort());
 
   SetGeometrySubAssembly("All", m_GlyphSource);
   SetGeometrySubAssembly("Points", m_VertexSource);
@@ -90,18 +85,8 @@ PointRingModelObject
   int numPoints = 
     GetProperty(NUMBER_OF_POINTS_PROP)->GetIntValue();
 
-  m_Points->SetNumberOfPoints(numPoints);
-
-  double angleIncrement = 2.0*M_PI / static_cast<double>(numPoints);
-  for (int i = 0; i < numPoints; i++) {
-    double xyz[3] = {0.0, 0.0, 0.0};
-    double angle = angleIncrement * static_cast<double>(i);
-    xyz[1] = ringRadius * cos(angle);
-    xyz[2] = ringRadius * sin(angle);
-    m_Points->SetPoint(static_cast<vtkIdType>(i), xyz);
-    m_Points->Modified();
-  }
-
-  GetGeometrySubAssembly("Points")->GetInput()->Modified();
+  m_PointRingSource->SetRadius(ringRadius);
+  m_PointRingSource->SetNumberOfPoints(numPoints);
+  m_PointRingSource->Update();
 }
 

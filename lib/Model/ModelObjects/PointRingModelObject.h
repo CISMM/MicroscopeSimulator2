@@ -8,6 +8,7 @@
 class DirtyListener;
 class vtkGlyph3D;
 class vtkPoints;
+class vtkPointRingSource;
 class vtkPolyData;
 class vtkSphereSource;
 class vtkVertexGlyphFilter;
@@ -34,8 +35,7 @@ class PointRingModelObject : public ModelObject {
  protected:
   PointRingModelObject() {};
 
-  vtkSmartPointer<vtkPoints>            m_Points;
-  vtkSmartPointer<vtkPolyData>          m_PointSource;
+  vtkSmartPointer<vtkPointRingSource>   m_PointRingSource;
   vtkSmartPointer<vtkSphereSource>      m_SphereSource;
   vtkSmartPointer<vtkGlyph3D>           m_GlyphSource;
   vtkSmartPointer<vtkVertexGlyphFilter> m_VertexSource;
