@@ -1,12 +1,12 @@
 #ifndef _SURFACE_UNIFORM_FLUOROPHORE_PROPERTY_H_
 #define _SURFACE_UNIFORM_FLUOROPHORE_PROPERTY_H_
 
-#include <FluorophoreModelObjectProperty.h>
+#include <UniformFluorophoreProperty.h>
 
 class vtkSurfaceUniformPointSampler;
 
 
-class SurfaceUniformFluorophoreProperty : public FluorophoreModelObjectProperty {
+class SurfaceUniformFluorophoreProperty : public UniformFluorophoreProperty {
 
  public:
   SurfaceUniformFluorophoreProperty(const std::string& name,
@@ -15,30 +15,14 @@ class SurfaceUniformFluorophoreProperty : public FluorophoreModelObjectProperty 
                                     bool optimizable = true);
   virtual ~SurfaceUniformFluorophoreProperty();
 
-  void UseFixedDensity();
-  bool GetUseFixedDensity();
-
-  void UseFixedNumberOfFluorophores();
-  bool GetUseFixedNumberOfFluorophores();
-
-  void   SetDensity(double density);
-  double GetDensity();
-
-  void SetNumberOfFluorophores(int number);
-  int  GetNumberOfFluorophores();
-
   double GetGeometryArea();
-
-  virtual void GetXMLConfiguration(xmlNodePtr root);
-  virtual void RestoreFromXML(xmlNodePtr root);
 
  protected:
   SurfaceUniformFluorophoreProperty() {};
 
-  double m_Density;
+  virtual double GetDensityScale();
 
-  vtkSmartPointer<vtkSurfaceUniformPointSampler> m_Sampler;
-
+  vtkSmartPointer<vtkSurfaceUniformPointSampler> m_SurfaceSampler;
 };
 
 
