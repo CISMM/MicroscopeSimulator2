@@ -114,6 +114,9 @@ FluorophoreModelDialog
       (QVariant(uniformProperty->GetNumberOfRingFluorophores()).toString());
     gui_RingRadiusEdit->setText
       (QVariant(uniformProperty->GetRingRadius()).toString());
+
+    gui_RandomizePatternOrientationsCheckBox->setChecked
+      (uniformProperty->GetRandomizePatternOrientations());
   }
 
 }
@@ -142,7 +145,8 @@ FluorophoreModelDialog
 
     uniformProperty->SetNumberOfRingFluorophores(GetNumberOfFluorophoresAroundRing());
     uniformProperty->SetRingRadius(GetRingRadius());
-
+    
+    uniformProperty->SetRandomizePatternOrientations(GetRandomizePatternOrientations());
   }
 
   // These options apply to any kind of fluorophore property
@@ -215,8 +219,8 @@ FluorophoreModelDialog
 
 bool
 FluorophoreModelDialog
-::GetRandomizeRingOrientation() {
-  return gui_RandomizeRingOrientationsCheckBox->isChecked();
+::GetRandomizePatternOrientations() {
+  return gui_RandomizePatternOrientationsCheckBox->isChecked();
 }
 
 

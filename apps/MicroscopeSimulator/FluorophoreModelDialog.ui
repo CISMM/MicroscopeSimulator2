@@ -196,7 +196,7 @@
    <item>
     <widget class="QGroupBox" name="gui_ClustersGroupBox">
      <property name="title">
-      <string>Clusters</string>
+      <string>Fluorophore Patterns</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -246,9 +246,9 @@
        <widget class="QLineEdit" name="gui_RingRadiusEdit"/>
       </item>
       <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="gui_RandomizeRingOrientationsCheckBox">
+       <widget class="QCheckBox" name="gui_RandomizePatternOrientationsCheckBox">
         <property name="text">
-         <string>Randomize ring orientations</string>
+         <string>Randomize pattern orientations</string>
         </property>
        </widget>
       </item>

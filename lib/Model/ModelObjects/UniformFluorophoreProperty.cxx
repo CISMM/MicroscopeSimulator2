@@ -6,6 +6,19 @@
 #include <vtkUniformPointSampler.h>
 
 
+const char* UniformFluorophoreProperty::DENSITY_ATT = "density";
+const char* UniformFluorophoreProperty::NUMBER_OF_FLUOROPHORES_ATT = "numberOfFluorophores";
+const char* UniformFluorophoreProperty::SAMPLING_MODE_ATT = "samplingMode";
+const char* UniformFluorophoreProperty::FIXED_DENSITY_VALUE = "fixedDensity";
+const char* UniformFluorophoreProperty::FIXED_NUMBER_VALUE = "fixedNumber";
+const char* UniformFluorophoreProperty::SAMPLE_PATTERN_ATT = "samplePattern";
+const char* UniformFluorophoreProperty::SINGLE_POINT_VALUE = "singlePoint";
+const char* UniformFluorophoreProperty::POINT_RING_VALUE = "pointRing";
+const char* UniformFluorophoreProperty::NUMBER_OF_RING_FLUOROPHORES_ATT = "numberOfRingFluorophores";
+const char* UniformFluorophoreProperty::RING_RADIUS_ATT = "ringRadius";
+const char* UniformFluorophoreProperty::RANDOMIZE_PATTERN_ORIENTATIONS_ATT = "randomizePatternOrientations";
+
+
 UniformFluorophoreProperty::
 UniformFluorophoreProperty(const std::string& name,
                            vtkPolyDataAlgorithm* geometry,
@@ -23,6 +36,8 @@ UniformFluorophoreProperty(const std::string& name,
 
   m_PointRingGlypher = vtkSmartPointer<vtkGlyph3D>::New();
   m_PointRingGlypher->SetSourceConnection(m_PointRingSource->GetOutputPort());
+
+  m_RandomizePatternOrientations = false;
 
   m_FluorophoreOutput = m_PointRingGlypher;
 }
@@ -174,31 +189,64 @@ UniformFluorophoreProperty
 
 void
 UniformFluorophoreProperty
+::SetRandomizePatternOrientations(bool enabled) {
+  m_RandomizePatternOrientations = enabled;
+}
+
+
+void
+UniformFluorophoreProperty
+::RandomizePatternOrientationsOn() {
+  SetRandomizePatternOrientations(true);
+}
+
+
+void
+UniformFluorophoreProperty
+::RandomizePatternOrientationsOff() {
+  SetRandomizePatternOrientations(false);
+}
+
+
+bool
+UniformFluorophoreProperty
+::GetRandomizePatternOrientations() {
+  return m_RandomizePatternOrientations;
+}
+
+
+void
+UniformFluorophoreProperty
 ::GetXMLConfiguration(xmlNodePtr root) {
   FluorophoreModelObjectProperty::GetXMLConfiguration(root);
 
   char value[256];
   sprintf(value, "%f", GetDensity());
-  xmlNewProp(root, BAD_CAST "density", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST DENSITY_ATT, BAD_CAST value);
 
   sprintf(value, "%d", GetNumberOfFluorophores());
-  xmlNewProp(root, BAD_CAST "numberOfFluorophores", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST NUMBER_OF_FLUOROPHORES_ATT, BAD_CAST value);
 
   if (GetSamplingMode() == FIXED_DENSITY)
-    xmlNewProp(root, BAD_CAST "samplingMode", BAD_CAST "fixedDensity");
+    xmlNewProp(root, BAD_CAST SAMPLING_MODE_ATT, BAD_CAST FIXED_DENSITY_VALUE);
   else if (GetSamplingMode() == FIXED_NUMBER)
-    xmlNewProp(root, BAD_CAST "samplingMode", BAD_CAST "fixedNumber");
+    xmlNewProp(root, BAD_CAST SAMPLING_MODE_ATT, BAD_CAST FIXED_NUMBER_VALUE);
 
   if (GetSamplePattern() == SINGLE_POINT)
-    xmlNewProp(root, BAD_CAST "samplePattern", BAD_CAST "singlePoint");
+    xmlNewProp(root, BAD_CAST SAMPLE_PATTERN_ATT, BAD_CAST SINGLE_POINT_VALUE);
   else if (GetSamplePattern() == POINT_RING)
-    xmlNewProp(root, BAD_CAST "samplePattern", BAD_CAST "pointRing");
+    xmlNewProp(root, BAD_CAST SAMPLE_PATTERN_ATT, BAD_CAST POINT_RING_VALUE);
 
   sprintf(value, "%d", GetNumberOfRingFluorophores());
-  xmlNewProp(root, BAD_CAST "numberOfRingFluorophores", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST NUMBER_OF_RING_FLUOROPHORES_ATT, BAD_CAST value);
 
   sprintf(value, "%f", GetRingRadius());
-  xmlNewProp(root, BAD_CAST "ringRadius", BAD_CAST value);
+  xmlNewProp(root, BAD_CAST RING_RADIUS_ATT, BAD_CAST value);
+
+  if (GetRandomizePatternOrientations())
+    xmlNewProp(root, BAD_CAST RANDOMIZE_PATTERN_ORIENTATIONS_ATT, BAD_CAST "true");
+  else
+    xmlNewProp(root, BAD_CAST RANDOMIZE_PATTERN_ORIENTATIONS_ATT, BAD_CAST "false");
 }
 
 
@@ -207,45 +255,53 @@ UniformFluorophoreProperty
 ::RestoreFromXML(xmlNodePtr root) {
   FluorophoreModelObjectProperty::RestoreFromXML(root);
 
-  char* value = (char*) xmlGetProp(root, BAD_CAST "density");
+  char* value = (char*) xmlGetProp(root, BAD_CAST DENSITY_ATT);
   if (value) {
     double density = atof(value);
     SetDensity(density);
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "numberOfFluorophores");
+  value = (char*) xmlGetProp(root, BAD_CAST NUMBER_OF_FLUOROPHORES_ATT);
   if (value) {
     int numFluorophores = atoi(value);
     SetNumberOfFluorophores(numFluorophores);
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "samplingMode");
+  value = (char*) xmlGetProp(root, BAD_CAST SAMPLING_MODE_ATT);
   if (value) {
     std::string stringValue(value);
-    if (stringValue == "fixedDensity") {
+    if (stringValue == std::string(FIXED_DENSITY_VALUE)) {
       SetSamplingModeToFixedDensity();
-    } else if (stringValue == "fixedNumber") {
+    } else if (stringValue == std::string(FIXED_NUMBER_VALUE)) {
       SetSamplingModeToFixedNumber();
     }
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "samplePattern");
+  value = (char*) xmlGetProp(root, BAD_CAST SAMPLE_PATTERN_ATT);
   if (value) {
     std::string stringValue(value);
-    if (stringValue == "singlePoint") {
+    if (stringValue == std::string(SINGLE_POINT_VALUE)) {
       SetSamplePatternToSinglePoint();
-    } else if (stringValue == "samplePattern") {
+    } else if (stringValue == std::string(POINT_RING_VALUE)) {
       SetSamplePatternToPointRing();
     }
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "numberOfRingFluorophores");
+  value = (char*) xmlGetProp(root, BAD_CAST NUMBER_OF_RING_FLUOROPHORES_ATT);
   if (value) {
     SetNumberOfRingFluorophores(atoi(value));
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "ringRadius");
+  value = (char*) xmlGetProp(root, BAD_CAST RING_RADIUS_ATT);
   if (value) {
     SetRingRadius(atof(value));
+  }
+
+  value = (char*) xmlGetProp(root, BAD_CAST RANDOMIZE_PATTERN_ORIENTATIONS_ATT);
+  if (value) {
+    if (std::string(value) == "true")
+      RandomizePatternOrientationsOn();
+    else 
+      RandomizePatternOrientationsOff();
   }
 }
