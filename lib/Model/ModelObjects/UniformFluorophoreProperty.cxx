@@ -2,8 +2,12 @@
 
 
 #include <vtkPointRingSource.h>
-#include <vtkGlyph3D.h>
+#include <vtkMath.h>
+#include <vtkMinimalStandardRandomSequence.h>
 #include <vtkPassThrough.h>
+#include <vtkProgrammableGlyphFilter.h>
+#include <vtkTransform.h>
+#include <vtkTransformPolyDataFilter.h>
 #include <vtkUniformPointSampler.h>
 
 
@@ -32,11 +36,21 @@ UniformFluorophoreProperty(const std::string& name,
   m_RandomizePatternOrientations = false;
 
   m_PointRingSource = vtkSmartPointer<vtkPointRingSource>::New();
-  m_PointRingSource->SetRadius(0.0);
+  m_PointRingSource->SetRadius(10.0);
   m_PointRingSource->SetNumberOfPoints(2);
 
-  m_PointRingGlypher = vtkSmartPointer<vtkGlyph3D>::New();
-  m_PointRingGlypher->SetSourceConnection(m_PointRingSource->GetOutputPort());
+  m_Transform = vtkSmartPointer<vtkTransform>::New();
+  m_Transform->Identity();
+
+  m_TransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+  m_TransformFilter->SetTransform(m_Transform);
+  m_TransformFilter->SetInputConnection(m_PointRingSource->GetOutputPort());
+
+  m_Glypher = vtkSmartPointer<vtkProgrammableGlyphFilter>::New();
+  m_Glypher->SetGlyphMethod(GlyphFunction, (void*) this);
+  m_Glypher->SetSource(m_TransformFilter->GetOutput());
+
+  m_RandomSequence = vtkSmartPointer<vtkMinimalStandardRandomSequence>::New();
 
   m_PassThroughFilter = vtkSmartPointer<vtkPassThrough>::New();
 
@@ -123,7 +137,8 @@ UniformFluorophoreProperty
   if (m_SamplePattern == SINGLE_POINT) {
     m_PassThroughFilter->SetInputConnection(m_Sampler->GetOutputPort());
   } else if (m_SamplePattern == POINT_RING) {
-    m_PassThroughFilter->SetInputConnection(m_PointRingGlypher->GetOutputPort());
+    //m_PassThroughFilter->SetInputConnection(m_PointRingGlypher->GetOutputPort());
+    m_PassThroughFilter->SetInputConnection(m_Glypher->GetOutputPort());
   }
 }
 
@@ -202,6 +217,67 @@ bool
 UniformFluorophoreProperty
 ::GetRandomizePatternOrientations() {
   return m_RandomizePatternOrientations;
+}
+
+
+vtkTransform*
+UniformFluorophoreProperty
+::GetGlyphTransform() {
+  return m_Transform;
+}
+
+
+vtkProgrammableGlyphFilter*
+UniformFluorophoreProperty
+::GetGlypher() {
+  return m_Glypher;
+}
+
+
+vtkMinimalStandardRandomSequence*
+UniformFluorophoreProperty
+::GetRandomSequence() {
+  return m_RandomSequence;
+}
+
+
+void UniformFluorophoreProperty::GlyphFunction(void* arg) {
+  UniformFluorophoreProperty* property = 
+    reinterpret_cast<UniformFluorophoreProperty*>(arg);
+  if (!property) {
+    std::cout << "UniformFluorophoreProperty not set in GlyphFunction" << std::endl;
+    return;
+  }
+
+  vtkProgrammableGlyphFilter* glypher = property->GetGlypher();
+
+  vtkTransform* transform = property->GetGlyphTransform();
+  
+  // Generate random quaternion here
+  vtkMinimalStandardRandomSequence* randomSequence = property->GetRandomSequence();
+  double u1 = randomSequence->GetValue();
+  randomSequence->Next();
+  double u2 = randomSequence->GetValue();
+  randomSequence->Next();
+  double u3 = randomSequence->GetValue();
+  randomSequence->Next();
+
+  // This is from http://planning.cs.uiuc.edu/node198.html
+  double twoPi = vtkMath::DoubleTwoPi();
+  double q1 = sqrt(1.0-u1) * sin(twoPi*u2);
+  double q2 = sqrt(1.0-u1) * cos(twoPi*u2);
+  double q3 = sqrt(u1)     * sin(twoPi*u3);
+  double q4 = sqrt(u1)     * cos(twoPi*u3);
+
+  // Convert quaternion to rotation and vector
+  double theta = vtkMath::DegreesFromRadians(2.0 * acos(q1));
+  double v1    = q2 / sin(0.5 * theta);
+  double v2    = q3 / sin(0.5 * theta);
+  double v3    = q4 / sin(0.5 * theta);
+
+  transform->Identity();
+  transform->Translate(glypher->GetPoint());
+  transform->RotateWXYZ(theta, v1, v2, v3);
 }
 
 

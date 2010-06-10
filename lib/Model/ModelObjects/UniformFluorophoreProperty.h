@@ -3,9 +3,12 @@
 
 #include <FluorophoreModelObjectProperty.h>
 
-class vtkGlyph3D;
+class vtkMinimalStandardRandomSequence;
 class vtkPassThrough;
 class vtkPointRingSource;
+class vtkProgrammableGlyphFilter;
+class vtkTransform;
+class vtkTransformPolyDataFilter;
 class vtkUniformPointSampler;
 
 
@@ -67,7 +70,7 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   void RandomizePatternOrientationsOn();
   void RandomizePatternOrientationsOff();
   bool GetRandomizePatternOrientations();
-  
+ 
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);
 
@@ -82,13 +85,25 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
 
   SamplePattern_t m_SamplePattern;
 
+  vtkSmartPointer<vtkTransform>               m_Transform;
+  vtkSmartPointer<vtkTransformPolyDataFilter> m_TransformFilter;
+
   double                              m_PointRingRadius;
   vtkSmartPointer<vtkPointRingSource> m_PointRingSource;
-  vtkSmartPointer<vtkGlyph3D>         m_PointRingGlypher;
+
+  vtkSmartPointer<vtkProgrammableGlyphFilter> m_Glypher;
 
   bool m_RandomizePatternOrientations;
 
+  vtkSmartPointer<vtkMinimalStandardRandomSequence> m_RandomSequence;
+
   virtual double GetDensityScale() = 0;
+
+  static void GlyphFunction(void* arg);
+
+  vtkTransform*                     GetGlyphTransform();
+  vtkProgrammableGlyphFilter*       GetGlypher();
+  vtkMinimalStandardRandomSequence* GetRandomSequence();
 
 };
 

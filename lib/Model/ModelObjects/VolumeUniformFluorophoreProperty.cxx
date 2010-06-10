@@ -1,10 +1,11 @@
 #include <VolumeUniformFluorophoreProperty.h>
 
+#include <vtkGlyph3D.h>
 #include <vtkPolyDataAlgorithm.h>
 #include <vtkPolyDataToTetrahedralGrid.h>
+#include <vtkProgrammableGlyphFilter.h>
 #include <vtkVolumeUniformPointSampler.h>
 
-#include <vtkGlyph3D.h>
 
 VolumeUniformFluorophoreProperty::
 VolumeUniformFluorophoreProperty(const std::string& name,
@@ -20,7 +21,7 @@ VolumeUniformFluorophoreProperty(const std::string& name,
   m_VolumeSampler->SetInputConnection(tetrahedralizer->GetOutputPort());
   m_Sampler = m_VolumeSampler;
 
-  m_PointRingGlypher->SetInputConnection(m_Sampler->GetOutputPort());
+  m_Glypher->SetInputConnection(m_Sampler->GetOutputPort());
 
   SetDensity(100.0);
   SetSamplingModeToFixedDensity();

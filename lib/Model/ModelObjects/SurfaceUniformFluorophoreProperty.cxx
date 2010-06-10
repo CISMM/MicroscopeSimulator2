@@ -1,11 +1,11 @@
 #include <SurfaceUniformFluorophoreProperty.h>
 
-#include <vtkMassProperties.h>
+#include <vtkGlyph3D.h>
 #include <vtkPolyDataAlgorithm.h>
+#include <vtkProgrammableGlyphFilter.h>
 #include <vtkSurfaceUniformPointSampler.h>
 #include <vtkTriangleFilter.h>
 
-#include <vtkGlyph3D.h>
 
 SurfaceUniformFluorophoreProperty::
 SurfaceUniformFluorophoreProperty(const std::string& name,
@@ -22,7 +22,7 @@ SurfaceUniformFluorophoreProperty(const std::string& name,
   m_SurfaceSampler->SetInputConnection(triangulizer->GetOutputPort());
   m_Sampler = m_SurfaceSampler;
 
-  m_PointRingGlypher->SetInputConnection(m_Sampler->GetOutputPort());
+  m_Glypher->SetInputConnection(m_Sampler->GetOutputPort());
 
   SetDensity(100.0);
   SetSamplingModeToFixedDensity();
