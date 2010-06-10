@@ -113,7 +113,7 @@ UniformFluorophoreProperty
 
 void
 UniformFluorophoreProperty
-::UseRingClusterPerSample() {
+::UsePointRingClusterPerSample() {
   m_UsePointRingCluster = true;
   m_PointRingSource->SetRadius(m_PointRingRadius);
   m_PointRingSource->SetNumberOfPoints(m_NumberOfFluorophores);
@@ -122,13 +122,13 @@ UniformFluorophoreProperty
 
 bool
 UniformFluorophoreProperty
-::GetUseRingClusterPerSample() {
+::GetUsePointRingClusterPerSample() {
   return m_UsePointRingCluster;
 }
 
 void
 UniformFluorophoreProperty
-::SetFluorophoresAroundRing(int numFluorophores) {
+::SetNumberOfRingFluorophores(int numFluorophores) {
   m_NumberOfFluorophores = numFluorophores;
   if (m_UsePointRingCluster)
     m_PointRingSource->SetNumberOfPoints(numFluorophores);
@@ -137,7 +137,7 @@ UniformFluorophoreProperty
 
 int
 UniformFluorophoreProperty
-::GetFluorophoresAroundRing() {
+::GetNumberOfRingFluorophores() {
   return m_NumberOfFluorophores;
 }
 
@@ -171,6 +171,15 @@ UniformFluorophoreProperty
 
   sprintf(value, "%s", GetUseFixedNumberOfFluorophores() ? "true" : "false");
   xmlNewProp(root, BAD_CAST "useFixedNumberOfFluorophores", BAD_CAST value);
+
+  sprintf(value, "%s", GetUsePointRingClusterPerSample() ? "true" : "false");
+  xmlNewProp(root, BAD_CAST "usePointRingClusterPerSample", BAD_CAST value);
+
+  sprintf(value, "%d", GetNumberOfRingFluorophores());
+  xmlNewProp(root, BAD_CAST "numberOfRingFluorophores", BAD_CAST value);
+
+  sprintf(value, "%f", GetRingRadius());
+  xmlNewProp(root, BAD_CAST "ringRadius", BAD_CAST value);
 }
 
 
@@ -198,5 +207,24 @@ UniformFluorophoreProperty
       UseFixedNumberOfFluorophores();
     else
       UseFixedDensity();
+  }
+
+  value = (char*) xmlGetProp(root, BAD_CAST "usePointRingClusterPerSample");
+  if (value) {
+    std::string stringValue(value);
+    if (stringValue == "true")
+      UsePointRingClusterPerSample();
+    else
+      UseOneFluorophorePerSample();
+  }
+
+  value = (char*) xmlGetProp(root, BAD_CAST "numberOfRingFluorophores");
+  if (value) {
+    SetNumberOfRingFluorophores(atoi(value));
+  }
+
+  value = (char*) xmlGetProp(root, BAD_CAST "ringRadius");
+  if (value) {
+    SetRingRadius(atof(value));
   }
 }

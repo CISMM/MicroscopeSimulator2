@@ -32,11 +32,11 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   void UseOneFluorophorePerSample();
   bool GetUseOneFluorophorePerSample();
 
-  void UseRingClusterPerSample();
-  bool GetUseRingClusterPerSample();
+  void UsePointRingClusterPerSample();
+  bool GetUsePointRingClusterPerSample();
 
-  void SetFluorophoresAroundRing(int numFluorophores);
-  int  GetFluorophoresAroundRing();
+  void SetNumberOfRingFluorophores(int numFluorophores);
+  int  GetNumberOfRingFluorophores();
 
   void   SetRingRadius(double radius);
   double GetRingRadius();
