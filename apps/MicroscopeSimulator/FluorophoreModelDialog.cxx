@@ -114,10 +114,10 @@ FluorophoreModelDialog
 
     gui_UseSingleFluorophorePerSampleRadioButton->setChecked
       (uniformProperty->GetUseOneFluorophorePerSample());
-    gui_UseRingClusterRadioButton->setChecked
-      (uniformProperty->GetUseRingClusterPerSample());
+    gui_UsePointRingClusterRadioButton->setChecked
+      (uniformProperty->GetUsePointRingClusterPerSample());
     gui_FluorophoresAroundRingEdit->setText
-      (QVariant(uniformProperty->GetFluorophoresAroundRing()).toString());
+      (QVariant(uniformProperty->GetNumberOfRingFluorophores()).toString());
     gui_RingRadiusEdit->setText
       (QVariant(uniformProperty->GetRingRadius()).toString());
   }
@@ -143,10 +143,10 @@ FluorophoreModelDialog
     if (GetUseOneFluorophorePerSample()) {
       uniformProperty->UseOneFluorophorePerSample();
     } else {
-      uniformProperty->UseRingClusterPerSample();
+      uniformProperty->UsePointRingClusterPerSample();
     }
 
-    uniformProperty->SetFluorophoresAroundRing(GetNumberOfFluorophoresAroundRing());
+    uniformProperty->SetNumberOfRingFluorophores(GetNumberOfFluorophoresAroundRing());
     uniformProperty->SetRingRadius(GetRingRadius());
 
   }
