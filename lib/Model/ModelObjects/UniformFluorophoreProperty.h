@@ -4,6 +4,7 @@
 #include <FluorophoreModelObjectProperty.h>
 
 class vtkGlyph3D;
+class vtkPassThrough;
 class vtkPointRingSource;
 class vtkUniformPointSampler;
 
@@ -74,10 +75,10 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   UniformFluorophoreProperty() {};
 
   SamplingMode_t m_SamplingMode;
-  double         m_Density;
-  int            m_NumberOfFluorophores;
 
   vtkSmartPointer<vtkUniformPointSampler> m_Sampler;
+
+  vtkSmartPointer<vtkPassThrough> m_PassThroughFilter;
 
   SamplePattern_t m_SamplePattern;
 

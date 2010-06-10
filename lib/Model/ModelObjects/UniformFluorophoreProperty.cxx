@@ -3,6 +3,7 @@
 
 #include <vtkPointRingSource.h>
 #include <vtkGlyph3D.h>
+#include <vtkPassThrough.h>
 #include <vtkUniformPointSampler.h>
 
 
@@ -28,18 +29,18 @@ UniformFluorophoreProperty(const std::string& name,
   // Subclasses need to set up specific samplers and connect them to
   // the point ring glypher and the set it as the fluorophore output.
   m_PointRingRadius = 10.0;
-  m_NumberOfFluorophores = 2;
+  m_RandomizePatternOrientations = false;
 
   m_PointRingSource = vtkSmartPointer<vtkPointRingSource>::New();
   m_PointRingSource->SetRadius(0.0);
-  m_PointRingSource->SetNumberOfPoints(1);
+  m_PointRingSource->SetNumberOfPoints(2);
 
   m_PointRingGlypher = vtkSmartPointer<vtkGlyph3D>::New();
   m_PointRingGlypher->SetSourceConnection(m_PointRingSource->GetOutputPort());
 
-  m_RandomizePatternOrientations = false;
+  m_PassThroughFilter = vtkSmartPointer<vtkPassThrough>::New();
 
-  m_FluorophoreOutput = m_PointRingGlypher;
+  m_FluorophoreOutput = m_PassThroughFilter;
 }
 
 
@@ -87,8 +88,7 @@ UniformFluorophoreProperty
 void
 UniformFluorophoreProperty
 ::SetDensity(double density) {
-  m_Density = density;
-  m_Sampler->SetDensity(m_Density * GetDensityScale());
+  m_Sampler->SetDensity(density * GetDensityScale());
   m_Sampler->Modified(); // Ensure resampling is performed no matter what
   m_Sampler->Update();
 }
@@ -97,7 +97,7 @@ UniformFluorophoreProperty
 double
 UniformFluorophoreProperty
 ::GetDensity() {
-  return m_Density;
+  return m_Sampler->GetDensity() / GetDensityScale();
 }
 
 
@@ -121,12 +121,9 @@ UniformFluorophoreProperty
   m_SamplePattern = pattern;
 
   if (m_SamplePattern == SINGLE_POINT) {
-    m_PointRingSource->SetRadius(0.0);
-    m_PointRingSource->SetNumberOfPoints(1);
-  } else {
-    // POINT_RING
-    m_PointRingSource->SetRadius(m_PointRingRadius);
-    m_PointRingSource->SetNumberOfPoints(m_NumberOfFluorophores);
+    m_PassThroughFilter->SetInputConnection(m_Sampler->GetOutputPort());
+  } else if (m_SamplePattern == POINT_RING) {
+    m_PassThroughFilter->SetInputConnection(m_PointRingGlypher->GetOutputPort());
   }
 }
 
@@ -155,28 +152,21 @@ UniformFluorophoreProperty
 void
 UniformFluorophoreProperty
 ::SetNumberOfRingFluorophores(int numFluorophores) {
-  m_NumberOfFluorophores = numFluorophores;
-  if (GetSamplePattern() == POINT_RING) {
-    m_PointRingSource->SetNumberOfPoints(numFluorophores);
-    m_PointRingSource->Update();
-  }
+  m_PointRingSource->SetNumberOfPoints(numFluorophores);
 }
 
 
 int
 UniformFluorophoreProperty
 ::GetNumberOfRingFluorophores() {
-  return m_NumberOfFluorophores;
+  return m_PointRingSource->GetNumberOfPoints();
 }
 
 void
 UniformFluorophoreProperty
 ::SetRingRadius(double radius) {
   m_PointRingRadius = radius;
-  if (GetSamplePattern() == POINT_RING) {
-    m_PointRingSource->SetRadius(radius);
-    m_PointRingSource->Update();
-  }
+  m_PointRingSource->SetRadius(radius);
 }
 
 

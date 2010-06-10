@@ -6,6 +6,7 @@
 
 #include <vtkSmartPointer.h>
 
+class vtkAlgorithm;
 class vtkPolyDataAlgorithm;
 
 
@@ -32,7 +33,7 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
 
   vtkPolyDataAlgorithm* GetGeometry();
 
-  vtkPolyDataAlgorithm* GetFluorophoreOutput();
+  vtkAlgorithm* GetFluorophoreOutput();
 
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);
@@ -44,7 +45,7 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   bool                   m_Enabled;
   FluorophoreChannelType m_Channel;
 
-  vtkSmartPointer<vtkPolyDataAlgorithm> m_FluorophoreOutput;
+  vtkSmartPointer<vtkAlgorithm> m_FluorophoreOutput;
 
 };
 
