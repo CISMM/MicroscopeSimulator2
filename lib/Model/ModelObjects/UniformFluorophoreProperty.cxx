@@ -14,8 +14,6 @@ UniformFluorophoreProperty(const std::string& name,
 
   // Subclasses need to set up specific samplers and connect them to
   // the point ring glypher and the set it as the fluorophore output.
-
-  m_UsePointRingCluster = false;
   m_PointRingRadius = 10.0;
   m_NumberOfFluorophores = 2;
 
@@ -36,32 +34,38 @@ UniformFluorophoreProperty
 }
 
 
+void
+UniformFluorophoreProperty
+::SetSamplingMode(SamplingMode_t mode) {
+  m_SamplingMode = mode;
+
+  if (m_SamplingMode == FIXED_DENSITY) {
+    m_Sampler->UseFixedNumberOfSamplesOff();
+  } else {
+    // FIXED_NUMBER
+    m_Sampler->UseFixedNumberOfSamplesOn();
+  }
+}
+
 
 void
 UniformFluorophoreProperty
-::UseFixedDensity() {
-  m_Sampler->UseFixedNumberOfSamplesOff();
-}
-
-
-bool
-UniformFluorophoreProperty
-::GetUseFixedDensity() {
-  return !static_cast<bool>(m_Sampler->GetUseFixedNumberOfSamples());
+::SetSamplingModeToFixedDensity() {
+  SetSamplingMode(FIXED_DENSITY);
 }
 
 
 void
 UniformFluorophoreProperty
-::UseFixedNumberOfFluorophores() {
-  m_Sampler->UseFixedNumberOfSamplesOn();
+::SetSamplingModeToFixedNumber() {
+  SetSamplingMode(FIXED_NUMBER);
 }
 
 
-bool
+UniformFluorophoreProperty::SamplingMode_t
 UniformFluorophoreProperty
-::GetUseFixedNumberOfFluorophores() {
-  return static_cast<bool>(m_Sampler->GetUseFixedNumberOfSamples());
+::GetSamplingMode() {
+  return m_SamplingMode;
 }
 
 
@@ -98,40 +102,49 @@ UniformFluorophoreProperty
 
 void
 UniformFluorophoreProperty
-::UseOneFluorophorePerSample() {
-  m_UsePointRingCluster = false;
-  m_PointRingSource->SetRadius(0.0);
-  m_PointRingSource->SetNumberOfPoints(1);
+::SetSamplePattern(SamplePattern_t pattern) {
+  m_SamplePattern = pattern;
+
+  if (m_SamplePattern == SINGLE_POINT) {
+    m_PointRingSource->SetRadius(0.0);
+    m_PointRingSource->SetNumberOfPoints(1);
+  } else {
+    // POINT_RING
+    m_PointRingSource->SetRadius(m_PointRingRadius);
+    m_PointRingSource->SetNumberOfPoints(m_NumberOfFluorophores);
+  }
 }
 
-
-bool
-UniformFluorophoreProperty
-::GetUseOneFluorophorePerSample() {
-  return !m_UsePointRingCluster;
-}
 
 void
 UniformFluorophoreProperty
-::UsePointRingClusterPerSample() {
-  m_UsePointRingCluster = true;
-  m_PointRingSource->SetRadius(m_PointRingRadius);
-  m_PointRingSource->SetNumberOfPoints(m_NumberOfFluorophores);
+::SetSamplePatternToSinglePoint() {
+  SetSamplePattern(SINGLE_POINT);
 }
 
 
-bool
+void
 UniformFluorophoreProperty
-::GetUsePointRingClusterPerSample() {
-  return m_UsePointRingCluster;
+::SetSamplePatternToPointRing() {
+  SetSamplePattern(POINT_RING);
 }
+
+
+UniformFluorophoreProperty::SamplePattern_t
+UniformFluorophoreProperty
+::GetSamplePattern() {
+  return m_SamplePattern;
+}
+
 
 void
 UniformFluorophoreProperty
 ::SetNumberOfRingFluorophores(int numFluorophores) {
   m_NumberOfFluorophores = numFluorophores;
-  if (m_UsePointRingCluster)
+  if (GetSamplePattern() == POINT_RING) {
     m_PointRingSource->SetNumberOfPoints(numFluorophores);
+    m_PointRingSource->Update();
+  }
 }
 
 
@@ -145,8 +158,10 @@ void
 UniformFluorophoreProperty
 ::SetRingRadius(double radius) {
   m_PointRingRadius = radius;
-  if (m_UsePointRingCluster)
+  if (GetSamplePattern() == POINT_RING) {
     m_PointRingSource->SetRadius(radius);
+    m_PointRingSource->Update();
+  }
 }
 
 
@@ -169,11 +184,15 @@ UniformFluorophoreProperty
   sprintf(value, "%d", GetNumberOfFluorophores());
   xmlNewProp(root, BAD_CAST "numberOfFluorophores", BAD_CAST value);
 
-  sprintf(value, "%s", GetUseFixedNumberOfFluorophores() ? "true" : "false");
-  xmlNewProp(root, BAD_CAST "useFixedNumberOfFluorophores", BAD_CAST value);
+  if (GetSamplingMode() == FIXED_DENSITY)
+    xmlNewProp(root, BAD_CAST "samplingMode", BAD_CAST "fixedDensity");
+  else if (GetSamplingMode() == FIXED_NUMBER)
+    xmlNewProp(root, BAD_CAST "samplingMode", BAD_CAST "fixedNumber");
 
-  sprintf(value, "%s", GetUsePointRingClusterPerSample() ? "true" : "false");
-  xmlNewProp(root, BAD_CAST "usePointRingClusterPerSample", BAD_CAST value);
+  if (GetSamplePattern() == SINGLE_POINT)
+    xmlNewProp(root, BAD_CAST "samplePattern", BAD_CAST "singlePoint");
+  else if (GetSamplePattern() == POINT_RING)
+    xmlNewProp(root, BAD_CAST "samplePattern", BAD_CAST "pointRing");
 
   sprintf(value, "%d", GetNumberOfRingFluorophores());
   xmlNewProp(root, BAD_CAST "numberOfRingFluorophores", BAD_CAST value);
@@ -200,22 +219,24 @@ UniformFluorophoreProperty
     SetNumberOfFluorophores(numFluorophores);
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "useFixedNumberOfFluorophores");
+  value = (char*) xmlGetProp(root, BAD_CAST "samplingMode");
   if (value) {
     std::string stringValue(value);
-    if (stringValue == "true")
-      UseFixedNumberOfFluorophores();
-    else
-      UseFixedDensity();
+    if (stringValue == "fixedDensity") {
+      SetSamplingModeToFixedDensity();
+    } else if (stringValue == "fixedNumber") {
+      SetSamplingModeToFixedNumber();
+    }
   }
 
-  value = (char*) xmlGetProp(root, BAD_CAST "usePointRingClusterPerSample");
+  value = (char*) xmlGetProp(root, BAD_CAST "samplePattern");
   if (value) {
     std::string stringValue(value);
-    if (stringValue == "true")
-      UsePointRingClusterPerSample();
-    else
-      UseOneFluorophorePerSample();
+    if (stringValue == "singlePoint") {
+      SetSamplePatternToSinglePoint();
+    } else if (stringValue == "samplePattern") {
+      SetSamplePatternToPointRing();
+    }
   }
 
   value = (char*) xmlGetProp(root, BAD_CAST "numberOfRingFluorophores");

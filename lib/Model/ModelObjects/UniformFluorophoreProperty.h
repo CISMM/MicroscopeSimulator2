@@ -11,17 +11,27 @@ class vtkUniformPointSampler;
 class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
 
  public:
+
+  typedef enum {
+    FIXED_DENSITY,
+    FIXED_NUMBER
+  } SamplingMode_t;
+
+  typedef enum {
+    SINGLE_POINT,
+    POINT_RING
+  } SamplePattern_t;
+
   UniformFluorophoreProperty(const std::string& name,
                              vtkPolyDataAlgorithm* geometry,
                              bool editable = false,
                              bool optimizable = true);
   virtual ~UniformFluorophoreProperty();
 
-  void UseFixedDensity();
-  bool GetUseFixedDensity();
-
-  void UseFixedNumberOfFluorophores();
-  bool GetUseFixedNumberOfFluorophores();
+  void SetSamplingMode(SamplingMode_t mode);
+  void SetSamplingModeToFixedDensity();
+  void SetSamplingModeToFixedNumber();
+  SamplingMode_t GetSamplingMode();
 
   void   SetDensity(double density);
   double GetDensity();
@@ -29,11 +39,10 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   void SetNumberOfFluorophores(int number);
   int  GetNumberOfFluorophores();
 
-  void UseOneFluorophorePerSample();
-  bool GetUseOneFluorophorePerSample();
-
-  void UsePointRingClusterPerSample();
-  bool GetUsePointRingClusterPerSample();
+  void SetSamplePattern(SamplePattern_t pattern);
+  void SetSamplePatternToSinglePoint();
+  void SetSamplePatternToPointRing();
+  SamplePattern_t GetSamplePattern();
 
   void SetNumberOfRingFluorophores(int numFluorophores);
   int  GetNumberOfRingFluorophores();
@@ -47,11 +56,13 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
  protected:
   UniformFluorophoreProperty() {};
 
-  double m_Density;
+  SamplingMode_t m_SamplingMode;
+  double         m_Density;
 
   vtkSmartPointer<vtkUniformPointSampler> m_Sampler;
 
-  bool   m_UsePointRingCluster;
+  SamplePattern_t m_SamplePattern;
+
   double m_PointRingRadius;
   int    m_NumberOfFluorophores;
 

@@ -25,6 +25,8 @@ SurfaceUniformFluorophoreProperty(const std::string& name,
   m_PointRingGlypher->SetInputConnection(m_Sampler->GetOutputPort());
 
   SetDensity(100.0);
+  SetSamplingModeToFixedDensity();
+  SetSamplePatternToSinglePoint();
 }
 
 
