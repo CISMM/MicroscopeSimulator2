@@ -42,7 +42,7 @@ PointRingModelObject
   // Need a vertex source for the points so that the fluorescence renderer
   // knows it has something to render.
   m_VertexSource = vtkSmartPointer<vtkVertexGlyphFilter>::New();
-  m_VertexSource->SetInputConnection(m_SphereSource->GetOutputPort());
+  m_VertexSource->SetInputConnection(m_PointRingSource->GetOutputPort());
 
   SetGeometrySubAssembly("All", m_GlyphSource);
   SetGeometrySubAssembly("Points", m_VertexSource);
