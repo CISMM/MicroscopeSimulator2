@@ -57,7 +57,7 @@ vtkGeometryRenderView::vtkGeometryRenderView() {
   this->AFMPlaneActor->GetProperty()->SetTexture(0, this->AFMTexture);
   this->AFMPlaneActor->SetMapper(this->AFMPlaneMapper);
 
-  this->Renderer->AddViewProp(this->AFMPlaneActor);
+  //this->Renderer->AddViewProp(this->AFMPlaneActor);
 
   //this->AFMRenderer->AddViewProp(actor);
 }
