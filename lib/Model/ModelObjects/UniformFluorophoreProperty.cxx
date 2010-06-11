@@ -262,22 +262,26 @@ void UniformFluorophoreProperty::GlyphFunction(void* arg) {
   double u3 = randomSequence->GetValue();
   randomSequence->Next();
 
-  // This is from http://planning.cs.uiuc.edu/node198.html
-  double twoPi = vtkMath::DoubleTwoPi();
-  double q1 = sqrt(1.0-u1) * sin(twoPi*u2);
-  double q2 = sqrt(1.0-u1) * cos(twoPi*u2);
-  double q3 = sqrt(u1)     * sin(twoPi*u3);
-  double q4 = sqrt(u1)     * cos(twoPi*u3);
-
-  // Convert quaternion to rotation and vector
-  double theta = vtkMath::DegreesFromRadians(2.0 * acos(q1));
-  double v1    = q2 / sin(0.5 * theta);
-  double v2    = q3 / sin(0.5 * theta);
-  double v3    = q4 / sin(0.5 * theta);
-
   transform->Identity();
   transform->Translate(glypher->GetPoint());
-  transform->RotateWXYZ(theta, v1, v2, v3);
+
+  if (property->GetRandomizePatternOrientations()) {
+
+    // This is from http://planning.cs.uiuc.edu/node198.html
+    double twoPi = vtkMath::DoubleTwoPi();
+    double q1 = sqrt(1.0-u1) * sin(twoPi*u2);
+    double q2 = sqrt(1.0-u1) * cos(twoPi*u2);
+    double q3 = sqrt(u1)     * sin(twoPi*u3);
+    double q4 = sqrt(u1)     * cos(twoPi*u3);
+    
+    // Convert quaternion to rotation and vector
+    double theta = vtkMath::DegreesFromRadians(2.0 * acos(q1));
+    double v1    = q2 / sin(0.5 * theta);
+    double v2    = q3 / sin(0.5 * theta);
+    double v3    = q4 / sin(0.5 * theta);
+
+    transform->RotateWXYZ(theta, v1, v2, v3);
+  }
 }
 
 
