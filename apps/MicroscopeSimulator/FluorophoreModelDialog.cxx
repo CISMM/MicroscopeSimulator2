@@ -102,10 +102,12 @@ FluorophoreModelDialog
     gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
     gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
 
-    gui_UseSingleFluorophorePerSampleRadioButton->setChecked
-      (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::SINGLE_POINT);
-    gui_UsePointRingClusterRadioButton->setChecked
-      (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::POINT_RING);
+    if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::SINGLE_POINT) {
+      gui_UseSingleFluorophorePerSampleRadioButton->click();  
+    } else if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::POINT_RING) {
+      gui_UsePointRingClusterRadioButton->click();
+    }
+
     gui_FluorophoresAroundRingEdit->setText
       (QVariant(uniformProperty->GetNumberOfRingFluorophores()).toString());
     gui_RingRadiusEdit->setText
@@ -115,6 +117,7 @@ FluorophoreModelDialog
       (uniformProperty->GetRandomizePatternOrientations());
   }
 
+  adjustSize();
 }
 
 
@@ -250,6 +253,26 @@ FluorophoreModelDialog
   // Set new density
   gui_DensityEdit->setText(QString().sprintf(m_DoubleFormatString.c_str(),
                                              NumberOfFluorophoresToDensity(value)));
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_UseSingleFluorophorePerSampleRadioButton_clicked(bool checked) {
+  gui_FluorophoresAroundRingLabel->setEnabled(false);
+  gui_FluorophoresAroundRingEdit->setEnabled(false);
+  gui_RingRadiusLabel->setEnabled(false);
+  gui_RingRadiusEdit->setEnabled(false);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_UsePointRingClusterRadioButton_clicked(bool checked) {
+  gui_FluorophoresAroundRingLabel->setEnabled(true);
+  gui_FluorophoresAroundRingEdit->setEnabled(true);
+  gui_RingRadiusLabel->setEnabled(true);
+  gui_RingRadiusEdit->setEnabled(true);
 }
 
 
