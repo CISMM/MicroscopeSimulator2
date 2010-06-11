@@ -51,7 +51,7 @@ SET(RCCS
   resources/icons/icons.qrc
   resources/splash/splash.qrc
 )
-SET (ApplicationHeaders
+SET (QtGuiHeaders
   MicroscopeSimulator.h
   ErrorLogDialog.h
   FluorophoreModelDialog.h
@@ -69,10 +69,20 @@ SET (ApplicationHeaders
 )
 QT4_WRAP_UI(UIHeaders ${UIS})
 QT4_ADD_RESOURCES(RCCSrcs ${RCCS})
-QT4_WRAP_CPP(MOCSrcs ${ApplicationHeaders} )
+QT4_WRAP_CPP(MOCSrcs ${QtGuiHeaders} )
 ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
-SET_SOURCE_FILES_PROPERTIES(${QtGuiSrcs} PROPERTIES
-                          OBJECT_DEPENDS "${UIHeaders}")
+#SET_SOURCE_FILES_PROPERTIES(${QtGuiSrcs} PROPERTIES
+#                          OBJECT_DEPENDS "${UIHeaders}")
+
+# WARNING: this works only when the top-level Qt widget is named the same
+# as the UI filename and the header file name without the .h.
+FOREACH( UI_FILE ${UIHeaders} )
+  STRING( REPLACE "${MicroscopeSimulator_BINARY_DIR}/apps/MicroscopeSimulator/ui_" "" UI_HEADER ${UI_FILE})
+  STRING( REPLACE ".h" ".cxx" UI_SOURCE ${UI_HEADER} )
+  MESSAGE( ${UI_SOURCE} )
+  SET_SOURCE_FILES_PROPERTIES( ${UI_SOURCE} PROPERTIES
+                               OBJECT_DEPENDS ${UI_FILE} )
+ENDFOREACH( UI_FILE ${UIS} )
 
 
 # It's nice to have the ui in the windows project file...just double click on it
