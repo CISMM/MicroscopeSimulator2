@@ -6,134 +6,138 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>547</height>
+    <width>367</width>
+    <height>552</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Fluorophore Model Editor</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="gui_GroupBox">
-     <property name="title">
+    <widget class="QLabel" name="gui_FluorophoreModelLabel">
+     <property name="text">
       <string>Fluorophore Model</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gui_ColorChannelGroupBox">
+     <property name="title">
+      <string>Channel</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
       <property name="horizontalSpacing">
-       <number>6</number>
+       <number>-1</number>
       </property>
       <property name="verticalSpacing">
+       <number>3</number>
+      </property>
+      <property name="margin">
        <number>6</number>
       </property>
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>12</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
-      <item row="1" column="0" colspan="2">
-       <widget class="QGroupBox" name="gui_ColorChannelGroupBox">
-        <property name="title">
-         <string>Channel</string>
+      <item row="1" column="0">
+       <widget class="QLabel" name="gui_ColorChannelLabel">
+        <property name="text">
+         <string>Color channel:</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="margin">
-          <number>6</number>
-         </property>
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item row="1" column="0">
-          <widget class="QLabel" name="gui_ColorChannelLabel">
-           <property name="text">
-            <string>Color channel:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="gui_ColorChannelComboBox">
-           <item>
-            <property name="text">
-             <string>Red</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Green</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Blue</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>All</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="gui_EnabledCheckBox">
-           <property name="text">
-            <string>Enabled</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QGroupBox" name="gui_samplingModeGroupBox">
-        <property name="title">
-         <string>Sampling Mode</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="spacing">
-          <number>3</number>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="gui_ColorChannelComboBox">
+        <item>
+         <property name="text">
+          <string>Red</string>
          </property>
-         <property name="margin">
-          <number>6</number>
+        </item>
+        <item>
+         <property name="text">
+          <string>Green</string>
          </property>
-         <item>
-          <widget class="QRadioButton" name="gui_useFixedDensity">
-           <property name="text">
-            <string>Use Fixed Density</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="gui_useFixedNumberOfFluorophores">
-           <property name="text">
-            <string>Use Fixed Number of Fluorophores</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        </item>
+        <item>
+         <property name="text">
+          <string>Blue</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>All</string>
+         </property>
+        </item>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="gui_EnabledCheckBox">
+        <property name="text">
+         <string>Enabled</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gui_SamplingModeGroupBox">
+     <property name="title">
+      <string>Sampling Mode</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="margin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QRadioButton" name="gui_useFixedDensity">
+        <property name="text">
+         <string>Use Fixed Density</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="gui_useFixedNumberOfFluorophores">
+        <property name="text">
+         <string>Use Fixed Number of Fluorophores</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gui_SamplingDensityGroupBox">
+     <property name="title">
+      <string>Sampling Density</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_3">
+      <property name="horizontalSpacing">
+       <number>-1</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>-1</number>
+      </property>
+      <property name="margin">
+       <number>6</number>
+      </property>
+      <item row="0" column="0">
        <widget class="QLabel" name="gui_AreaLabel">
         <property name="text">
          <string>Surface Area:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="0" column="1">
        <widget class="QLineEdit" name="gui_AreaEdit">
         <property name="minimumSize">
          <size>
@@ -146,7 +150,14 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="1" column="0">
+       <widget class="QLabel" name="gui_DensityLabel">
+        <property name="text">
+         <string>Density:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
        <widget class="QLineEdit" name="gui_DensityEdit">
         <property name="minimumSize">
          <size>
@@ -156,14 +167,14 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="gui_DensityLabel">
+      <item row="2" column="0">
+       <widget class="QLabel" name="gui_NumberOfFluorophoresLabel">
         <property name="text">
-         <string>Density:</string>
+         <string>Number of fluorophores:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="2" column="1">
        <widget class="QLineEdit" name="gui_NumberOfFluorophoresEdit">
         <property name="minimumSize">
          <size>
@@ -173,14 +184,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="gui_NumberOfFluorophoresLabel">
-        <property name="text">
-         <string>Number of fluorophores:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0" colspan="2">
+      <item row="3" column="0" colspan="2">
        <widget class="QSlider" name="gui_NumberOfFluorophoresSlider">
         <property name="maximum">
          <number>100000</number>
@@ -194,7 +198,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="gui_ClustersGroupBox">
+    <widget class="QGroupBox" name="gui_FluorophorePatternsGroupBox">
      <property name="title">
       <string>Fluorophore Patterns</string>
      </property>
@@ -204,6 +208,12 @@
      <layout class="QFormLayout" name="formLayout_2">
       <property name="fieldGrowthPolicy">
        <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+      </property>
+      <property name="horizontalSpacing">
+       <number>-1</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>-1</number>
       </property>
       <property name="margin">
        <number>6</number>
@@ -215,13 +225,6 @@
         </property>
         <property name="checked">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QRadioButton" name="gui_UsePointRingClusterRadioButton">
-        <property name="text">
-         <string>Use point ring cluster per sample</string>
         </property>
        </widget>
       </item>
@@ -252,11 +255,24 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QRadioButton" name="gui_UsePointRingClusterRadioButton">
+        <property name="text">
+         <string>Use point ring cluster per sample</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>

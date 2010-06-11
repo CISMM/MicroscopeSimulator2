@@ -58,18 +58,14 @@ FluorophoreModelDialog
 
   if (geometryProperty) {
 
-    gui_GroupBox->setTitle(tr("Fixed Points Fluorophore Model"));
-    gui_AreaLabel->setHidden(true);
-    gui_AreaEdit->setHidden(true);
-    gui_DensityLabel->setHidden(true);
-    gui_DensityEdit->setHidden(true);
-    gui_NumberOfFluorophoresLabel->setHidden(true);
-    gui_NumberOfFluorophoresEdit->setHidden(true);
-    gui_NumberOfFluorophoresSlider->setHidden(true);
+    gui_FluorophoreModelLabel->setText(tr("Fixed Points Fluorophore Model"));
+    gui_SamplingModeGroupBox->setHidden(true);
+    gui_SamplingDensityGroupBox->setHidden(true);
+    gui_FluorophorePatternsGroupBox->setHidden(true);
 
   } else if (surfaceProperty) {
 
-    gui_GroupBox->setTitle(tr("Uniform Random Surface Labeling"));
+    gui_FluorophoreModelLabel->setText(tr("Uniform Random Surface Labeling"));
     gui_AreaLabel->setText(tr("Surface area (fluorophores/micron^2)"));
     double area = surfaceProperty->GetGeometryArea();
     gui_AreaEdit->setText(QString().sprintf("%.6f", area));
@@ -77,7 +73,7 @@ FluorophoreModelDialog
 
   } else if (volumeProperty) {
 
-    gui_GroupBox->setTitle(tr("Uniform Random Volume Labeling"));
+    gui_FluorophoreModelLabel->setText(tr("Uniform Random Volume Labeling"));
     gui_AreaLabel->setText(tr("Volume (fluorophores/micron^3)"));
     double volume = volumeProperty->GetGeometryVolume();
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
