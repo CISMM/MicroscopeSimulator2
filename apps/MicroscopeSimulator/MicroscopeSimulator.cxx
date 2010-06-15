@@ -2,6 +2,7 @@
 #include <Simulation.h>
 #include <Visualization.h>
 #include <Version.h>
+#include <AFMSimulation.h>
 #include <FluorescenceOptimizer.h>
 #include <FluorescenceSimulation.h>
 #include <FluorophoreModelObjectProperty.h>
@@ -866,6 +867,89 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_afmSimRadiusSpinBox_valueChanged(int i) {
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimUseConeSphereModelCheckBox_stateChanged(int state) {
+
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimConeAngleEdit_textEdited(const QString& text) {
+
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimPixelSizeEdit_textEdited(const QString& text) {
+  m_Simulation->GetAFMSimulation()->SetPixelSize(text.toDouble());
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimImageWidthEdit_textEdited(const QString& text) {
+  m_Simulation->GetAFMSimulation()->SetImageWidth(text.toInt());
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimImageHeightEdit_textEdited(const QString& text) {
+  m_Simulation->GetAFMSimulation()->SetImageHeight(text.toInt());
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimClipGroundPlaneCheckBox_stateChanged(int state) {
+  m_Simulation->GetAFMSimulation()->SetClipGroundPlane(state == Qt::Checked);
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimDisplayAsWireframeCheckBox_stateChanged(int state) {
+  m_Simulation->GetAFMSimulation()->SetDisplayAsWireframe(state == Qt::Checked);
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimSurfaceOpacityEdit_textEdited(const QString& text) {
+  m_Simulation->GetAFMSimulation()->SetSurfaceOpacity(text.toDouble());
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimCompareScanToComboBox_currentIndexChanged(int index) {
+  // TODO
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimSaveSimulatedScan_clicked() {
+  // TODO
+}
+
+
+void
+MicroscopeSimulator
+::on_afmSimScanStatistics_clicked() {
+  // TODO
+}
+
+
+void
+MicroscopeSimulator
 ::on_actionShowErrors_toggled(bool visible) {
   if (visible) {
     m_ErrorLogDialog->show();
@@ -1469,6 +1553,16 @@ MicroscopeSimulator
 
   m_SimulationNeedsSaving = false;
   UpdateMainWindowTitle();
+
+  // Refresh AFMSim UI widgets
+  AFMSimulation* afmSim = m_Simulation->GetAFMSimulation();
+  
+  gui->afmSimPixelSizeEdit->setText(QVariant(afmSim->GetPixelSize()).toString());
+  gui->afmSimImageWidthEdit->setText(QVariant(afmSim->GetImageWidth()).toString());
+  gui->afmSimImageHeightEdit->setText(QVariant(afmSim->GetImageHeight()).toString());
+  gui->afmSimClipGroundPlaneCheckBox->setChecked(QVariant(afmSim->GetClipGroundPlane()).toBool());
+  gui->afmSimDisplayAsWireframeCheckBox->setChecked(QVariant(afmSim->GetDisplayAsWireframe()).toBool());
+  gui->afmSimSurfaceOpacityEdit->setText(QVariant(afmSim->GetSurfaceOpacity()).toString());
 
   // Refresh FluoroSim UI widgets
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();

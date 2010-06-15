@@ -1,7 +1,7 @@
 #include <FluorophoreModelObjectProperty.h>
 #include <StringUtils.h>
 
-#include <vtkMassProperties.h>
+#include <vtkAlgorithm.h>
 #include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSmartPointer.h>
 #include <vtkSurfaceUniformPointSampler.h>
@@ -91,7 +91,7 @@ FluorophoreModelObjectProperty
 }
 
 
-vtkPolyDataAlgorithm*
+vtkAlgorithm*
 FluorophoreModelObjectProperty
 ::GetFluorophoreOutput() {
   return m_FluorophoreOutput;

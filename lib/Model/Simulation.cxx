@@ -13,6 +13,8 @@
 
 #include <Simulation.h>
 
+#include <AFMSimulation.h>
+
 #include <FluorescenceSimulation.h>
 #include <GradientDescentFluorescenceOptimizer.h>
 #include <NelderMeadFluorescenceOptimizer.h>
@@ -43,6 +45,7 @@ Simulation
   m_DirtyListener = dirtyListener;
   m_ModelObjectList = new ModelObjectList(this);
 
+  m_AFMSim    = new AFMSimulation(this);
   m_FluoroSim = new FluorescenceSimulation(this);
 
   m_GradientDescentFluoroOptimizer = 
@@ -79,6 +82,7 @@ Simulation
 Simulation
 ::~Simulation() {
   delete m_ModelObjectList;
+  delete m_AFMSim;
   delete m_FluoroSim;
   delete m_GradientDescentFluoroOptimizer;
   delete m_NelderMeadFluoroOptimizer;
@@ -95,6 +99,7 @@ Simulation
 
   m_ModelObjectList->DeleteAll();
 
+  m_AFMSim->NewSimulation();
   m_FluoroSim->NewSimulation();
 }
 
@@ -182,7 +187,10 @@ Simulation
 
   // Get XML configuration from the simulators here. Each child class will
   // append nodes to the Simulation node.
-  xmlNodePtr fluoroSimNode = xmlNewChild(node, NULL, BAD_CAST Simulation::FLUORO_SIM_ELEM, NULL);
+  xmlNodePtr afmSimNode = xmlNewChild(node, NULL, BAD_CAST AFM_SIM_ELEM, NULL);
+  m_AFMSim->GetXMLConfiguration(afmSimNode);
+
+  xmlNodePtr fluoroSimNode = xmlNewChild(node, NULL, BAD_CAST FLUORO_SIM_ELEM, NULL);
   m_FluoroSim->GetXMLConfiguration(fluoroSimNode);
 
   xmlNodePtr gradientDescentOptimizerNode = 
@@ -197,7 +205,7 @@ Simulation
     xmlNewChild(fluoroSimNode, NULL, BAD_CAST PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
   m_PointsGradientFluoroOptimizer->GetXMLConfiguration(pointsGradientOptimizerNode);
 
-  xmlNodePtr molNode = xmlNewChild(node, NULL, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM, NULL);
+  xmlNodePtr molNode = xmlNewChild(node, NULL, BAD_CAST MODEL_OBJECT_LIST_ELEM, NULL);
   m_ModelObjectList->GetXMLConfiguration(molNode);
 
   ModelObject* comparisonImageModelObject = 
@@ -233,9 +241,16 @@ Simulation
     SetSimulationDescription(std::string(description));
   }
 
+  // Restore AFM simulation
+  xmlNodePtr afmSimNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST AFM_SIM_ELEM);
+  if (afmSimNode) {
+    m_AFMSim->RestoreFromXML(afmSimNode);
+  }
+
   // Restore fluorescence simulation
   xmlNodePtr fluoroSimNode =
-    xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::FLUORO_SIM_ELEM);
+    xmlGetFirstElementChildWithName(node, BAD_CAST FLUORO_SIM_ELEM);
   if (fluoroSimNode) {
     m_FluoroSim->RestoreFromXML(fluoroSimNode);
   }
@@ -260,7 +275,7 @@ Simulation
 
   // Restore model object list
   xmlNodePtr molNode = 
-    xmlGetFirstElementChildWithName(node, BAD_CAST Simulation::MODEL_OBJECT_LIST_ELEM);
+    xmlGetFirstElementChildWithName(node, BAD_CAST MODEL_OBJECT_LIST_ELEM);
   if (molNode) {
     m_ModelObjectList->RestoreFromXML(molNode);
   }
@@ -349,6 +364,13 @@ std::string&
 Simulation
 ::GetSimulationCreationDate() {
   return m_SimulationCreationDate;
+}
+
+
+AFMSimulation*
+Simulation
+::GetAFMSimulation() {
+  return m_AFMSim;
 }
 
 

@@ -1,12 +1,12 @@
 #ifndef _VOLUME_UNIFORM_FLUOROPHORE_PROPERTY_H_
 #define _VOLUME_UNIFORM_FLUOROPHORE_PROPERTY_H_
 
-#include <FluorophoreModelObjectProperty.h>
+#include <UniformFluorophoreProperty.h>
 
 class vtkVolumeUniformPointSampler;
 
 
-class VolumeUniformFluorophoreProperty : public FluorophoreModelObjectProperty {
+class VolumeUniformFluorophoreProperty : public UniformFluorophoreProperty {
 
  public:
   VolumeUniformFluorophoreProperty(const std::string& name,
@@ -15,28 +15,14 @@ class VolumeUniformFluorophoreProperty : public FluorophoreModelObjectProperty {
                                     bool optimizable = true);
   virtual ~VolumeUniformFluorophoreProperty();
 
-  void UseFixedDensity();
-  bool GetUseFixedDensity();
-
-  void UseFixedNumberOfFluorophores();
-  bool GetUseFixedNumberOfFluorophores();
-
-  void   SetDensity(double density);
-  double GetDensity();
-
-  void SetNumberOfFluorophores(int number);
-  int  GetNumberOfFluorophores();
-
   double GetGeometryVolume();
 
-  virtual void GetXMLConfiguration(xmlNodePtr root);
-  virtual void RestoreFromXML(xmlNodePtr root);
-
  protected:
-  double m_Density;
+  VolumeUniformFluorophoreProperty() {};
 
-  vtkSmartPointer<vtkVolumeUniformPointSampler> m_Sampler;
+  virtual double GetDensityScale();
 
+  vtkSmartPointer<vtkVolumeUniformPointSampler> m_VolumeSampler;
 };
 
 

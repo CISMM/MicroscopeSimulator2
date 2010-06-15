@@ -30,11 +30,18 @@ Q_OBJECT
 
   double                 GetDensity();
   int                    GetNumberOfFluorophores();
-  
+ 
+  bool   GetUseOneFluorophorePerSample();
+  int    GetNumberOfFluorophoresAroundRing();
+  double GetRingRadius();
+  bool   GetRandomizePatternOrientations();
+ 
  public slots:
   virtual void on_gui_DensityEdit_textEdited(const QString& string);
   virtual void on_gui_NumberOfFluorophoresEdit_textEdited(const QString& string);
   virtual void on_gui_NumberOfFluorophoresSlider_sliderMoved(int value);
+  virtual void on_gui_UseSingleFluorophorePerSampleRadioButton_clicked(bool checked);
+  virtual void on_gui_UsePointRingClusterRadioButton_clicked(bool checked);
 
  protected:
   int DensityToNumberOfFluorophores(double density);

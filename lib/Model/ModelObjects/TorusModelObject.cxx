@@ -2,6 +2,7 @@
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
 
+#include <vtkCleanPolyData.h>
 #include <vtkParametricTorus.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkTriangleFilter.h>
@@ -30,16 +31,22 @@ TorusModelObject
   m_GeometrySource = vtkSmartPointer<vtkTriangleFilter>::New();
   m_GeometrySource->SetInputConnection(m_TorusSource->GetOutputPort());
  
-  SetGeometrySubAssembly("All", m_GeometrySource);
+  // Slip in a point merger filter
+  vtkSmartPointer<vtkCleanPolyData> merger = 
+    vtkSmartPointer<vtkCleanPolyData>::New();
+  merger->SetTolerance(1e-6);
+  merger->SetInputConnection(m_GeometrySource->GetOutputPort());
+
+  SetGeometrySubAssembly("All", merger);
 
   // Set up properties
   AddProperty(new ModelObjectProperty(CROSS_SECTION_RADIUS_PROP, 100.0, "nanometers"));
   AddProperty(new ModelObjectProperty(RING_RADIUS_PROP, 500.0, "nanometers"));
 
   AddProperty(new SurfaceUniformFluorophoreProperty
-              (SURFACE_FLUOR_PROP, m_GeometrySource));
+              (SURFACE_FLUOR_PROP, merger));
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP, m_GeometrySource));
+              (VOLUME_FLUOR_PROP, merger));
 
   // Must call this after setting up properties
   Update();

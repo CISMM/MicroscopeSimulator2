@@ -29,7 +29,8 @@
 #include <vtkModelObjectGeometryRepresentation.h>
 #include <vtkModelObjectFluorescenceRepresentation.h>
 #include <vtkRenderer.h>
-#include <vtkRenderView.h>
+//#include <vtkRenderView.h>
+#include <vtkGeometryRenderView.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderedSurfaceRepresentation.h>
@@ -54,7 +55,8 @@ Visualization
 #endif
 
   // Set up the model object view.
-  m_ModelObjectRenderView = vtkSmartPointer<vtkRenderView>::New();
+  //m_ModelObjectRenderView = vtkSmartPointer<vtkRenderView>::New();
+  m_ModelObjectRenderView = vtkSmartPointer<vtkGeometryRenderView>::New();
   m_ModelObjectRenderView->GetRenderer()->SetBackground(0.5, 0.5, 1.0);
 
   m_InteractionObserver = vtkSmartPointer<vtkVisualizationInteractionObserver>::New();
@@ -83,6 +85,9 @@ void
 Visualization
 ::SetSimulation(Simulation* simulation) {
   m_Simulation = simulation;
+
+  m_ModelObjectRenderView->SetSimulation(simulation);
+
   m_Simulation->GetFluorescenceSimulation()->
     SetFluorescenceImageSource(m_ImageSource);
 

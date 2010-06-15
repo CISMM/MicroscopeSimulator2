@@ -56,102 +56,99 @@ FluorophoreModelDialog
   VolumeUniformFluorophoreProperty* volumeProperty
     = dynamic_cast<VolumeUniformFluorophoreProperty*>(property);
 
-  int numFluorophores = 0;
-  double density = 0.0;
   if (geometryProperty) {
 
-    gui_GroupBox->setTitle(tr("Fixed Points Fluorophore Model"));
-    gui_AreaLabel->setHidden(true);
-    gui_AreaEdit->setHidden(true);
-    gui_DensityLabel->setHidden(true);
-    gui_DensityEdit->setHidden(true);
-    gui_NumberOfFluorophoresLabel->setHidden(true);
-    gui_NumberOfFluorophoresEdit->setHidden(true);
-    gui_NumberOfFluorophoresSlider->setHidden(true);
+    gui_FluorophoreModelLabel->setText(tr("Fixed Points Fluorophore Model"));
+    gui_SamplingModeGroupBox->setHidden(true);
+    gui_SamplingDensityGroupBox->setHidden(true);
+    gui_FluorophorePatternsGroupBox->setHidden(true);
 
   } else if (surfaceProperty) {
 
-    gui_GroupBox->setTitle(tr("Uniform Random Surface Labeling"));
-
-    gui_useFixedDensity->setChecked(surfaceProperty->GetUseFixedDensity());
-    gui_useFixedNumberOfFluorophores->setChecked(surfaceProperty->GetUseFixedNumberOfFluorophores());
-
+    gui_FluorophoreModelLabel->setText(tr("Uniform Random Surface Labeling"));
     gui_AreaLabel->setText(tr("Surface area (fluorophores/micron^2)"));
     double area = surfaceProperty->GetGeometryArea();
     gui_AreaEdit->setText(QString().sprintf("%.6f", area));
     gui_DensityLabel->setText(tr("Density (fluorophores/micron^2)"));
 
-    if (surfaceProperty->GetUseFixedNumberOfFluorophores()) {
-      numFluorophores = surfaceProperty->GetNumberOfFluorophores();
-      density = NumberOfFluorophoresToDensity(numFluorophores);
-    } else {
-      numFluorophores = DensityToNumberOfFluorophores(surfaceProperty->GetDensity());
-      density = surfaceProperty->GetDensity();
-    }
-
   } else if (volumeProperty) {
 
-    gui_GroupBox->setTitle(tr("Uniform Random Volume Labeling"));
-
-    gui_useFixedDensity->setChecked(volumeProperty->GetUseFixedDensity());
-    gui_useFixedNumberOfFluorophores->setChecked(volumeProperty->GetUseFixedNumberOfFluorophores());
-
+    gui_FluorophoreModelLabel->setText(tr("Uniform Random Volume Labeling"));
     gui_AreaLabel->setText(tr("Volume (fluorophores/micron^3)"));
     double volume = volumeProperty->GetGeometryVolume();
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
     gui_DensityLabel->setText(tr("Density (fluorophores / micron^3)"));
-
-    if (volumeProperty->GetUseFixedNumberOfFluorophores()) {
-      numFluorophores = volumeProperty->GetNumberOfFluorophores();
-      density = NumberOfFluorophoresToDensity(numFluorophores);
-    } else {
-      numFluorophores = DensityToNumberOfFluorophores(volumeProperty->GetDensity());
-      density = volumeProperty->GetDensity();
-    }
-
-    gui_DensityEdit->setText(QVariant(volumeProperty->GetDensity()).toString());
-
-    int numFluorophores = DensityToNumberOfFluorophores(volumeProperty->GetDensity());
-    gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
-    gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
-
   }
 
-  gui_DensityEdit->setText(QVariant(density).toString());
-  gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
-  gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
+  // Common settings for density-based fluorophore models.
+  UniformFluorophoreProperty* uniformProperty
+    = dynamic_cast<UniformFluorophoreProperty*>(property);
 
+  int numFluorophores = 0;
+  double density = 0.0;
+
+  if (uniformProperty) {
+    if (uniformProperty->GetSamplingMode() == UniformFluorophoreProperty::FIXED_NUMBER) {
+      numFluorophores = uniformProperty->GetNumberOfFluorophores();
+      density = NumberOfFluorophoresToDensity(numFluorophores);
+    } else {
+      numFluorophores = DensityToNumberOfFluorophores(uniformProperty->GetDensity());
+      density = uniformProperty->GetDensity();
+    }
+
+    gui_useFixedDensity->setChecked(uniformProperty->GetSamplingMode() == UniformFluorophoreProperty::FIXED_DENSITY);
+    gui_useFixedNumberOfFluorophores->setChecked(uniformProperty->GetSamplingMode() == UniformFluorophoreProperty::FIXED_NUMBER);
+    gui_DensityEdit->setText(QVariant(density).toString());
+    gui_NumberOfFluorophoresEdit->setText(QVariant(numFluorophores).toString());
+    gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
+
+    if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::SINGLE_POINT) {
+      gui_UseSingleFluorophorePerSampleRadioButton->click();  
+    } else if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::POINT_RING) {
+      gui_UsePointRingClusterRadioButton->click();
+    }
+
+    gui_FluorophoresAroundRingEdit->setText
+      (QVariant(uniformProperty->GetNumberOfRingFluorophores()).toString());
+    gui_RingRadiusEdit->setText
+      (QVariant(uniformProperty->GetRingRadius()).toString());
+
+    gui_RandomizePatternOrientationsCheckBox->setChecked
+      (uniformProperty->GetRandomizePatternOrientations());
+  }
+
+  adjustSize();
 }
 
 
 void
 FluorophoreModelDialog
 ::SaveSettingsToProperty() {
-  SurfaceUniformFluorophoreProperty* surfaceProperty
-    = dynamic_cast<SurfaceUniformFluorophoreProperty*>(m_FluorophoreProperty);
-  VolumeUniformFluorophoreProperty* volumeProperty
-    = dynamic_cast<VolumeUniformFluorophoreProperty*>(m_FluorophoreProperty);  
+  UniformFluorophoreProperty* uniformProperty
+    = dynamic_cast<UniformFluorophoreProperty*>(m_FluorophoreProperty);
+  if (uniformProperty) {
+    uniformProperty->SetDensity(GetDensity());
+    uniformProperty->SetNumberOfFluorophores(GetNumberOfFluorophores());
 
-  if (surfaceProperty) {
-    surfaceProperty->SetDensity(GetDensity());
-    surfaceProperty->SetNumberOfFluorophores(GetNumberOfFluorophores());
     if (GetUseFixedNumberOfFluorophores()) {
-      surfaceProperty->UseFixedNumberOfFluorophores();
+      uniformProperty->SetSamplingModeToFixedNumber();
     } else {
-      surfaceProperty->UseFixedDensity();
+      uniformProperty->SetSamplingModeToFixedDensity();
     }
+
+    if (GetUseOneFluorophorePerSample()) {
+      uniformProperty->SetSamplePatternToSinglePoint();
+    } else {
+      uniformProperty->SetSamplePatternToPointRing();
+    }
+
+    uniformProperty->SetNumberOfRingFluorophores(GetNumberOfFluorophoresAroundRing());
+    uniformProperty->SetRingRadius(GetRingRadius());
+    
+    uniformProperty->SetRandomizePatternOrientations(GetRandomizePatternOrientations());
   }
 
-  if (volumeProperty) {
-    volumeProperty->SetDensity(GetDensity());
-    volumeProperty->SetNumberOfFluorophores(GetNumberOfFluorophores());
-    if (GetUseFixedNumberOfFluorophores()) {
-      volumeProperty->UseFixedNumberOfFluorophores();
-    } else {
-      volumeProperty->UseFixedDensity();
-    }
-  }
-
+  // These options apply to any kind of fluorophore property
   m_FluorophoreProperty->SetEnabled(GetEnabled());
   m_FluorophoreProperty->SetFluorophoreChannel(GetFluorophoreChannel());
 }
@@ -198,6 +195,34 @@ FluorophoreModelDialog
 }
 
 
+bool
+FluorophoreModelDialog
+::GetUseOneFluorophorePerSample() {
+  return gui_UseSingleFluorophorePerSampleRadioButton->isChecked();
+}
+
+
+int
+FluorophoreModelDialog
+::GetNumberOfFluorophoresAroundRing() {
+  return QVariant(gui_FluorophoresAroundRingEdit->text()).toInt();
+}
+
+
+double
+FluorophoreModelDialog
+::GetRingRadius() {
+  return QVariant(gui_RingRadiusEdit->text()).toDouble();
+}
+
+
+bool
+FluorophoreModelDialog
+::GetRandomizePatternOrientations() {
+  return gui_RandomizePatternOrientationsCheckBox->isChecked();
+}
+
+
 void
 FluorophoreModelDialog
 ::on_gui_DensityEdit_textEdited(const QString& string) {
@@ -228,6 +253,26 @@ FluorophoreModelDialog
   // Set new density
   gui_DensityEdit->setText(QString().sprintf(m_DoubleFormatString.c_str(),
                                              NumberOfFluorophoresToDensity(value)));
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_UseSingleFluorophorePerSampleRadioButton_clicked(bool checked) {
+  gui_FluorophoresAroundRingLabel->setEnabled(false);
+  gui_FluorophoresAroundRingEdit->setEnabled(false);
+  gui_RingRadiusLabel->setEnabled(false);
+  gui_RingRadiusEdit->setEnabled(false);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_UsePointRingClusterRadioButton_clicked(bool checked) {
+  gui_FluorophoresAroundRingLabel->setEnabled(true);
+  gui_FluorophoresAroundRingEdit->setEnabled(true);
+  gui_RingRadiusLabel->setEnabled(true);
+  gui_RingRadiusEdit->setEnabled(true);
 }
 
 

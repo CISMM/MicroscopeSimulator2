@@ -9,6 +9,7 @@
 class vtkAlgorithmOutput;
 class vtkFluorescenceRenderView;
 class vtkFluorescenceWidgetsRepresentation;
+class vtkGeometryRenderView;
 class vtkImageData;
 class vtkImagePlaneWidgetRepresentation;
 class vtkInteractorStyleTrackballCamera;
@@ -73,7 +74,8 @@ protected:
   vtkSmartPointer<vtkImagePlaneWidgetRepresentation>    m_ImagePlaneWidgetRepresentation;
 
   // Model object window view
-  vtkSmartPointer<vtkRenderView> m_ModelObjectRenderView;
+  //vtkSmartPointer<vtkRenderView> m_ModelObjectRenderView;
+  vtkSmartPointer<vtkGeometryRenderView> m_ModelObjectRenderView;
 
   vtkSmartPointer<vtkInteractorStyleTrackballCamera>   m_CameraInteractor;
   vtkSmartPointer<vtkInteractorStyleTrackballActor>    m_ActorInteractor;

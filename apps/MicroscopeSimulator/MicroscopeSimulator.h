@@ -122,6 +122,19 @@ public slots:
   // GUI widget event handlers.
   virtual void on_experimentDescriptionTextArea_textChanged();
 
+  virtual void on_afmSimRadiusSpinBox_valueChanged(int i);
+  virtual void on_afmSimUseConeSphereModelCheckBox_stateChanged(int state);
+  virtual void on_afmSimConeAngleEdit_textEdited(const QString& text);
+  virtual void on_afmSimPixelSizeEdit_textEdited(const QString& text);
+  virtual void on_afmSimImageWidthEdit_textEdited(const QString& text);
+  virtual void on_afmSimImageHeightEdit_textEdited(const QString& text);
+  virtual void on_afmSimClipGroundPlaneCheckBox_stateChanged(int state);
+  virtual void on_afmSimDisplayAsWireframeCheckBox_stateChanged(int state);
+  virtual void on_afmSimSurfaceOpacityEdit_textEdited(const QString& text);
+  virtual void on_afmSimCompareScanToComboBox_currentIndexChanged(int index);
+  virtual void on_afmSimSaveSimulatedScan_clicked();
+  virtual void on_afmSimScanStatistics_clicked();
+
   virtual void on_fluoroSimFocusSlider_valueChanged(int value);
 
   virtual void on_fluoroSimFocusMaxEdit_editingFinished();
