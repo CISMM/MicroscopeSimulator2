@@ -157,6 +157,8 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
         fluorMapper->SetExposure(this->FluoroSim->GetExposure());
         fluorMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                   this->FluoroSim->GetPixelSize());
+        fluorMapper->SetShear(this->FluoroSim->GetShearInX(),
+                              this->FluoroSim->GetShearInY());
         fluorMapper->SetPSFTexture(this->PSFTexture);
       } else {
         vtkErrorMacro(<< "Expected a vtkFluorescencePolyDataMapper");
@@ -170,6 +172,8 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
           gradientMapper->SetExposure(this->FluoroSim->GetExposure());
           gradientMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                        this->FluoroSim->GetPixelSize());
+          gradientMapper->SetShear(this->FluoroSim->GetShearInX(),
+                                   this->FluoroSim->GetShearInY());
           gradientMapper->SetPSFTexture(this->PSFGradientTexture);
           gradientMapper->SetClearTextureTarget(this->ClearPointsGradientBuffers);
         }
