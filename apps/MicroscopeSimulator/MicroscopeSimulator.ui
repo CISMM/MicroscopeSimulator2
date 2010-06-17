@@ -196,9 +196,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-165</y>
           <width>381</width>
-          <height>1285</height>
+          <height>1317</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -217,7 +217,7 @@
             <enum>QTabWidget::Rounded</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <property name="iconSize">
             <size>
@@ -643,7 +643,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
+                <item row="4" column="0">
                  <widget class="QLabel" name="fluoroSimConvMethodLabel">
                   <property name="enabled">
                    <bool>false</bool>
@@ -663,7 +663,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1" colspan="3">
+                <item row="4" column="1" colspan="3">
                  <widget class="QComboBox" name="fluoroSimConvMethodComboBox">
                   <property name="enabled">
                    <bool>false</bool>
@@ -733,7 +733,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="0" colspan="4">
+                <item row="5" column="0" colspan="4">
                  <widget class="QGroupBox" name="fluoroSimNoiseGroupBox">
                   <property name="enabled">
                    <bool>true</bool>
@@ -806,6 +806,26 @@
                    </item>
                   </layout>
                  </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="fluoroSimShearInXLabel">
+                  <property name="text">
+                   <string>Shear in X:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QLabel" name="fluoroSimShearInYLabel">
+                  <property name="text">
+                   <string>Shear in Y:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLineEdit" name="fluoroSimShearInXEdit"/>
+                </item>
+                <item row="3" column="3">
+                 <widget class="QLineEdit" name="fluoroSimShearInYEdit"/>
                 </item>
                </layout>
               </widget>

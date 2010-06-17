@@ -13,6 +13,8 @@ const char* FluorescenceSimulation::PIXEL_SIZE_ATT = "pixelSize";
 const char* FluorescenceSimulation::PSF_NAME_ATT = "psfName";
 const char* FluorescenceSimulation::IMAGE_WIDTH_ATT = "imageWidth";
 const char* FluorescenceSimulation::IMAGE_HEIGHT_ATT = "imageHeight";
+const char* FluorescenceSimulation::SHEAR_IN_X_ATT = "shearInX";
+const char* FluorescenceSimulation::SHEAR_IN_Y_ATT = "shearInY";
 const char* FluorescenceSimulation::ADD_GAUSSIAN_NOISE_ATT = "addGaussianNoise";
 const char* FluorescenceSimulation::NOISE_STD_DEV_ATT = "noiseStdDev";
 const char* FluorescenceSimulation::NOISE_MEAN_ATT = "noiseMean";
@@ -54,6 +56,8 @@ FluorescenceSimulation
   m_PixelSize   = 65.0;
   m_ImageWidth  = 200;
   m_ImageHeight = 200;
+  m_ShearInX    = 0.0;
+  m_ShearInY    = 0.0;
   m_AddGaussianNoise = false;
   m_NoiseStdDev = 0.0;
   m_NoiseMean   = 0.0;
@@ -98,6 +102,10 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST IMAGE_WIDTH_ATT, BAD_CAST buf);
   sprintf(buf, "%d", GetImageHeight());
   xmlNewProp(node, BAD_CAST IMAGE_HEIGHT_ATT, BAD_CAST buf);
+  sprintf(buf, "%f", GetShearInX());
+  xmlNewProp(node, BAD_CAST SHEAR_IN_X_ATT, BAD_CAST buf);
+  sprintf(buf, "%f", GetShearInY());
+  xmlNewProp(node, BAD_CAST SHEAR_IN_Y_ATT, BAD_CAST buf);
   sprintf(buf, "%s", GetAddGaussianNoise() ? trueStr : falseStr);
   xmlNewProp(node, BAD_CAST ADD_GAUSSIAN_NOISE_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetNoiseStdDev());
@@ -177,6 +185,18 @@ FluorescenceSimulation
   if (imageHeightStr) {
     unsigned int imageHeight = (unsigned int) atoi(imageHeightStr);
     SetImageHeight(imageHeight);
+  }
+
+  char* shearInXStr = (char*) xmlGetProp(node, BAD_CAST SHEAR_IN_X_ATT);
+  if (shearInXStr) {
+    double shearInX = (double) atof(shearInXStr);
+    SetShearInX(shearInX);
+  }
+
+  char* shearInYStr = (char*) xmlGetProp(node, BAD_CAST SHEAR_IN_Y_ATT);
+  if (shearInYStr) {
+    double shearInY = (double) atof(shearInYStr);
+    SetShearInY(shearInY);
   }
 
   char* addGaussianNoiseStr = (char*) xmlGetProp(node, BAD_CAST ADD_GAUSSIAN_NOISE_ATT);

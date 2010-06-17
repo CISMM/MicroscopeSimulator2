@@ -22,6 +22,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* PSF_NAME_ATT;
   static const char* IMAGE_WIDTH_ATT;
   static const char* IMAGE_HEIGHT_ATT;
+  static const char* SHEAR_IN_X_ATT;
+  static const char* SHEAR_IN_Y_ATT;
   static const char* ADD_GAUSSIAN_NOISE_ATT;
   static const char* NOISE_STD_DEV_ATT;
   static const char* NOISE_MEAN_ATT;
@@ -59,6 +61,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(PixelSize, double);
   SetGetMacro(ImageWidth, unsigned int);
   SetGetMacro(ImageHeight, unsigned int);
+  SetGetMacro(ShearInX, double);
+  SetGetMacro(ShearInY, double);
   SetGetMacro(AddGaussianNoise, bool);
   SetGetMacro(NoiseStdDev, double);
   SetGetMacro(NoiseMean, double);
@@ -94,6 +98,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   double m_PixelSize;
   unsigned int m_ImageWidth;
   unsigned int m_ImageHeight;
+  double m_ShearInX;
+  double m_ShearInY;
   bool   m_AddGaussianNoise;
   double m_NoiseStdDev;
   double m_NoiseMean;

@@ -1122,6 +1122,26 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimShearInXEdit_editingFinished() {
+  double shearInX = gui->fluoroSimShearInXEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetShearInX(shearInX);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimShearInYEdit_editingFinished() {
+  double shearInY = gui->fluoroSimShearInYEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetShearInY(shearInY);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimAddGaussianNoiseCheckBox_toggled(bool value) {
   m_Simulation->GetFluorescenceSimulation()->SetAddGaussianNoise(value);
 
@@ -1605,6 +1625,8 @@ MicroscopeSimulator
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
   gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
   gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());
+  gui->fluoroSimShearInXEdit->setText(QVariant(fluoroSim->GetShearInX()).toString());
+  gui->fluoroSimShearInYEdit->setText(QVariant(fluoroSim->GetShearInY()).toString());
 
   gui->fluorescenceQvtkWidget->setMinimumWidth(fluoroSim->GetImageWidth());
   gui->fluorescenceQvtkWidget->setMaximumWidth(fluoroSim->GetImageWidth());
