@@ -1,6 +1,0 @@
-SET(utilsSrc
-  StringUtils.h
-  StringUtils.cxx
-)
-
-ADD_LIBRARY(msimUtils ${utilsSrc})
