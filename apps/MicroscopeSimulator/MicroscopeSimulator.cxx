@@ -29,6 +29,7 @@
 
 #include <ErrorLogDialog.h>
 #include <FluorophoreModelDialog.h>
+#include <ImageExportOptionsDialog.h>
 #include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
 #include <Preferences.h>
@@ -168,6 +169,9 @@ MicroscopeSimulator
   m_PSFEditorDialog->SetPSFList
     (m_Simulation->GetFluorescenceSimulation()->GetPSFList());
 
+  m_ImageExportOptionsDialog = new ImageExportOptionsDialog();
+  m_ImageExportOptionsDialog->setModal(true);
+
   m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
   m_OptimizerSettingsDialog->setModal(true);
   m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
@@ -235,6 +239,7 @@ MicroscopeSimulator
 
   m_ErrorLogger->Delete();
   delete m_ErrorLogDialog;
+  delete m_ImageExportOptionsDialog;
   delete m_PSFEditorDialog;
  
   delete m_Preferences;
@@ -1243,12 +1248,21 @@ MicroscopeSimulator
   prefs.beginGroup("FileDialogs");
   QString directory  = prefs.value("ExportImageDirectory").toString();
   QString nameFilter = prefs.value("ExportImageNameFilter").toString();
+  
+  int result;
+
+#if 0
+  // Now get the options for the export
+  result = m_ImageExportOptionsDialog->exec();
+  if (result == QDialog::Rejected)
+    return;
+#endif
 
   QFileDialog fileDialog(this, tr("Export Fluorescence Image"), directory,
                          "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-  int result = fileDialog.exec();
+  result = fileDialog.exec();
   prefs.setValue("ExportImageDirectory", fileDialog.directory().absolutePath());
   prefs.setValue("ExportImageNameFilter", fileDialog.selectedNameFilter());
   prefs.endGroup();
@@ -1306,6 +1320,15 @@ MicroscopeSimulator
   prefs.beginGroup("FileDialogs");
   QString directory  = prefs.value("ExportStackDirectory").toString();
   QString nameFilter = prefs.value("ExportStackNameFilter").toString();
+
+  int result;
+
+#if 0
+  // Now get the options for the export
+  result = m_ImageExportOptionsDialog->exec();
+  if (result == QDialog::Rejected)
+    return;
+#endif
   
   QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
                          "16-bit TIFF File (*.tif)");

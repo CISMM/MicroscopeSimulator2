@@ -25,6 +25,7 @@ class Simulation;
 class Visualization;
 
 class ErrorLogDialog;
+class ImageExportOptionsDialog;
 class OptimizerSettingsDialog;
 class PSFEditorDialog;
 class Preferences;
@@ -219,6 +220,8 @@ private:
   vtkQtOutputLogger* m_ErrorLogger;
 
   PSFEditorDialog*   m_PSFEditorDialog;
+
+  ImageExportOptionsDialog* m_ImageExportOptionsDialog;
 
   OptimizerSettingsDialog* m_OptimizerSettingsDialog;
 
