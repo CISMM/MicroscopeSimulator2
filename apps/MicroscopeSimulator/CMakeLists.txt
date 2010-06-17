@@ -17,6 +17,7 @@ SET (QtGuiSrcs
   MicroscopeSimulator.cxx
   ErrorLogDialog.cxx
   FluorophoreModelDialog.cxx
+  ImageExportOptionsDialog.cxx
   OptimizerSettingsDialog.cxx
   PSFEditorDialog.cxx
   Preferences.cxx
@@ -43,6 +44,7 @@ SET(UIS
   MicroscopeSimulator.ui
   ErrorLogDialog.ui
   FluorophoreModelDialog.ui
+  ImageExportOptionsDialog.ui
   OptimizerSettingsDialog.ui
   PSFEditorDialog.ui
   PreferencesDialog.ui
@@ -55,6 +57,7 @@ SET (QtGuiHeaders
   MicroscopeSimulator.h
   ErrorLogDialog.h
   FluorophoreModelDialog.h
+  ImageExportOptionsDialog.h
   OptimizerSettingsDialog.h
   PSFEditorDialog.h
   PreferencesDialog.h
@@ -79,7 +82,6 @@ ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
 FOREACH( UI_FILE ${UIHeaders} )
   STRING( REPLACE "${MicroscopeSimulator_BINARY_DIR}/apps/MicroscopeSimulator/ui_" "" UI_HEADER ${UI_FILE})
   STRING( REPLACE ".h" ".cxx" UI_SOURCE ${UI_HEADER} )
-  MESSAGE( ${UI_SOURCE} )
   SET_SOURCE_FILES_PROPERTIES( ${UI_SOURCE} PROPERTIES
                                OBJECT_DEPENDS ${UI_FILE} )
 ENDFOREACH( UI_FILE ${UIS} )
