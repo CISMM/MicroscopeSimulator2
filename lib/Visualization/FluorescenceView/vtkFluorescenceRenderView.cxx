@@ -153,7 +153,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
       vtkFluorescencePolyDataMapper* fluorMapper = 
         vtkFluorescencePolyDataMapper::SafeDownCast(rep->GetActor()->GetMapper());
       if (fluorMapper) {
-        fluorMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlaneDepth());
+        fluorMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlanePosition());
         fluorMapper->SetExposure(this->FluoroSim->GetExposure());
         fluorMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                   this->FluoroSim->GetPixelSize());
@@ -168,7 +168,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
         vtkFluorescencePointsGradientPolyDataMapper* gradientMapper =
           vtkFluorescencePointsGradientPolyDataMapper::SafeDownCast(rep->GetGradientActor()->GetMapper());
         if (gradientMapper) {
-          gradientMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlaneDepth());
+          gradientMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlanePosition());
           gradientMapper->SetExposure(this->FluoroSim->GetExposure());
           gradientMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                        this->FluoroSim->GetPixelSize());

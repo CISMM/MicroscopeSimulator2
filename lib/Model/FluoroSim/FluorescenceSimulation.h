@@ -2,6 +2,7 @@
 #define _FLUORESCENCE_SIMULATION_H_
 
 #include <string>
+#include <vector>
 
 #include <DirtyListener.h>
 #include <XMLStorable.h>
@@ -13,12 +14,10 @@ class PointSpreadFunctionList;
 class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
  public:
-  static const char* FOCAL_DEPTH_ATT;
-  static const char* FOCAL_DEPTH_MIN_ATT;
-  static const char* FOCAL_DEPTH_MAX_ATT;
-  static const char* FOCAL_DEPTH_SPACING_ATT;
-  static const char* NUMBER_OF_FOCAL_SLICES_ATT;
-  static const char* USE_CUSTOM_SLICE_SPACINGS_ATT;
+  static const char* FOCAL_PLANE_INDEX_ATT;
+  static const char* FOCAL_PLANE_SPACING_ATT;
+  static const char* NUMBER_OF_FOCAL_PLANES_ATT;
+  static const char* USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT;
   static const char* EXPOSURE_TIME_ATT;
   static const char* PIXEL_SIZE_ATT;
   static const char* PSF_NAME_ATT;
@@ -54,12 +53,10 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
   PointSpreadFunction* GetActivePointSpreadFunction();
 
-  SetGetMacro(FocalPlaneDepth, double);
-  SetGetMacro(FocalPlaneDepthMinimum, double);
-  SetGetMacro(FocalPlaneDepthMaximum, double);
-  SetGetMacro(FocalPlaneDepthSpacing, double);
-  SetGetMacro(NumberOfFocalSlices, int);
-  SetGetMacro(UseCustomSliceSpacings, bool);
+  SetGetMacro(FocalPlaneIndex, unsigned int);
+  SetGetMacro(FocalPlaneSpacing, double);
+  SetGetMacro(NumberOfFocalPlanes, unsigned int);
+  SetGetMacro(UseCustomFocalPlanePositions, bool);
   SetGetMacro(ActivePSFIndex, int);
   SetGetMacro(Exposure, double);
   SetGetMacro(PixelSize, double);
@@ -78,6 +75,10 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(MinimumIntensityLevel, double);
   SetGetMacro(MaximumIntensityLevel, double);
 
+  double GetFocalPlanePosition();
+  double GetMinimumFocalPlanePosition();
+  double GetMaximumFocalPlanePosition();
+
   void SetPSFList(PointSpreadFunctionList* psfList) {
     m_PSFList = psfList;
   }
@@ -93,34 +94,34 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
  protected:
   DirtyListener* m_DirtyListener;
 
-  double m_FocalPlaneDepth;
-  double m_FocalPlaneDepthMinimum;
-  double m_FocalPlaneDepthMaximum;
-  double m_FocalPlaneDepthSpacing;
-  int    m_NumberOfFocalSlices;
-  bool   m_UseCustomSliceSpacings;
-  int    m_ActivePSFIndex;
-  double m_Exposure;
-  double m_PixelSize;
+  unsigned int m_FocalPlaneIndex;
+  double       m_FocalPlaneSpacing;
+  unsigned int m_NumberOfFocalPlanes;
+  bool         m_UseCustomFocalPlanePositions;
+  int          m_ActivePSFIndex;
+  double       m_Exposure;
+  double       m_PixelSize;
   unsigned int m_ImageWidth;
   unsigned int m_ImageHeight;
-  double m_ShearInX;
-  double m_ShearInY;
-  bool   m_AddGaussianNoise;
-  double m_NoiseStdDev;
-  double m_NoiseMean;
-  bool   m_ShowImageVolumeOutline;
-  bool   m_ShowReferencePlane;
-  bool   m_ShowReferenceGrid;
-  double m_ReferenceGridSpacing;
-  bool   m_SuperimposeFluorescenceImage;
-  double m_MinimumIntensityLevel;
-  double m_MaximumIntensityLevel;
+  double       m_ShearInX;
+  double       m_ShearInY;
+  bool         m_AddGaussianNoise;
+  double       m_NoiseStdDev;
+  double       m_NoiseMean;
+  bool         m_ShowImageVolumeOutline;
+  bool         m_ShowReferencePlane;
+  bool         m_ShowReferenceGrid;
+  double       m_ReferenceGridSpacing;
+  bool         m_SuperimposeFluorescenceImage;
+  double       m_MinimumIntensityLevel;
+  double       m_MaximumIntensityLevel;
 
   FluorescenceImageSource* m_FluoroImageSource;
 
   PointSpreadFunctionList* m_PSFList;
   std::string m_PSFListSettingsFileName;
+
+  std::vector<double> m_FocalPlanePositions;
 
  private:
   FluorescenceSimulation();

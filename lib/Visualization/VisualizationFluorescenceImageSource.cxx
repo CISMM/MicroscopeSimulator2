@@ -153,15 +153,7 @@ VisualizationFluorescenceImageSource
 
   m_Dimensions[0] = static_cast<int>(fluoroSim->GetImageWidth());
   m_Dimensions[1] = static_cast<int>(fluoroSim->GetImageHeight());
-
-  int numSlices = 0;
-  for (double z = fluoroSim->GetFocalPlaneDepthMinimum();
-       z <= fluoroSim->GetFocalPlaneDepthMaximum();
-       z += fluoroSim->GetFocalPlaneDepthSpacing()) {
-    numSlices++;
-  }
-
-  m_Dimensions[2] = numSlices;
+  m_Dimensions[2] = static_cast<int>(fluoroSim->GetNumberOfFocalPlanes());
 
   return m_Dimensions;
 }
@@ -175,7 +167,7 @@ VisualizationFluorescenceImageSource
 
   m_Spacing[0] = fluoroSim->GetPixelSize();
   m_Spacing[1] = fluoroSim->GetPixelSize();
-  m_Spacing[2] = fluoroSim->GetFocalPlaneDepthSpacing();
+  m_Spacing[2] = fluoroSim->GetFocalPlaneSpacing();
 
   return m_Spacing;
 }

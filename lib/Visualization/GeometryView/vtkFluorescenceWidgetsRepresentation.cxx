@@ -114,7 +114,7 @@ vtkFluorescenceWidgetsRepresentation
     double pixelSize = this->Simulation->GetPixelSize();
     double width  = static_cast<double>(this->Simulation->GetImageWidth()) * pixelSize;
     double height = static_cast<double>(this->Simulation->GetImageHeight()) * pixelSize;
-    double depth  = this->Simulation->GetFocalPlaneDepth();
+    double depth  = this->Simulation->GetFocalPlanePosition();
 
     bool focalPlaneVisible = this->Simulation->GetSuperimposeFluorescenceImage();
 
@@ -155,10 +155,10 @@ vtkFluorescenceWidgetsRepresentation
       this->FocalPlaneGrid->SetSpacing(width, height);
     }
 
+    double minDepth = this->Simulation->GetMinimumFocalPlanePosition();
+    double maxDepth = this->Simulation->GetMaximumFocalPlanePosition();
     this->ImageVolumeOutlineSource->
-      SetBounds(0.0, width, 0.0, height, 
-                this->Simulation->GetFocalPlaneDepthMinimum(),
-                this->Simulation->GetFocalPlaneDepthMaximum());
+      SetBounds(0.0, width, 0.0, height, minDepth, maxDepth);
     this->ImageVolumeOutlineActor->SetVisibility(this->Simulation->GetShowImageVolumeOutline() ? 1 : 0);
   }
 

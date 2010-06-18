@@ -138,9 +138,9 @@ public slots:
 
   virtual void on_fluoroSimFocusSlider_valueChanged(int value);
 
-  virtual void on_fluoroSimFocusMaxEdit_editingFinished();
-  virtual void on_fluoroSimFocusMinEdit_editingFinished();
-  virtual void on_fluoroSimFocusSpacingEdit_editingFinished();
+  virtual void on_fluoroSimCurrentPlaneEdit_editingFinished();
+  virtual void on_fluoroSimNumberOfFocalPlanesEdit_editingFinished();
+  virtual void on_fluoroSimFocalPlaneSpacingEdit_editingFinished();
   virtual void on_fluoroSimPSFMenuComboBox_currentIndexChanged(int i);
   virtual void on_fluoroSimEditPSFsButton_clicked();
   virtual void on_fluoroSimShowImageVolumeOutlineCheckBox_toggled(bool);

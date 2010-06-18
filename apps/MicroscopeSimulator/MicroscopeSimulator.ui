@@ -198,7 +198,7 @@
           <x>0</x>
           <y>0</y>
           <width>381</width>
-          <height>1377</height>
+          <height>1352</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -482,43 +482,6 @@
                       <property name="spacing">
                        <number>3</number>
                       </property>
-                      <item row="0" column="1" rowspan="5">
-                       <widget class="QSlider" name="fluoroSimFocusSlider">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>100</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>16777215</width>
-                          <height>150</height>
-                         </size>
-                        </property>
-                        <property name="minimum">
-                         <number>-25</number>
-                        </property>
-                        <property name="maximum">
-                         <number>25</number>
-                        </property>
-                        <property name="singleStep">
-                         <number>1</number>
-                        </property>
-                        <property name="pageStep">
-                         <number>1</number>
-                        </property>
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="tickPosition">
-                         <enum>QSlider::TicksBelow</enum>
-                        </property>
-                        <property name="tickInterval">
-                         <number>2</number>
-                        </property>
-                       </widget>
-                      </item>
                       <item row="4" column="2">
                        <widget class="QLabel" name="fluoroSimMinFocusLabel">
                         <property name="text">
@@ -540,9 +503,12 @@
                        </spacer>
                       </item>
                       <item row="2" column="2">
-                       <widget class="QLineEdit" name="fluoroSimFocusEdit">
+                       <widget class="QLineEdit" name="fluoroSimFocalDepthEdit">
                         <property name="text">
-                         <string>0</string>
+                         <string>0 nm</string>
+                        </property>
+                        <property name="readOnly">
+                         <bool>true</bool>
                         </property>
                        </widget>
                       </item>
@@ -566,6 +532,43 @@
                         </property>
                        </widget>
                       </item>
+                      <item row="0" column="1" rowspan="5">
+                       <widget class="QSlider" name="fluoroSimFocusSlider">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>150</height>
+                         </size>
+                        </property>
+                        <property name="minimum">
+                         <number>1</number>
+                        </property>
+                        <property name="maximum">
+                         <number>30</number>
+                        </property>
+                        <property name="singleStep">
+                         <number>1</number>
+                        </property>
+                        <property name="pageStep">
+                         <number>1</number>
+                        </property>
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="tickPosition">
+                         <enum>QSlider::TicksBelow</enum>
+                        </property>
+                        <property name="tickInterval">
+                         <number>2</number>
+                        </property>
+                       </widget>
+                      </item>
                      </layout>
                     </widget>
                    </item>
@@ -575,69 +578,68 @@
                       <property name="margin">
                        <number>6</number>
                       </property>
-                      <item row="0" column="0" colspan="2">
-                       <widget class="QLabel" name="fluoroSimFocusRangeLabel">
+                      <item row="1" column="1">
+                       <widget class="QLineEdit" name="fluoroSimNumberOfFocalPlanesEdit">
                         <property name="text">
-                         <string>Focus range (nanometers):</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="1">
-                       <widget class="QLineEdit" name="fluoroSimFocusMinEdit">
-                        <property name="text">
-                         <string>0</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="0">
-                       <widget class="QLabel" name="fluoroSimFocusMinLabel">
-                        <property name="text">
-                         <string>Min focus:</string>
+                         <string>30</string>
                         </property>
                        </widget>
                       </item>
                       <item row="1" column="0">
-                       <widget class="QLabel" name="fluoroSimFocusMaxLabel">
-                        <property name="enabled">
-                         <bool>true</bool>
-                        </property>
+                       <widget class="QLabel" name="fluoroSimNumberOfFocalPlanesLabel">
                         <property name="text">
-                         <string>Max focus:</string>
+                         <string>Number of planes:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                         </property>
                        </widget>
                       </item>
-                      <item row="1" column="1">
-                       <widget class="QLineEdit" name="fluoroSimFocusMaxEdit">
+                      <item row="2" column="0">
+                       <widget class="QLabel" name="fluoroSimFocusPlaneSpacingsLabel">
                         <property name="text">
-                         <string>5000</string>
+                         <string>Plane spacing (nm):</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                         </property>
                        </widget>
                       </item>
-                      <item row="3" column="0">
-                       <widget class="QLabel" name="fluoroSimFocusSpacingLabel">
-                        <property name="text">
-                         <string>Slice spacing:</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="3" column="1">
-                       <widget class="QLineEdit" name="fluoroSimFocusSpacingEdit">
+                      <item row="2" column="1">
+                       <widget class="QLineEdit" name="fluoroSimFocalPlaneSpacingEdit">
                         <property name="text">
                          <string>200</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="4" column="0" colspan="2">
-                       <widget class="QCheckBox" name="fluoroSimUseCustomZSpacing">
+                      <item row="3" column="0" colspan="2">
+                       <widget class="QCheckBox" name="fluoroSimUseCustomFocalPlanePositionsCheckBox">
                         <property name="text">
-                         <string>Use custom slice spacing</string>
+                         <string>Use custom plane positions</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="5" column="0" colspan="2">
-                       <widget class="QPushButton" name="fluoroSimEditCustomSliceSpacings">
+                      <item row="4" column="0" colspan="2">
+                       <widget class="QPushButton" name="fluoroSimEditCustomFocalPlanePositionsButton">
                         <property name="text">
-                         <string>Edit Custom Slice Spacings</string>
+                         <string>Edit Custom Plane Positions</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="fluoroSimCurrentPlaneLabel">
+                        <property name="text">
+                         <string>Current plane:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QLineEdit" name="fluoroSimCurrentPlaneEdit">
+                        <property name="text">
+                         <string>1</string>
                         </property>
                        </widget>
                       </item>
@@ -662,16 +664,6 @@
                 <property name="spacing">
                  <number>-1</number>
                 </property>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="fluoroSimPixelSizeLabel">
-                  <property name="text">
-                   <string>Pixel size (nm):</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
                 <item row="4" column="0">
                  <widget class="QLabel" name="fluoroSimConvMethodLabel">
                   <property name="enabled">
@@ -682,13 +674,6 @@
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1" colspan="3">
-                 <widget class="QLineEdit" name="fluoroSimPixelSizeEdit">
-                  <property name="text">
-                   <string>65</string>
                   </property>
                  </widget>
                 </item>
@@ -841,12 +826,18 @@
                   <property name="text">
                    <string>Shear in X:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item row="3" column="2">
                  <widget class="QLabel" name="fluoroSimShearInYLabel">
                   <property name="text">
                    <string>Shear in Y:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -855,6 +846,23 @@
                 </item>
                 <item row="3" column="3">
                  <widget class="QLineEdit" name="fluoroSimShearInYEdit"/>
+                </item>
+                <item row="1" column="1" colspan="3">
+                 <widget class="QLineEdit" name="fluoroSimPixelSizeEdit">
+                  <property name="text">
+                   <string>65</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="fluoroSimPixelSizeLabel">
+                  <property name="text">
+                   <string>Pixel size (nm):</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
