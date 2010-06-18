@@ -17,6 +17,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* FOCAL_DEPTH_MIN_ATT;
   static const char* FOCAL_DEPTH_MAX_ATT;
   static const char* FOCAL_DEPTH_SPACING_ATT;
+  static const char* NUMBER_OF_FOCAL_SLICES_ATT;
+  static const char* USE_CUSTOM_SLICE_SPACINGS_ATT;
   static const char* EXPOSURE_TIME_ATT;
   static const char* PIXEL_SIZE_ATT;
   static const char* PSF_NAME_ATT;
@@ -56,6 +58,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(FocalPlaneDepthMinimum, double);
   SetGetMacro(FocalPlaneDepthMaximum, double);
   SetGetMacro(FocalPlaneDepthSpacing, double);
+  SetGetMacro(NumberOfFocalSlices, int);
+  SetGetMacro(UseCustomSliceSpacings, bool);
   SetGetMacro(ActivePSFIndex, int);
   SetGetMacro(Exposure, double);
   SetGetMacro(PixelSize, double);
@@ -93,6 +97,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   double m_FocalPlaneDepthMinimum;
   double m_FocalPlaneDepthMaximum;
   double m_FocalPlaneDepthSpacing;
+  int    m_NumberOfFocalSlices;
+  bool   m_UseCustomSliceSpacings;
   int    m_ActivePSFIndex;
   double m_Exposure;
   double m_PixelSize;
