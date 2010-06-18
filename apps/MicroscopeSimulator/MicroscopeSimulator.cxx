@@ -1004,8 +1004,12 @@ void
 MicroscopeSimulator
 ::on_fluoroSimCurrentPlaneEdit_editingFinished() {
   unsigned int plane = static_cast<unsigned int>
-    (gui->fluoroSimCurrentPlaneEdit->text().toInt());
-  m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneIndex(plane-1);
+    (gui->fluoroSimCurrentPlaneEdit->text().toInt()) - 1;
+  if (plane >= 0 && plane < m_Simulation->GetFluorescenceSimulation()->GetNumberOfFocalPlanes()) {
+    m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneIndex(plane);
+  } else {
+    RefreshUI();
+  }
 }
 
 
@@ -1585,7 +1589,7 @@ MicroscopeSimulator
   // Focus group box
   gui->fluoroSimFocusSlider->setMinimum(1);
   gui->fluoroSimFocusSlider->setMaximum(fluoroSim->GetNumberOfFocalPlanes());
-  gui->fluoroSimFocusSlider->setValue(static_cast<int>(fluoroSim->GetFocalPlaneIndex()));
+  gui->fluoroSimFocusSlider->setValue(static_cast<int>(fluoroSim->GetFocalPlaneIndex()+1));
   gui->fluoroSimFocalDepthEdit->setText(QVariant(fluoroSim->GetFocalPlanePosition()).toString());
 
   QString focalDepth = QVariant(fluoroSim->GetFocalPlanePosition()).toString();
