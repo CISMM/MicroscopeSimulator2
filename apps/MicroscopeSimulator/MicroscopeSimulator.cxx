@@ -385,7 +385,8 @@ MicroscopeSimulator
     m_Simulation->SetSimulationFileName(fileName);
     m_SimulationNeedsSaving = false;
 
-    m_ModelObjectListModel->Refresh();    
+    m_ModelObjectListModel->Refresh();
+    m_FocalPlanePositionsDialog->Refresh();
     RefreshModelObjectViews();
     on_actionResetCamera_triggered();
     RefreshUI();
@@ -1619,12 +1620,15 @@ MicroscopeSimulator
   gui->fluoroSimFocusSlider->setMinimum(1);
   gui->fluoroSimFocusSlider->setMaximum(fluoroSim->GetNumberOfFocalPlanes());
   gui->fluoroSimFocusSlider->setValue(static_cast<int>(fluoroSim->GetFocalPlaneIndex()+1));
-  gui->fluoroSimFocalDepthEdit->setText(QVariant(fluoroSim->GetFocalPlanePosition()).toString());
 
   QString focalDepth = QVariant(fluoroSim->GetFocalPlanePosition()).toString();
   focalDepth.append(" nm");
   gui->fluoroSimFocalDepthEdit->setText(focalDepth);
-
+  
+  gui->fluoroSimCurrentPlaneEdit->setText(QVariant(fluoroSim->GetFocalPlaneIndex()).toString());
+  gui->fluoroSimNumberOfFocalPlanesEdit->setText(QVariant(fluoroSim->GetNumberOfFocalPlanes()).toString());
+  gui->fluoroSimFocalPlaneSpacingEdit->setText(QVariant(fluoroSim->GetFocalPlaneSpacing()).toString());
+  gui->fluoroSimUseCustomFocalPlanePositionsCheckBox->setChecked(fluoroSim->GetUseCustomFocalPlanePositions());
 
   gui->fluoroSimPSFMenuComboBox->
     setCurrentIndex(fluoroSim->GetActivePSFIndex()+1);
