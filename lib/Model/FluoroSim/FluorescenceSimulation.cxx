@@ -3,11 +3,16 @@
 
 #include <FluorescenceSimulation.h>
 #include <FluorescenceImageSource.h>
+#include <XMLHelper.h>
 
 const char* FluorescenceSimulation::FOCAL_PLANE_INDEX_ATT = "focalPlaneIndex";
 const char* FluorescenceSimulation::FOCAL_PLANE_SPACING_ATT = "focalPlaneSpacing";
 const char* FluorescenceSimulation::NUMBER_OF_FOCAL_PLANES_ATT = "numberOfFocalPlanes";
 const char* FluorescenceSimulation::USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT = "useCustomFocalPlanePositions";
+const char* FluorescenceSimulation::CUSTOM_FOCAL_PLANE_POSITIONS_ELEM = "FocalPlanes";
+const char* FluorescenceSimulation::PLANE_ELEM = "Plane";
+const char* FluorescenceSimulation::INDEX_ATT = "index";
+const char* FluorescenceSimulation::POSITION_ATT = "position";
 const char* FluorescenceSimulation::EXPOSURE_TIME_ATT = "exposureTime";
 const char* FluorescenceSimulation::PIXEL_SIZE_ATT = "pixelSize";
 const char* FluorescenceSimulation::PSF_NAME_ATT = "psfName";
@@ -50,6 +55,7 @@ FluorescenceSimulation
   m_FocalPlaneIndex = 0.0;
   m_FocalPlaneSpacing =  200.0;
   m_NumberOfFocalPlanes = 30;
+  m_FocalPlanePositions.resize(0, 0.0);
   m_FocalPlanePositions.resize(m_NumberOfFocalPlanes, 0.0);
   m_UseCustomFocalPlanePositions = false;
   m_ActivePSFIndex = -1;
@@ -87,6 +93,16 @@ FluorescenceSimulation
   sprintf(buf, "%s", GetUseCustomFocalPlanePositions() ? "true" : "false");
   xmlNewProp(node, BAD_CAST USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetExposure());
+
+  xmlNodePtr focalPlanePositionsNode = xmlNewChild(node, NULL, BAD_CAST CUSTOM_FOCAL_PLANE_POSITIONS_ELEM, NULL);
+  for (unsigned int i = 0; i < GetNumberOfFocalPlanes(); i++) {
+    xmlNodePtr positionNode = xmlNewChild(focalPlanePositionsNode, NULL, BAD_CAST PLANE_ELEM, NULL);
+    sprintf(buf, "%d", i);
+    xmlNewProp(positionNode, BAD_CAST INDEX_ATT, BAD_CAST buf);
+    sprintf(buf, "%f", GetCustomFocalPlanePosition(i));
+    xmlNewProp(positionNode, BAD_CAST POSITION_ATT, BAD_CAST buf);
+  }
+
   xmlNewProp(node, BAD_CAST EXPOSURE_TIME_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetPixelSize());
   xmlNewProp(node, BAD_CAST PIXEL_SIZE_ATT, BAD_CAST buf);
@@ -153,6 +169,39 @@ FluorescenceSimulation
   char* useCustomFocalPlanePositionsStr = (char *) xmlGetProp(node, BAD_CAST USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT);
   if (useCustomFocalPlanePositionsStr) {
     SetUseCustomFocalPlanePositions(std::string(useCustomFocalPlanePositionsStr) == "true");
+  }
+
+  xmlNodePtr focalPlanePositionsNode = 
+    xmlGetFirstElementChildWithName(node, BAD_CAST CUSTOM_FOCAL_PLANE_POSITIONS_ELEM);
+  if (focalPlanePositionsNode) {
+    unsigned int defaultPlaneIndex;
+    xmlNodePtr planeNode = focalPlanePositionsNode->children;
+    while (planeNode != NULL) {
+      if (planeNode->type == XML_ELEMENT_NODE) {
+        std::string nodeName((const char*) planeNode->name);
+        if (nodeName != std::string(PLANE_ELEM)) {
+          planeNode = planeNode->next;
+          continue;
+        }
+
+        char* positionStr = (char*) xmlGetProp(planeNode, BAD_CAST POSITION_ATT);
+        double position = 0.0;
+        if (positionStr)
+          position = atof(positionStr);
+
+        unsigned int planeIndex = 0;
+        char* indexStr = (char*) xmlGetProp(planeNode, BAD_CAST INDEX_ATT);
+        if (indexStr)
+          planeIndex = (unsigned int) atoi(indexStr);
+        else
+          planeIndex = defaultPlaneIndex;
+
+        SetCustomFocalPlanePosition(planeIndex, position);
+        defaultPlaneIndex++;
+      }
+
+      planeNode = planeNode->next;
+    }
   }
 
   char* exposureTimeStr = (char*) xmlGetProp(node, BAD_CAST EXPOSURE_TIME_ATT);
@@ -307,6 +356,7 @@ FluorescenceSimulation
 ::SetCustomFocalPlanePosition(unsigned int i, double position) {
   if (i < m_FocalPlanePositions.size()) {
     m_FocalPlanePositions[i] = position;
+    Sully();
   }
 }
 

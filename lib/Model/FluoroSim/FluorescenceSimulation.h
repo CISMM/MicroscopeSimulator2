@@ -18,6 +18,10 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* FOCAL_PLANE_SPACING_ATT;
   static const char* NUMBER_OF_FOCAL_PLANES_ATT;
   static const char* USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT;
+  static const char* CUSTOM_FOCAL_PLANE_POSITIONS_ELEM;
+  static const char* PLANE_ELEM;
+  static const char* INDEX_ATT;
+  static const char* POSITION_ATT;
   static const char* EXPOSURE_TIME_ATT;
   static const char* PIXEL_SIZE_ATT;
   static const char* PSF_NAME_ATT;
