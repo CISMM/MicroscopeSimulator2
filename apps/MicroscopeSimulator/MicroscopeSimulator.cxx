@@ -29,6 +29,7 @@
 
 #include <ErrorLogDialog.h>
 #include <FluorophoreModelDialog.h>
+#include <FocalPlanePositionsDialog.h>
 #include <ImageExportOptionsDialog.h>
 #include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
@@ -172,6 +173,9 @@ MicroscopeSimulator
   m_ImageExportOptionsDialog = new ImageExportOptionsDialog();
   m_ImageExportOptionsDialog->setModal(true);
 
+  m_FocalPlanePositionsDialog = new FocalPlanePositionsDialog();
+  m_FocalPlanePositionsDialog->setModal(true);
+
   m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
   m_OptimizerSettingsDialog->setModal(true);
   m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
@@ -240,6 +244,8 @@ MicroscopeSimulator
   m_ErrorLogger->Delete();
   delete m_ErrorLogDialog;
   delete m_ImageExportOptionsDialog;
+  delete m_OptimizerSettingsDialog;
+  delete m_FocalPlanePositionsDialog;
   delete m_PSFEditorDialog;
  
   delete m_Preferences;
@@ -1033,6 +1039,28 @@ MicroscopeSimulator
     (gui->fluoroSimFocalPlaneSpacingEdit->text().toDouble());
 
   RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimUseCustomFocalPlanePositionsCheckBox_toggled(bool value) {
+  m_Simulation->GetFluorescenceSimulation()->SetUseCustomFocalPlanePositions(value);
+
+  RefreshUI();
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimEditCustomFocalPlanePositionsButton_clicked() {
+  if (m_FocalPlanePositionsDialog->exec() == QDialog::Rejected) {
+    return;
+  }
+
+  
+
 }
 
 

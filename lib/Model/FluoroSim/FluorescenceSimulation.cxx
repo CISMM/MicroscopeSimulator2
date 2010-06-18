@@ -50,6 +50,7 @@ FluorescenceSimulation
   m_FocalPlaneIndex = 0.0;
   m_FocalPlaneSpacing =  200.0;
   m_NumberOfFocalPlanes = 30;
+  m_FocalPlanePositions.resize(m_NumberOfFocalPlanes, 0.0);
   m_UseCustomFocalPlanePositions = false;
   m_ActivePSFIndex = -1;
   m_Exposure    = 1.0;
@@ -280,6 +281,24 @@ FluorescenceSimulation
     return m_PSFList->GetPointSpreadFunctionAt(m_ActivePSFIndex);
   }
   return NULL;
+}
+
+
+void
+FluorescenceSimulation
+::SetNumberOfFocalPlanes(unsigned int n) {
+  m_NumberOfFocalPlanes = n;
+
+  m_FocalPlanePositions.resize(n, 0.0);
+
+  Sully();
+}
+
+
+unsigned int
+FluorescenceSimulation
+::GetNumberOfFocalPlanes() {
+  return m_NumberOfFocalPlanes;
 }
 
 

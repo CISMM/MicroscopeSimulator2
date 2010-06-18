@@ -17,6 +17,7 @@ SET (QtGuiSrcs
   MicroscopeSimulator.cxx
   ErrorLogDialog.cxx
   FluorophoreModelDialog.cxx
+  FocalPlanePositionsDialog.cxx
   ImageExportOptionsDialog.cxx
   OptimizerSettingsDialog.cxx
   PSFEditorDialog.cxx
@@ -44,6 +45,7 @@ SET(UIS
   MicroscopeSimulator.ui
   ErrorLogDialog.ui
   FluorophoreModelDialog.ui
+  FocalPlanePositionsDialog.ui
   ImageExportOptionsDialog.ui
   OptimizerSettingsDialog.ui
   PSFEditorDialog.ui
@@ -57,6 +59,7 @@ SET (QtGuiHeaders
   MicroscopeSimulator.h
   ErrorLogDialog.h
   FluorophoreModelDialog.h
+  FocalPlanePositionsDialog.h
   ImageExportOptionsDialog.h
   OptimizerSettingsDialog.h
   PSFEditorDialog.h

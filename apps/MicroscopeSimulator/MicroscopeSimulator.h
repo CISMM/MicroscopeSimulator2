@@ -26,6 +26,7 @@ class Visualization;
 
 class ErrorLogDialog;
 class ImageExportOptionsDialog;
+class FocalPlanePositionsDialog;
 class OptimizerSettingsDialog;
 class PSFEditorDialog;
 class Preferences;
@@ -141,6 +142,8 @@ public slots:
   virtual void on_fluoroSimCurrentPlaneEdit_editingFinished();
   virtual void on_fluoroSimNumberOfFocalPlanesEdit_editingFinished();
   virtual void on_fluoroSimFocalPlaneSpacingEdit_editingFinished();
+  virtual void on_fluoroSimUseCustomFocalPlanePositionsCheckBox_toggled(bool);
+  virtual void on_fluoroSimEditCustomFocalPlanePositionsButton_clicked();
   virtual void on_fluoroSimPSFMenuComboBox_currentIndexChanged(int i);
   virtual void on_fluoroSimEditPSFsButton_clicked();
   virtual void on_fluoroSimShowImageVolumeOutlineCheckBox_toggled(bool);
@@ -223,9 +226,10 @@ private:
 
   PSFEditorDialog*   m_PSFEditorDialog;
 
-  ImageExportOptionsDialog* m_ImageExportOptionsDialog;
+  ImageExportOptionsDialog*  m_ImageExportOptionsDialog;
 
-  OptimizerSettingsDialog* m_OptimizerSettingsDialog;
+  FocalPlanePositionsDialog* m_FocalPlanePositionsDialog;
+  OptimizerSettingsDialog*   m_OptimizerSettingsDialog;
 
   Preferences*       m_Preferences;
   PreferencesDialog* m_PreferencesDialog;

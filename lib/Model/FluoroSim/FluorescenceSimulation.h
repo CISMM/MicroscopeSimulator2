@@ -55,7 +55,10 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
   SetGetMacro(FocalPlaneIndex, unsigned int);
   SetGetMacro(FocalPlaneSpacing, double);
-  SetGetMacro(NumberOfFocalPlanes, unsigned int);
+
+  void SetNumberOfFocalPlanes(unsigned int n);
+  unsigned int  GetNumberOfFocalPlanes();
+
   SetGetMacro(UseCustomFocalPlanePositions, bool);
   SetGetMacro(ActivePSFIndex, int);
   SetGetMacro(Exposure, double);
