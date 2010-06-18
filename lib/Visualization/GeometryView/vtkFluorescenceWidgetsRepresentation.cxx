@@ -4,6 +4,8 @@
 #include <vtkImageData.h>
 #include <vtkImageShiftScale.h>
 #include <vtkLookupTable.h>
+#include <vtkMatrix4x4.h>
+#include <vtkMatrixToLinearTransform.h>
 #include <vtkObjectFactory.h>
 #include <vtkOutlineSource.h>
 #include <vtkPlaneSource.h>
@@ -13,6 +15,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderView.h>
 #include <vtkTexture.h>
+#include <vtkTransformPolyDataFilter.h>
 
 #include <FluorescenceImageSource.h>
 
@@ -39,6 +42,8 @@ vtkFluorescenceWidgetsRepresentation
   table->SetRampToLinear();
   table->Build();
 
+  this->ShearTransformMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+  
   this->FocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
   this->FocalPlaneTexture->InterpolateOff();
   this->FocalPlaneTexture->RepeatOff();
@@ -51,11 +56,11 @@ vtkFluorescenceWidgetsRepresentation
 
   this->FocalPlaneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   this->FocalPlaneMapper->SetInputConnection(this->FocalPlaneSource->GetOutputPort());
-  //this->FocalPlaneMapper->ImmediateModeRenderingOn();
 
   this->FocalPlaneActor = vtkSmartPointer<vtkActor>::New();
   this->FocalPlaneActor->SetMapper(this->FocalPlaneMapper);
   this->FocalPlaneActor->SetTexture(this->FocalPlaneTexture);
+  this->FocalPlaneActor->SetUserMatrix(this->ShearTransformMatrix);
   this->FocalPlaneActor->PickableOff();
 
   // Set up the reference grid
@@ -74,6 +79,7 @@ vtkFluorescenceWidgetsRepresentation
   this->FocalPlaneGridActor->SetMapper(this->FocalPlaneGridMapper);
   this->FocalPlaneGridActor->PickableOff();
   this->FocalPlaneGridActor->SetProperty(focalPlaneProperty);
+  this->FocalPlaneGridActor->SetUserMatrix(this->ShearTransformMatrix);
 
   // Set up the volume outline source
   this->ImageVolumeOutlineSource = vtkSmartPointer<vtkOutlineSource>::New();
@@ -83,6 +89,7 @@ vtkFluorescenceWidgetsRepresentation
   
   this->ImageVolumeOutlineActor = vtkSmartPointer<vtkActor>::New();
   this->ImageVolumeOutlineActor->SetMapper(this->ImageVolumeOutlineMapper);
+  this->ImageVolumeOutlineActor->SetUserMatrix(this->ShearTransformMatrix);
 }
 
 
@@ -160,6 +167,10 @@ vtkFluorescenceWidgetsRepresentation
     this->ImageVolumeOutlineSource->
       SetBounds(0.0, width, 0.0, height, minDepth, maxDepth);
     this->ImageVolumeOutlineActor->SetVisibility(this->Simulation->GetShowImageVolumeOutline() ? 1 : 0);
+
+    this->ShearTransformMatrix->Identity();
+    this->ShearTransformMatrix->SetElement(0, 2, -(this->Simulation->GetShearInX()));
+    this->ShearTransformMatrix->SetElement(1, 2, -(this->Simulation->GetShearInY()));
   }
 
 }
