@@ -20,6 +20,8 @@ Q_OBJECT
   void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
   FluorescenceSimulation* GetFluorescenceSimulation();
 
+  void Refresh();                                                    
+
  public slots:
   virtual void on_focalPlanePositionsResetButton_clicked();
 

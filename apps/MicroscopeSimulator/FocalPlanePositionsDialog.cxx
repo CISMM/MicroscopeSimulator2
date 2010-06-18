@@ -40,6 +40,13 @@ FocalPlanePositionsDialog
 
 void
 FocalPlanePositionsDialog
+::Refresh() {
+  m_FocalPlanePositionsModel->Refresh();
+}
+
+
+void
+FocalPlanePositionsDialog
 ::on_focalPlanePositionsResetButton_clicked() {
   for (unsigned int i = 0; i < m_Simulation->GetNumberOfFocalPlanes(); i++) {
     double position = static_cast<double>(i) * m_Simulation->GetFocalPlaneSpacing();
