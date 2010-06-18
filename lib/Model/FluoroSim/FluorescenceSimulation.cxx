@@ -302,14 +302,41 @@ FluorescenceSimulation
 }
 
 
+void
+FluorescenceSimulation
+::SetCustomFocalPlanePosition(unsigned int i, double position) {
+  if (i < m_FocalPlanePositions.size()) {
+    m_FocalPlanePositions[i] = position;
+  }
+}
+
+
+double
+FluorescenceSimulation
+::GetCustomFocalPlanePosition(unsigned int i) {
+  if (i < m_FocalPlanePositions.size()) {
+    return m_FocalPlanePositions[i];
+  }
+
+  return 0.0;
+}
+
+
 double
 FluorescenceSimulation
 ::GetFocalPlanePosition() {
+  return GetFocalPlanePosition(m_FocalPlaneIndex);
+}
+
+
+double
+FluorescenceSimulation
+::GetFocalPlanePosition(unsigned int i) {
   double position = 0.0;
   if (m_UseCustomFocalPlanePositions) {
-    position = m_FocalPlanePositions[m_FocalPlaneIndex];
+    position = m_FocalPlanePositions[i];
   } else {
-    position = static_cast<double>(m_FocalPlaneIndex) * m_FocalPlaneSpacing;
+    position = static_cast<double>(i) * m_FocalPlaneSpacing;
   }
 
   return position;

@@ -175,6 +175,8 @@ MicroscopeSimulator
 
   m_FocalPlanePositionsDialog = new FocalPlanePositionsDialog();
   m_FocalPlanePositionsDialog->setModal(true);
+  m_FocalPlanePositionsDialog->
+    SetFluorescenceSimulation(m_Simulation->GetFluorescenceSimulation());
 
   m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
   m_OptimizerSettingsDialog->setModal(true);
@@ -1059,8 +1061,7 @@ MicroscopeSimulator
     return;
   }
 
-  
-
+  RenderViews();
 }
 
 

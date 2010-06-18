@@ -25,6 +25,7 @@ SET (QtGuiSrcs
   PreferencesDialog.cxx
   QCopyPasteTableView.cxx
   QFluorescenceOptimizerSettingsTableModel.cxx
+  QFocalPlanePositionsTableModel.cxx
   QImageListModel.cxx
   QModelObjectListModel.cxx
   QModelObjectPropertyListTableModel.cxx
@@ -66,6 +67,7 @@ SET (QtGuiHeaders
   PreferencesDialog.h
   QCopyPasteTableView.h
   QFluorescenceOptimizerSettingsTableModel.h
+  QFocalPlanePositionsTableModel.h
   QImageListModel.h
   QModelObjectListModel.h
   QModelObjectPropertyListTableModel.h

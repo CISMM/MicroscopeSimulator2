@@ -78,7 +78,11 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(MinimumIntensityLevel, double);
   SetGetMacro(MaximumIntensityLevel, double);
 
+  void   SetCustomFocalPlanePosition(unsigned int i, double position);
+  double GetCustomFocalPlanePosition(unsigned int i);
+
   double GetFocalPlanePosition();
+  double GetFocalPlanePosition(unsigned int i);
   double GetMinimumFocalPlanePosition();
   double GetMaximumFocalPlanePosition();
 

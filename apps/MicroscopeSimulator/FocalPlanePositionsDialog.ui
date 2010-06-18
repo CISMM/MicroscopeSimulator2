@@ -39,7 +39,45 @@
        <number>6</number>
       </property>
       <item>
-       <widget class="QCopyPasteTableView" name="tableView"/>
+       <widget class="QCopyPasteTableView" name="focalPlanePositionsTableView">
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>10</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>16</number>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>16</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>10</number>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="focalPlanePositionsResetButton">
+        <property name="text">
+         <string>Reset</string>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

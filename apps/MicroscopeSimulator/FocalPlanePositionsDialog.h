@@ -6,6 +6,7 @@
 
 
 class FluorescenceSimulation;
+class QFocalPlanePositionsTableModel;
 
 
 class FocalPlanePositionsDialog : public QDialog,
@@ -16,9 +17,16 @@ Q_OBJECT
   FocalPlanePositionsDialog(QWidget* parent=0);
   virtual ~FocalPlanePositionsDialog();
 
+  void SetFluorescenceSimulation(FluorescenceSimulation* simulation);
+  FluorescenceSimulation* GetFluorescenceSimulation();
+
+ public slots:
+  virtual void on_focalPlanePositionsResetButton_clicked();
+
  protected:
   FluorescenceSimulation* m_Simulation;
 
+  QFocalPlanePositionsTableModel* m_FocalPlanePositionsModel;
 };
 
 #endif // _FOCAL_PLANE_POSITIONS_DIALOG_H_
