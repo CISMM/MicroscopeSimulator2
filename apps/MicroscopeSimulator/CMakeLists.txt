@@ -17,12 +17,15 @@ SET (QtGuiSrcs
   MicroscopeSimulator.cxx
   ErrorLogDialog.cxx
   FluorophoreModelDialog.cxx
+  FocalPlanePositionsDialog.cxx
+  ImageExportOptionsDialog.cxx
   OptimizerSettingsDialog.cxx
   PSFEditorDialog.cxx
   Preferences.cxx
   PreferencesDialog.cxx
   QCopyPasteTableView.cxx
   QFluorescenceOptimizerSettingsTableModel.cxx
+  QFocalPlanePositionsTableModel.cxx
   QImageListModel.cxx
   QModelObjectListModel.cxx
   QModelObjectPropertyListTableModel.cxx
@@ -43,6 +46,8 @@ SET(UIS
   MicroscopeSimulator.ui
   ErrorLogDialog.ui
   FluorophoreModelDialog.ui
+  FocalPlanePositionsDialog.ui
+  ImageExportOptionsDialog.ui
   OptimizerSettingsDialog.ui
   PSFEditorDialog.ui
   PreferencesDialog.ui
@@ -55,11 +60,14 @@ SET (QtGuiHeaders
   MicroscopeSimulator.h
   ErrorLogDialog.h
   FluorophoreModelDialog.h
+  FocalPlanePositionsDialog.h
+  ImageExportOptionsDialog.h
   OptimizerSettingsDialog.h
   PSFEditorDialog.h
   PreferencesDialog.h
   QCopyPasteTableView.h
   QFluorescenceOptimizerSettingsTableModel.h
+  QFocalPlanePositionsTableModel.h
   QImageListModel.h
   QModelObjectListModel.h
   QModelObjectPropertyListTableModel.h
@@ -79,7 +87,6 @@ ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
 FOREACH( UI_FILE ${UIHeaders} )
   STRING( REPLACE "${MicroscopeSimulator_BINARY_DIR}/apps/MicroscopeSimulator/ui_" "" UI_HEADER ${UI_FILE})
   STRING( REPLACE ".h" ".cxx" UI_SOURCE ${UI_HEADER} )
-  MESSAGE( ${UI_SOURCE} )
   SET_SOURCE_FILES_PROPERTIES( ${UI_SOURCE} PROPERTIES
                                OBJECT_DEPENDS ${UI_FILE} )
 ENDFOREACH( UI_FILE ${UIS} )

@@ -2,6 +2,7 @@
 #define _FLUORESCENCE_SIMULATION_H_
 
 #include <string>
+#include <vector>
 
 #include <DirtyListener.h>
 #include <XMLStorable.h>
@@ -13,15 +14,21 @@ class PointSpreadFunctionList;
 class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
  public:
-  static const char* FOCAL_DEPTH_ATT;
-  static const char* FOCAL_DEPTH_MIN_ATT;
-  static const char* FOCAL_DEPTH_MAX_ATT;
-  static const char* FOCAL_DEPTH_SPACING_ATT;
+  static const char* FOCAL_PLANE_INDEX_ATT;
+  static const char* FOCAL_PLANE_SPACING_ATT;
+  static const char* NUMBER_OF_FOCAL_PLANES_ATT;
+  static const char* USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT;
+  static const char* CUSTOM_FOCAL_PLANE_POSITIONS_ELEM;
+  static const char* PLANE_ELEM;
+  static const char* INDEX_ATT;
+  static const char* POSITION_ATT;
   static const char* EXPOSURE_TIME_ATT;
   static const char* PIXEL_SIZE_ATT;
   static const char* PSF_NAME_ATT;
   static const char* IMAGE_WIDTH_ATT;
   static const char* IMAGE_HEIGHT_ATT;
+  static const char* SHEAR_IN_X_ATT;
+  static const char* SHEAR_IN_Y_ATT;
   static const char* ADD_GAUSSIAN_NOISE_ATT;
   static const char* NOISE_STD_DEV_ATT;
   static const char* NOISE_MEAN_ATT;
@@ -50,15 +57,20 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
   PointSpreadFunction* GetActivePointSpreadFunction();
 
-  SetGetMacro(FocalPlaneDepth, double);
-  SetGetMacro(FocalPlaneDepthMinimum, double);
-  SetGetMacro(FocalPlaneDepthMaximum, double);
-  SetGetMacro(FocalPlaneDepthSpacing, double);
+  SetGetMacro(FocalPlaneIndex, unsigned int);
+  SetGetMacro(FocalPlaneSpacing, double);
+
+  void SetNumberOfFocalPlanes(unsigned int n);
+  unsigned int  GetNumberOfFocalPlanes();
+
+  SetGetMacro(UseCustomFocalPlanePositions, bool);
   SetGetMacro(ActivePSFIndex, int);
   SetGetMacro(Exposure, double);
   SetGetMacro(PixelSize, double);
   SetGetMacro(ImageWidth, unsigned int);
   SetGetMacro(ImageHeight, unsigned int);
+  SetGetMacro(ShearInX, double);
+  SetGetMacro(ShearInY, double);
   SetGetMacro(AddGaussianNoise, bool);
   SetGetMacro(NoiseStdDev, double);
   SetGetMacro(NoiseMean, double);
@@ -69,6 +81,14 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(SuperimposeFluorescenceImage, bool);
   SetGetMacro(MinimumIntensityLevel, double);
   SetGetMacro(MaximumIntensityLevel, double);
+
+  void   SetCustomFocalPlanePosition(unsigned int i, double position);
+  double GetCustomFocalPlanePosition(unsigned int i);
+
+  double GetFocalPlanePosition();
+  double GetFocalPlanePosition(unsigned int i);
+  double GetMinimumFocalPlanePosition();
+  double GetMaximumFocalPlanePosition();
 
   void SetPSFList(PointSpreadFunctionList* psfList) {
     m_PSFList = psfList;
@@ -85,30 +105,34 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
  protected:
   DirtyListener* m_DirtyListener;
 
-  double m_FocalPlaneDepth;
-  double m_FocalPlaneDepthMinimum;
-  double m_FocalPlaneDepthMaximum;
-  double m_FocalPlaneDepthSpacing;
-  int    m_ActivePSFIndex;
-  double m_Exposure;
-  double m_PixelSize;
+  unsigned int m_FocalPlaneIndex;
+  double       m_FocalPlaneSpacing;
+  unsigned int m_NumberOfFocalPlanes;
+  bool         m_UseCustomFocalPlanePositions;
+  int          m_ActivePSFIndex;
+  double       m_Exposure;
+  double       m_PixelSize;
   unsigned int m_ImageWidth;
   unsigned int m_ImageHeight;
-  bool   m_AddGaussianNoise;
-  double m_NoiseStdDev;
-  double m_NoiseMean;
-  bool   m_ShowImageVolumeOutline;
-  bool   m_ShowReferencePlane;
-  bool   m_ShowReferenceGrid;
-  double m_ReferenceGridSpacing;
-  bool   m_SuperimposeFluorescenceImage;
-  double m_MinimumIntensityLevel;
-  double m_MaximumIntensityLevel;
+  double       m_ShearInX;
+  double       m_ShearInY;
+  bool         m_AddGaussianNoise;
+  double       m_NoiseStdDev;
+  double       m_NoiseMean;
+  bool         m_ShowImageVolumeOutline;
+  bool         m_ShowReferencePlane;
+  bool         m_ShowReferenceGrid;
+  double       m_ReferenceGridSpacing;
+  bool         m_SuperimposeFluorescenceImage;
+  double       m_MinimumIntensityLevel;
+  double       m_MaximumIntensityLevel;
 
   FluorescenceImageSource* m_FluoroImageSource;
 
   PointSpreadFunctionList* m_PSFList;
   std::string m_PSFListSettingsFileName;
+
+  std::vector<double> m_FocalPlanePositions;
 
  private:
   FluorescenceSimulation();

@@ -9,6 +9,7 @@
 // Forward declarations
 class vtkActor;
 class vtkImageShiftScale;
+class vtkMatrix4x4;
 class vtkOutlineSource;
 class vtkPlaneSource;
 class vtkPolyDataMapper;
@@ -35,19 +36,21 @@ class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
 
   FluorescenceSimulation* Simulation;
 
-  vtkSmartPointer<vtkImageShiftScale>     FocalPlaneImageShiftScale;
-  vtkSmartPointer<vtkTexture>             FocalPlaneTexture;
-  vtkSmartPointer<vtkPlaneSource>         FocalPlaneSource;
-  vtkSmartPointer<vtkPolyDataMapper>      FocalPlaneMapper;
-  vtkSmartPointer<vtkActor>               FocalPlaneActor;
+  vtkSmartPointer<vtkMatrix4x4>               ShearTransformMatrix;
 
-  vtkSmartPointer<vtkReferenceGridSource> FocalPlaneGrid;
-  vtkSmartPointer<vtkPolyDataMapper>      FocalPlaneGridMapper;
-  vtkSmartPointer<vtkActor>               FocalPlaneGridActor;
+  vtkSmartPointer<vtkImageShiftScale>         FocalPlaneImageShiftScale;
+  vtkSmartPointer<vtkTexture>                 FocalPlaneTexture;
+  vtkSmartPointer<vtkPlaneSource>             FocalPlaneSource;
+  vtkSmartPointer<vtkPolyDataMapper>          FocalPlaneMapper;
+  vtkSmartPointer<vtkActor>                   FocalPlaneActor;
 
-  vtkSmartPointer<vtkOutlineSource>  ImageVolumeOutlineSource;
-  vtkSmartPointer<vtkPolyDataMapper> ImageVolumeOutlineMapper;
-  vtkSmartPointer<vtkActor>          ImageVolumeOutlineActor;
+  vtkSmartPointer<vtkReferenceGridSource>     FocalPlaneGrid;
+  vtkSmartPointer<vtkPolyDataMapper>          FocalPlaneGridMapper;
+  vtkSmartPointer<vtkActor>                   FocalPlaneGridActor;
+
+  vtkSmartPointer<vtkOutlineSource>           ImageVolumeOutlineSource;
+  vtkSmartPointer<vtkPolyDataMapper>          ImageVolumeOutlineMapper;
+  vtkSmartPointer<vtkActor>                   ImageVolumeOutlineActor;
 
   virtual void PrepareForRendering(vtkRenderView* view);
 

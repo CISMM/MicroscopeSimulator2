@@ -162,11 +162,8 @@ Visualization
   vtkSmartPointer<vtkImageAppend> appender = vtkSmartPointer<vtkImageAppend>::New();
   appender->SetAppendAxis(2);
 
-  double minDepth = fluoroSim->GetFocalPlaneDepthMinimum();
-  double maxDepth = fluoroSim->GetFocalPlaneDepthMaximum();
-  double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
-  for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
-    fluoroSim->SetFocalPlaneDepth(depth);
+  for (unsigned int i = 0; i < fluoroSim->GetNumberOfFocalPlanes(); i++) {
+    fluoroSim->SetFocalPlaneIndex(i);
 
     vtkImageData* image = GenerateFluorescenceImage();
     appender->AddInput(image);
@@ -194,11 +191,8 @@ Visualization
   // We just have to zip through the stack. The 
   // vtkFluorescencePointsGradientPolyDataMapper will take care of the gradient
   // computation.
-  double minDepth = fluoroSim->GetFocalPlaneDepthMinimum();
-  double maxDepth = fluoroSim->GetFocalPlaneDepthMaximum();
-  double spacing = fluoroSim->GetFocalPlaneDepthSpacing();
   bool firstRender = true;
-  for (double depth = minDepth; depth <= maxDepth; depth += spacing) {
+  for (unsigned int i = 0; i < fluoroSim->GetNumberOfFocalPlanes(); i++) {
     if (firstRender) {
       // Make sure we clear the point gradient mapper prior to the first render
       m_FluorescenceRenderView->ClearPointsGradientBuffersOn();
@@ -207,7 +201,7 @@ Visualization
       m_FluorescenceRenderView->ClearPointsGradientBuffersOff();
     }
 
-    fluoroSim->SetFocalPlaneDepth(depth);
+    fluoroSim->SetFocalPlaneIndex(i);
     FluorescenceViewRender();
   }
 

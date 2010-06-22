@@ -1,3 +1,0 @@
-#include <StringUtils.h>
-
-std::string SqueezeString(const std::string& str);

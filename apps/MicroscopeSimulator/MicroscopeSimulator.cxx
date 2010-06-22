@@ -29,6 +29,8 @@
 
 #include <ErrorLogDialog.h>
 #include <FluorophoreModelDialog.h>
+#include <FocalPlanePositionsDialog.h>
+#include <ImageExportOptionsDialog.h>
 #include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
 #include <Preferences.h>
@@ -168,6 +170,14 @@ MicroscopeSimulator
   m_PSFEditorDialog->SetPSFList
     (m_Simulation->GetFluorescenceSimulation()->GetPSFList());
 
+  m_ImageExportOptionsDialog = new ImageExportOptionsDialog();
+  m_ImageExportOptionsDialog->setModal(true);
+
+  m_FocalPlanePositionsDialog = new FocalPlanePositionsDialog();
+  m_FocalPlanePositionsDialog->setModal(true);
+  m_FocalPlanePositionsDialog->
+    SetFluorescenceSimulation(m_Simulation->GetFluorescenceSimulation());
+
   m_OptimizerSettingsDialog = new OptimizerSettingsDialog();
   m_OptimizerSettingsDialog->setModal(true);
   m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
@@ -235,6 +245,9 @@ MicroscopeSimulator
 
   m_ErrorLogger->Delete();
   delete m_ErrorLogDialog;
+  delete m_ImageExportOptionsDialog;
+  delete m_OptimizerSettingsDialog;
+  delete m_FocalPlanePositionsDialog;
   delete m_PSFEditorDialog;
  
   delete m_Preferences;
@@ -372,7 +385,8 @@ MicroscopeSimulator
     m_Simulation->SetSimulationFileName(fileName);
     m_SimulationNeedsSaving = false;
 
-    m_ModelObjectListModel->Refresh();    
+    m_ModelObjectListModel->Refresh();
+    m_FocalPlanePositionsDialog->Refresh();
     RefreshModelObjectViews();
     on_actionResetCamera_triggered();
     RefreshUI();
@@ -979,14 +993,15 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_fluoroSimFocusSlider_valueChanged(int value) {
-  // Convert value into focal plane position
-  float focusSpacing = gui->fluoroSimFocusSpacingEdit->text().toFloat();
-  float focalPlaneDepth = static_cast<float>(value) * focusSpacing;
-
-  m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneDepth(focalPlaneDepth);
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+  fluoroSim->SetFocalPlaneIndex(static_cast<unsigned int>(value-1));
 
   // Set text in fluoroSimFocusEdit to slider value
-  gui->fluoroSimFocusEdit->setText(QString().sprintf("%0.1f", focalPlaneDepth));
+  gui->fluoroSimCurrentPlaneEdit->setText(QVariant(value).toString());
+
+  QString focalDepth = QVariant(fluoroSim->GetFocalPlanePosition()).toString();
+  focalDepth.append(" nm");
+  gui->fluoroSimFocalDepthEdit->setText(focalDepth);
 
   RenderViews();
 
@@ -996,10 +1011,25 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimFocusMaxEdit_editingFinished() {
-  UpdateFocalPlaneUIControls(gui->fluoroSimFocusMinEdit->text().toFloat(),
-    gui->fluoroSimFocusMaxEdit->text().toFloat(),
-    gui->fluoroSimFocusSpacingEdit->text().toFloat());
+::on_fluoroSimCurrentPlaneEdit_editingFinished() {
+  unsigned int plane = static_cast<unsigned int>
+    (gui->fluoroSimCurrentPlaneEdit->text().toInt()) - 1;
+  if (plane >= 0 && plane < m_Simulation->GetFluorescenceSimulation()->GetNumberOfFocalPlanes()) {
+    m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneIndex(plane);
+  } else {
+    RefreshUI();
+  }
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimNumberOfFocalPlanesEdit_editingFinished() {
+  unsigned int planes = static_cast<unsigned int>
+    (gui->fluoroSimNumberOfFocalPlanesEdit->text().toInt());
+  m_Simulation->GetFluorescenceSimulation()->SetNumberOfFocalPlanes(planes);
+
+  gui->fluoroSimFocusSlider->setMaximum(planes);
 
   RenderViews();
 }
@@ -1007,10 +1037,9 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimFocusMinEdit_editingFinished() {
-  UpdateFocalPlaneUIControls(gui->fluoroSimFocusMinEdit->text().toFloat(),
-    gui->fluoroSimFocusMaxEdit->text().toFloat(),
-    gui->fluoroSimFocusSpacingEdit->text().toFloat());
+::on_fluoroSimFocalPlaneSpacingEdit_editingFinished() {
+  m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneSpacing
+    (gui->fluoroSimFocalPlaneSpacingEdit->text().toDouble());
 
   RenderViews();
 }
@@ -1018,10 +1047,20 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimFocusSpacingEdit_editingFinished() {
-  UpdateFocalPlaneUIControls(gui->fluoroSimFocusMinEdit->text().toFloat(),
-    gui->fluoroSimFocusMaxEdit->text().toFloat(),
-    gui->fluoroSimFocusSpacingEdit->text().toFloat());
+::on_fluoroSimUseCustomFocalPlanePositionsCheckBox_toggled(bool value) {
+  m_Simulation->GetFluorescenceSimulation()->SetUseCustomFocalPlanePositions(value);
+
+  RefreshUI();
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimEditCustomFocalPlanePositionsButton_clicked() {
+  if (m_FocalPlanePositionsDialog->exec() == QDialog::Rejected) {
+    return;
+  }
 
   RenderViews();
 }
@@ -1110,6 +1149,26 @@ MicroscopeSimulator
   gui->fluorescenceBackgroundWidget->setMaximumHeight(height);
 
   m_Simulation->GetFluorescenceSimulation()->SetImageHeight(height);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimShearInXEdit_editingFinished() {
+  double shearInX = gui->fluoroSimShearInXEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetShearInX(shearInX);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimShearInYEdit_editingFinished() {
+  double shearInY = gui->fluoroSimShearInYEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetShearInY(shearInY);
 
   RenderViews();
 }
@@ -1243,12 +1302,21 @@ MicroscopeSimulator
   prefs.beginGroup("FileDialogs");
   QString directory  = prefs.value("ExportImageDirectory").toString();
   QString nameFilter = prefs.value("ExportImageNameFilter").toString();
+  
+  int result;
+
+#if 0
+  // Now get the options for the export
+  result = m_ImageExportOptionsDialog->exec();
+  if (result == QDialog::Rejected)
+    return;
+#endif
 
   QFileDialog fileDialog(this, tr("Export Fluorescence Image"), directory,
                          "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-  int result = fileDialog.exec();
+  result = fileDialog.exec();
   prefs.setValue("ExportImageDirectory", fileDialog.directory().absolutePath());
   prefs.setValue("ExportImageNameFilter", fileDialog.selectedNameFilter());
   prefs.endGroup();
@@ -1306,6 +1374,12 @@ MicroscopeSimulator
   prefs.beginGroup("FileDialogs");
   QString directory  = prefs.value("ExportStackDirectory").toString();
   QString nameFilter = prefs.value("ExportStackNameFilter").toString();
+
+#if 0
+  // Now get the options for the export
+  if (m_ImageExportOptionsDialog->exec() == QDialog::Rejected)
+    return;
+#endif
   
   QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
                          "16-bit TIFF File (*.tif)");
@@ -1322,7 +1396,7 @@ MicroscopeSimulator
     return;
 
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
-  double originalDepth = fluoroSim->GetFocalPlaneDepth();
+  unsigned int originalIndex = fluoroSim->GetFocalPlaneIndex();
 
   vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
   extractor->SetComponents(0);
@@ -1342,7 +1416,7 @@ MicroscopeSimulator
   }
 
   // Reset to original focal plane depth
-  fluoroSim->SetFocalPlaneDepth(originalDepth);
+  fluoroSim->SetFocalPlaneIndex(originalIndex);
   RenderViews();
 }
 
@@ -1370,11 +1444,13 @@ MicroscopeSimulator
   FluorescenceSimulation* sim = m_Simulation->GetFluorescenceSimulation();
   sim->SetImageWidth(dims[0]);
   sim->SetImageHeight(dims[1]);
-  sim->SetPixelSize(spacing[0]);
+  sim->SetNumberOfFocalPlanes(dims[2]);
 
-  sim->SetFocalPlaneDepthMinimum(0.0);
-  sim->SetFocalPlaneDepthMaximum(static_cast<double>((dims[2]-1)*spacing[2]));
-  sim->SetFocalPlaneDepthSpacing(spacing[2]);
+  if (sim->GetFocalPlaneIndex() >= sim->GetNumberOfFocalPlanes())
+    sim->SetFocalPlaneIndex(sim->GetNumberOfFocalPlanes()-1);
+
+  sim->SetPixelSize(spacing[0]);
+  sim->SetFocalPlaneSpacing(spacing[2]);
 
   RefreshUI();
 }
@@ -1449,33 +1525,6 @@ MicroscopeSimulator
     messageBox.setDefaultButton(QMessageBox::Ok);
     messageBox.exec();
   }
-}
-
-
-void
-MicroscopeSimulator
-::UpdateFocalPlaneUIControls(float minValue, float maxValue, float spacing) {
-  // Round values.
-  int minIndex = floor(minValue / spacing);
-  minValue = static_cast<float>(minIndex) * spacing;
-  int maxIndex = ceil(maxValue / spacing);
-  maxValue = static_cast<float>(maxIndex) * spacing;
-
-  // Update widgets
-  gui->fluoroSimFocusSlider->setMinimum(minIndex);
-  gui->fluoroSimFocusSlider->setMaximum(maxIndex);
-  gui->fluoroSimFocusMinEdit->setText(QString().sprintf("%0.1f", minValue));
-  gui->fluoroSimFocusMaxEdit->setText(QString().sprintf("%0.1f", maxValue));
-  gui->fluoroSimFocusSpacingEdit->setText(QString().sprintf("%0.1f", spacing));
-
-  m_Simulation->GetFluorescenceSimulation()->
-    SetFocalPlaneDepthSpacing(gui->fluoroSimFocusSpacingEdit->text().toDouble());
-
-  m_Simulation->GetFluorescenceSimulation()->
-    SetFocalPlaneDepthMinimum(gui->fluoroSimFocusMinEdit->text().toDouble());
-
-  m_Simulation->GetFluorescenceSimulation()->
-    SetFocalPlaneDepthMaximum(gui->fluoroSimFocusMaxEdit->text().toDouble());
 }
 
 
@@ -1568,11 +1617,18 @@ MicroscopeSimulator
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
 
   // Focus group box
-  UpdateFocalPlaneUIControls(fluoroSim->GetFocalPlaneDepthMinimum(),
-                             fluoroSim->GetFocalPlaneDepthMaximum(),
-                             fluoroSim->GetFocalPlaneDepthSpacing());
-  int focusSliderValue = (int) ((fluoroSim->GetFocalPlaneDepth() / fluoroSim->GetFocalPlaneDepthSpacing()));
-  gui->fluoroSimFocusSlider->setValue(focusSliderValue);
+  gui->fluoroSimFocusSlider->setMinimum(1);
+  gui->fluoroSimFocusSlider->setMaximum(fluoroSim->GetNumberOfFocalPlanes());
+  gui->fluoroSimFocusSlider->setValue(static_cast<int>(fluoroSim->GetFocalPlaneIndex()+1));
+
+  QString focalDepth = QVariant(fluoroSim->GetFocalPlanePosition()).toString();
+  focalDepth.append(" nm");
+  gui->fluoroSimFocalDepthEdit->setText(focalDepth);
+  
+  gui->fluoroSimCurrentPlaneEdit->setText(QVariant(fluoroSim->GetFocalPlaneIndex()).toString());
+  gui->fluoroSimNumberOfFocalPlanesEdit->setText(QVariant(fluoroSim->GetNumberOfFocalPlanes()).toString());
+  gui->fluoroSimFocalPlaneSpacingEdit->setText(QVariant(fluoroSim->GetFocalPlaneSpacing()).toString());
+  gui->fluoroSimUseCustomFocalPlanePositionsCheckBox->setChecked(fluoroSim->GetUseCustomFocalPlanePositions());
 
   gui->fluoroSimPSFMenuComboBox->
     setCurrentIndex(fluoroSim->GetActivePSFIndex()+1);
@@ -1582,6 +1638,8 @@ MicroscopeSimulator
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
   gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
   gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());
+  gui->fluoroSimShearInXEdit->setText(QVariant(fluoroSim->GetShearInX()).toString());
+  gui->fluoroSimShearInYEdit->setText(QVariant(fluoroSim->GetShearInY()).toString());
 
   gui->fluorescenceQvtkWidget->setMinimumWidth(fluoroSim->GetImageWidth());
   gui->fluorescenceQvtkWidget->setMaximumWidth(fluoroSim->GetImageWidth());
