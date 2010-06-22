@@ -17,7 +17,11 @@ FILE( GLOB VTK_DLLS "${VTK_LIBRARY_DIRS}/release/vtk*.dll" )
 INSTALL( FILES ${VTK_DLLS} DESTINATION bin )
 
 # libxml2 DLL
-INSTALL( FILES "D:/cquammen/build/libxml2/lib/libxml2.dll" DESTINATION bin )
+# First, find which one VTK was built with
+FILE( READ "${VTK_LIBRARY_DIRS}/../CMakeCache.txt" VTK_CMAKE_CACHE )
+STRING( REGEX REPLACE ".*LIBXML2_LIBRARIES:FILEPATH=([^\n]+).*" "\\1" LIBXML2_DLL ${VTK_CMAKE_CACHE} )
+STRING( REPLACE ".lib" ".dll" LIBXML2_DLL ${LIBXML2_DLL} )
+INSTALL( FILES "${LIBXML2_DLL}" DESTINATION bin )
 
 # VTKMS DLLs
 FILE( GLOB VTKMS_DLLS "${VTKMS_LIBRARY_DIRS}/release/vtkms*.dll" )
