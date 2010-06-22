@@ -25,14 +25,14 @@ and install them.
 On Windows, download Qt libraries and applications by going to
 http://www.qtsoftware.com/downloads/downloads and choosing the LGPL/Free tab.
 Download the Qt SDK appropriate for the platform on which you are developing.
-Qt 4.5.3 is known to work and is available here:
+Qt 4.6.3 is known to work and is available here:
 
-ftp://ftp.qt.nokia.com/qt/source/qt-all-opensource-src-4.5.3.zip
+ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.3.zip
 
-Unzip this file. The zip file contains the directory qt-all-opensource-src-4.5.3,
+Unzip this file. The zip file contains the directory qt-everywhere-opensource-src-4.6.3,
 so there is no need to place the zip file in a new directory.
 
-Add the qt-all-opensource-src-4.5.3/bin directory to PATH environment variable.
+Add the qt-everywhere-opensource-src-4.6.3/bin directory to PATH environment variable.
 Open a command prompt through Start -> All Programs -> Microsoft Visual Studio 2005 -> 
 Visual Studio Tools -> Visual Studio 2005 Command Prompt. Navigate to the 
 qt-all-opensource-src-4.5.3 directory and type
@@ -89,6 +89,11 @@ depending on what extraction applications you have available on your development
 system. Configure ITK with CMake and build it. No non-default options are 
 required for this application example to work.
 
-6. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to
+6. Configure the VTKMS project using CMake. Set VTK_DIR to the VTK build directory
+from step 4. Set ITK_DIR to the ITK build directory from step 5.
+
+
+7. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to
 the VTK build directory from step 4. Set ITK_DIR to the ITK build directory from step 5.
+Set the VTKMS directory to the build directory from step 6.
 
