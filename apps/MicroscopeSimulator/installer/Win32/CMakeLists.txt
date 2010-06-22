@@ -1,0 +1,1 @@
+ADD_LIBRARY(msimWinIcon icon.rc)
