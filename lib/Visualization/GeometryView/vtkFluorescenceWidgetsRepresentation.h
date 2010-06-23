@@ -38,11 +38,11 @@ class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
 
   vtkSmartPointer<vtkMatrix4x4>               ShearTransformMatrix;
 
-  vtkSmartPointer<vtkImageShiftScale>         FocalPlaneImageShiftScale;
-  vtkSmartPointer<vtkTexture>                 FocalPlaneTexture;
-  vtkSmartPointer<vtkPlaneSource>             FocalPlaneSource;
-  vtkSmartPointer<vtkPolyDataMapper>          FocalPlaneMapper;
-  vtkSmartPointer<vtkActor>                   FocalPlaneActor;
+  vtkSmartPointer<vtkImageShiftScale>         SyntheticFocalPlaneImageShiftScale;
+  vtkSmartPointer<vtkTexture>                 SyntheticFocalPlaneTexture;
+  vtkSmartPointer<vtkPlaneSource>             SyntheticFocalPlaneSource;
+  vtkSmartPointer<vtkPolyDataMapper>          SyntheticFocalPlaneMapper;
+  vtkSmartPointer<vtkActor>                   SyntheticFocalPlaneActor;
 
   vtkSmartPointer<vtkReferenceGridSource>     FocalPlaneGrid;
   vtkSmartPointer<vtkPolyDataMapper>          FocalPlaneGridMapper;
