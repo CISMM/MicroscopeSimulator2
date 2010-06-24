@@ -8,6 +8,7 @@
 #include <XMLStorable.h>
 
 class FluorescenceImageSource;
+class ImageModelObject;
 class PointSpreadFunction;
 class PointSpreadFunctionList;
 
@@ -36,7 +37,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* SHOW_REFERENCE_PLANE_ATT;
   static const char* SHOW_REFERENCE_GRID_ATT;
   static const char* REFERENCE_GRID_SPACING_ATT;
-  static const char* SUPERIMPOSE_FLUORESCENCE_IMAGE_ATT;
+  static const char* SUPERIMPOSE_SIMULATED_IMAGE_ATT;
+  static const char* SUPERIMPOSE_COMPARISON_IMAGE_ATT;
   static const char* MIN_INTENSITY_LEVEL_ATT;
   static const char* MAX_INTENSITY_LEVEL_ATT;
 
@@ -78,7 +80,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(ShowReferencePlane, bool);
   SetGetMacro(ShowReferenceGrid, bool);
   SetGetMacro(ReferenceGridSpacing, double);
-  SetGetMacro(SuperimposeFluorescenceImage, bool);
+  SetGetMacro(SuperimposeSimulatedImage, bool);
+  SetGetMacro(SuperimposeComparisonImage, bool);
   SetGetMacro(MinimumIntensityLevel, double);
   SetGetMacro(MaximumIntensityLevel, double);
 
@@ -102,6 +105,9 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
   void SetActivePSFByName(const std::string& psfName);
 
+  void SetComparisonImageModelObject(ImageModelObject* object);
+  ImageModelObject* GetComparisonImageModelObject();
+
  protected:
   DirtyListener* m_DirtyListener;
 
@@ -123,7 +129,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   bool         m_ShowReferencePlane;
   bool         m_ShowReferenceGrid;
   double       m_ReferenceGridSpacing;
-  bool         m_SuperimposeFluorescenceImage;
+  bool         m_SuperimposeSimulatedImage;
+  bool         m_SuperimposeComparisonImage;
   double       m_MinimumIntensityLevel;
   double       m_MaximumIntensityLevel;
 
@@ -133,6 +140,8 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   std::string m_PSFListSettingsFileName;
 
   std::vector<double> m_FocalPlanePositions;
+
+  ImageModelObject* m_ComparisonImageModelObject;
 
  private:
   FluorescenceSimulation();

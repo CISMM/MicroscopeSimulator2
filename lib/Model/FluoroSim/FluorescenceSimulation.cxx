@@ -3,6 +3,7 @@
 
 #include <FluorescenceSimulation.h>
 #include <FluorescenceImageSource.h>
+#include <ImageModelObject.h>
 #include <XMLHelper.h>
 
 const char* FluorescenceSimulation::FOCAL_PLANE_INDEX_ATT = "focalPlaneIndex";
@@ -27,7 +28,8 @@ const char* FluorescenceSimulation::SHOW_IMAGE_VOLUME_OUTLINE_ATT = "showImageVo
 const char* FluorescenceSimulation::SHOW_REFERENCE_PLANE_ATT = "showRefPlane";
 const char* FluorescenceSimulation::SHOW_REFERENCE_GRID_ATT = "showRefGrid";
 const char* FluorescenceSimulation::REFERENCE_GRID_SPACING_ATT = "refGridSpacing";
-const char* FluorescenceSimulation::SUPERIMPOSE_FLUORESCENCE_IMAGE_ATT = "superimposeImage";
+const char* FluorescenceSimulation::SUPERIMPOSE_SIMULATED_IMAGE_ATT = "superimposeSimulatedImage";
+const char* FluorescenceSimulation::SUPERIMPOSE_COMPARISON_IMAGE_ATT = "superimposeComparisonImage";
 const char* FluorescenceSimulation::MIN_INTENSITY_LEVEL_ATT = "minimumIntensityLevel";
 const char* FluorescenceSimulation::MAX_INTENSITY_LEVEL_ATT = "maximumIntensityLevel";
 
@@ -38,6 +40,7 @@ FluorescenceSimulation
   m_PSFList = new PointSpreadFunctionList();
 
   m_FluoroImageSource = NULL;
+  m_ComparisonImageModelObject = NULL;
 
   NewSimulation();
 }
@@ -72,9 +75,11 @@ FluorescenceSimulation
   m_ShowReferencePlane = true;
   m_ShowReferenceGrid = true;
   m_ReferenceGridSpacing = 1000.0;
-  m_SuperimposeFluorescenceImage = false;
+  m_SuperimposeSimulatedImage = false;
+  m_SuperimposeComparisonImage = false;
   m_MinimumIntensityLevel = 0.0;
   m_MaximumIntensityLevel = 0.0;
+  m_ComparisonImageModelObject = NULL;
 }
 
 
@@ -92,7 +97,6 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST NUMBER_OF_FOCAL_PLANES_ATT, BAD_CAST buf);
   sprintf(buf, "%s", GetUseCustomFocalPlanePositions() ? "true" : "false");
   xmlNewProp(node, BAD_CAST USE_CUSTOM_FOCAL_PLANE_POSITIONS_ATT, BAD_CAST buf);
-  sprintf(buf, "%f", GetExposure());
 
   xmlNodePtr focalPlanePositionsNode = xmlNewChild(node, NULL, BAD_CAST CUSTOM_FOCAL_PLANE_POSITIONS_ELEM, NULL);
   for (unsigned int i = 0; i < GetNumberOfFocalPlanes(); i++) {
@@ -103,6 +107,7 @@ FluorescenceSimulation
     xmlNewProp(positionNode, BAD_CAST POSITION_ATT, BAD_CAST buf);
   }
 
+  sprintf(buf, "%f", GetExposure());
   xmlNewProp(node, BAD_CAST EXPOSURE_TIME_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetPixelSize());
   xmlNewProp(node, BAD_CAST PIXEL_SIZE_ATT, BAD_CAST buf);
@@ -137,8 +142,10 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST SHOW_REFERENCE_GRID_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetReferenceGridSpacing());
   xmlNewProp(node, BAD_CAST REFERENCE_GRID_SPACING_ATT, BAD_CAST buf);
-  sprintf(buf, "%s", GetSuperimposeFluorescenceImage() ? trueStr : falseStr);
-  xmlNewProp(node, BAD_CAST SUPERIMPOSE_FLUORESCENCE_IMAGE_ATT, BAD_CAST buf);
+  sprintf(buf, "%s", GetSuperimposeSimulatedImage() ? trueStr : falseStr);
+  xmlNewProp(node, BAD_CAST SUPERIMPOSE_SIMULATED_IMAGE_ATT, BAD_CAST buf);
+  sprintf(buf, "%s", GetSuperimposeComparisonImage() ? trueStr : falseStr);
+  xmlNewProp(node, BAD_CAST SUPERIMPOSE_COMPARISON_IMAGE_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetMinimumIntensityLevel());
   xmlNewProp(node, BAD_CAST MIN_INTENSITY_LEVEL_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetMaximumIntensityLevel());
@@ -274,9 +281,14 @@ FluorescenceSimulation
     SetReferenceGridSpacing(atof(referenceGridSpacingStr));
   }
 
-  char* superimposeFluorescenceImageStr = (char*) xmlGetProp(node, BAD_CAST SUPERIMPOSE_FLUORESCENCE_IMAGE_ATT);
-  if (superimposeFluorescenceImageStr) {
-    SetSuperimposeFluorescenceImage((std::string(superimposeFluorescenceImageStr) == trueValue));
+  char* superimposeSimulatedImageStr = (char*) xmlGetProp(node, BAD_CAST SUPERIMPOSE_SIMULATED_IMAGE_ATT);
+  if (superimposeSimulatedImageStr) {
+    SetSuperimposeSimulatedImage((std::string(superimposeSimulatedImageStr) == trueValue));
+  }
+
+  char* superimposeComparisonImageStr = (char*) xmlGetProp(node, BAD_CAST SUPERIMPOSE_COMPARISON_IMAGE_ATT);
+  if (superimposeComparisonImageStr) {
+    SetSuperimposeComparisonImage((std::string(superimposeComparisonImageStr) == trueValue));
   }
 
   char* minIntensityLevelStr = (char*) xmlGetProp(node, BAD_CAST MIN_INTENSITY_LEVEL_ATT);
@@ -426,4 +438,20 @@ FluorescenceSimulation
   }
 
   SetActivePSFIndex(-1);
+}
+
+
+void
+FluorescenceSimulation
+::SetComparisonImageModelObject(ImageModelObject* object) {
+  m_ComparisonImageModelObject = dynamic_cast<ImageModelObject*>(object);
+
+  Sully();
+}
+
+
+ImageModelObject*
+FluorescenceSimulation
+::GetComparisonImageModelObject() {
+  return m_ComparisonImageModelObject;
 }
