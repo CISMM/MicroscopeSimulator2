@@ -1223,8 +1223,17 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimSuperimposeFluorescenceImageCheckBox_toggled(bool show) {
-  m_Simulation->GetFluorescenceSimulation()->SetSuperimposeFluorescenceImage(show);
+::on_fluoroSimSuperimposeSimulatedImageCheckBox_toggled(bool show) {
+  m_Simulation->GetFluorescenceSimulation()->SetSuperimposeSimulatedImage(show);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimSuperimposeComparisonImageCheckBox_toggled(bool show) {
+  m_Simulation->GetFluorescenceSimulation()->SetSuperimposeComparisonImage(show);
 
   RenderViews();
 }
@@ -1654,7 +1663,8 @@ MicroscopeSimulator
   gui->fluoroSimShowReferencePlaneCheckBox->setChecked(QVariant(fluoroSim->GetShowReferencePlane()).toBool());
   gui->fluoroSimShowGridCheckBox->setChecked(QVariant(fluoroSim->GetShowReferenceGrid()).toBool());
   gui->fluoroSimGridSpacingEdit->setText(QVariant(fluoroSim->GetReferenceGridSpacing()).toString());
-  gui->fluoroSimSuperimposeFluorescenceImageCheckBox->setChecked(QVariant(fluoroSim->GetSuperimposeFluorescenceImage()).toBool());
+  gui->fluoroSimSuperimposeSimulatedImageCheckBox->setChecked(QVariant(fluoroSim->GetSuperimposeSimulatedImage()).toBool());
+  gui->fluoroSimSuperimposeComparisonImageCheckBox->setChecked(QVariant(fluoroSim->GetSuperimposeComparisonImage()).toBool());
   gui->fluoroSimShowImageVolumeOutlineCheckBox->setChecked(QVariant(fluoroSim->GetShowImageVolumeOutline()).toBool());
   gui->fluoroSimMinLevelSlider->setValue((int) fluoroSim->GetMinimumIntensityLevel());
   gui->fluoroSimMaxLevelSlider->setValue((int) fluoroSim->GetMaximumIntensityLevel());

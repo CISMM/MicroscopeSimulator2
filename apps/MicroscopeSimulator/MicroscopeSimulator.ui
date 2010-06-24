@@ -196,9 +196,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-654</y>
           <width>381</width>
-          <height>1352</height>
+          <height>1374</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1028,14 +1028,21 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0" colspan="2">
-                    <widget class="QCheckBox" name="fluoroSimSuperimposeFluorescenceImageCheckBox">
+                   <item row="4" column="0" colspan="2">
+                    <widget class="QCheckBox" name="fluoroSimSuperimposeSimulatedImageCheckBox">
                      <property name="text">
-                      <string>Superimpose fluorescence image</string>
+                      <string>Superimpose simulated fluorescence image</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="0" colspan="2">
+                   <item row="5" column="0" colspan="2">
+                    <widget class="QCheckBox" name="fluoroSimSuperimposeComparisonImageCheckBox">
+                     <property name="text">
+                      <string>Superimpose comparison image</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0" colspan="2">
                     <widget class="QCheckBox" name="fluoroSimShowImageVolumeOutlineCheckBox">
                      <property name="text">
                       <string>Show image volume outline</string>
