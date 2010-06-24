@@ -33,7 +33,7 @@ vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->SyntheticImageTexture = vtkFramebufferObjectTexture::New();
 
   // TODO - make this switchable by user or autoconfig process
-  this->SyntheticImageTexture->SetQualityTo32Bit();
+  this->SyntheticImageTexture->SetQualityTo16Bit();
 
   this->SyntheticImageTexture->AutomaticDimensionsOn();
 
