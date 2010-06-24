@@ -415,7 +415,17 @@ Simulation
   if (!m_ModelObjectList)
     return;
 
-  m_FluoroOptimizer->SetComparisonImageModelObjectIndex(index);
+  //m_FluoroOptimizer->SetComparisonImageModelObjectIndex(index);
+  ImageModelObjectPtr comparisonObject = NULL;
+  if (index >= 0) {
+    comparisonObject = dynamic_cast<ImageModelObject*>
+      (m_ModelObjectList->GetModelObjectAtIndex
+       (index, ImageModelObject::OBJECT_TYPE_NAME));
+  }
+  m_FluoroSim->SetComparisonImageModelObject(comparisonObject);
+  m_GradientDescentFluoroOptimizer->SetComparisonImageModelObject(comparisonObject);
+  m_NelderMeadFluoroOptimizer->SetComparisonImageModelObject(comparisonObject);
+  m_PointsGradientFluoroOptimizer->SetComparisonImageModelObject(comparisonObject);
 }
 
 
