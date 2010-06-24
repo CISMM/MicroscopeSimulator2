@@ -15,6 +15,7 @@ class vtkPlaneSource;
 class vtkPolyDataMapper;
 class vtkReferenceGridSource;
 class vtkRenderView;
+class vtkTexture;
 
 
 class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
@@ -38,11 +39,17 @@ class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
 
   vtkSmartPointer<vtkMatrix4x4>               ShearTransformMatrix;
 
-  vtkSmartPointer<vtkImageShiftScale>         SyntheticFocalPlaneImageShiftScale;
-  vtkSmartPointer<vtkTexture>                 SyntheticFocalPlaneTexture;
-  vtkSmartPointer<vtkPlaneSource>             SyntheticFocalPlaneSource;
-  vtkSmartPointer<vtkPolyDataMapper>          SyntheticFocalPlaneMapper;
-  vtkSmartPointer<vtkActor>                   SyntheticFocalPlaneActor;
+  vtkSmartPointer<vtkImageShiftScale>         SimulatedFocalPlaneImageShiftScale;
+  vtkSmartPointer<vtkTexture>                 SimulatedFocalPlaneTexture;
+  vtkSmartPointer<vtkPlaneSource>             SimulatedFocalPlaneSource;
+  vtkSmartPointer<vtkPolyDataMapper>          SimulatedFocalPlaneMapper;
+  vtkSmartPointer<vtkActor>                   SimulatedFocalPlaneActor;
+
+  vtkSmartPointer<vtkImageShiftScale>         ComparisonFocalPlaneImageShiftScale;
+  vtkSmartPointer<vtkTexture>                 ComparisonFocalPlaneTexture;
+  vtkSmartPointer<vtkPlaneSource>             ComparisonFocalPlaneSource;
+  vtkSmartPointer<vtkPolyDataMapper>          ComparisonFocalPlaneMapper;
+  vtkSmartPointer<vtkActor>                   ComparisonFocalPlaneActor;
 
   vtkSmartPointer<vtkReferenceGridSource>     FocalPlaneGrid;
   vtkSmartPointer<vtkPolyDataMapper>          FocalPlaneGridMapper;

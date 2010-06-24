@@ -1,6 +1,7 @@
 #include <vtkFluorescenceWidgetsRepresentation.h>
 
 #include <vtkActor.h>
+#include <vtkImageClip.h>
 #include <vtkImageData.h>
 #include <vtkImageShiftScale.h>
 #include <vtkLookupTable.h>
@@ -18,6 +19,7 @@
 #include <vtkTransformPolyDataFilter.h>
 
 #include <FluorescenceImageSource.h>
+#include <ImageModelObject.h>
 
 
 vtkCxxRevisionMacro(vtkFluorescenceWidgetsRepresentation, "$Revision: 1.0 $");
@@ -30,11 +32,6 @@ vtkFluorescenceWidgetsRepresentation
 
   this->Simulation = NULL;
 
-  // Set up the textured focal plane
-  this->SyntheticFocalPlaneImageShiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
-  this->SyntheticFocalPlaneImageShiftScale->SetOutputScalarTypeToUnsignedChar();
-  this->SyntheticFocalPlaneImageShiftScale->ClampOverflowOn();
-
   vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
   table->SetRange(0, 65535);
   table->SetValueRange(0.0, 1.0);
@@ -43,25 +40,54 @@ vtkFluorescenceWidgetsRepresentation
   table->Build();
 
   this->ShearTransformMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+
+  // Set up the textured focal plane for the synthetic image
+  this->SimulatedFocalPlaneImageShiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
+  this->SimulatedFocalPlaneImageShiftScale->SetOutputScalarTypeToUnsignedChar();
+  this->SimulatedFocalPlaneImageShiftScale->ClampOverflowOn();
   
-  this->SyntheticFocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
-  this->SyntheticFocalPlaneTexture->InterpolateOff();
-  this->SyntheticFocalPlaneTexture->RepeatOff();
-  this->SyntheticFocalPlaneTexture->SetLookupTable(table);
-  this->SyntheticFocalPlaneTexture->
-    SetInputConnection(this->SyntheticFocalPlaneImageShiftScale->GetOutputPort());
+  this->SimulatedFocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
+  this->SimulatedFocalPlaneTexture->InterpolateOff();
+  this->SimulatedFocalPlaneTexture->RepeatOff();
+  this->SimulatedFocalPlaneTexture->SetLookupTable(table);
+  this->SimulatedFocalPlaneTexture->
+    SetInputConnection(this->SimulatedFocalPlaneImageShiftScale->GetOutputPort());
 
-  this->SyntheticFocalPlaneSource = vtkSmartPointer<vtkPlaneSource>::New();
-  this->SyntheticFocalPlaneSource->SetNormal(0.0, 0.0, 1.0);
+  this->SimulatedFocalPlaneSource = vtkSmartPointer<vtkPlaneSource>::New();
+  this->SimulatedFocalPlaneSource->SetNormal(0.0, 0.0, 1.0);
 
-  this->SyntheticFocalPlaneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-  this->SyntheticFocalPlaneMapper->SetInputConnection(this->SyntheticFocalPlaneSource->GetOutputPort());
+  this->SimulatedFocalPlaneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+  this->SimulatedFocalPlaneMapper->SetInputConnection(this->SimulatedFocalPlaneSource->GetOutputPort());
 
-  this->SyntheticFocalPlaneActor = vtkSmartPointer<vtkActor>::New();
-  this->SyntheticFocalPlaneActor->SetMapper(this->SyntheticFocalPlaneMapper);
-  this->SyntheticFocalPlaneActor->SetTexture(this->SyntheticFocalPlaneTexture);
-  this->SyntheticFocalPlaneActor->SetUserMatrix(this->ShearTransformMatrix);
-  this->SyntheticFocalPlaneActor->PickableOff();
+  this->SimulatedFocalPlaneActor = vtkSmartPointer<vtkActor>::New();
+  this->SimulatedFocalPlaneActor->SetMapper(this->SimulatedFocalPlaneMapper);
+  this->SimulatedFocalPlaneActor->SetTexture(this->SimulatedFocalPlaneTexture);
+  this->SimulatedFocalPlaneActor->SetUserMatrix(this->ShearTransformMatrix);
+  this->SimulatedFocalPlaneActor->PickableOff();
+
+  // Set up the textured focal plane for the experimental image
+  this->ComparisonFocalPlaneImageShiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
+  this->ComparisonFocalPlaneImageShiftScale->SetOutputScalarTypeToUnsignedChar();
+  this->ComparisonFocalPlaneImageShiftScale->ClampOverflowOn();
+  
+  this->ComparisonFocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
+  this->ComparisonFocalPlaneTexture->InterpolateOff();
+  this->ComparisonFocalPlaneTexture->RepeatOff();
+  this->ComparisonFocalPlaneTexture->SetLookupTable(table);
+  this->ComparisonFocalPlaneTexture->
+    SetInputConnection(this->ComparisonFocalPlaneImageShiftScale->GetOutputPort());
+
+  this->ComparisonFocalPlaneSource = vtkSmartPointer<vtkPlaneSource>::New();
+  this->ComparisonFocalPlaneSource->SetNormal(0.0, 0.0, 1.0);
+
+  this->ComparisonFocalPlaneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+  this->ComparisonFocalPlaneMapper->SetInputConnection(this->ComparisonFocalPlaneSource->GetOutputPort());
+
+  this->ComparisonFocalPlaneActor = vtkSmartPointer<vtkActor>::New();
+  this->ComparisonFocalPlaneActor->SetMapper(this->ComparisonFocalPlaneMapper);
+  this->ComparisonFocalPlaneActor->SetTexture(this->ComparisonFocalPlaneTexture);
+  this->ComparisonFocalPlaneActor->SetUserMatrix(this->ShearTransformMatrix);
+  this->ComparisonFocalPlaneActor->PickableOff();
 
   // Set up the reference grid
   vtkSmartPointer<vtkProperty> focalPlaneProperty = vtkSmartPointer<vtkProperty>::New();
@@ -122,32 +148,64 @@ vtkFluorescenceWidgetsRepresentation
     double width  = static_cast<double>(this->Simulation->GetImageWidth()) * pixelSize;
     double height = static_cast<double>(this->Simulation->GetImageHeight()) * pixelSize;
     double depth  = this->Simulation->GetFocalPlanePosition();
+    double mapsToZero = this->Simulation->GetMinimumIntensityLevel();
+    double mapsToOne  = this->Simulation->GetMaximumIntensityLevel();
 
-    bool focalPlaneVisible = this->Simulation->GetSuperimposeFluorescenceImage();
-
-    if (focalPlaneVisible) {
-      double mapsToZero = this->Simulation->GetMinimumIntensityLevel();
-      double mapsToOne  = this->Simulation->GetMaximumIntensityLevel();
-      this->SyntheticFocalPlaneImageShiftScale->SetShift(-mapsToZero);
-      this->SyntheticFocalPlaneImageShiftScale->SetScale(255.0 / (mapsToOne - mapsToZero));
+    bool simulatedImageVisible = this->Simulation->GetSuperimposeSimulatedImage();
+    if (simulatedImageVisible) {
+      this->SimulatedFocalPlaneImageShiftScale->SetShift(-mapsToZero);
+      this->SimulatedFocalPlaneImageShiftScale->SetScale(255.0 / (mapsToOne - mapsToZero));
 
       FluorescenceImageSource* imageSource = 
         this->Simulation->GetFluorescenceImageSource();
 
-      vtkDataObject* oldImage = this->SyntheticFocalPlaneImageShiftScale->GetInput();
+      vtkDataObject* oldImage = this->SimulatedFocalPlaneImageShiftScale->GetInput();
       vtkImageData* fluorescenceImage = imageSource->GenerateFluorescenceImage();
-      this->SyntheticFocalPlaneImageShiftScale->SetInput(fluorescenceImage);
+      this->SimulatedFocalPlaneImageShiftScale->SetInput(fluorescenceImage);
       if (oldImage)
         oldImage->Delete();
-      this->SyntheticFocalPlaneTexture->Modified();
-      this->SyntheticFocalPlaneTexture->Update();
-                                                
-      this->SyntheticFocalPlaneSource->SetPoint1(width, 0.0, 0.0);
-      this->SyntheticFocalPlaneSource->SetPoint2(0.0, height, 0.0);
-      this->SyntheticFocalPlaneActor->SetPosition(0.0, 0.0, depth);
-    }
 
-    this->SyntheticFocalPlaneActor->SetVisibility(focalPlaneVisible ? 1 : 0);
+      this->SimulatedFocalPlaneTexture->Modified();
+      this->SimulatedFocalPlaneTexture->Update();
+                                                
+      this->SimulatedFocalPlaneSource->SetPoint1(width, 0.0, 0.0);
+      this->SimulatedFocalPlaneSource->SetPoint2(0.0, height, 0.0);
+      this->SimulatedFocalPlaneActor->SetPosition(0.0, 0.0, depth);
+    }
+    this->SimulatedFocalPlaneActor->SetVisibility(simulatedImageVisible ? 1 : 0);
+
+
+    bool comparisonImageVisible = this->Simulation->GetSuperimposeComparisonImage();
+    if (comparisonImageVisible) {
+      this->ComparisonFocalPlaneImageShiftScale->SetShift(-mapsToZero);
+      this->ComparisonFocalPlaneImageShiftScale->SetScale(255.0 / (mapsToOne - mapsToZero));
+
+      if (this->Simulation->GetComparisonImageModelObject()) {
+        vtkImageData* experimentalImage = 
+          this->Simulation->GetComparisonImageModelObject()->GetImageData();
+        int extent[6];
+        experimentalImage->GetExtent(extent);
+        extent[4] = extent[5] = this->Simulation->GetFocalPlaneIndex();
+
+        vtkImageClip* clipper = vtkImageClip::New();
+        clipper->SetInput(experimentalImage);
+        clipper->SetOutputWholeExtent(extent);
+
+        this->ComparisonFocalPlaneImageShiftScale->SetInputConnection
+          (clipper->GetOutputPort());
+        this->ComparisonFocalPlaneSource->SetPoint1(width, 0.0, 0.0);
+        this->ComparisonFocalPlaneSource->SetPoint2(0.0, height, 0.0);
+        this->ComparisonFocalPlaneActor->SetPosition(0.0, 0.0, depth);
+        this->ComparisonFocalPlaneActor->VisibilityOn();
+
+      } else {
+        this->ComparisonFocalPlaneImageShiftScale->SetInput(NULL);
+        this->ComparisonFocalPlaneActor->VisibilityOff();
+      }
+
+    } else {
+      this->ComparisonFocalPlaneActor->VisibilityOff();
+    }
 
     this->FocalPlaneGrid->SetPoint1(0.0, height, 0.0);
     this->FocalPlaneGrid->SetPoint2(width, 0.0, 0.0);
@@ -184,7 +242,8 @@ vtkFluorescenceWidgetsRepresentation
     vtkErrorMacro("Can only add to a subclass of vtkRenderView.");
     return false;
   }
-  rv->GetRenderer()->AddActor(this->SyntheticFocalPlaneActor);
+  rv->GetRenderer()->AddActor(this->SimulatedFocalPlaneActor);
+  rv->GetRenderer()->AddActor(this->ComparisonFocalPlaneActor);
   rv->GetRenderer()->AddActor(this->FocalPlaneGridActor);
   rv->GetRenderer()->AddActor(this->ImageVolumeOutlineActor);
 
@@ -199,7 +258,8 @@ vtkFluorescenceWidgetsRepresentation
   if (!rv) {
     return false;
   }
-  rv->GetRenderer()->RemoveActor(this->SyntheticFocalPlaneActor);
+  rv->GetRenderer()->RemoveActor(this->SimulatedFocalPlaneActor);
+  rv->GetRenderer()->RemoveActor(this->ComparisonFocalPlaneActor);
   rv->GetRenderer()->RemoveActor(this->FocalPlaneGridActor);
   rv->GetRenderer()->RemoveActor(this->ImageVolumeOutlineActor);
 
