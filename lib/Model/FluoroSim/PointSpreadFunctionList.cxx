@@ -130,7 +130,9 @@ PointSpreadFunctionList
       } else if (nodeName == "ImportedPointSpreadFunction") {
         ImportedPointSpreadFunction* psf = new ImportedPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
-        m_PSFList.push_back(psf);
+        if (psf->IsFileValid()) {
+          m_PSFList.push_back(psf);
+        }
       } else if (nodeName == "WidefieldPointSpreadFunction") {
         PointSpreadFunction* psf = new WidefieldPointSpreadFunction();
         psf->RestoreFromXML(psfNode);

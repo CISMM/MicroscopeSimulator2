@@ -37,6 +37,8 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   double      GetParameterValue(int index);
   virtual void SetParameterValue(int index, double value);
 
+  virtual bool IsFileValid();
+
   virtual void GetXMLConfiguration(xmlNodePtr node);
   virtual void RestoreFromXML(xmlNodePtr node);
 
@@ -49,6 +51,7 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   std::vector<std::string> m_ParameterNames;
 
   std::string m_FileName;
+  bool        m_FileIsValid;
   double      m_PointCenter[3];
 
   ImageSourceType::Pointer       m_ImageReader;

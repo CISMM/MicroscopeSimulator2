@@ -36,6 +36,8 @@ ImportedPointSpreadFunction
   m_ParameterNames.push_back("Y Center (nm)");
   m_ParameterNames.push_back("Z Center (nm)");
 
+  m_FileIsValid = false;
+
   m_ChangeInformationFilter = ChangeInfoFilterType::New();
   m_ChangeInformationFilter->ChangeDirectionOff();
   m_ChangeInformationFilter->ChangeOriginOn();
@@ -193,6 +195,13 @@ ImportedPointSpreadFunction
 }
 
 
+bool
+ImportedPointSpreadFunction
+::IsFileValid() {
+  return m_FileIsValid;
+}
+
+
 void
 ImportedPointSpreadFunction
 ::GetXMLConfiguration(xmlNodePtr node) {
@@ -231,7 +240,15 @@ ImportedPointSpreadFunction
   SetName(name);
 
   char* fileName = (char*) xmlGetProp(node, BAD_CAST FILE_NAME_ATTRIBUTE.c_str());
-  SetFileName(std::string(fileName));
+  try {
+    SetFileName(std::string(fileName));
+  } catch (...) {
+    m_FileIsValid = false;
+    std::cout << "Error when reading imported PSF file '" << fileName << "'."
+              << std::endl;
+    return;
+  }
+  m_FileIsValid = true;
 
   char* summedIntensityStr = (char*) xmlGetProp(node, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str());
   if (summedIntensityStr) {
