@@ -153,6 +153,10 @@ public:
   /** Get the delegate ImageToImageMetric. */
   itkGetConstObjectMacro( ImageToImageMetric, ImageToImageMetricType );
 
+  /** Set the step size for estimating the derivative via forward differences. */
+  itkSetMacro( DerivativeStepSize, double );
+  itkGetMacro( DerivativeStepSize, double );
+
   /** Get the derivative of the cost function (calling this returns an
       undefined derivative); */
   virtual void GetDerivative(const ParametersType& parameters, DerivativeType& derivative) const;
@@ -186,6 +190,8 @@ protected:
   MovingImageSourcePointer      m_MovingImageSource;
   
   ImageToImageMetricTypePointer m_ImageToImageMetric;
+  
+  double m_DerivativeStepSize;
 
   /** Disable spatial registration with an identity transform. */
   TransformTypePointer    m_Transform;

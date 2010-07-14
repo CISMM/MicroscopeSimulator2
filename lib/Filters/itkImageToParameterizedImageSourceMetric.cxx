@@ -37,6 +37,7 @@ ImageToParameterizedImageSourceMetric<TFixedImage,TMovingImageSource>
   m_FixedImage            = 0; // has to be provided by the user.
   m_MovingImageSource     = 0; // has to be provided by the user.
   m_ImageToImageMetric    = 0; // has to be provided by the user.
+  m_DerivativeStepSize    = 1e-6;
   m_Transform             = TransformType::New();
   m_Interpolator          = InterpolatorType::New();
   m_ParametersMask        = ParametersMaskType(0);
@@ -102,7 +103,19 @@ template <class TFixedImage, class TMovingImageSource>
 void
 ImageToParameterizedImageSourceMetric<TFixedImage,TMovingImageSource>
 ::GetDerivative(const ParametersType& parameters, DerivativeType& derivative) const {
-  // Do nothing.
+  // Forward differences approximation to the gradient.
+  double h = m_DerivativeStepSize;
+  double value = GetValue(parameters);
+  ParametersType forwardParameters = parameters;
+
+  derivative = DerivativeType(GetNumberOfParameters());
+
+  for (unsigned int i = 0; i < GetNumberOfParameters(); i++) {
+    double previousParameterValue = forwardParameters[i];
+    forwardParameters[i] += h;
+    derivative[i] = (GetValue(forwardParameters) - value) / h;
+    forwardParameters[i] = previousParameterValue;
+  }
 }
 
 
