@@ -47,9 +47,11 @@ GeometryRepresentation
 void
 GeometryRepresentation
 ::SetShowFluorophores(bool value) {
+  m_ShowFluorophores = value;
+
   std::list<vtkModelObjectGeometryRepresentation*>::iterator iter;
   for (iter = m_GeometryReps.begin(); iter != m_GeometryReps.end(); iter++) {
-    (*iter)->SetShowFluorophores(value ? 1 : 0);
+    (*iter)->SetShowFluorophores(m_ShowFluorophores ? 1 : 0);
   }
 }
 
@@ -68,8 +70,26 @@ GeometryRepresentation
 void
 GeometryRepresentation
 ::Update() {
-  UpdateRepresentation();
-  UpdateSources();
+  if (m_ModelObjectList == NULL || m_ModelObjectList->GetSize() != m_GeometryReps.size()) {
+    // Something was added or deleted. We don't know what it was, so rebuild
+    // the whole geometry list.
+    while (!m_GeometryReps.empty()) {
+      vtkModelObjectGeometryRepresentation* rep = m_GeometryReps.front();
+      rep->Delete();
+      m_GeometryReps.pop_front();
+    }
+    
+    for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
+      ModelObject* newModelObject = m_ModelObjectList->GetModelObjectAtIndex(i);
+      m_GeometryReps.push_back(CreateRepresentation(newModelObject));
+    }    
+  }
+  
+  std::list<vtkModelObjectGeometryRepresentation*>::iterator iter;
+  for (iter = m_GeometryReps.begin(); iter != m_GeometryReps.end(); iter++) {
+    (*iter)->SetShowFluorophores(m_ShowFluorophores ? 1 : 0);
+    (*iter)->Update();
+  }
 }
 
 
@@ -90,37 +110,4 @@ GeometryRepresentation
   }
   
   return geomRep;
-}
-
-
-void
-GeometryRepresentation
-::UpdateRepresentation() {
-  if (m_ModelObjectList == NULL || m_ModelObjectList->GetSize() != m_GeometryReps.size()) {
-    // Something was deleted. We don't know what it was, so rebuild the
-    // whole geometry list.
-    while (!m_GeometryReps.empty()) {
-      vtkModelObjectGeometryRepresentation* rep = m_GeometryReps.front();
-      rep->Delete();
-      m_GeometryReps.pop_front();
-    }
-
-    for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
-      ModelObject* newModelObject = m_ModelObjectList->GetModelObjectAtIndex(i);
-      m_GeometryReps.push_back(CreateRepresentation(newModelObject));
-    }
-    
-  }
-
-  // If list is the same size, there is nothing to do.
-}
-
-
-void
-GeometryRepresentation
-::UpdateSources() {
-  std::list<vtkModelObjectGeometryRepresentation*>::iterator iter;
-  for (iter = m_GeometryReps.begin(); iter != m_GeometryReps.end(); iter++) {
-    (*iter)->Update();
-  }
 }

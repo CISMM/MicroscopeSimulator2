@@ -24,6 +24,7 @@ class GeometryRepresentation {
   void SetInteractionObserver(vtkCommand* observer);
 
   void SetShowFluorophores(bool value);
+  bool GetShowFluorophores();
 
   void AddToView(vtkView* view);
 
@@ -32,15 +33,14 @@ class GeometryRepresentation {
  protected:
   ModelObjectList* m_ModelObjectList;
 
+  bool m_ShowFluorophores;
+
   vtkCommand* m_Observer;
 
   std::list<vtkModelObjectGeometryRepresentation*> m_GeometryReps;
 
   vtkModelObjectGeometryRepresentation* 
     CreateRepresentation(ModelObject* modelObject);
-
-  void UpdateRepresentation();
-  void UpdateSources();
 
 };
 
