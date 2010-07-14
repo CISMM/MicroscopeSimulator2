@@ -1404,21 +1404,50 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty())
     return;
 
+  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (!selectedFileName.endsWith(extension))
+    selectedFileName.append(extension);
+
+  // Set up red, green, blue channel file names
+  QString redFileName   = QString(selectedFileName);
+  redFileName.replace(extension, QString("_R") + extension, Qt::CaseInsensitive);
+  QString greenFileName = QString(selectedFileName);
+  greenFileName.replace(extension, QString("_G") + extension, Qt::CaseInsensitive);
+  QString blueFileName  = QString(selectedFileName);
+  blueFileName.replace(extension, QString("_B") + extension, Qt::CaseInsensitive);
+
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
   unsigned int originalIndex = fluoroSim->GetFocalPlaneIndex();
 
-  vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  extractor->SetComponents(0);
+  vtkSmartPointer<vtkImageExtractComponents> redExtractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+  redExtractor->SetComponents(0);
+
+  vtkSmartPointer<vtkImageExtractComponents> greenExtractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+  greenExtractor->SetComponents(1);
+
+  vtkSmartPointer<vtkImageExtractComponents> blueExtractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+  blueExtractor->SetComponents(2);
 
   vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
-  extractor->SetInput(rawStack);
+  redExtractor->SetInput(rawStack);
+  greenExtractor->SetInput(rawStack);
+  blueExtractor->SetInput(rawStack);
   rawStack->Delete();
 
   try {
     ImageWriter writer;
-    writer.SetFileName(selectedFileName.toStdString());
-    writer.SetInputConnection(extractor->GetOutputPort());
+    writer.SetFileName(redFileName.toStdString());
+    writer.SetInputConnection(redExtractor->GetOutputPort());
     writer.WriteUShortImage();
+
+    writer.SetFileName(greenFileName.toStdString());
+    writer.SetInputConnection(greenExtractor->GetOutputPort());
+    writer.WriteUShortImage();
+
+    writer.SetFileName(blueFileName.toStdString());
+    writer.SetInputConnection(blueExtractor->GetOutputPort());
+    writer.WriteUShortImage();
+
   } catch (itk::ExceptionObject e) {
     std::cout << "Error on write:" << std::endl;
     std::cout << e.GetDescription() << std::endl;
