@@ -29,7 +29,6 @@
 #include <vtkModelObjectGeometryRepresentation.h>
 #include <vtkModelObjectFluorescenceRepresentation.h>
 #include <vtkRenderer.h>
-//#include <vtkRenderView.h>
 #include <vtkGeometryRenderView.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
@@ -37,8 +36,6 @@
 #include <vtkSurfaceUniformPointSampler.h>
 #include <vtkTriangleFilter.h>
 #include <vtkVisualizationInteractionObserver.h>
-
-//#define IMAGE_PLANE_WIDGETS
 
 
 Visualization
@@ -50,9 +47,6 @@ Visualization
   m_GeometryRepresentation = new GeometryRepresentation();
   m_FluorescenceRepresentation = new FluorescenceRepresentation();
   m_FluorescenceWidgetsRepresentation = vtkSmartPointer<vtkFluorescenceWidgetsRepresentation>::New();
-#ifdef IMAGE_PLANE_WIDGETS
-  m_ImagePlaneWidgetRepresentation = vtkSmartPointer<vtkImagePlaneWidgetRepresentation>::New();
-#endif
 
   // Set up the model object view.
   //m_ModelObjectRenderView = vtkSmartPointer<vtkRenderView>::New();
