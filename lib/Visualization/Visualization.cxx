@@ -140,6 +140,13 @@ Visualization
 }
 
 
+void
+Visualization
+::SetShowOrientationWidgetInModelObjectRenderer(bool flag) {
+  m_ModelObjectRenderView->SetShowOrientationWidget(flag);
+}
+
+
 vtkImageData*
 Visualization
 ::GenerateFluorescenceImage() {

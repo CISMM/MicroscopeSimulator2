@@ -4,6 +4,8 @@
 #include <Simulation.h>
 
 #include <vtkActor.h>
+#include <vtkAxesActor.h>
+#include <vtkCaptionActor2D.h>
 #include <vtkImageData.h>
 #include <vtkInteractorObserver.h>
 #include <vtkFloatArray.h>
@@ -11,6 +13,7 @@
 #include <vtkFramebufferObjectRenderer.h>
 #include <vtkImageNoiseSource.h>
 #include <vtkObjectFactory.h>
+#include <vtkOrientationMarkerWidget.h>
 #include <vtkPlaneSource.h>
 #include <vtkPoints.h>
 #include <vtkPointData.h>
@@ -21,6 +24,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTexture.h>
+#include <vtkTextProperty.h>
 
 #include <vtkSphereSource.h>
 #include <vtkPNGWriter.h>
@@ -60,6 +64,32 @@ vtkGeometryRenderView::vtkGeometryRenderView() {
   //this->Renderer->AddViewProp(this->AFMPlaneActor);
 
   //this->AFMRenderer->AddViewProp(actor);
+
+  vtkSmartPointer<vtkAxesActor> axes = vtkSmartPointer<vtkAxesActor>::New();
+  axes->SetShaftTypeToCylinder();
+  axes->SetXAxisLabelText("x");
+  axes->SetYAxisLabelText("y");
+  axes->SetZAxisLabelText("z");
+  axes->SetTotalLength(2.0, 2.0, 2.0);
+
+  vtkSmartPointer<vtkTextProperty> prop1 = vtkSmartPointer<vtkTextProperty>::New();
+  prop1->ItalicOn();
+  prop1->ShadowOn();
+  prop1->SetFontSize(1);
+  axes->GetXAxisCaptionActor2D()->SetCaptionTextProperty(prop1);
+  vtkSmartPointer<vtkTextProperty> prop2 = vtkSmartPointer<vtkTextProperty>::New();
+  prop2->ShallowCopy(prop1);
+  axes->GetYAxisCaptionActor2D()->SetCaptionTextProperty(prop2);
+  vtkSmartPointer<vtkTextProperty> prop3 = vtkSmartPointer<vtkTextProperty>::New();
+  prop3->ShallowCopy(prop1);
+  axes->GetZAxisCaptionActor2D()->SetCaptionTextProperty(prop3);
+
+  this->OrientationWidget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+  this->OrientationWidget->SetOutlineColor(1.0, 1.0, 0.0);
+  this->OrientationWidget->SetOrientationMarker(axes);
+  this->OrientationWidget->SetViewport(0, 0, 0.15, 0.15);
+  this->OrientationWidget->InteractiveOff();
+
 }
 
 
@@ -97,9 +127,20 @@ Simulation* vtkGeometryRenderView::GetSimulation() {
 }
 
 
+void vtkGeometryRenderView::SetShowOrientationWidget(bool show) {
+  this->OrientationWidget->SetEnabled(show ? 1 : 0);
+}
+
+
 void vtkGeometryRenderView::PrepareForRendering() {
   this->Superclass::PrepareForRendering();
 
+  if (this->Renderer->GetRenderWindow()) {
+    this->OrientationWidget->
+      SetInteractor(this->Renderer->GetRenderWindow()->GetInteractor());
+  }
+
+  // WARNING: The AFM simulation implementation is incomplete
   double        pixelSize   = this->AFMSim->GetPixelSize();
   unsigned int imageWidth   = this->AFMSim->GetImageWidth();
   unsigned int imageHeight  = this->AFMSim->GetImageHeight();

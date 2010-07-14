@@ -703,7 +703,9 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionEnableDisableAxes_triggered() {
-
+  bool enabled = gui->actionEnableDisableAxes->isChecked();
+  m_Visualization->SetShowOrientationWidgetInModelObjectRenderer(enabled);
+  m_Visualization->ModelObjectViewRender();
 }
 
 

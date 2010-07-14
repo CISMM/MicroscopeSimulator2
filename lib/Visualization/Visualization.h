@@ -44,6 +44,7 @@ public:
   void FluorescenceViewRender();
 
   void SetShowFluorophoresInModelObjectRenderer(bool flag);
+  void SetShowOrientationWidgetInModelObjectRenderer(bool flag);
 
   virtual vtkImageData* GenerateFluorescenceImage();
   virtual vtkImageData* GenerateFluorescenceStackImage();

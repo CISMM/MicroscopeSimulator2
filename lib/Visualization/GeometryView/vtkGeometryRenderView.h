@@ -15,6 +15,7 @@ class vtkFramebufferObjectRenderer;
 class vtkImageData;
 class vtkInteractorObserver;
 class vtkOpenGL3DTexture;
+class vtkOrientationMarkerWidget;
 class vtkPlaneSource;
 class vtkPolyDataMapper;
 class vtkRenderer;
@@ -40,6 +41,8 @@ class vtkGeometryRenderView : public vtkRenderView {
   void SetSimulation(Simulation* simulation);
   Simulation* GetSimulation();
 
+  void SetShowOrientationWidget(bool show);
+
   // Description:
   // Gets a floating-point image containing the contents of the fluorescence
   // render window.
@@ -52,6 +55,8 @@ protected:
 
   AFMSimulation* AFMSim;
   Simulation*    Sim;
+
+  vtkSmartPointer<vtkOrientationMarkerWidget> OrientationWidget;
 
   vtkSmartPointer<vtkFramebufferObjectTexture>  AFMTexture;
   vtkSmartPointer<vtkFramebufferObjectRenderer> AFMRenderer;
