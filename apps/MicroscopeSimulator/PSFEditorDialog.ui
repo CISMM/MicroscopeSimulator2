@@ -225,6 +225,9 @@
                </property>
                <item>
                 <widget class="QGroupBox" name="gui_ImagePlanesGroupBox">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="title">
                   <string>Image Planes</string>
                  </property>
@@ -267,7 +270,7 @@
                      <number>0</number>
                     </property>
                     <property name="maximum">
-                     <number>63</number>
+                     <number>0</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -306,7 +309,7 @@
                      <number>0</number>
                     </property>
                     <property name="maximum">
-                     <number>63</number>
+                     <number>0</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -345,7 +348,7 @@
                      <number>0</number>
                     </property>
                     <property name="maximum">
-                     <number>63</number>
+                     <number>0</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -357,6 +360,9 @@
                </item>
                <item>
                 <widget class="QGroupBox" name="gui_ContrastGroupBox">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="title">
                   <string>Contrast</string>
                  </property>
@@ -408,7 +414,7 @@
                      </sizepolicy>
                     </property>
                     <property name="maximum">
-                     <number>999</number>
+                     <number>199</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -434,7 +440,7 @@
                      <item>
                       <widget class="QLineEdit" name="gui_MaxLevelEdit">
                        <property name="text">
-                        <string>1</string>
+                        <string>0</string>
                        </property>
                       </widget>
                      </item>
@@ -444,7 +450,7 @@
                   <item>
                    <widget class="QSlider" name="gui_MaxLevelSlider">
                     <property name="maximum">
-                     <number>99</number>
+                     <number>199</number>
                     </property>
                     <property name="value">
                      <number>1</number>
@@ -466,6 +472,9 @@
                </item>
                <item>
                 <widget class="QGroupBox" name="gui_CameraGroupBox">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="title">
                   <string>Camera</string>
                  </property>

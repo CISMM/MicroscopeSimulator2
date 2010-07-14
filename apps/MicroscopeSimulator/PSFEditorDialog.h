@@ -92,7 +92,8 @@ Q_OBJECT
   void UpdateImage();
   void UpdateSliders();
   void UpdatePSFVisualization();
-
+  void SetWidgetsEnabled(bool enabled);
+  
   void RescaleToFullDynamicRange();
 
   void ResetView();
