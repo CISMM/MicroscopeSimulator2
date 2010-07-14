@@ -12,7 +12,12 @@ class NelderMeadFluorescenceOptimizer : public ITKFluorescenceOptimizer {
   
   static const char* OPTIMIZER_ELEM;
 
+  static const char* MAXIMUM_ITERATIONS_PARAM;
+
+  static const char* PARAMETERS_CONVERGENCE_TOLERANCE_PARAM;
+
   typedef itk::AmoebaOptimizer NelderMeadOptimizerType;
+
 
   /** Constructor/destructor. */
   NelderMeadFluorescenceOptimizer(DirtyListener* listener);

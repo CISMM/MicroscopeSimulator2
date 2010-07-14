@@ -7,7 +7,14 @@
 #include <ImageModelObject.h>
 
 
-const char* NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM = "NelderMeadFluorescenceOptimizer";
+const char* NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM = 
+  "NelderMeadFluorescenceOptimizer";
+
+const char* NelderMeadFluorescenceOptimizer::MAXIMUM_ITERATIONS_PARAM = 
+  "Maximum Iterations";
+
+const char* NelderMeadFluorescenceOptimizer::PARAMETERS_CONVERGENCE_TOLERANCE_PARAM =
+  "Parameters Convergence Tolerance";
 
 
 NelderMeadFluorescenceOptimizer
@@ -15,7 +22,11 @@ NelderMeadFluorescenceOptimizer
   : ITKFluorescenceOptimizer(listener) {
   Variant maxIterations;
   maxIterations.iValue = 100;
-  AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);
+  AddOptimizerParameter(std::string(MAXIMUM_ITERATIONS_PARAM), INT_TYPE, maxIterations);
+
+  Variant  parametersConvergenceTolerance;
+  parametersConvergenceTolerance.dValue = 1e-8;
+  AddOptimizerParameter(std::string(PARAMETERS_CONVERGENCE_TOLERANCE_PARAM), DOUBLE_TYPE, parametersConvergenceTolerance);
 }
 
 
@@ -27,9 +38,21 @@ NelderMeadFluorescenceOptimizer
 void
 NelderMeadFluorescenceOptimizer
 ::Optimize() {
-  NelderMeadOptimizerType::Pointer optimizer = NelderMeadOptimizerType::New();
+  SetUpObjectiveFunction();
+
+  if (!m_ImageToImageCostFunction) {
+    std::cout << "ERROR: No image to image cost function set." << std::endl;
+    return;
+  }
   
-  // TODO - set optimizer parameters here
+  NelderMeadOptimizerType::Pointer optimizer = NelderMeadOptimizerType::New();
+
+  // Set the optimizer parameters
+  int maxIterations = GetOptimizerParameterValue(MAXIMUM_ITERATIONS_PARAM).iValue;
+  optimizer->SetMaximumNumberOfIterations(maxIterations);
+
+  double parametersConvergenceTolerance = GetOptimizerParameterValue(PARAMETERS_CONVERGENCE_TOLERANCE_PARAM).dValue;
+  optimizer->SetParametersConvergenceTolerance(parametersConvergenceTolerance);
 
   // Make sure to set the fluorescence image source and moving image.
   m_FluorescenceImageSource->
@@ -58,8 +81,8 @@ NelderMeadFluorescenceOptimizer
   std::cout << "Starting parameters: " << activeParameters << std::endl;
   
   // Connect to the cost function, set the initial parameters, and optimize.
-  m_ImageToImageCostFunction
-    ->SetFixedImageRegion(m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
+  m_ImageToImageCostFunction->SetFixedImageRegion
+    (m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
   
   m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
   optimizer->SetCostFunction(m_CostFunction);

@@ -43,12 +43,19 @@ FluorescenceOptimizer
       break;
 
     case FLOAT_TYPE:
-      sprintf(buf, "%f", p.value.fValue);
+      sprintf(buf, "%g", p.value.fValue);
       break;
 
     case DOUBLE_TYPE:
-      sprintf(buf, "%f", p.value.dValue);
+      sprintf(buf, "%g", p.value.dValue);
     break;
+
+    case INVALID_TYPE:
+      sprintf(buf, "invalid");
+      break;
+
+    default:
+      break;
     }
 
     std::string nodeName = SqueezeString(p.name);
@@ -89,6 +96,12 @@ FluorescenceOptimizer
 
     case DOUBLE_TYPE:
       newValue.dValue = atof(value);
+      break;
+
+    default:
+      newValue.iValue = 0;
+      newValue.fValue = 0.0f;
+      newValue.dValue = 0.0;
       break;
     }
 
@@ -166,6 +179,30 @@ FluorescenceOptimizer
 }
 
 
+FluorescenceOptimizer::Parameter
+FluorescenceOptimizer
+::GetOptimizerParameter(const std::string& name) {
+  for (size_t i = 0; i < m_OptimizerParameters.size(); i++) {
+    if (m_OptimizerParameters[i].name == name) {
+      return m_OptimizerParameters[i];
+    }
+  }
+
+  Parameter p;
+  p.name = std::string();
+  p.type = INVALID_TYPE;
+
+  return p;
+}
+
+
+FluorescenceOptimizer::Variant
+FluorescenceOptimizer
+::GetOptimizerParameterValue(const std::string& name) {
+  return GetOptimizerParameter(name).value;
+}
+
+
 void
 FluorescenceOptimizer
 ::SetModelObjectList(ModelObjectList* list) {
@@ -206,6 +243,14 @@ FluorescenceOptimizer
 
 void
 FluorescenceOptimizer
+::SetObjectiveFunctionByName(const std::string& name) {
+  m_ActiveObjectiveFunctionName = name;
+  std::cout << "Setting objective function to '" << name << "'." << std::endl;
+}
+
+
+void
+FluorescenceOptimizer
 ::SetParameters(double* params) {
   if (!m_ModelObjectList)
     return;
@@ -226,8 +271,9 @@ FluorescenceOptimizer
 std::string
 FluorescenceOptimizer
 ::GetAvailableObjectiveFunctionName(int index) {
-  if (index < 0 || index > 2)
+  if (index < 0 || index >= m_ObjectiveFunctionNames.size()) {
     return std::string();
+  }
 
   return m_ObjectiveFunctionNames[index];
 }

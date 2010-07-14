@@ -16,11 +16,11 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
 
  public:
 
-  typedef enum {
-    GAUSSIAN_NOISE_COST_FUNCTION,
-    POISSON_NOISE_COST_FUNCTION,
-    NORMALIZED_CORRELATION_COST_FUNCTION
-  } CostFunction_t;
+  static const char* GAUSSIAN_NOISE_COST_FUNCTION;
+  
+  static const char* POISSON_NOISE_COST_FUNCTION;
+
+  static const char* NORMALIZED_CORRELATION_COST_FUNCTION;
 
 
   typedef float PixelType;
@@ -44,17 +44,6 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
   ITKFluorescenceOptimizer(DirtyListener* listener);
   virtual ~ITKFluorescenceOptimizer();
 
-  void SetCostFunctionToGaussianNoise() {
-    m_ImageToImageCostFunctionType = GAUSSIAN_NOISE_COST_FUNCTION;
-  }
-
-  void SetCostFunctionToPoissonNoise() {
-    m_ImageToImageCostFunctionType = POISSON_NOISE_COST_FUNCTION;
-  }
-
-  void SetCostFunctionToNormalizedCorrelation() {
-    m_ImageToImageCostFunctionType = NORMALIZED_CORRELATION_COST_FUNCTION;
-  }
 
  protected:
   
@@ -66,9 +55,7 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
   // The delegate cost function used by m_CostFunction
   ImageToImageCostFunctionType::Pointer  m_ImageToImageCostFunction;
 
-  CostFunction_t m_ImageToImageCostFunctionType;
-
-  void SetUpCostFunction();
+  void SetUpObjectiveFunction();
 
  protected:
   ITKFluorescenceOptimizer();

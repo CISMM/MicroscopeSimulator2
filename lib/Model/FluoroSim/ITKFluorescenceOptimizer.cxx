@@ -12,6 +12,16 @@
 #include <ITKFluorescenceOptimizer.h>
 
 
+const char* ITKFluorescenceOptimizer::GAUSSIAN_NOISE_COST_FUNCTION =
+  "Gaussian Noise Maximum Likelihood";
+
+const char* ITKFluorescenceOptimizer::POISSON_NOISE_COST_FUNCTION =
+  "Poisson Noise Maximum Likelihood";
+
+const char* ITKFluorescenceOptimizer::NORMALIZED_CORRELATION_COST_FUNCTION =
+  "Normalized Cross Correlation";
+
+
 ITKFluorescenceOptimizer
 ::ITKFluorescenceOptimizer(DirtyListener* listener) 
   : FluorescenceOptimizer(listener) {
@@ -21,9 +31,12 @@ ITKFluorescenceOptimizer
 
   m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
 
-  AddObjectiveFunctionName(std::string("Gaussian Noise Maximum Likelihood"));
-  AddObjectiveFunctionName(std::string("Poisson Noise Maximum Likelihood"));
-  AddObjectiveFunctionName(std::string("Normalized Cross Correlation"));
+  AddObjectiveFunctionName(std::string(GAUSSIAN_NOISE_COST_FUNCTION));
+  AddObjectiveFunctionName(std::string(POISSON_NOISE_COST_FUNCTION));
+  AddObjectiveFunctionName(std::string(NORMALIZED_CORRELATION_COST_FUNCTION));
+
+  m_ActiveObjectiveFunctionName = GAUSSIAN_NOISE_COST_FUNCTION;
+  
 }
 
 
@@ -35,15 +48,15 @@ ITKFluorescenceOptimizer
 
 void
 ITKFluorescenceOptimizer
-::SetUpCostFunction() {
+::SetUpObjectiveFunction() {
   // Set up the cost function
-  if (m_ImageToImageCostFunctionType == GAUSSIAN_NOISE_COST_FUNCTION) {
+  if (m_ActiveObjectiveFunctionName == GAUSSIAN_NOISE_COST_FUNCTION) {
     m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
     std::cout << "Using Gaussian noise cost function, ";
-  } else if (m_ImageToImageCostFunctionType == POISSON_NOISE_COST_FUNCTION) {
+  } else if (m_ActiveObjectiveFunctionName == POISSON_NOISE_COST_FUNCTION) {
     m_ImageToImageCostFunction = PoissonNoiseCostFunctionType::New();
     std::cout << "Using Poisson noise cost function, ";
-  } else if (m_ImageToImageCostFunctionType == NORMALIZED_CORRELATION_COST_FUNCTION) {
+  } else if (m_ActiveObjectiveFunctionName == NORMALIZED_CORRELATION_COST_FUNCTION) {
     m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
     std::cout << "Using normalized correlation cost function, ";
   }

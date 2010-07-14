@@ -1535,12 +1535,9 @@ void
 MicroscopeSimulator
 ::on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected) {
   FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
-  if (selected == 0) {
-    //optimizer->SetCostFunctionToGaussianNoise();
-  } else if (selected == 1) {
-    //optimizer->SetCostFunctionToPoissonNoise();
-  } else if (selected == 2) {
-    //optimizer->SetCostFunctionToNormalizedCorrelation();
+  if (optimizer) {
+    optimizer->SetObjectiveFunctionByName
+      (gui->fluoroSimObjectiveFunctionComboBox->currentText().toStdString());
   }
 }
 
