@@ -65,6 +65,9 @@
                <property name="selectionMode">
                 <enum>QAbstractItemView::NoSelection</enum>
                </property>
+               <attribute name="horizontalHeaderMinimumSectionSize">
+                <number>10</number>
+               </attribute>
                <attribute name="horizontalHeaderStretchLastSection">
                 <bool>true</bool>
                </attribute>
@@ -74,14 +77,8 @@
                <attribute name="verticalHeaderDefaultSectionSize">
                 <number>16</number>
                </attribute>
-               <attribute name="verticalHeaderVisible">
-                <bool>false</bool>
-               </attribute>
-               <attribute name="verticalHeaderDefaultSectionSize">
-                <number>16</number>
-               </attribute>
-               <attribute name="horizontalHeaderStretchLastSection">
-                <bool>true</bool>
+               <attribute name="horizontalHeaderMinimumSectionSize">
+                <number>10</number>
                </attribute>
               </widget>
              </item>
