@@ -196,7 +196,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-654</y>
+          <y>0</y>
           <width>381</width>
           <height>1374</height>
          </rect>
@@ -1555,6 +1555,9 @@
    <property name="toolTip">
     <string>Show model and AFM scan</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionViewAFMScanOnly">
    <property name="checkable">
@@ -1569,6 +1572,9 @@
    </property>
    <property name="toolTip">
     <string>View AFM scan only</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionViewModelsWithFluorescenceComparison">
@@ -1585,6 +1591,9 @@
    <property name="toolTip">
     <string>View models with fluorescence comparison</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionViewFluorescenceComparisonOnly">
    <property name="checkable">
@@ -1599,6 +1608,9 @@
    </property>
    <property name="toolTip">
     <string>View fluorescence comparison only</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionEnableDisableAxes">
