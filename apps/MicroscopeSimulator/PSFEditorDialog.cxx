@@ -509,6 +509,8 @@ PSFEditorDialog
   gui_ImagePlanesGroupBox->setEnabled(enabled);
   gui_ContrastGroupBox->setEnabled(enabled);
   gui_CameraGroupBox->setEnabled(enabled);
+  gui_DeletePSFButton->setEnabled(enabled);
+  gui_ApplyButton->setEnabled(enabled);
 }
 
 
