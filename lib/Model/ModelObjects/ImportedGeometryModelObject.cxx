@@ -86,6 +86,7 @@ ImportedGeometryModelObject
   for (size_t i = 0; i < extension.length(); i++) {
     charArray[i] = tolower(extension[i]);
   }
+  charArray[extension.length()] = '\0';
   extension = std::string(charArray);
 
   if (extension == "obj") {
