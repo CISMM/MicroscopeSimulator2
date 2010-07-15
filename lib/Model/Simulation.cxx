@@ -98,6 +98,11 @@ Simulation
 void
 Simulation
 ::NewSimulation() {
+
+  // Set the comparison imaage to NULL in the fluorescence optimizer
+  if (m_FluoroOptimizer && m_FluoroOptimizer->GetComparisonImageModelObject() != NULL)
+    m_FluoroOptimizer->SetComparisonImageModelObject(NULL);
+
   m_SimulationDescription  = std::string();
   m_SimulationFileName = NEW_FILE;
   m_SimulationAlreadySaved = false;
