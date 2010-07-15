@@ -12,6 +12,7 @@ GeometryRepresentation
 ::GeometryRepresentation() {
   m_ModelObjectList = NULL;
   m_Observer = NULL;
+  m_ShowFluorophores = false;
 }
 
 
