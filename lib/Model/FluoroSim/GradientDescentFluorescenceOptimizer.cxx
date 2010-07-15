@@ -47,8 +47,8 @@ GradientDescentFluorescenceOptimizer
   GradientDescentOptimizerType::Pointer optimizer = GradientDescentOptimizerType::New();
 
   // Set the optimizer parameters
-  int maxIterations = GetOptimizerParameterValue(ITERATIONS_PARAM).iValue;
-  optimizer->SetNumberOfIterations(maxIterations);
+  int iterations = GetOptimizerParameterValue(ITERATIONS_PARAM).iValue;
+  optimizer->SetNumberOfIterations(iterations);
 
   double derivativeStepSize = GetOptimizerParameterValue(DERIVATIVE_ESTIMATE_STEP_SIZE).dValue;
   m_CostFunction->SetDerivativeStepSize(derivativeStepSize);
