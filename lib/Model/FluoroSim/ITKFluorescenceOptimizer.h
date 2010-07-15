@@ -16,11 +16,11 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
 
  public:
 
-  static const char* GAUSSIAN_NOISE_COST_FUNCTION;
+  static const char* GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;
   
-  static const char* POISSON_NOISE_COST_FUNCTION;
+  static const char* POISSON_NOISE_OBJECTIVE_FUNCTION;
 
-  static const char* NORMALIZED_CORRELATION_COST_FUNCTION;
+  static const char* NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION;
 
 
   typedef float PixelType;
