@@ -88,8 +88,6 @@ vtkGeometryRenderView::vtkGeometryRenderView() {
   this->OrientationWidget->SetOutlineColor(1.0, 1.0, 0.0);
   this->OrientationWidget->SetOrientationMarker(axes);
   this->OrientationWidget->SetViewport(0, 0, 0.15, 0.15);
-  this->OrientationWidget->InteractiveOff();
-
 }
 
 
