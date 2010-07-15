@@ -23,6 +23,10 @@ class Simulation : public DirtyListener, public XMLStorable {
 
   static const char* XML_ENCODING;
   static const char* SIMULATION_ELEM;
+  static const char* VERSION_ELEM;
+  static const char* VERSION_MAJOR_ATT;
+  static const char* VERSION_MINOR_ATT;
+  static const char* VERSION_REVISION_ATT;
   static const char* DESCRIPTION_ELEM;
   static const char* AFM_SIM_ELEM;
   static const char* FLUORO_SIM_ELEM;

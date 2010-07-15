@@ -23,20 +23,25 @@
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
 #include <XMLHelper.h>
+#include <Version.h>
 
 
-const char* Simulation::XML_ENCODING     = "ISO-8859-1";
-const char* Simulation::SIMULATION_ELEM  = "SimulatedExperiments";
-const char* Simulation::DESCRIPTION_ELEM = "Description";
-const char* Simulation::AFM_SIM_ELEM     = "AFMSimulation";
-const char* Simulation::FLUORO_SIM_ELEM  = "FluorescenceSimulation";
+const char* Simulation::XML_ENCODING         = "ISO-8859-1";
+const char* Simulation::SIMULATION_ELEM      = "SimulatedExperiments";
+const char* Simulation::VERSION_ELEM         = "Version";
+const char* Simulation::VERSION_MAJOR_ATT    = "major";
+const char* Simulation::VERSION_MINOR_ATT    = "minor";
+const char* Simulation::VERSION_REVISION_ATT = "revision";
+const char* Simulation::DESCRIPTION_ELEM     = "Description";
+const char* Simulation::AFM_SIM_ELEM         = "AFMSimulation";
+const char* Simulation::FLUORO_SIM_ELEM      = "FluorescenceSimulation";
 const char* Simulation::MODEL_OBJECT_LIST_ELEM = "ModelObjectList";
-const char* Simulation::FILE_ATT         = "file";
-const char* Simulation::NAME_ATT         = "name";
-const char* Simulation::CREATED_ATT      = "created";
-const char* Simulation::MODIFIED_ATT     = "modified";
-const char* Simulation::CAMERA_ELEM      = "Camera";
-const char* Simulation::NEW_FILE         = "New Simulation";
+const char* Simulation::FILE_ATT             = "file";
+const char* Simulation::NAME_ATT             = "name";
+const char* Simulation::CREATED_ATT          = "created";
+const char* Simulation::MODIFIED_ATT         = "modified";
+const char* Simulation::CAMERA_ELEM          = "Camera";
+const char* Simulation::NEW_FILE             = "New Simulation";
 const char* Simulation::ACTOR_INTERACTION_EVENT = "InteractionEvent";
 
 
@@ -178,6 +183,19 @@ Simulation
     SetSimulationCreationDate(std::string(ctime(&rawTime)));
   }
 
+  // Write the program version
+  xmlNodePtr versionNode = 
+    xmlNewChild(node, NULL, BAD_CAST Simulation::VERSION_ELEM, NULL);
+  char buf[128];
+  sprintf(buf, "%d", MicroscopeSimulator_MAJOR_NUMBER);
+  xmlNewProp(versionNode, BAD_CAST Simulation::VERSION_MAJOR_ATT,
+             BAD_CAST buf);
+  sprintf(buf, "%d", MicroscopeSimulator_MINOR_NUMBER);
+  xmlNewProp(versionNode, BAD_CAST Simulation::VERSION_MINOR_ATT,
+             BAD_CAST buf);
+  sprintf(buf, "%d", MicroscopeSimulator_REVISION_NUMBER);
+  xmlNewProp(versionNode, BAD_CAST Simulation::VERSION_REVISION_ATT,
+             BAD_CAST buf);
 
   // Write the description if non-empty.
   if (GetSimulationDescription() != "") {
