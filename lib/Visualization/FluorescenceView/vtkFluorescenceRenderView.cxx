@@ -148,6 +148,14 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
     this->GradientRenderer->SetExperimentalImageTexture(NULL);
   }
 
+  if (this->ComputePointGradients) {
+    if (!this->RenderWindow->HasRenderer(this->GradientRenderer))
+      this->RenderWindow->AddRenderer(this->GradientRenderer);
+  } else {
+    if (this->RenderWindow->HasRenderer(this->GradientRenderer))
+      this->RenderWindow->RemoveRenderer(this->GradientRenderer);
+  }
+
   for (int i = 0; i < this->GetNumberOfRepresentations(); ++i) {
     vtkModelObjectFluorescenceRepresentation* rep = 
       vtkModelObjectFluorescenceRepresentation::SafeDownCast(this->GetRepresentation(i));
