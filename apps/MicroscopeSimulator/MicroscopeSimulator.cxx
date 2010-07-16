@@ -289,7 +289,7 @@ MicroscopeSimulator
   QString directory = prefs.value("OpenSimulationDirectory").toString();
 
   QFileDialog fileDialog(this, "Open Simulation File", directory,
-                         "XML Files (*.xml);;All Files (*)");
+                         "XML Files (*.xml)");
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   int result = fileDialog.exec();
   prefs.setValue("OpenSimulationDirectory", fileDialog.directory().absolutePath());
@@ -303,6 +303,10 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty()) {
     return;
   }
+
+  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (!selectedFileName.endsWith(extension))
+    selectedFileName.append(extension);
 
   // Now restore the Simulation from the XML tree.
   OpenSimulationFile(selectedFileName.toStdString());
@@ -332,7 +336,7 @@ MicroscopeSimulator
   QString directory = prefs.value("SaveSimulationDirectory").toString();
   
   QFileDialog fileDialog(this, "Save Simulation File As", directory, 
-                         "XML Files (*.xml);;All Files (*)");
+                         "XML Files (*.xml)");
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   int result = fileDialog.exec();
   prefs.setValue("SaveSimulationDirectory",
@@ -348,6 +352,10 @@ MicroscopeSimulator
   if (selectedFileName == "") {
     return;
   }
+
+  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (!selectedFileName.endsWith(extension))
+    selectedFileName.append(extension);
     
   SaveSimulationFile(selectedFileName.toStdString());
 }
@@ -616,7 +624,7 @@ MicroscopeSimulator
 
   // Get a file name.
   QFileDialog fileDialog(this, "Save Image File", directory, 
-                         "PNG Files (*.png);;");
+                         "PNG Files (*.png)");
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   int result = fileDialog.exec();
 
@@ -629,6 +637,10 @@ MicroscopeSimulator
   QString selectedFileName = fileDialog.selectedFiles()[0];
   if (selectedFileName.isEmpty())
     return;
+
+  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (!selectedFileName.endsWith(extension))
+    selectedFileName.append(extension);
 
   // Grab screen shot and save it.
   vtkSmartPointer<vtkWindowToImageFilter> w2if = 
@@ -1365,6 +1377,11 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty())
     return;
 
+  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  std::cout << extension.toStdString() << std::endl;
+  if (!selectedFileName.endsWith(extension))
+    selectedFileName.append(extension);
+
   vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
 
   vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
@@ -1379,14 +1396,13 @@ MicroscopeSimulator
   scaler->SetScale(255.0 / (maxIntensity - minIntensity));
 
   vtkSmartPointer<vtkImageWriter> writer;
-  QString extension = fileDialog.selectedNameFilter().right(4).left(3).toLower();
-  if (extension == QString("png")) {
+  if (extension == QString(".png")) {
     writer = vtkSmartPointer<vtkPNGWriter>::New();
-  } else if (extension == QString("bmp")) {
+  } else if (extension == QString(".bmp")) {
     writer = vtkSmartPointer<vtkBMPWriter>::New();
-  } else if (extension == QString("jpg")) {
+  } else if (extension == QString(".jpg")) {
     writer = vtkSmartPointer<vtkJPEGWriter>::New();
-  } else if (extension == QString("tif")) {
+  } else if (extension == QString(".tif")) {
     vtkSmartPointer<vtkTIFFWriter> tiffWriter = vtkSmartPointer<vtkTIFFWriter>::New();
     tiffWriter->SetCompressionToNoCompression();
     writer = tiffWriter;
