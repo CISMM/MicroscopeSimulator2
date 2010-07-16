@@ -92,6 +92,9 @@ vtkGeometryRenderView::vtkGeometryRenderView() {
 
 
 vtkGeometryRenderView::~vtkGeometryRenderView() {
+  // If you leave this to ~vtkView, downcasting the vtkView to a vtkRenderView
+  // will fail for some reason, so do it here.
+  this->RemoveAllRepresentations();
 }
 
 
