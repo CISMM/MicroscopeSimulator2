@@ -59,6 +59,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkXMLPolyDataWriter.h>
 
 #include <vtkFramebufferObjectRenderer.h>
 #include <vtkFramebufferObjectTexture.h>
@@ -760,14 +761,42 @@ MicroscopeSimulator
     SetStatusMessage("Error: could not find geometry for selected model oject");
   }
 
-  QString selectedFileName = 
-    QFileDialog::getSaveFileName(this, "Export Model Geometry", "", "VTK File (*.vtk);;VTK Poly Data File (*.vtp);;PLY File (*.ply);;BYU File (*.byu)");
+  QSettings prefs;
+  prefs.beginGroup("FileDialogs");
+  QString directory  = prefs.value("ExportGeometryDirectory").toString();
+  QString nameFilter = prefs.value("ExportGeometryNameFilter").toString();
+
+  QFileDialog fileDialog(this, tr("Export Model Geometry"), directory, 
+                         "VTK File (*.vtk);;VTK Poly Data File (*.vtp);;PLY File (*.ply);;BYU File (*.byu)");
+  fileDialog.selectNameFilter(nameFilter);
+  fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+  int result = fileDialog.exec();
+  prefs.setValue("ExportGeometryDirectory", fileDialog.directory().absolutePath());
+  prefs.setValue("ExportGeometryNameFilter", fileDialog.selectedNameFilter());
+  prefs.endGroup();
+
+  if (result == QDialog::Rejected)
+    return;
+
+  QString selectedFileName = fileDialog.selectedFiles()[0];
   if (selectedFileName.isEmpty())
     return;
+
+  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (!selectedFileName.endsWith(extension))
+    selectedFileName.append(extension);
+
+  vtkPolyDataAlgorithm* geometrySource = object->GetAllGeometryTransformed();
 
   vtkSmartPointer<vtkPolyDataWriter> writer = NULL;
   if (selectedFileName.endsWith(tr(".vtk"))) {
     writer = vtkSmartPointer<vtkPolyDataWriter>::New();
+  } else if (selectedFileName.endsWith(tr(".vtp"))) {
+    vtkSmartPointer<vtkXMLPolyDataWriter> vtpWriter = 
+      vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    vtpWriter->SetInputConnection(geometrySource->GetOutputPort());
+    vtpWriter->SetFileName(selectedFileName.toStdString().c_str());
+    vtpWriter->Update();
   } else if (selectedFileName.endsWith(tr(".ply"))) {
     writer = vtkSmartPointer<vtkPLYWriter>::New();
   } else if (selectedFileName.endsWith(tr(".byu"))) {
@@ -782,14 +811,11 @@ MicroscopeSimulator
   }
 
   if (writer) {
-            
-    vtkPolyDataAlgorithm* geometrySource = object->GetAllGeometryTransformed();
-
     writer->SetInputConnection(geometrySource->GetOutputPort());
-    geometrySource->Delete();
     writer->SetFileName(selectedFileName.toStdString().c_str());
     writer->Update();
   }
+  geometrySource->Delete();
 
   QString message = QString().append(tr("Exported model geometry to file '")).
     append(selectedFileName.toStdString().c_str()).append(tr("'."));
