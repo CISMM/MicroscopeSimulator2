@@ -120,12 +120,12 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
   if (psf) {
     this->PSFTexture->SetInputConnection(psf->GetOutputPort());
     this->PSFGradientTexture->SetInputConnection(psf->GetGradientOutputPort());
+    this->PSFTexture->Update();
+    this->PSFGradientTexture->Update();
   } else {
     this->PSFTexture->SetInputConnection(NULL);
     this->PSFGradientTexture->SetInputConnection(NULL);
   }
-  this->PSFTexture->Update();
-  this->PSFGradientTexture->Update();
 
   this->Renderer->SetMapsToZero(this->FluoroSim->GetMinimumIntensityLevel());
   this->Renderer->SetMapsToOne(this->FluoroSim->GetMaximumIntensityLevel());
