@@ -168,7 +168,9 @@ ImagePlaneVisualizationPipeline
 
   m_ShiftScaler->SetShift(-m_MapsToBlack);
   m_ShiftScaler->SetScale(255.0 / (m_MapsToWhite - m_MapsToBlack));
-  m_ShiftScaler->Update();
+  if (m_ShiftScaler->GetNumberOfInputConnections(0) > 0) {
+    m_ShiftScaler->Update();
+  }
 }
 
 
@@ -186,7 +188,9 @@ ImagePlaneVisualizationPipeline
 
   m_ShiftScaler->SetShift(-m_MapsToBlack);
   m_ShiftScaler->SetScale(255.0 / (m_MapsToWhite - m_MapsToBlack));
-  m_ShiftScaler->Update();
+  if (m_ShiftScaler->GetNumberOfInputConnections(0) > 0) {
+    m_ShiftScaler->Update();
+  }
 }
 
 
