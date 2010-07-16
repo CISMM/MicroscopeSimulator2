@@ -120,8 +120,6 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
   if (psf) {
     this->PSFTexture->SetInputConnection(psf->GetOutputPort());
     this->PSFGradientTexture->SetInputConnection(psf->GetGradientOutputPort());
-    this->PSFTexture->Update();
-    this->PSFGradientTexture->Update();
   } else {
     this->PSFTexture->SetInputConnection(NULL);
     this->PSFGradientTexture->SetInputConnection(NULL);
