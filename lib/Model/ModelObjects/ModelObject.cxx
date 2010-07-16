@@ -415,41 +415,8 @@ ModelObject
 }
 
 
-vtkPoints*
-ModelObject
-::GetSurfaceSamplePoints() {
-  return NULL;
-}
-
-
-int
-ModelObject
-::GetNumberOfSurfaceSamplePoints() {
-  return 0;
-}
-
-
-vtkPoints*
-ModelObject
-::GetVolumeSamplePoints() {
-  return NULL;
-}
-
-
-int
-ModelObject
-::GetNumberOfVolumeSamplePoints() {
-  return 0;
-}
-
-
 void
 ModelObject
-::ApplySurfaceSampleForces(float* forces) {
-}
-
-
-void
-ModelObject
-::ApplyVolumeSampleForces(float* forces) {
+::ApplySampleForces(int fluorophorePropertyIndex, float* forces) {
+  // Default is to not do anything.
 }

@@ -10,6 +10,15 @@ class PointsGradientFluorescenceOptimizer : public FluorescenceOptimizer {
 
   static const char* OPTIMIZER_ELEM;
 
+  static const char* STEP_SIZE_PARAM;
+
+  static const char* ITERATIONS_PARAM;
+
+  static const char* GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;
+  
+  static const char* POISSON_NOISE_OBJECTIVE_FUNCTION;
+
+
   PointsGradientFluorescenceOptimizer(DirtyListener* listener);
   virtual ~PointsGradientFluorescenceOptimizer();
 

@@ -152,7 +152,7 @@ PointSetModelObject
 
 void
 PointSetModelObject
-::ApplySurfaceSampleForces(float* forces) {
+::ApplySampleForces(int fluorophorePropertyIndex, float* forces) {
   int numPoints = 
     GetProperty(PointSetModelObject::NUMBER_OF_POINTS_PROP)->GetIntValue();
 
@@ -171,20 +171,26 @@ PointSetModelObject
       double x = prop1->GetDoubleValue();
       double y = prop2->GetDoubleValue();
       double z = prop3->GetDoubleValue();
-      prop1->SetDoubleValue(x + forces[(i-1)*3 + 0]);
-      prop2->SetDoubleValue(y + forces[(i-1)*3 + 1]);
-      prop3->SetDoubleValue(z + forces[(i-1)*3 + 2]);
+
+      if (prop1->GetOptimize()) {
+        prop1->SetDoubleValue(x + forces[(i-1)*3 + 0]);
+        std::cout << prop1->GetName() << ": " << forces[(i-1)*3 + 0] << std::endl;
+      }
+
+      if (prop2->GetOptimize()) {
+        prop2->SetDoubleValue(y + forces[(i-1)*3 + 1]);
+        std::cout << prop2->GetName() << ": " << forces[(i-1)*3 + 1] << std::endl;
+      }
+      
+      if (prop3->GetOptimize()) {
+        prop3->SetDoubleValue(z + forces[(i-1)*3 + 2]);
+        std::cout << prop3->GetName() << ": " << forces[(i-1)*3 + 2] << std::endl;
+      }
     }
 
   }
 
   Update();
-}
-
-
-void
-PointSetModelObject
-::ApplyVolumeSampleForces(float* forces) {
 }
 
 

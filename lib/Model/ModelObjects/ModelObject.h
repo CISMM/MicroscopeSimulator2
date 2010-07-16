@@ -99,20 +99,14 @@ class ModelObject : public DirtyListener, public XMLStorable {
   vtkPolyDataAlgorithm* GetAllGeometryTransformed();
   vtkPolyDataAlgorithm* GetGeometrySubAssembly(const std::string& name);
 
-  /** Gets a sampling of surface points on the geometry. */
-  virtual vtkPoints* GetSurfaceSamplePoints();
-  virtual int        GetNumberOfSurfaceSamplePoints();
+  /** Applies forces at fluorophore sample points to geometry and/or 
+      sample points themselves. The size of the forces array should be 
+      three times the number of fluorophores samples in the given
+      fluorophore model. It is up to subclasses to decide how to use
+      these forces.
 
-  /** Gets a sampling of points within the volume bounded by the geometry. */
-  virtual vtkPoints* GetVolumeSamplePoints();
-  virtual int        GetNumberOfVolumeSamplePoints();
-
-  /** Applies forces at sample points to geometry and/or sample points
-      themselves. The size of the forces array should be three times the
-      number of points returned by GetNumberOfSurfaceSamplePoints()/
-      GetNumberOfVolumeSamplePoints(). */
-  virtual void ApplySurfaceSampleForces(float* forces);
-  virtual void ApplyVolumeSampleForces(float* forces);
+      TODO: make this a pure virtual method once all existing model objects have implementations. */
+  virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
 
   virtual void Update() = 0;
 

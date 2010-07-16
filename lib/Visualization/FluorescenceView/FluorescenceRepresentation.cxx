@@ -69,8 +69,31 @@ FluorescenceRepresentation
 
 float*
 FluorescenceRepresentation
-::GetPointsGradientForRepresentation(int repIndex, int& numPoints) {
+::GetPointsGradientForFluorophoreProperty(int objectIndex,
+                                          int fluorophorePropertyIndex,
+                                          int& numPoints) {
+  ModelObjectPtr desiredObject = 
+    m_ModelObjectList->GetModelObjectAtIndex(objectIndex);
+
+  // Need to find the desired model object. Once that is found, find the
+  // right fluorophore representation.
+  int fluorophorePropertyCount = 0;
+  for (size_t i = 0; i < m_FluorescenceReps.size(); i++) {
+    ModelObjectPtr repObject = m_FluorescenceReps[i]->GetModelObject();
+    if (repObject == desiredObject) {
+      if (fluorophorePropertyCount == fluorophorePropertyIndex) {
+        return m_FluorescenceReps[i]->GetPointsGradient(numPoints);
+      } else {
+        fluorophorePropertyCount++;
+      }
+    }
+  }
+
+  return NULL;
+
+#if 0
   return m_FluorescenceReps[repIndex]->GetPointsGradient(numPoints);
+#endif
 }
 
 
@@ -119,13 +142,6 @@ FluorescenceRepresentation
       m_FluorescenceReps[i]->Delete();
     }
     m_FluorescenceReps.clear();
-#if 0
-    while (!m_FluorescenceReps.empty()) {
-      vtkModelObjectFluorescenceRepresentation* rep = m_FluorescenceReps.front();
-      rep->Delete();
-      m_FluorescenceReps.pop_front();
-    }
-#endif
 
     for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
       ModelObject* object = m_ModelObjectList->GetModelObjectAtIndex(i);

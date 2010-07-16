@@ -62,7 +62,9 @@ public:
 
   void FocusOnObject(ModelObject* object);
 
-  float* GetPointsGradientForModelObjectAtIndex(int i, int& numPoints);
+  float* GetPointsGradientForFluorophoreProperty(int objectIndex,
+                                                 int fluorophorePropertyIndex,
+                                                 int& numPoints);
 
 protected:
   Simulation* m_Simulation;

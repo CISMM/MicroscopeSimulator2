@@ -1,26 +1,37 @@
 #include <PointsGradientFluorescenceOptimizer.h>
 
 #include <FluorescenceSimulation.h>
+#include <ImageModelObject.h>
 #include <ModelObjectList.h>
 #include <VisualizationFluorescenceImageSource.h>
 
 
 const char* PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM = "PointsGradientFluorescenceOptimizer";
 
+const char* PointsGradientFluorescenceOptimizer::STEP_SIZE_PARAM = "Step Size";
+
+const char* PointsGradientFluorescenceOptimizer::ITERATIONS_PARAM = "Iterations";
+
+const char* PointsGradientFluorescenceOptimizer::GAUSSIAN_NOISE_OBJECTIVE_FUNCTION =
+  "Gaussian Noise Maximum Likelihood";
+
+const char* PointsGradientFluorescenceOptimizer::POISSON_NOISE_OBJECTIVE_FUNCTION =
+  "Poisson Noise Maximum Likelihood";
+
 
 PointsGradientFluorescenceOptimizer
 ::PointsGradientFluorescenceOptimizer(DirtyListener* listener)
   : FluorescenceOptimizer(listener) {
-  AddObjectiveFunctionName(std::string("Gaussian Noise Maximum Likelihood"));
-  AddObjectiveFunctionName(std::string("Poisson Noise Maximum Likelihood"));
+  AddObjectiveFunctionName(std::string(GAUSSIAN_NOISE_OBJECTIVE_FUNCTION));
+  //AddObjectiveFunctionName(std::string(POISSON_NOISE_OBJECTIVE_FUNCTION));
 
-  Variant scaleFactor;
-  scaleFactor.dValue = 1.0;
-  AddOptimizerParameter(std::string("Scale Factor"), DOUBLE_TYPE, scaleFactor);
+  Variant stepSize;
+  stepSize.dValue = 1.0;
+  AddOptimizerParameter(STEP_SIZE_PARAM, DOUBLE_TYPE, stepSize);
 
   Variant maxIterations;
   maxIterations.iValue = 100;
-  AddOptimizerParameter(std::string("Maximum Iterations"), INT_TYPE, maxIterations);
+  AddOptimizerParameter(ITERATIONS_PARAM, INT_TYPE, maxIterations);
 }
 
 
@@ -36,14 +47,13 @@ PointsGradientFluorescenceOptimizer
 
   // TODO - set the cost function in the fluorescence image source. Currently,
   // only the Gaussian and Poisson noise cost functions are supported.
-    
 
-  // TODO - figure out convergence criteria
-
-  for (int i = 0; i < 50; i++) {
+  double stepSize = GetOptimizerParameterValue(STEP_SIZE_PARAM).dValue;
+  int iterations = GetOptimizerParameterValue(ITERATIONS_PARAM).iValue;
+  for (int i = 0; i < iterations; i++) {
     
-    // Compute the gradient. We don't need to read or process image data here.
-    // It is all done on the GPU.
+    // Compute the gradient. We don't need to read or process image data 
+    // here because it is all done on the GPU.
     VisualizationFluorescenceImageSource* imageSource =
       dynamic_cast<VisualizationFluorescenceImageSource*>
       (m_FluoroSim->GetFluorescenceImageSource());
@@ -53,23 +63,32 @@ PointsGradientFluorescenceOptimizer
     // gradient of its points and tell the model object about the gradient.
     // We assume the model object will know how to adjust its parameters
     // given the point gradient.
-    int numPoints;
-    float* gradientSrc = imageSource->
-      GetPointsGradientForModelObjectAtIndex(0, numPoints);
-    float* gradient = new float[3*numPoints];
-    memcpy(gradient, gradientSrc, sizeof(float)*3*numPoints);
-    
-    // Scale the gradient
-    float t = 20.0;
-    for (int i = 0; i < numPoints; i++) {
-      gradient[3*i + 0] *= t;
-      gradient[3*i + 1] *= t;
-      gradient[3*i + 2] *= t;
+    for (size_t objectIndex = 0; objectIndex < m_ModelObjectList->GetSize(); objectIndex++) {
+      ModelObjectPtr modelObject = m_ModelObjectList->GetModelObjectAtIndex(objectIndex);
+
+      for (int fluorophorePropertyIndex = 0;
+           fluorophorePropertyIndex < modelObject->GetNumberOfFluorophoreProperties();
+           fluorophorePropertyIndex++) {
+           
+        int numPoints;
+        float* gradientSrc = imageSource->
+          GetPointsGradientForFluorophoreProperty
+          (objectIndex, fluorophorePropertyIndex, numPoints);
+        float* gradient = new float[3*numPoints];
+        memcpy(gradient, gradientSrc, sizeof(float)*3*numPoints);
+        
+        // Scale the gradient
+        for (int i = 0; i < numPoints; i++) {
+          gradient[3*i + 0] *= stepSize;
+          gradient[3*i + 1] *= stepSize;
+          gradient[3*i + 2] *= stepSize;
+        }
+        
+        m_ModelObjectList->GetModelObjectAtIndex(objectIndex)->
+          ApplySampleForces(fluorophorePropertyIndex, gradient);
+
+        delete[] gradient;
+      }
     }
-    
-    m_ModelObjectList->GetModelObjectAtIndex(0)->
-      ApplySurfaceSampleForces(gradient);
-    
-    delete[] gradient;
   }
 }

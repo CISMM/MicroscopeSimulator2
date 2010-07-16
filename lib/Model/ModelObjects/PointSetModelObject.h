@@ -33,8 +33,7 @@ class PointSetModelObject : public ModelObject {
   virtual void Update();
   virtual void Sully();
 
-  virtual void ApplySurfaceSampleForces(float* forces);
-  virtual void ApplyVolumeSampleForces(float* forces);
+  virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
 
  protected:
   PointSetModelObject() {};

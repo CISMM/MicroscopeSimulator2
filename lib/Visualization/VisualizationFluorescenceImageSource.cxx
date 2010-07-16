@@ -57,10 +57,13 @@ VisualizationFluorescenceImageSource
 
 float*
 VisualizationFluorescenceImageSource
-::GetPointsGradientForModelObjectAtIndex(int i, int& numPoints) {
+::GetPointsGradientForFluorophoreProperty(int objectIndex,
+                                          int fluorophorePropertyIndex,
+                                          int& numPoints) {
   if (!m_Visualization) return 0;
 
-  return m_Visualization->GetPointsGradientForModelObjectAtIndex(i, numPoints);
+  return m_Visualization->GetPointsGradientForFluorophoreProperty
+    (objectIndex, fluorophorePropertyIndex, numPoints);
 }
 
 

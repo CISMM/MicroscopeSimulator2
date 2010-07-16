@@ -23,7 +23,9 @@ class VisualizationFluorescenceImageSource : public FluorescenceImageSource {
   virtual void ComputePointsGradient();
 
   // Get point gradient for a model object.
-  virtual float* GetPointsGradientForModelObjectAtIndex(int i, int& numPoints);
+  virtual float* GetPointsGradientForFluorophoreProperty(int objectIndex, 
+                                                         int fluorophorePropertyIndex,
+                                                         int& numPoints);
 
   virtual int GetNumberOfParameters();
 

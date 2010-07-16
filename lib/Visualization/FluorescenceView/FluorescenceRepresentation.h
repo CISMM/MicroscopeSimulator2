@@ -28,7 +28,9 @@ class FluorescenceRepresentation {
 
   void Update();
 
-  float* GetPointsGradientForRepresentation(int repIndex, int& numPoints);
+  float* GetPointsGradientForFluorophoreProperty(int objectIndex,
+                                                 int fluorophorePropertyIndex,
+                                                 int& numPoints);
 
  protected:
   ModelObjectList* m_ModelObjectList;

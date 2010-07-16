@@ -298,6 +298,10 @@ Visualization
 
 float*
 Visualization
-::GetPointsGradientForModelObjectAtIndex(int i, int& numPoints) {
-  return m_FluorescenceRepresentation->GetPointsGradientForRepresentation(i, numPoints);
+::GetPointsGradientForFluorophoreProperty(int objectIndex, 
+                                          int fluorophorePropertyIndex, 
+                                          int& numPoints) {
+  return m_FluorescenceRepresentation->
+    GetPointsGradientForFluorophoreProperty
+    (objectIndex, fluorophorePropertyIndex, numPoints);
 }
