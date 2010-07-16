@@ -484,7 +484,21 @@ Simulation
 void
 Simulation
 ::AddNewModelObject(const std::string& objectTypeName) {
-  m_ModelObjectList->AddModelObject(objectTypeName);
+  ModelObjectPtr mop = m_ModelObjectList->AddModelObject(objectTypeName);
+
+  if (m_FluoroSim) {
+    double pixelSize = 0.5 *m_FluoroSim->GetPixelSize();
+    double xCenter = pixelSize * static_cast<double>(m_FluoroSim->GetImageWidth());
+    double yCenter = pixelSize * static_cast<double>(m_FluoroSim->GetImageHeight());
+    double zCenter = 0.0;
+    
+    ModelObjectProperty* xProp =  mop->GetProperty(ModelObject::X_POSITION_PROP);
+    if (xProp) xProp->SetDoubleValue(xCenter);
+    ModelObjectProperty* yProp =  mop->GetProperty(ModelObject::Y_POSITION_PROP);
+    if (yProp) yProp->SetDoubleValue(yCenter);
+    ModelObjectProperty* zProp =  mop->GetProperty(ModelObject::Z_POSITION_PROP);
+    if (zProp) zProp->SetDoubleValue(zCenter);
+  }
 }
 
 
