@@ -198,7 +198,7 @@
           <x>0</x>
           <y>0</y>
           <width>381</width>
-          <height>1374</height>
+          <height>1344</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -664,26 +664,6 @@
                 <property name="spacing">
                  <number>-1</number>
                 </property>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="fluoroSimConvMethodLabel">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>Method:</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1" colspan="3">
-                 <widget class="QComboBox" name="fluoroSimConvMethodComboBox">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="1">
                  <widget class="QLineEdit" name="fluoroSimImageWidthEdit">
                   <property name="toolTip">
@@ -747,7 +727,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0" colspan="4">
+                <item row="4" column="0" colspan="4">
                  <widget class="QGroupBox" name="fluoroSimNoiseGroupBox">
                   <property name="enabled">
                    <bool>true</bool>
