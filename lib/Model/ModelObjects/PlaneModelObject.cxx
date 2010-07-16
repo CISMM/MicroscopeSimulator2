@@ -51,7 +51,8 @@ PlaneModelObject
 ::Update() {
   double width  = GetProperty(PlaneModelObject::WIDTH_PROP)->GetDoubleValue();
   double height = GetProperty(PlaneModelObject::HEIGHT_PROP)->GetDoubleValue();
-  m_PlaneSource->SetPoint1(width, 0.0, 0.0);
-  m_PlaneSource->SetPoint2(0.0, height, 0.0);
+  m_PlaneSource->SetOrigin(-0.5*width, -0.5*height, 0.0);
+  m_PlaneSource->SetPoint1( 0.5*width, -0.5*height, 0.0);
+  m_PlaneSource->SetPoint2(-0.5*width,  0.5*height, 0.0);
 }
 

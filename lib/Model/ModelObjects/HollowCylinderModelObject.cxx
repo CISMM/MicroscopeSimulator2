@@ -81,6 +81,13 @@ HollowCylinderModelObject
   double thickness   = GetProperty(THICKNESS_PROP)->GetDoubleValue();
   m_DiskSource->SetOuterRadius(GetProperty(OUTER_RADIUS_PROP)->GetDoubleValue());
   m_DiskSource->SetInnerRadius(outerRadius - thickness);
-  m_ExtrusionSource->SetScaleFactor(GetProperty(LENGTH_PROP)->GetDoubleValue());
+
+  double length = GetProperty(LENGTH_PROP)->GetDoubleValue();
+
+  m_Transform->Identity();
+  m_Transform->Translate(0.0, -0.5*length, 0.0);
+  m_Transform->RotateX(90.0);
+
+  m_ExtrusionSource->SetScaleFactor(length);
 }
 
