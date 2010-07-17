@@ -181,7 +181,7 @@ FluorescenceSimulation
   xmlNodePtr focalPlanePositionsNode = 
     xmlGetFirstElementChildWithName(node, BAD_CAST CUSTOM_FOCAL_PLANE_POSITIONS_ELEM);
   if (focalPlanePositionsNode) {
-    unsigned int defaultPlaneIndex;
+    unsigned int defaultPlaneIndex = 0;
     xmlNodePtr planeNode = focalPlanePositionsNode->children;
     while (planeNode != NULL) {
       if (planeNode->type == XML_ELEMENT_NODE) {
