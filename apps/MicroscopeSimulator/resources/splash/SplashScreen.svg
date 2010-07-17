@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="600"
+   height="600"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="SplashScreen.svg"
+   inkscape:export-filename="/Users/cquammen/development/packages/MicroscopeSimulator2/apps/MicroscopeSimulator/resources/splash/SplashScreen.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3748">
+      <stop
+         style="stop-color:#b1a262;stop-opacity:1;"
+         offset="0"
+         id="stop3750" />
+      <stop
+         style="stop-color:#825000;stop-opacity:1;"
+         offset="1"
+         id="stop3752" />
+    </linearGradient>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective2884"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3748"
+       id="linearGradient3754"
+       x1="-1"
+       y1="297.85713"
+       x2="601"
+       y2="297.85713"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="294.28572"
+     inkscape:cy="330"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1440"
+     inkscape:window-height="806"
+     inkscape:window-x="8"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-452.36218)">
+    <rect
+       style="fill:url(#linearGradient3754);fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect2974"
+       width="631.42859"
+       height="631.42853"
+       x="-21.428572"
+       y="-20"
+       transform="translate(0,452.36218)"
+       ry="0" />
+    <image
+       y="517.14795"
+       x="9.8640699"
+       id="image2886"
+       height="476.74527"
+       width="360.27185"
+       xlink:href="file:///Users/cquammen/Desktop/Olympus%20IX81%20with%20flourecence%20source.png" />
+    <text
+       xml:space="preserve"
+       style="font-size:48px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Bold"
+       x="293.80527"
+       y="493.5051"
+       id="text2890"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         x="293.80527"
+         y="493.5051"
+         id="tspan2894">Microscope Simulator 2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="248.57143"
+       y="-100"
+       id="text2896"
+       transform="translate(0,452.36218)"><tspan
+         sodipodi:role="line"
+         id="tspan2898"
+         x="248.57143"
+         y="-100" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="376.57141"
+       y="883.79077"
+       id="text2900"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         id="tspan2902"
+         x="376.57141"
+         y="883.79077"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">Contributors:</tspan><tspan
+         sodipodi:role="line"
+         x="376.57141"
+         y="907.79077"
+         id="tspan2906"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">Cory Quammen</tspan><tspan
+         sodipodi:role="line"
+         x="376.57141"
+         y="931.79077"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+         id="tspan2959">Alvin Richardson</tspan><tspan
+         sodipodi:role="line"
+         x="376.57141"
+         y="955.79077"
+         id="tspan2908"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">Russell M. Taylor II</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="4.285675"
+       y="992.36218"
+       id="text2931"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         x="4.285675"
+         y="992.36218"
+         id="tspan2935">Copyright  2010</tspan><tspan
+         sodipodi:role="line"
+         x="4.285675"
+         y="1010.3622"
+         id="tspan2947">Center for Computer-Integrated Systems for Microscopy and Manipulation </tspan><tspan
+         sodipodi:role="line"
+         x="4.285675"
+         y="1028.3622"
+         id="tspan2951">University of North Carolina at Chapel Hill</tspan><tspan
+         sodipodi:role="line"
+         x="4.285675"
+         y="1046.3622"
+         id="tspan2953">Supported by NIH Grant P41-EB002025-25</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2937"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Arial;font-style:normal;font-weight:normal;font-size:24;-inkscape-font-specification:Arial;font-stretch:normal;font-variant:normal;text-anchor:middle;text-align:center"><flowRegion
+         id="flowRegion2939"><rect
+           id="rect2941"
+           width="97.14286"
+           height="62.857143"
+           x="325.71429"
+           y="442.85715" /></flowRegion><flowPara
+         id="flowPara2943" /></flowRoot>  </g>
+</svg>
