@@ -54,7 +54,8 @@
        y1="297.85713"
        x2="601"
        y2="297.85713"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.94705882,0,0,0.94705892,21.294118,472.30335)" />
     <inkscape:perspective
        id="perspective3836"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -108,7 +109,7 @@
      inkscape:window-height="806"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -117,7 +118,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -127,24 +128,23 @@
      id="layer1"
      transform="translate(0,-452.36218)">
     <rect
-       style="fill:url(#linearGradient3754);fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:url(#linearGradient3754);fill-opacity:1;stroke:#000000;stroke-width:1.99999964;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect2974"
-       width="631.42859"
-       height="631.42853"
-       x="-21.428572"
-       y="-20"
-       transform="translate(0,452.36218)"
+       width="598"
+       height="598"
+       x="0.99999982"
+       y="453.36218"
        ry="0" />
     <text
        xml:space="preserve"
        style="font-size:48px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Bold"
        x="293.80527"
-       y="493.5051"
+       y="499.5051"
        id="text2890"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
          x="293.80527"
-         y="493.5051"
+         y="499.5051"
          id="tspan2894">Microscope Simulator 2</tspan></text>
     <text
        xml:space="preserve"
@@ -191,24 +191,24 @@
        xml:space="preserve"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="4.285675"
-       y="992.36218"
+       y="990.36218"
        id="text2931"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
          x="4.285675"
-         y="992.36218"
+         y="990.36218"
          id="tspan2935">Copyright  2010</tspan><tspan
          sodipodi:role="line"
          x="4.285675"
-         y="1010.3622"
+         y="1008.3622"
          id="tspan2947">Center for Computer-Integrated Systems for Microscopy and Manipulation </tspan><tspan
          sodipodi:role="line"
          x="4.285675"
-         y="1028.3622"
+         y="1026.3622"
          id="tspan2951">University of North Carolina at Chapel Hill</tspan><tspan
          sodipodi:role="line"
          x="4.285675"
-         y="1046.3622"
+         y="1044.3622"
          id="tspan2953">Supported by NIH Grant P41-EB002025-25</tspan></text>
     <flowRoot
        xml:space="preserve"
@@ -222,14 +222,14 @@
            y="442.85715" /></flowRegion><flowPara
          id="flowPara2943" /></flowRoot>    <image
        y="618.64795"
-       x="184.84015"
+       x="176.84015"
        id="image4060"
        height="146"
        width="418.01187"
        xlink:href="file:///Users/cquammen/development/packages/MicroscopeSimulator2/apps/MicroscopeSimulator/installer/iconimages/Microtubules.png" />
     <image
        y="503.08597"
-       x="-30.428581"
+       x="-12.428581"
        id="image3009"
        height="477.34769"
        width="360.72708"
