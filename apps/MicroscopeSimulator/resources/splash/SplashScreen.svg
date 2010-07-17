@@ -101,8 +101,8 @@
        transform="translate(0,452.36218)"
        ry="0" />
     <image
-       y="517.14795"
-       x="9.8640699"
+       y="505.14795"
+       x="-4.1359301"
        id="image2886"
        height="476.74527"
        width="360.27185"
@@ -135,7 +135,10 @@
        x="376.57141"
        y="883.79077"
        id="text2900"
-       sodipodi:linespacing="100%"><tspan
+       sodipodi:linespacing="100%"
+       inkscape:export-filename="/Users/cquammen/development/packages/MicroscopeSimulator2/apps/MicroscopeSimulator/resources/splash/SplashScreen.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan2902"
          x="376.57141"
