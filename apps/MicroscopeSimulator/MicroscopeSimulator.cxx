@@ -73,6 +73,9 @@ MicroscopeSimulator
   gui = new Ui_MainWindow();
   gui->setupUi(this);
 
+  // Turn off AFMSim tab for this release. It is not implemented yet.
+  gui->controlPanelTabs->removePage(gui->AFMSimTab);
+
   // Change the double item editor to QLineEdit
   QItemEditorFactory* factory = new QItemEditorFactory();
   factory->registerEditor(QVariant::Int,    new QStandardItemEditorCreator<QLineEdit>());
