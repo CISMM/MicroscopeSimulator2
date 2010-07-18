@@ -1,1 +1,2 @@
 ADD_SUBDIRECTORY(MicroscopeSimulator)
+ADD_SUBDIRECTORY(GLCheck)
