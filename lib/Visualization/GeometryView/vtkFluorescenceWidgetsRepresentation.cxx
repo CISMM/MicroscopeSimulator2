@@ -166,7 +166,6 @@ vtkFluorescenceWidgetsRepresentation
         oldImage->Delete();
 
       this->SimulatedFocalPlaneTexture->Modified();
-      this->SimulatedFocalPlaneTexture->Update();
                                                 
       this->SimulatedFocalPlaneSource->SetPoint1(width, 0.0, 0.0);
       this->SimulatedFocalPlaneSource->SetPoint2(0.0, height, 0.0);
