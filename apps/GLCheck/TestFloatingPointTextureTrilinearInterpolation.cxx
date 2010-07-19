@@ -103,9 +103,9 @@ GLCheck
   if ((fabs(textureValue - (float) 0) < 1e-5 ||
        fabs(textureValue - (float) 2) < 1e-5) &&
       textureValue >= 0.0 && textureValue <= 2.0) {
-    std::cout << "FloatingPointTextureTrilinearInterpolation texture value ("
-              << textureValue << ") appears to not be interpolated" 
-              << std::endl;
+    //std::cout << "FloatingPointTextureTrilinearInterpolation texture value ("
+    //          << textureValue << ") appears to not be interpolated" 
+    //          << std::endl;
     return false;
   }
 
