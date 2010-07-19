@@ -125,6 +125,7 @@ MicroscopeSimulator
   bool glslUnsignedIntsSupported =
     openGLCapabilities.value("GLSLUnsignedInts", false).toBool();
   gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
+  gui->fluoroSimNoiseGroupBox->setToolTip("Disabled because your graphics card does not support noise generation.");
   openGLCapabilities.endGroup();
 
 
@@ -1963,10 +1964,12 @@ MicroscopeSimulator
 
   // Now parse the output of the test
   QStringList knownFeatureNames;
-  knownFeatureNames << "16BitFloatingPointBlend" 
-        << "32BitFloatingPointBlend"
-        << "FloatingPointTextureTrilinearInterpolation"
-        << "GLSLUnsignedInts";
+  knownFeatureNames 
+    << "RequiredExtensions"
+    << "16BitFloatingPointBlend" 
+    << "32BitFloatingPointBlend"
+    << "FloatingPointTextureTrilinearInterpolation"
+    << "GLSLUnsignedInts";
 
   QSettings prefs;
   prefs.beginGroup("OpenGLCapabilities");
@@ -1974,7 +1977,7 @@ MicroscopeSimulator
   QStringList outputLines;
   QProcess glCheckProcess;
   glCheckProcess.start(appName);
-  if (glCheckProcess.waitForFinished()) {
+  if (glCheckProcess.waitForFinished(-1)) {
     QString output(glCheckProcess.readAllStandardOutput());
     outputLines = output.split(QRegExp("[\f\n\r]"), QString::SkipEmptyParts);
 
