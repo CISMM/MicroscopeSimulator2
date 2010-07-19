@@ -15,6 +15,7 @@
 
 #include <QActionGroup>
 #include <QApplication>
+#include <QByteArray>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -22,9 +23,12 @@
 #include <QItemEditorFactory>
 #include <QItemSelectionModel>
 #include <QMessageBox>
+#include <QProcess>
 #include <QPSFListModel.h>
 #include <QSettings>
 #include <QStandardItemEditorCreator>
+#include <QStringList>
+#include <QStringListIterator>
 #include <QVariant>
 
 #include <ErrorLogDialog.h>
@@ -76,6 +80,10 @@ MicroscopeSimulator
   // Turn off AFMSim tab for this release. It is not implemented yet.
   gui->controlPanelTabs->removePage(gui->AFMSimTab);
 
+
+  // Check the capabilities of OpenGL on this system
+  CheckOpenGLCapabilities();
+  
   // Change the double item editor to QLineEdit
   QItemEditorFactory* factory = new QItemEditorFactory();
   factory->registerEditor(QVariant::Int,    new QStandardItemEditorCreator<QLineEdit>());
@@ -110,6 +118,15 @@ MicroscopeSimulator
   QCoreApplication::setOrganizationName("CISMM");
   QCoreApplication::setOrganizationDomain("cismm.org");
   QCoreApplication::setApplicationName("Microscope Simulator");
+
+  // Change program settings based on the OpenGL capabilities of the GPU
+  QSettings openGLCapabilities;
+  openGLCapabilities.beginGroup("OpenGLCapabilities");
+  bool glslUnsignedIntsSupported =
+    openGLCapabilities.value("GLSLUnsignedInts", false).toBool();
+  gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
+  openGLCapabilities.endGroup();
+
 
   m_PSFMenuListModel = new QPSFListModel();
   m_PSFMenuListModel->SetHasNone(true);
@@ -1830,8 +1847,8 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::WriteProgramSettings() {
-  QSettings settings;
+::WriteProgramSettings() { 
+ QSettings settings;
 
   // Save size and position of the main window.
   settings.beginGroup("MainWindow");
@@ -1929,4 +1946,55 @@ MicroscopeSimulator
 
   // If we made it past the call above, the user clicked cancel.
   event->ignore();
+}
+
+
+void
+MicroscopeSimulator
+::CheckOpenGLCapabilities() {
+  // Run the GLCheck program to see what features are supported by the GPU
+  QString appName = QCoreApplication::applicationDirPath();
+
+#ifdef Q_WS_WIN
+  appName.append("\GLCheck.exe");
+#else
+  appName.append("/GLCheck");
+#endif
+
+  // Now parse the output of the test
+  QStringList knownFeatureNames;
+  knownFeatureNames << "16BitFloatingPointBlend" 
+        << "32BitFloatingPointBlend"
+        << "FloatingPointTextureTrilinearInterpolation"
+        << "GLSLUnsignedInts";
+
+  QSettings prefs;
+  prefs.beginGroup("OpenGLCapabilities");
+
+  QStringList outputLines;
+  QProcess glCheckProcess;
+  glCheckProcess.start(appName);
+  if (glCheckProcess.waitForFinished()) {
+    QString output(glCheckProcess.readAllStandardOutput());
+    outputLines = output.split(QRegExp("[\f\n\r]"), QString::SkipEmptyParts);
+
+    std::cout << "Feature - Supported" << std::endl;
+    QStringListIterator iter(outputLines);
+    while (iter.hasNext()) {
+      QStringList line = iter.next().split(": ");
+      QString featureName = line[1];
+      bool supported = (line[0] == "PASSED");
+
+      std::cout << featureName.toStdString() << " - " << supported << std::endl;
+
+      if (knownFeatureNames.contains(featureName)) {
+        prefs.setValue(featureName, supported);
+      } else {
+        std::cout << "Unknown OpenGL feature '" << featureName.toStdString()
+                  << "'." << std::endl;
+      }
+    }
+  }
+
+  prefs.endGroup();
 }

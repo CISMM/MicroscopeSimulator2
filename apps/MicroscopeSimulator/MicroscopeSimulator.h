@@ -236,6 +236,8 @@ private:
   PreferencesDialog* m_PreferencesDialog;
 
   QModelIndex m_SelectedModelObjectIndex;
+
+  void CheckOpenGLCapabilities();
 };
 
 #endif // _MICROSCOPE_SIMULATOR_H_

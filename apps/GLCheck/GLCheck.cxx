@@ -32,7 +32,7 @@ GLCheck
 
 bool
 GLCheck
-::TestTrilinearInterpolation() {
+::TestFloatingPointTextureTrilinearInterpolation() {
   return true;
 }
 
@@ -40,7 +40,7 @@ GLCheck
 bool
 GLCheck
 ::TestGLSLUnsignedInts() {
-  return true;
+  return false;
 }
 
 
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
   
   RUN_TEST(16BitFloatingPointBlend);
   RUN_TEST(32BitFloatingPointBlend);
-  RUN_TEST(TrilinearInterpolation);
+  RUN_TEST(FloatingPointTextureTrilinearInterpolation);
   RUN_TEST(GLSLUnsignedInts);
 
   return 0;

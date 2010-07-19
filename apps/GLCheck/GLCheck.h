@@ -9,7 +9,7 @@ class GLCheck {
 
   bool Test16BitFloatingPointBlend();
   bool Test32BitFloatingPointBlend();
-  bool TestTrilinearInterpolation();
+  bool TestFloatingPointTextureTrilinearInterpolation();
   bool TestGLSLUnsignedInts();
 
  protected:
