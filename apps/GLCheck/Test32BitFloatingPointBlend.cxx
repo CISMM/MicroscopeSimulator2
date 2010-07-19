@@ -70,6 +70,10 @@ GLCheck
   renderer->AddActor(actor);
   renWin->Render();
 
+  // This forces the shader in the mapper to draw just one point to the FBO,
+  // forcing blending to be used for the addition.
+  mapper->SetPointsPerPass(1);
+
   vtkCamera *cam = renderer->GetActiveCamera();
   cam->ParallelProjectionOn();
   cam->SetParallelScale(20.0);
@@ -85,6 +89,8 @@ GLCheck
 
     // Get the red value at pixel (10,10)
     float textureValue = ((float*) texOutput->GetScalarPointer(10,10,0))[0];
+    std::cout << "Expected value: " << i << ", texture value: " << textureValue
+              << std::endl;
 
     if (fabs(textureValue - (float) i) > 1e-5) {
       //std::cout << "16BitFloatingPointBlend texture value (" << textureValue <<

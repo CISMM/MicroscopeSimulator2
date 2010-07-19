@@ -70,6 +70,10 @@ GLCheck
   renderer->AddActor(actor);
   renWin->Render();
 
+  // This forces the shader in the mapper to draw just one point to the FBO,
+  // forcing blending to be used for the addition.
+  mapper->SetPointsPerPass(1);
+
   vtkCamera *cam = renderer->GetActiveCamera();
   cam->ParallelProjectionOn();
   cam->SetParallelScale(20.0);
