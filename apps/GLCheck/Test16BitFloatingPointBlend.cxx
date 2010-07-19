@@ -28,6 +28,7 @@ GLCheck
   renderer->SetMapsToOne(2048.0);
 
   vtkSmartPointer<vtkRenderWindow> renWin = vtkSmartPointer<vtkRenderWindow>::New();
+  renWin->SetSize(20, 20);
   renWin->AddRenderer(renderer);
 
   vtkSmartPointer<vtkOpenGLExtensionManager> extManager =
@@ -70,9 +71,10 @@ GLCheck
 
   vtkCamera *cam = renderer->GetActiveCamera();
   cam->ParallelProjectionOn();
-  cam->SetParallelScale(300.0);
+  cam->SetParallelScale(20.0);
+  renderer->ResetCameraClippingRange();
 
-  for (int i = 2040; i < 2048; i++) {
+  for (int i = 2000; i < 2048; i++) {
     points->SetNumberOfPoints(i);
     renWin->Render();
     
@@ -80,15 +82,15 @@ GLCheck
     vtkSmartPointer<vtkImageData> texOutput = 
       renTexture->GetOutput();
     texOutput->Update();
-    float textureValue = ((float*) texOutput->GetScalarPointer())[0];
+
+    // Get the red value at pixel (10,10)
+    float textureValue = ((float*) texOutput->GetScalarPointer())[(20*10+10)*3];
 
     if (fabs(textureValue - (float) i) > 1e-5) {
-      std::cout << "Blended texture value (" << textureValue <<
+      std::cout << "16BitFloatingPointBlend texture value (" << textureValue <<
         ") is different from the expected value (" << i << ")" << std::endl;
       return false;
     }
-    points->SetNumberOfPoints(1);
-    renWin->Render();
   }
     
   return true;
