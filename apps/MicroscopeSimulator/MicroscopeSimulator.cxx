@@ -80,10 +80,49 @@ MicroscopeSimulator
   // Turn off AFMSim tab for this release. It is not implemented yet.
   gui->controlPanelTabs->removePage(gui->AFMSimTab);
 
-
   // Check the capabilities of OpenGL on this system
   CheckOpenGLCapabilities();
-  
+
+  // Set up error dialog box.
+  m_ErrorDialog.setModal(true);  
+
+  // Change program settings based on the OpenGL capabilities of the GPU
+  QSettings openGLCapabilities;
+  openGLCapabilities.beginGroup("OpenGLCapabilities");
+
+  // Bail out with an error message if the user's OpenGL implementation
+  // won't support the fluorescence simulator.
+  bool extensionsSupported = 
+    openGLCapabilities.value("RequiredExtensions", false).toBool();
+  bool fp16BlendSupported =
+    openGLCapabilities.value("16BitFloatingPointBlend", false).toBool();
+  bool fp32BlendSupported =
+    openGLCapabilities.value("32BitFloatingPointBlend", false).toBool();
+  bool fpTextureTrilerpSupported =
+    openGLCapabilities.value("FloatingPointTextureTrilinearInterpolation", false).toBool();
+  bool glslUnsignedIntsSupported =
+    openGLCapabilities.value("GLSLUnsignedInts", false).toBool();
+  if (!extensionsSupported || !fp16BlendSupported) {
+    QMessageBox::critical
+      (this, tr("Graphics card not supported"),
+       tr("Your graphics card does not support the FluoroSim module. "
+          "Click 'OK' to quit."));
+    qApp->exit();    
+    exit(0);
+  }
+  if (!fpTextureTrilerpSupported) {
+    QMessageBox::critical
+      (this, tr("Warning"),
+       tr("Your graphics card lacks the trilinear interpolation feature "
+          "necessary to compute accurate images. You will not be able to "
+          "use this program for quantitative analysis on this computer."));
+  }
+
+  gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
+  gui->fluoroSimNoiseGroupBox->setToolTip("Disabled because your graphics card does not support noise generation.");
+  openGLCapabilities.endGroup();
+
+
   // Change the double item editor to QLineEdit
   QItemEditorFactory* factory = new QItemEditorFactory();
   factory->registerEditor(QVariant::Int,    new QStandardItemEditorCreator<QLineEdit>());
@@ -119,16 +158,6 @@ MicroscopeSimulator
   QCoreApplication::setOrganizationDomain("cismm.org");
   QCoreApplication::setApplicationName("Microscope Simulator");
 
-  // Change program settings based on the OpenGL capabilities of the GPU
-  QSettings openGLCapabilities;
-  openGLCapabilities.beginGroup("OpenGLCapabilities");
-  bool glslUnsignedIntsSupported =
-    openGLCapabilities.value("GLSLUnsignedInts", false).toBool();
-  gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
-  gui->fluoroSimNoiseGroupBox->setToolTip("Disabled because your graphics card does not support noise generation.");
-  openGLCapabilities.endGroup();
-
-
   m_PSFMenuListModel = new QPSFListModel();
   m_PSFMenuListModel->SetHasNone(true);
   m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
@@ -137,9 +166,6 @@ MicroscopeSimulator
   m_ImageListModel = new QImageListModel();
   m_ImageListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
   gui->fluoroSimComparisonImageComboBox->setModel(m_ImageListModel);
-
-  // Set up error dialog box.
-  m_ErrorDialog.setModal(true);
 
   m_ViewModeActionGroup = new QActionGroup(this);
   m_ViewModeActionGroup->setEnabled(true);
@@ -1957,7 +1983,7 @@ MicroscopeSimulator
   QString appName = QCoreApplication::applicationDirPath();
 
 #ifdef Q_WS_WIN
-  appName.append("\GLCheck.exe");
+  appName.append("\\GLCheck.exe");
 #else
   appName.append("/GLCheck");
 #endif
