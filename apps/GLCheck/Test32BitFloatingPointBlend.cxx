@@ -55,6 +55,7 @@ GLCheck
 
   vtkSmartPointer<vtkOpenGL3DTexture> psfTexture =
     vtkSmartPointer<vtkOpenGL3DTexture>::New();
+  psfTexture->InterpolateOn();
   psfTexture->SetInputConnection(psf->GetOutputPort());
 
   vtkSmartPointer<vtkGatherFluorescencePolyDataMapper> mapper =
@@ -74,24 +75,23 @@ GLCheck
   cam->SetParallelScale(20.0);
   renderer->ResetCameraClippingRange();
 
-  for (int i = 2040; i < 2060; i++) {
+  for (int i = 2040; i < 2080; i++) {
     points->SetNumberOfPoints(i);
     renWin->Render();
     
     // Read out FBO texture value.
-    vtkSmartPointer<vtkImageData> texOutput = 
-      renTexture->GetOutput();
+    vtkSmartPointer<vtkImageData> texOutput = renTexture->GetOutput();
     texOutput->Update();
 
     // Get the red value at pixel (10,10)
     float textureValue = ((float*) texOutput->GetScalarPointer())[(20*10+10)*3];
 
     if (fabs(textureValue - (float) i) > 1e-5) {
-      std::cout << "32BitFloatingPointBlend texture value (" << textureValue <<
-        ") is different from the expected value (" << i << ")" << std::endl;
+      //std::cout << "32BitFloatingPointBlend texture value (" << textureValue <<
+      //  ") is different from the expected value (" << i << ")" << std::endl;
       return false;
     }
   }
-    
+
   return true;
 }
