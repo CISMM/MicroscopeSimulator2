@@ -1974,28 +1974,27 @@ MicroscopeSimulator
   QSettings prefs;
   prefs.beginGroup("OpenGLCapabilities");
 
-  QStringList outputLines;
-  QProcess glCheckProcess;
-  glCheckProcess.start(appName);
-  if (glCheckProcess.waitForFinished(-1)) {
-    QString output(glCheckProcess.readAllStandardOutput());
-    outputLines = output.split(QRegExp("[\f\n\r]"), QString::SkipEmptyParts);
+  QStringListIterator iter(knownFeatureNames);
+  while (iter.hasNext()) {
+    QString featureName = iter.next();
+    QStringList args;
+    args << featureName;
+    QProcess glCheckProcess;
+    glCheckProcess.start(appName, args);
+    if (glCheckProcess.waitForFinished()) {
+      QString output(glCheckProcess.readAllStandardOutput());
 
-    std::cout << "Feature - Supported" << std::endl;
-    QStringListIterator iter(outputLines);
-    while (iter.hasNext()) {
-      QStringList line = iter.next().split(": ");
-      QString featureName = line[1];
-      bool supported = (line[0] == "PASSED");
-
-      std::cout << featureName.toStdString() << " - " << supported << std::endl;
-
-      if (knownFeatureNames.contains(featureName)) {
+      QStringList outputColumns = output.split(" ");
+      if (outputColumns.size() >= 2 && outputColumns[0] == featureName) {
+        bool supported = 
+          outputColumns[1].indexOf(tr("PASSED"), 0, Qt::CaseInsensitive) > -1;
         prefs.setValue(featureName, supported);
-      } else {
-        std::cout << "Unknown OpenGL feature '" << featureName.toStdString()
-                  << "'." << std::endl;
+        std::cout << featureName.toStdString() << " " 
+                  << (supported ? "true" : "false") << std::endl;
+          //<< "'" << outputColumns[1].trimmed().toStdString() << "'" << std::endl;
       }
+    } else {
+      prefs.setValue(featureName, false);
     }
   }
 
