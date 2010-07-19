@@ -97,7 +97,7 @@ GLCheck
   texOutput->Update();
 
   // Get the red value at pixel (100,120)
-  float textureValue = ((float*) texOutput->GetScalarPointer())[(200*120+100)*3];
+  float textureValue = ((float*) texOutput->GetScalarPointer(100,120,0))[0];
 
   // The interpolated value should be about 1.0, not 0 or 2
   if ((fabs(textureValue - (float) 0) < 1e-5 ||
