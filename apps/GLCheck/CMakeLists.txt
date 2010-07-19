@@ -2,6 +2,11 @@ INCLUDE(${VTK_USE_FILE})
 
 SET (SourceFiles
   GLCheck.cxx
+  TestRequiredExtensions.cxx
+  Test16BitFloatingPointBlend.cxx
+  Test32BitFloatingPointBlend.cxx
+  TestFloatingPointTextureTrilinearInterpolation.cxx
+  TestGLSLUnsignedInts.cxx
 )
 
 INCLUDE_DIRECTORIES(

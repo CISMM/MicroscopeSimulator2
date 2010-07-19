@@ -7,6 +7,7 @@ class GLCheck {
   GLCheck();
   virtual ~GLCheck();
 
+  bool TestRequiredExtensions();
   bool Test16BitFloatingPointBlend();
   bool Test32BitFloatingPointBlend();
   bool TestFloatingPointTextureTrilinearInterpolation();
