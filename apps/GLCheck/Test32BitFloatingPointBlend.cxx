@@ -89,8 +89,6 @@ GLCheck
 
     // Get the red value at pixel (10,10)
     float textureValue = ((float*) texOutput->GetScalarPointer(10,10,0))[0];
-    std::cout << "Expected value: " << i << ", texture value: " << textureValue
-              << std::endl;
 
     if (fabs(textureValue - (float) i) > 1e-5) {
       //std::cout << "16BitFloatingPointBlend texture value (" << textureValue <<
