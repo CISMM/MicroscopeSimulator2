@@ -74,6 +74,11 @@ MicroscopeSimulator
 ::MicroscopeSimulator(QWidget* p)
   : QMainWindow(p), m_ModelObjectPropertyListTableModel(NULL) {
 
+  // Set application information
+  QCoreApplication::setOrganizationName("CISMM");
+  QCoreApplication::setOrganizationDomain("cismm.org");
+  QCoreApplication::setApplicationName("Microscope Simulator");
+
   gui = new Ui_MainWindow();
   gui->setupUi(this);
 
@@ -115,11 +120,6 @@ MicroscopeSimulator
   m_Simulation = new Simulation(this);
 
   m_Visualization->SetSimulation(m_Simulation);
-
-  // Set application information
-  QCoreApplication::setOrganizationName("CISMM");
-  QCoreApplication::setOrganizationDomain("cismm.org");
-  QCoreApplication::setApplicationName("Microscope Simulator");
 
   m_PSFMenuListModel = new QPSFListModel();
   m_PSFMenuListModel->SetHasNone(true);
@@ -283,12 +283,7 @@ MicroscopeSimulator
 
     // Run the GLCheck program to see what features are supported by the GPU
     QString appName = QCoreApplication::applicationDirPath();
-
-#ifdef Q_WS_WIN
-    appName.append("\\GLCheck.exe");
-#else
     appName.append("/GLCheck");
-#endif
 
     // Now parse the output of the test
     QStringList knownFeatureNames;
@@ -323,8 +318,10 @@ MicroscopeSimulator
     }
 
     prefs.setValue("Checked", true);
-    prefs.sync();
   }
+  prefs.endGroup();
+  prefs.sync();
+  prefs.beginGroup("OpenGLCapabilities");
 
   // Bail out with an error message if the user's OpenGL implementation
   // won't support the fluorescence simulator.
