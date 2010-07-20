@@ -23,6 +23,8 @@ Q_OBJECT
   void on_gui_DirectoryPathButton_clicked();
   void on_gui_CheckOpenGLSettingsAgainButton_clicked();
 
+  void RefreshOpenGLLabels();
+
  protected:
   MicroscopeSimulator* m_Simulator;
 

@@ -29,39 +29,7 @@ PreferencesDialog
   //gui_CopyImportedFilesToDataDirectoryCheckBox->
   //  setCheckState(m_Preferences->GetCopyImportedFiles() ? Qt::Checked : Qt::Unchecked);
 
-  
-  QSettings prefs;
-  prefs.beginGroup("OpenGLCapabilities");
-  if (prefs.value("RequiredExtensions", true).toBool()) {
-    gui_RequiredExtensionsValueLabel->setText("Supported");
-  } else {
-    gui_RequiredExtensionsValueLabel->setText("Not supported");
-  }
-
-  if (prefs.value("16BitFloatingPointBlend", true).toBool()) {
-    gui_16BitFloatingPointBlendingValueLabel->setText("Supported");
-  } else {
-    gui_16BitFloatingPointBlendingValueLabel->setText("Not supported");
-  }
-
-  if (prefs.value("32BitFloatingPointBlend", false).toBool()) {
-    gui_32BitFloatingPointBlendingValueLabel->setText("Supported");
-  } else {
-    gui_32BitFloatingPointBlendingValueLabel->setText("Not supported");
-  }
-
-  if (prefs.value("FloatingPointTextureTrilinearInterpolation", false).toBool()) {
-    gui_3DTrilinearInterpolationValueLabel->setText("Supported");
-  } else {
-    gui_3DTrilinearInterpolationValueLabel->setText("Not supported");
-  }
-
-  if (prefs.value("GLSLUnsignedInts", false).toBool()) {
-    gui_GLSLUnsignedIntegersValueLabel->setText("Supported");
-  } else {
-    gui_GLSLUnsignedIntegersValueLabel->setText("Not supported");
-  }
-  prefs.endGroup();
+  RefreshOpenGLLabels();
 
   int result = QDialog::exec();
   if (result == QDialog::Accepted) {
@@ -96,5 +64,45 @@ PreferencesDialog
 
   m_Simulator->CheckOpenGLCapabilities();
 
+  prefs.endGroup();
+
+  RefreshOpenGLLabels();
+}
+
+
+void
+PreferencesDialog
+::RefreshOpenGLLabels() {
+  QSettings prefs;
+  prefs.beginGroup("OpenGLCapabilities");
+  if (prefs.value("RequiredExtensions", true).toBool()) {
+    gui_RequiredExtensionsValueLabel->setText("Supported");
+  } else {
+    gui_RequiredExtensionsValueLabel->setText("Not supported");
+  }
+
+  if (prefs.value("16BitFloatingPointBlend", true).toBool()) {
+    gui_16BitFloatingPointBlendingValueLabel->setText("Supported");
+  } else {
+    gui_16BitFloatingPointBlendingValueLabel->setText("Not supported");
+  }
+
+  if (prefs.value("32BitFloatingPointBlend", false).toBool()) {
+    gui_32BitFloatingPointBlendingValueLabel->setText("Supported");
+  } else {
+    gui_32BitFloatingPointBlendingValueLabel->setText("Not supported");
+  }
+
+  if (prefs.value("FloatingPointTextureTrilinearInterpolation", false).toBool()) {
+    gui_3DTrilinearInterpolationValueLabel->setText("Supported");
+  } else {
+    gui_3DTrilinearInterpolationValueLabel->setText("Not supported");
+  }
+
+  if (prefs.value("GLSLUnsignedInts", false).toBool()) {
+    gui_GLSLUnsignedIntegersValueLabel->setText("Supported");
+  } else {
+    gui_GLSLUnsignedIntegersValueLabel->setText("Not supported");
+  }
   prefs.endGroup();
 }
