@@ -45,19 +45,20 @@ GLCheck
   points->SetCenter(100.0, 100.0, 0.0);
   points->SetRadius(0.0);
 
-  ////////
   vtkSmartPointer<vtkImageConstantSource> psf =
     vtkSmartPointer<vtkImageConstantSource>::New();
   psf->SetConstant(2.0);
-  psf->SetSpacing(50.0,50.0,50.0);
+  psf->SetSpacing(200.0/3.0, 200.0/3.0, 200.0/3.0);
   psf->SetWholeExtent(0,3,0,3,0,3);
-  psf->SetOrigin(-75.0, -75.0, -75.0);
+  psf->SetOrigin(-100.0, -100.0, -100.0);
   psf->UpdateWholeExtent();
 
   vtkSmartPointer<vtkImageData> psfImage = vtkSmartPointer<vtkImageData>::New();
   psfImage->DeepCopy(psf->GetOutput());
 
-  for (int z = 0; z < 2; z++) {
+  // Set half the image to black and leave half of it white so that some 
+  // interpolation may occur.
+  for (int z = 0; z < 4; z++) {
     for (int y = 0; y < 2; y++) {
       for (int x = 0; x < 4; x++) {
         psfImage->SetScalarComponentFromFloat(x,y,z,0,0.0);
@@ -81,23 +82,16 @@ GLCheck
   actor->SetMapper(mapper);
 
   renderer->AddActor(actor);
+  renderer->ResetCamera();
+
   renWin->Render();
-
-  vtkCamera *cam = renderer->GetActiveCamera();
-  cam->ParallelProjectionOn();
-  cam->SetParallelScale(200.0);
-  renderer->ResetCameraClippingRange();
-
-  for (int i = 0; i < 2; i++) {
-    renWin->Render();
-  }
     
   // Read out FBO texture value.
   vtkSmartPointer<vtkImageData> texOutput = renTexture->GetOutput();
   texOutput->Update();
 
-  // Get the red value at pixel (100,120)
-  float textureValue = ((float*) texOutput->GetScalarPointer(100,120,0))[0];
+  // Get the red value at pixel (100,100)
+  float textureValue = ((float*) texOutput->GetScalarPointer(100,100,0))[0];
 
   // The interpolated value should be about 1.0, not 0 or 2
   if ((fabs(textureValue - (float) 0) < 1e-5 ||
