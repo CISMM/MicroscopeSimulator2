@@ -48,6 +48,8 @@ public:
   // Constructor/destructor
   MicroscopeSimulator(QWidget* parent=0);
   virtual ~MicroscopeSimulator();
+
+  void CheckOpenGLCapabilities();
   
 protected:
   Ui_MainWindow* gui;
@@ -236,8 +238,6 @@ private:
   PreferencesDialog* m_PreferencesDialog;
 
   QModelIndex m_SelectedModelObjectIndex;
-
-  void CheckOpenGLCapabilities();
 };
 
 #endif // _MICROSCOPE_SIMULATOR_H_

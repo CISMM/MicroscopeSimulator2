@@ -195,7 +195,7 @@ MicroscopeSimulator
 
   m_Preferences = new Preferences();
   
-  m_PreferencesDialog = new PreferencesDialog(this, m_Preferences);
+  m_PreferencesDialog = new PreferencesDialog(this, this, m_Preferences);
   m_PreferencesDialog->setModal(true);
 
   // Query for data directory if it is not set.
@@ -270,6 +270,95 @@ MicroscopeSimulator
   delete m_ModelObjectPropertyListTableModel;
 
   delete gui;
+}
+
+
+void
+MicroscopeSimulator
+::CheckOpenGLCapabilities() {
+  QSettings prefs;
+  prefs.beginGroup("OpenGLCapabilities");
+
+  if (!prefs.value("Checked", false).toBool()) {
+
+    // Run the GLCheck program to see what features are supported by the GPU
+    QString appName = QCoreApplication::applicationDirPath();
+
+#ifdef Q_WS_WIN
+    appName.append("\\GLCheck.exe");
+#else
+    appName.append("/GLCheck");
+#endif
+
+    // Now parse the output of the test
+    QStringList knownFeatureNames;
+    knownFeatureNames 
+      << "RequiredExtensions"
+      << "16BitFloatingPointBlend" 
+      << "32BitFloatingPointBlend"
+      << "FloatingPointTextureTrilinearInterpolation"
+      << "GLSLUnsignedInts";
+    
+    QStringListIterator iter(knownFeatureNames);
+    while (iter.hasNext()) {
+      QString featureName = iter.next();
+      QStringList args;
+      args << featureName;
+      QProcess glCheckProcess;
+      glCheckProcess.start(appName, args);
+      if (glCheckProcess.waitForFinished()) {
+        QString output(glCheckProcess.readAllStandardOutput());
+        
+        QStringList outputColumns = output.split(" ");
+        if (outputColumns.size() >= 2 && outputColumns[0] == featureName) {
+          bool supported = 
+            outputColumns[1].indexOf(tr("PASSED"), 0, Qt::CaseInsensitive) > -1;
+          prefs.setValue(featureName, supported);
+          std::cout << featureName.toStdString() << " " 
+                    << (supported ? "true" : "false") << std::endl;
+        }
+      } else {
+        prefs.setValue(featureName, false);
+      }
+    }
+
+    prefs.setValue("Checked", true);
+    prefs.sync();
+  }
+
+  // Bail out with an error message if the user's OpenGL implementation
+  // won't support the fluorescence simulator.
+  bool extensionsSupported = 
+    prefs.value("RequiredExtensions", false).toBool();
+  bool fp16BlendSupported =
+    prefs.value("16BitFloatingPointBlend", false).toBool();
+  bool fp32BlendSupported =
+    prefs.value("32BitFloatingPointBlend", false).toBool();
+  bool fpTextureTrilerpSupported =
+    prefs.value("FloatingPointTextureTrilinearInterpolation", false).toBool();
+  bool glslUnsignedIntsSupported =
+    prefs.value("GLSLUnsignedInts", false).toBool();
+  if (!extensionsSupported || !fp16BlendSupported) {
+    QMessageBox::critical
+      (this, tr("Error"),
+       tr("Your graphics card does not support the FluoroSim module. "
+          "Click 'OK' to quit."));
+    qApp->exit();    
+    exit(0);
+  }
+  if (!fpTextureTrilerpSupported) {
+    QMessageBox::critical
+      (this, tr("Warning"),
+       tr("Your graphics card lacks the trilinear interpolation feature "
+          "necessary to compute accurate images. You will not be able to "
+          "use this program for quantitative analysis on this computer, "
+          "but it may be useful for qualitative hypothesis testing."));
+  }
+
+  gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
+  gui->fluoroSimNoiseGroupBox->setToolTip("Disabled because your graphics card does not support noise generation.");
+  
+  prefs.endGroup();
 }
 
 
@@ -1936,92 +2025,4 @@ MicroscopeSimulator
 
   // If we made it past the call above, the user clicked cancel.
   event->ignore();
-}
-
-
-void
-MicroscopeSimulator
-::CheckOpenGLCapabilities() {
-  QSettings prefs;
-  prefs.beginGroup("OpenGLCapabilities");
-
-  if (prefs.value("Checked", false).toBool()) {
-
-    // Run the GLCheck program to see what features are supported by the GPU
-    QString appName = QCoreApplication::applicationDirPath();
-
-#ifdef Q_WS_WIN
-    appName.append("\\GLCheck.exe");
-#else
-    appName.append("/GLCheck");
-#endif
-
-    // Now parse the output of the test
-    QStringList knownFeatureNames;
-    knownFeatureNames 
-      << "RequiredExtensions"
-      << "16BitFloatingPointBlend" 
-      << "32BitFloatingPointBlend"
-      << "FloatingPointTextureTrilinearInterpolation"
-      << "GLSLUnsignedInts";
-    
-    QStringListIterator iter(knownFeatureNames);
-    while (iter.hasNext()) {
-      QString featureName = iter.next();
-      QStringList args;
-      args << featureName;
-      QProcess glCheckProcess;
-      glCheckProcess.start(appName, args);
-      if (glCheckProcess.waitForFinished()) {
-        QString output(glCheckProcess.readAllStandardOutput());
-        
-        QStringList outputColumns = output.split(" ");
-        if (outputColumns.size() >= 2 && outputColumns[0] == featureName) {
-          bool supported = 
-            outputColumns[1].indexOf(tr("PASSED"), 0, Qt::CaseInsensitive) > -1;
-          prefs.setValue(featureName, supported);
-          std::cout << featureName.toStdString() << " " 
-                    << (supported ? "true" : "false") << std::endl;
-        }
-      } else {
-        prefs.setValue(featureName, false);
-      }
-    }
-
-    prefs.setValue("Checked", true);
-  }
-
-  // Bail out with an error message if the user's OpenGL implementation
-  // won't support the fluorescence simulator.
-  bool extensionsSupported = 
-    prefs.value("RequiredExtensions", false).toBool();
-  bool fp16BlendSupported =
-    prefs.value("16BitFloatingPointBlend", false).toBool();
-  bool fp32BlendSupported =
-    prefs.value("32BitFloatingPointBlend", false).toBool();
-  bool fpTextureTrilerpSupported =
-    prefs.value("FloatingPointTextureTrilinearInterpolation", false).toBool();
-  bool glslUnsignedIntsSupported =
-    prefs.value("GLSLUnsignedInts", false).toBool();
-  if (!extensionsSupported || !fp16BlendSupported) {
-    QMessageBox::critical
-      (this, tr("Error"),
-       tr("Your graphics card does not support the FluoroSim module. "
-          "Click 'OK' to quit."));
-    qApp->exit();    
-    exit(0);
-  }
-  if (!fpTextureTrilerpSupported) {
-    QMessageBox::critical
-      (this, tr("Warning"),
-       tr("Your graphics card lacks the trilinear interpolation feature "
-          "necessary to compute accurate images. You will not be able to "
-          "use this program for quantitative analysis on this computer, "
-          "but it may be useful for qualitative hypothesis testing."));
-  }
-
-  gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
-  gui->fluoroSimNoiseGroupBox->setToolTip("Disabled because your graphics card does not support noise generation.");
-  
-  prefs.endGroup();
 }
