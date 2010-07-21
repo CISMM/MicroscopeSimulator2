@@ -30,3 +30,6 @@ TARGET_LINK_LIBRARIES( GLCheck
   vtkmsRendering
 )
 
+INSTALL( TARGETS GLCheck
+  RUNTIME DESTINATION bin
+)
