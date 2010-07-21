@@ -101,6 +101,16 @@ MicroscopeSimulator
   // Instantiate visualization pipelines.
   m_Visualization = new Visualization();
 
+  QSettings prefs;
+  prefs.beginGroup("OpenGLCapabilities");
+  bool fp32Blending = prefs.value("32BitFloatingPointBlend", false).toBool();
+  if (fp32Blending) {
+    m_Visualization->SetBlendingTo32Bit();
+  } else {
+    m_Visualization->SetBlendingTo16Bit();
+  }
+  prefs.endGroup();
+
   // Need to manually set the interactor to the QVTK widget's interactor.
   // Otherwise, the default interactor may be used. On Mac with Carbon,
   // the default interactor sucks up all the keypress events, making it
@@ -281,6 +291,12 @@ MicroscopeSimulator
 
   if (!prefs.value("Checked", false).toBool()) {
 
+    QMessageBox message(QMessageBox::Information,
+                        "Checking Graphics Card Support",
+                        "Please wait a moment while Microscope Simulator "
+                        "determines the capabilities of your graphics card.");
+    message.show();
+
     // Run the GLCheck program to see what features are supported by the GPU
     QString appName = QCoreApplication::applicationDirPath();
     appName.append("/GLCheck");
@@ -310,7 +326,7 @@ MicroscopeSimulator
             outputColumns[1].indexOf(tr("PASSED"), 0, Qt::CaseInsensitive) > -1;
           prefs.setValue(featureName, supported);
           std::cout << featureName.toStdString() << " " 
-                    << (supported ? "true" : "false") << std::endl;
+                    << (supported ? "suppored" : "not supported") << std::endl;
         }
       } else {
         prefs.setValue(featureName, false);
@@ -318,6 +334,7 @@ MicroscopeSimulator
     }
 
     prefs.setValue("Checked", true);
+    message.hide();
   }
   prefs.endGroup();
   prefs.sync();
@@ -329,8 +346,6 @@ MicroscopeSimulator
     prefs.value("RequiredExtensions", false).toBool();
   bool fp16BlendSupported =
     prefs.value("16BitFloatingPointBlend", false).toBool();
-  bool fp32BlendSupported =
-    prefs.value("32BitFloatingPointBlend", false).toBool();
   bool fpTextureTrilerpSupported =
     prefs.value("FloatingPointTextureTrilinearInterpolation", false).toBool();
   bool glslUnsignedIntsSupported =

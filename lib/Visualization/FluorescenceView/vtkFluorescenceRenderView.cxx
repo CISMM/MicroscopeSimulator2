@@ -32,9 +32,6 @@ vtkStandardNewMacro(vtkFluorescenceRenderView);
 vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->SyntheticImageTexture = vtkFramebufferObjectTexture::New();
 
-  // TODO - make this switchable by user or autoconfig process
-  this->SyntheticImageTexture->SetQualityTo16Bit();
-
   this->SyntheticImageTexture->AutomaticDimensionsOn();
 
   this->Renderer = vtkFluorescenceRenderer::New();
@@ -67,6 +64,16 @@ vtkFluorescenceRenderView::~vtkFluorescenceRenderView() {
   if (this->RenderWindow) {
     this->RenderWindow->Delete();
   }
+}
+
+
+void vtkFluorescenceRenderView::SetBlendingTo16Bit() {
+  this->SyntheticImageTexture->SetQualityTo16Bit();
+}
+
+
+void vtkFluorescenceRenderView::SetBlendingTo32Bit() {
+  this->SyntheticImageTexture->SetQualityTo32Bit();
 }
 
 

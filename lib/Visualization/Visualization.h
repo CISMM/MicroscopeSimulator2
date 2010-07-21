@@ -34,6 +34,9 @@ public:
   Visualization();
   virtual ~Visualization();
 
+  void SetBlendingTo16Bit();
+  void SetBlendingTo32Bit();
+
   void SetSimulation(Simulation* simulation);
   Simulation* GetSimulation();
 

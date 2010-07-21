@@ -32,6 +32,9 @@ class vtkFluorescenceRenderView : public vtkView {
   static vtkFluorescenceRenderView* New();
   vtkTypeRevisionMacro(vtkFluorescenceRenderView, vtkView);
   void PrintSelf(ostream& os, vtkIndent indent);
+
+  void SetBlendingTo16Bit();
+  void SetBlendingTo32Bit();
   
   void SetSimulation(Simulation* simulation);
 

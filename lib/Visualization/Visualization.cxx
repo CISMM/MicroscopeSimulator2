@@ -65,6 +65,7 @@ Visualization
 
   // Set up the fluorescence render view.
   m_FluorescenceRenderView = vtkSmartPointer<vtkFluorescenceRenderView>::New();
+  m_FluorescenceRenderView->SetBlendingTo16Bit();
 }
 
 
@@ -73,6 +74,21 @@ Visualization
   delete m_ImageSource;
   delete m_GeometryRepresentation;
 }
+
+
+void
+Visualization
+::SetBlendingTo16Bit() {
+  m_FluorescenceRenderView->SetBlendingTo16Bit();
+}
+
+
+void
+Visualization
+::SetBlendingTo32Bit() {
+  m_FluorescenceRenderView->SetBlendingTo32Bit();
+}
+
 
 
 void
