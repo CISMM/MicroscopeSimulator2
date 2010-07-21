@@ -338,10 +338,8 @@ MicroscopeSimulator
   if (!extensionsSupported || !fp16BlendSupported) {
     QMessageBox::critical
       (this, tr("Error"),
-       tr("Your graphics card does not support the FluoroSim module. "
-          "Click 'OK' to quit."));
-    qApp->exit();    
-    exit(0);
+       tr("Your graphics card does not support the FluoroSim module and "
+          "may crash."));
   }
   if (!fpTextureTrilerpSupported) {
     QMessageBox::critical
