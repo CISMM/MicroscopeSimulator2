@@ -14,11 +14,17 @@
 
 int main(int argc, char** argv) {
 
+  // Set application information
+  QCoreApplication::setOrganizationName("CISMM");
+  QCoreApplication::setOrganizationDomain("cismm.org");
+  QCoreApplication::setApplicationName("Microscope Simulator");
+
   // Qt initialization.
   QApplication app(argc, argv);
   QPixmap pixmap(":splash/SplashScreen.png");
   QSplashScreen splash(pixmap);
   splash.show();
+  splash.showMessage("Loading libraries...", Qt::AlignBottom | Qt::AlignRight, Qt::white);
   app.processEvents();
 
   MicroscopeSimulator mainWindow;

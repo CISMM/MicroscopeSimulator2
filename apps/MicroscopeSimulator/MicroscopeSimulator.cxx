@@ -74,11 +74,6 @@ MicroscopeSimulator
 ::MicroscopeSimulator(QWidget* p)
   : QMainWindow(p), m_ModelObjectPropertyListTableModel(NULL) {
 
-  // Set application information
-  QCoreApplication::setOrganizationName("CISMM");
-  QCoreApplication::setOrganizationDomain("cismm.org");
-  QCoreApplication::setApplicationName("Microscope Simulator");
-
   gui = new Ui_MainWindow();
   gui->setupUi(this);
 
@@ -294,8 +289,11 @@ MicroscopeSimulator
     QMessageBox message(QMessageBox::Information,
                         "Checking Graphics Card Support",
                         "Please wait a moment while Microscope Simulator "
-                        "determines the capabilities of your graphics card.");
+                        "determines the capabilities of your graphics card.",
+                        QMessageBox::NoButton, this);
     message.show();
+    message.raise();
+    qApp->processEvents(); // makes sure the message box is repainted
 
     // Run the GLCheck program to see what features are supported by the GPU
     QString appName = QCoreApplication::applicationDirPath();
@@ -317,7 +315,7 @@ MicroscopeSimulator
       args << featureName;
       QProcess glCheckProcess;
       glCheckProcess.start(appName, args);
-      if (glCheckProcess.waitForFinished()) {
+      if (glCheckProcess.waitForFinished(60000)) {
         QString output(glCheckProcess.readAllStandardOutput());
         
         QStringList outputColumns = output.split(" ");
@@ -326,15 +324,15 @@ MicroscopeSimulator
             outputColumns[1].indexOf(tr("PASSED"), 0, Qt::CaseInsensitive) > -1;
           prefs.setValue(featureName, supported);
           std::cout << featureName.toStdString() << " " 
-                    << (supported ? "suppored" : "not supported") << std::endl;
+                    << (supported ? "supported" : "not supported") << std::endl;
         }
       } else {
         prefs.setValue(featureName, false);
       }
     }
 
-    prefs.setValue("Checked", true);
     message.hide();
+    qApp->processEvents(); // makes sure anything covered by the message box is repainted
   }
   prefs.endGroup();
   prefs.sync();
@@ -353,8 +351,10 @@ MicroscopeSimulator
   if (!extensionsSupported || !fp16BlendSupported) {
     QMessageBox::critical
       (this, tr("Error"),
-       tr("Your graphics card does not support the FluoroSim module and "
-          "may crash."));
+       tr("Your graphics card does not support the FluoroSim module. The "
+          "Microscope Simulator will now exit."));
+    qApp->exit();
+    exit(-1);
   }
   if (!fpTextureTrilerpSupported) {
     QMessageBox::critical
@@ -367,7 +367,9 @@ MicroscopeSimulator
 
   gui->fluoroSimNoiseGroupBox->setEnabled(glslUnsignedIntsSupported);
   gui->fluoroSimNoiseGroupBox->setToolTip("Disabled because your graphics card does not support noise generation.");
-  
+
+  // Mark that we've checked the OpenGL capabilities.
+  prefs.setValue("Checked", true);
   prefs.endGroup();
 }
 
