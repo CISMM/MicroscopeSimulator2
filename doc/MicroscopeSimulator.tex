@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{url}
+\usepackage{hyperref}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Microscope Simulator 2.0.0 User Manual}
+\author{Cory Quammen}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+The Microscope Simulator enables a scientist to simulate what 3D object models should look like in a fluorescence microscope. It serves as a visual problem-solving environment with several applications:
+
+\begin{itemize}
+
+\item Building scientist intuition about artifacts in the imaging process by presenting the expected image from a given geometric model
+
+\item Evaluating the whether a particular microscope can be used to distinguish among hypotheses in an experiment
+
+\item Checking the validity of a specimen model by comparing simulated images to experimental images from the lab
+
+\end{itemize}
+
+The Microscope Simulator features a module called FluoroSim for fluorescence microscope simulation. FluoroSim computes the convolution of virtual fluorophores on a specimen model with the 3D point-spread function from a fluorescence microscope, taking advantage of graphics hardware to make rendering of fluorescence images interactive. FluoroSim also features a model fitting feature to obtain sub-resolution measurements of specimens.
+
+\subsection{Acknowledgements}
+
+The Microscope Simulator is developed and maintained by the \href{http://www.cismm.org}{Center for Computer Integrated Systems for Microscopy and Manipulation}, a \href{http://www.nibib.nih.gov/}{National Institute of Biomedical Imaging and Bioengineering Resource}, award number P41-EB002025.
+
+\section{Installation}
+
+\subsection{System Requirements}
+
+The Microscope Simulator requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested it on any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
+
+Your system should have at least 100 MB of hard drive space free to install the program. At least 512 MB of RAM is required, but 2 GB is recommended.
+
+\subsection{Getting the Software}
+
+To obtain the latest installer for the Microscope Simulator, visit \url{http://www.cismm.org/downloads}. Source code for the simulator is also available there.
+
+\subsection{Windows Installation}
+
+Double-click the setup program named \textbf{MicroscopeSimulator-2.0.0-win32.exe}. On the first screen, click \emph{Next}. Please read the program license. If you agree to the terms of the license, click \emph{I Agree}. On the next screen, choose where you want to install the program. The default directory is the most-used option. Click \emph{Next}. You may optionally choose a different location in the Start Menu. By default, it will be placed in the CISMM folder. Click \emph{Install}. 
+
+\subsection{Mac Installation}
+
+Double-click the Macintosh Disk image named \textbf{MicroscopeSimulator-2.0.0-darwin.exe}. This will mount a disk image named XXX on your desktop. Double-click the icon of the disk image. A new Finder window will appear.
+
+To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator 2.0.0 application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
+
+\section{Working with Models}
+
+\section{FluoroSim}
+
+\end{document}  
