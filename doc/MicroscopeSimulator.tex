@@ -19,19 +19,30 @@
 
 \section{Introduction}
 
-The Microscope Simulator enables a scientist to simulate what 3D object models should look like in a fluorescence microscope. It serves as a visual problem-solving environment with several applications:
+The Microscope Simulator is a program for simulating the imaging process of various microscopes. Currently, simulation of fluorescence microscopes is supported through the FluoroSim module. This modules enables you to see what a geometric model of specimen would look like in a fluorescence microscope under different imaging conditions. Graphics acceleration hardware allows real time generation of simulated microscope images while you interact with specimen models.
+
+The Microscope Simulator serves as a visual problem-solving environment with several applications:
 
 \begin{itemize}
 
-\item Building scientist intuition about artifacts in the imaging process by presenting the expected image from a given geometric model
+\item building scientist intuition about artifacts in the imaging process by presenting the expected image from a given geometric model
 
-\item Evaluating the whether a particular microscope can be used to distinguish among hypotheses in an experiment
+\item evaluating whether a particular microscope can be used to distinguish among hypotheses in an experiment
 
-\item Checking the validity of a specimen model by comparing simulated images to experimental images from the lab
+\item checking the validity of a specimen model by comparing simulated images to experimental images from the lab
+
+\item refining a sub-resolution estimates of a specimen model's shape by automated optimization routines
 
 \end{itemize}
 
-The Microscope Simulator features a module called FluoroSim for fluorescence microscope simulation. FluoroSim computes the convolution of virtual fluorophores on a specimen model with the 3D point-spread function from a fluorescence microscope, taking advantage of graphics hardware to make rendering of fluorescence images interactive. FluoroSim also features a model fitting feature to obtain sub-resolution measurements of specimens.
+The Microscope Simulator has been designed in close collaboration with biologists to ensure the most useful features are implemented. If you have requests for features, please contact  \href{mailto:cquammen@cs.unc.edu}{Cory Quammen $\langle$cquammen@cs.unc.edu$\rangle$}.
+
+
+\subsection{System Requirements}
+
+The Microscope Simulator requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards including the GeForce 8800 GTX and Quadro FX 580. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested it on any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
+
+Your system should have at least 100 MB of hard drive space free to install the program. At least 512 MB of RAM is required, but 2 GB is recommended.
 
 \subsection{Acknowledgements}
 
@@ -39,28 +50,177 @@ The Microscope Simulator is developed and maintained by the \href{http://www.cis
 
 \section{Installation}
 
-\subsection{System Requirements}
+Installation of the Microscope Simulator is similar to installation of any other program.
 
-The Microscope Simulator requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested it on any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
-
-Your system should have at least 100 MB of hard drive space free to install the program. At least 512 MB of RAM is required, but 2 GB is recommended.
-
-\subsection{Getting the Software}
+\subsection{Getting the software}
 
 To obtain the latest installer for the Microscope Simulator, visit \url{http://www.cismm.org/downloads}. Source code for the simulator is also available there.
 
-\subsection{Windows Installation}
+\subsection{Windows installation}
 
-Double-click the setup program named \textbf{MicroscopeSimulator-2.0.0-win32.exe}. On the first screen, click \emph{Next}. Please read the program license. If you agree to the terms of the license, click \emph{I Agree}. On the next screen, choose where you want to install the program. The default directory is the most-used option. Click \emph{Next}. You may optionally choose a different location in the Start Menu. By default, it will be placed in the CISMM folder. Click \emph{Install}. 
+Double-click the setup program named \textbf{MicroscopeSimulator-2.0.0-win32.exe}. On the first screen, click \emph{Next}. Please read the program license. If you agree to the terms of the license, click \emph{I Agree}. On the next screen, choose where you want to install the program. The default directory is the most-used option. Click \emph{Next}. You may optionally choose a different location in the Start Menu. By default, it will be placed in the CISMM folder. Click \emph{Install}.
 
-\subsection{Mac Installation}
+\subsection{Mac installation}
 
-Double-click the Macintosh Disk image named \textbf{MicroscopeSimulator-2.0.0-darwin.exe}. This will mount a disk image named XXX on your desktop. Double-click the icon of the disk image. A new Finder window will appear.
+Double-click the Macintosh disk image named \textbf{MicroscopeSimulator-2.0.0-darwin.dmg}. An installer program will launch and ask you to agree to the terms of the license. If you agree, a disk image named \textbf{MicroscopeSimulator-2.0.0-Darwin} will appear on your desktop and a new Finder window will open.
 
 To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator 2.0.0 application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
 
-\section{Working with Models}
+\subsection{Running the program}
+
+\subsubsection{Windows}
+
+You can launch the Microscope Simulator program from the Start menu. If you chose the default installation location and menu folder, select \emph{Start} $\rightarrow$ \emph{All Programs} $\rightarrow$ \emph{Microscope Simulator 2.0.0} $\rightarrow$ \emph{Microscope Simulator 2.0.0}.
+
+\subsubsection{Macintosh}
+
+If you installed the application in the Applications directory on your hard drive, double-click the program \emph{Microscope Simulator 2.0.0}.
+
+\subsubsection{Running the program for the first time}
+When you run the Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes. Some graphics cards capabilities are required for the program to run while others are optional and enable certain simulation features. If the optional capabilities are not present, then those simulation features will not be enabled.
+
+Currently, the only optional graphics card feature enables the generation and addition of pseudo-random Gaussian noise to simulated fluorescence images. If that feature is not available on your graphics card, the control panel section for noise will be disabled.
+
+\section{Getting to know the Microscope Simulator}
+
+This section gives you a tour of the many features in the Microscope Simulator.
+
+\subsection{Program Window}
+
+The program window, shown in Figure \ref{fig:ProgramWindow}, consists of several panels. A standard menu bar appears at the top of the window (Windows) or in the system menu bar. Below the menu bar is the \emph{Simulator Control Panel} where settings for the microscopes can be edited. The large panel in the center of the window showing a blue color gradient and grid of white lines is the \emph{Model Display Panel} where specimen models are displayed. Rotating, translating, and scaling models interactively with the mouse also takes place in this window. A row of icons above the \emph{Model Display Panel} controls how specimen models appear and whether simulation results are superimposed with the models. The \emph{Model Settings Control Panel} on the right consists of two parts; the \emph{Model Object List} at the top displays a list of models in the simulation, and the \emph{Model Object Properties Panel} at the bottom displays a list of model properties that can typically be edited. Each of these panels is described in more detail below.
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=1\linewidth]{images/ProgramWindow-small} 
+   \caption{The program window after startup.}
+   \label{fig:ProgramWindow}
+\end{figure}
+
+\subsection{Menu Bar}
+
+The menu bar in the Microscope Simulator contains five menus that provide commands useful to creating new simulations, adding specimen models to a simulation, saving simulations, and loading saved simulations, among other actions. Each menu is described in more detail below.
+
+\subsubsection{File Menu}
+
+The \emph{File Menu} features typical options for creating and saving simulations:
+
+\begin{description}
+  \item[New Simulation] \hfill \\
+  Creates a new simulation with default settings.
+
+  \item[Open Simulation...] \hfill \\
+  Opens a saved simulation file.
+
+  \item[Save Simulation] \hfill \\
+   Saves a simulation's settings to a file. This includes the settings of each microscope simulator, the objects in the scene and their settings, and everything else required to recreate the simulation. If the simulation has not been saved previously, you will be asked to provide a name and location for the file.
+   
+  \item[Save Simulation As...] \hfill \\
+  Does the same thing as the \emph{Save Simulation} menu item, but allows you to save the simulation to another file name.
+  
+  \item[Exit] \hfill \\
+  Exits the program. \textbf{Macintosh users:} The \emph{Quit} menu item appears under the \emph{MicroscopeSimulator} menu instead of the \emph{File} menu.
+
+\end{description}
+
+\subsubsection{Edit Menu}
+
+The \emph{Edit Menu} contains functions common to many programs.
+
+\begin{description}
+
+  \item[Cut] \hfill \\
+  \emph{Currently not implemented}
+  
+  \item[Copy] \hfill \\
+  \emph{Currently not implemented}
+  
+  \item[Paste] \hfill \\
+  \emph{Currently not implemented}
+
+\end{description}
+
+\subsubsection{Model Menu}
+
+The \emph{Model Menu} has options for adding and removing geometric models to the simulation. A model in this menu has parameters that controls its shape.
+
+\begin{description}
+
+  \item[Add Cylinder] \hfill \\
+  Adds a model of a cylinder to the scene. The ends of the model are capped with flat ends. The length and radius of the tube can be changed.
+  
+  \item[Add Hollow Cylinder] \hfill \\
+  Adds a model of a cylinder with a hollow center to the scene. Like the cylinder model, the length and outer radius of the tube can be changed. A separate parameter controls the thickness of the tube walls where thickness is defined as the difference between the diameter of the outer and inner cylinder walls.
+
+  \item[Add Disk] \hfill \\
+  Adds a model of a planar disk to the scene. The disk is defined by its center and a radius.
+
+  \item[Add Flexible Tube] \hfill \\
+  Adds a model of tube to the scene. The tube is defined by several control points and a radius. The number of control points can be changed, and each control point can be specified independently.
+  
+  \item[Add Plane] \hfill \\
+  Adds a simple bounded planar model to the scene. The plane is defined by its width and height.
+  
+  \item[Add Point Ring] \hfill \\
+  Adds a set of an arbitrary number of points to the scene. The points are restricted to lie in a circle of a given radius. These positions are treated as mathematical points in the simulator, so they are suitable for simulating very small objects such as nanometer-sized particles. No geometry is involved, but the points are represented by small spheres in the \emph{Model Object Window} so that they can be seen easily.
+  
+  \item[Add Point Set] \hfill \\
+  Adds a set of an arbitrary number of points to the scene. This model is the same as the point ring, but the points are not restricted to lie in a circle. The location of each point can be set independently.
+  
+  \item[Add Sphere] \hfill \\
+  Adds a sphere model to the scene. The radius of the sphere can be changed.
+
+  \item[Add Torus] \hfill \\
+  Adds a torus to the scene. The radius of the torus and the radius of the cross-section can be adjusted independently.
+
+\end{description}
+
+\subsubsection{Import Menu}
+
+\begin{description}
+
+  \item[Import Image Data...] \hfill \\
+  Imports an image file. Currently only single TIFF (2D and 3D) and LSM (Zeiss) files can be imported. You will typically use this when importing an image file to which models should be fit using FluoroSim.
+  
+  \item[Import Geometry File...] \hfill \\
+  Imports geometry from a file. Supported files include:
+  
+  \begin{itemize}
+  \item VTK Files (*.vtk)
+  \item VTK Poly Data XML Files (*.vtp)
+  \item OBJ Files (*.obj)
+  \item PLY Files (*.ply)
+  \end{itemize}
+
+\end{description}
+
+\subsubsection{Window Menu}
+
+\begin{description}
+
+  \item[About] \hfill \\
+  Shows a window with information about the Microscope Simulator program.
+
+  \item[Show Simulator Control Panel] \hfill \\
+  Shows/hides the \emph{Simulator Control Panel}. If you close the \emph{Simulator Control Panel}, you can show it again with this menu item.
+  
+  \item[Show Model Settings Control Panel] \hfill \\
+    Shows/hides the \emph{Model Settings Control Panel}. If you close the \emph{Model Settings Control Panel}, you can show it again with this menu item.
+  
+  \item[Show Fluorescence Window] \hfill \\
+  Shows/hides a separate panel that displays the fluorescence images simulated by FluoroSim.
+  
+  \item[Show Errors] \hfill \\
+  Displays a window listing any errors in the program.
+  
+  \item[Preferences] \hfill \\
+  Displays the \emph{Preferences} window.
+
+\end{description}
+
+\subsection{Model Display Panel}
 
 \section{FluoroSim}
+
+To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator 2.0.0 application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
 
 \end{document}  
