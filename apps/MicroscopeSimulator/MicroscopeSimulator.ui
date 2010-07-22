@@ -174,7 +174,7 @@
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Control Panel</string>
+    <string>Simulator Control Panel</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -1240,7 +1240,7 @@
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Model Settings</string>
+    <string>Model Settings Control Panel</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -1348,7 +1348,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show Control Panel</string>
+    <string>Show Simulator Control Panel</string>
    </property>
   </action>
   <action name="actionAboutApplication">
@@ -1426,7 +1426,7 @@
   </action>
   <action name="actionOpenSimulation">
    <property name="text">
-    <string>Open Simulation</string>
+    <string>Open Simulation...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -1646,7 +1646,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show Model Settings</string>
+    <string>Show Model Settings Control Panel</string>
    </property>
   </action>
   <action name="actionDeleteModelObject">
