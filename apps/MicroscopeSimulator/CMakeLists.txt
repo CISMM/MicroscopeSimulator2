@@ -101,7 +101,20 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
   SET (QtGuiSrcs ${QtGuiSrcs} ${UIS})
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
-ADD_EXECUTABLE( MicroscopeSimulator ${QtGuiSrcs} ${UISrcs} ${RCCSrcs} ${MOCSrcs} )
+
+# Workaround for rc.exe in Visual Studio 2005 being unable to handle many /I arguments.
+If (WIN32)
+  SET( WinIcon icon.res )
+  ADD_CUSTOM_COMMAND( OUTPUT icon.res COMMAND rc.exe /fo icon.res ${CMAKE_CURRENT_SOURCE_DIR}/installer/Win32/icon.rc )
+ENDIF (WIN32)
+
+ADD_EXECUTABLE( MicroscopeSimulator
+  ${WinIcon}
+  ${QtGuiSrcs}
+  ${UISrcs}
+  ${RCCSrcs}
+  ${MOCSrcs}
+)
 
 TARGET_LINK_LIBRARIES( MicroscopeSimulator
   QVTK
@@ -128,12 +141,6 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   msimVisualization
   msimUtilities
 )
-
-IF( WIN32 )
-  TARGET_LINK_LIBRARIES( MicroscopeSimulator
-      msimWinIcon
-  )
-ENDIF( WIN32 )
 
 # Set package properties
 SET( CPACK_PACKAGE_NAME "MicroscopeSimulator" )

@@ -14,14 +14,6 @@ OPTION (CMAKE_VERBOSE_MAKEFILE  "Enable/Disable verbose compiler output" ON)
 OPTION (CMAKE_COLOR_MAKEFILE "Enable/Disable color cues when building" ON)
 MARK_AS_ADVANCED (CLEAR CMAKE_VERBOSE_MAKEFILE CMAKE_COLOR_MAKEFILE)
 
-# Workaround for rc.exe in Visual Studio 2005 being unable to handle many /I arguments.
-# At this point, there are very few directories in the list of include directories.
-IF( WIN32 )
-  ADD_SUBDIRECTORY(
-    apps/MicroscopeSimulator/installer/Win32
-  )
-ENDIF( WIN32 )
-
 
 #######################################
 # Include ITK
