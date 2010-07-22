@@ -133,7 +133,7 @@ ImageModelObject
   double ySpacing = GetProperty(Y_SPACING_PROP)->GetDoubleValue();
   double zSpacing = GetProperty(Z_SPACING_PROP)->GetDoubleValue();
   m_InfoChanger->SetOutputSpacing(xSpacing, ySpacing, zSpacing);
-  m_InfoChanger->SetOutputOrigin(0.5*xSpacing, 0.5*ySpacing, 0.5*zSpacing);
+  m_InfoChanger->SetOutputOrigin(0.5*xSpacing, 0.5*ySpacing, 0.0);
 
   m_IsosurfaceSource->SetValue(0, GetProperty(ISO_VALUE_PROP)->GetDoubleValue());
 }
