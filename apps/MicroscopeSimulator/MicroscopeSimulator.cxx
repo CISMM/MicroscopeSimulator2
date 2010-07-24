@@ -393,8 +393,6 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionOpenSimulation_triggered() {
-  NewSimulation();
-
   QSettings prefs;
   prefs.beginGroup("FileDialogs");
   QString directory = prefs.value("OpenSimulationDirectory").toString();
@@ -420,6 +418,7 @@ MicroscopeSimulator
     selectedFileName.append(extension);
 
   // Now restore the Simulation from the XML tree.
+  NewSimulation();
   OpenSimulationFile(selectedFileName.toStdString());
 }
 
