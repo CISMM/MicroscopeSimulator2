@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[11pt,titlepage]{article}
 \usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
 \geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
 %\geometry{landscape}                % Activate for for rotated page geometry
@@ -10,12 +10,15 @@
 \usepackage{hyperref}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-\title{Microscope Simulator 2.0.0 User Manual}
+\title{Microscope Simulator 2.0.0 User's Guide}
 \author{Cory Quammen}
 %\date{}                                           % Activate to display a given date or no date
 
 \begin{document}
 \maketitle
+\tableofcontents
+
+\pagebreak
 
 \section{Introduction}
 
@@ -77,9 +80,10 @@ You can launch the Microscope Simulator program from the Start menu. If you chos
 If you installed the application in the Applications directory on your hard drive, double-click the program \emph{Microscope Simulator 2.0.0}.
 
 \subsubsection{Running the program for the first time}
-When you run the Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes. Some graphics cards capabilities are required for the program to run while others are optional and enable certain simulation features. If the optional capabilities are not present, then those simulation features will not be enabled.
 
-Currently, the only optional graphics card feature enables the generation and addition of pseudo-random Gaussian noise to simulated fluorescence images. If that feature is not available on your graphics card, the control panel section for noise will be disabled.
+When you run the Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes. Some graphics cards capabilities are required for the program to run while others are optional and enable certain simulation features. If the optional capabilities are not present, then those simulation features will not be enabled. Currently, the only optional graphics card feature enables the generation and addition of pseudo-random Gaussian noise to simulated fluorescence images. If that feature is not available on your graphics card, the control panel section for noise will be disabled.
+
+After the graphics card tests run, the Microscope Simulator will ask for you to choose a data directory where it can store data files. This version of the program stores one small file called \emph{PSFList.xml} which contains the list of point-spread functions defined within the program.
 
 \section{Getting to know the Microscope Simulator}
 
@@ -141,36 +145,36 @@ The \emph{Edit Menu} contains functions common to many programs.
 
 \subsubsection{Model Menu}
 
-The \emph{Model Menu} has options for adding and removing geometric models to the simulation. A model in this menu has parameters that controls its shape.
+The \emph{Model Menu} has options for adding and removing geometric models to the simulation. Every model in this menu has parameters that controls its shape. Models are placed at the center of the simulation domain.
 
 \begin{description}
 
   \item[Add Cylinder] \hfill \\
-  Adds a model of a cylinder to the scene. The ends of the model are capped with flat ends. The length and radius of the tube can be changed.
+  Adds a model of a cylinder to the simulation. The ends of the model are capped with flat ends. The length and radius of the tube can be changed.
   
   \item[Add Hollow Cylinder] \hfill \\
-  Adds a model of a cylinder with a hollow center to the scene. Like the cylinder model, the length and outer radius of the tube can be changed. A separate parameter controls the thickness of the tube walls where thickness is defined as the difference between the diameter of the outer and inner cylinder walls.
+  Adds a model of a cylinder with a hollow center to the simulation. Like the cylinder model, the length and outer radius of the tube can be changed. A separate parameter controls the thickness of the tube walls where thickness is defined as the difference between the diameter of the outer and inner cylinder walls.
 
   \item[Add Disk] \hfill \\
-  Adds a model of a planar disk to the scene. The disk is defined by its center and a radius.
+  Adds a model of a planar disk to the simulation. The disk is defined by its center and a radius.
 
   \item[Add Flexible Tube] \hfill \\
-  Adds a model of tube to the scene. The tube is defined by several control points and a radius. The number of control points can be changed, and each control point can be specified independently.
+  Adds a model of tube to the simulation. The tube is defined by several control points and a radius. The number of control points can be changed, and each control point can be specified independently.
   
   \item[Add Plane] \hfill \\
-  Adds a simple bounded planar model to the scene. The plane is defined by its width and height.
+  Adds a simple bounded planar model to the simulation. The plane is defined by its width and height.
   
   \item[Add Point Ring] \hfill \\
-  Adds a set of an arbitrary number of points to the scene. The points are restricted to lie in a circle of a given radius. These positions are treated as mathematical points in the simulator, so they are suitable for simulating very small objects such as nanometer-sized particles. No geometry is involved, but the points are represented by small spheres in the \emph{Model Object Window} so that they can be seen easily.
+  Adds a set of an arbitrary number of points to the simulation. The points are restricted to lie in a circle of a given radius. These positions are treated as mathematical points in the simulator, so they are suitable for simulating very small objects such as nanometer-sized particles. No geometry is involved, but the points are represented by small spheres in the \emph{Model Object Window} so that they can be seen easily.
   
   \item[Add Point Set] \hfill \\
-  Adds a set of an arbitrary number of points to the scene. This model is the same as the point ring, but the points are not restricted to lie in a circle. The location of each point can be set independently.
+  Adds a set of an arbitrary number of points to the simulation. This model is the same as the point ring, but the points are not restricted to lie in a circle. The location of each point can be set independently.
   
   \item[Add Sphere] \hfill \\
-  Adds a sphere model to the scene. The radius of the sphere can be changed.
+  Adds a sphere model to the simulation. The radius of the sphere can be changed.
 
   \item[Add Torus] \hfill \\
-  Adds a torus to the scene. The radius of the torus and the radius of the cross-section can be adjusted independently.
+  Adds a torus to the simulation. The radius of the torus and the radius of the cross-section can be adjusted independently.
 
 \end{description}
 
@@ -179,7 +183,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
 \begin{description}
 
   \item[Import Image Data...] \hfill \\
-  Imports an image file. Currently only single TIFF (2D and 3D) and LSM (Zeiss) files can be imported. You will typically use this when importing an image file to which models should be fit using FluoroSim.
+  Imports an image file. Single TIFF (2D and 3D) and LSM (Zeiss) files can be imported. You will typically use this when importing an image file to which models should be fit using FluoroSim.
   
   \item[Import Geometry File...] \hfill \\
   Imports geometry from a file. Supported files include:
@@ -198,7 +202,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
 \begin{description}
 
   \item[About] \hfill \\
-  Shows a window with information about the Microscope Simulator program.
+  Shows a window with information about the Microscope Simulator program. \textbf{Macintosh users:} The \emph{About Microscope Simulator} menu item appears under the \emph{Microscope Simulator} menu instead of the \emph{Window} menu. 
 
   \item[Show Simulator Control Panel] \hfill \\
   Shows/hides the \emph{Simulator Control Panel}. If you close the \emph{Simulator Control Panel}, you can show it again with this menu item.
@@ -213,14 +217,217 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
   Displays a window listing any errors in the program.
   
   \item[Preferences] \hfill \\
-  Displays the \emph{Preferences} window.
+  Displays the \emph{Preferences Window} (see Section \ref{sec:PreferencesWindow}).
 
 \end{description}
 
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=3in]{images/SimulatorControlPanel} 
+   \caption{The \emph{Simulator Control Panel} with the \emph{FluoroSim Tab} selected.}
+   \label{fig:SimulatorControlPanel}
+\end{figure}
+
+\subsection{Simulator Control Panel}
+
+This control panel has two tabs. The \emph{FluoroSim Tab} contains controls for fluorescence simulation. More details on these controls are available in the FluoroSim section of this manual (Section \ref{sec:FluoroSim}). The \emph{Notes Tab} contains a text editor where notes about the current simulation may be written. These notes will be saved in the simulation file and will be loaded when the simulation file is loaded.
+
 \subsection{Model Display Panel}
 
-\section{FluoroSim}
+The \emph{Model Display Panel} is where the 3D specimen models in the simulation are displayed. Output from the Microscope Simulator modules can also be displayed in this window. Such output include fluorophores generated by FluoroSim and fluorescence images superimposed in among the specimen models.
 
-To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator 2.0.0 application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
+\subsection{Visualization Buttons}
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4in]{images/VisualizationIcons} 
+   \caption{The visualization icons.}
+   \label{fig:VisualizationIcons}
+\end{figure}
+
+A row of visualization icons provide various controls related to what is shown in the \emph{Model Display Panel} (see Figure \ref{fig:VisualizationIcons}). The functions represented by the icons are described from left to right below:
+
+\subsubsection{Utility Buttons}
+
+\begin{description}
+
+  \item[Save Image] \hfill \\
+  Save the image currently displayed in the \emph{Model Object Panel}.
+  
+  \item[Reset Camera] \hfill \\
+  Reset the scene to the default view.
+  
+\end{description}
+
+\subsubsection{Visualization Buttons}
+
+Just one of the following visualization modes can be enabled at a time:
+
+\begin{description}
+
+  \item[View Model Only] \hfill \\
+  Displays specimen models only.
+
+  \item[View Fluorophore Sampling] \hfill \\
+  Displays fluorophores from models in the scene as small spheres.
+
+%  \item[View Models with AFM Scan] \hfill \\
+%  Displays both the specimen models and the simulated AFM surface scan.
+
+  %\item[View AFM Scan Only] \hfill \\
+  %Displays the simulated AFM surface scan only.
+  
+  %\item[View Models with Fluorescence Comparison] \hfill \\
+  %Displays comparison of experimental and simulated fluorescence image stacks with the models visible. See the section on processing simulated stacks for more details on the comparison visualization.
+  
+  %\item[View Fluorescence Comparison Only] \hfill \\
+  %Display comparison of experimental and simulated fluorescence image stacks without the models visible. See the section on processing simulated stacks for more details on the comparison visualization.
+  
+\end{description}
+  
+\subsubsection{References Axes Button}
+
+Enables/disables display of coordinate axes in the \emph{Model View Panel}. The location of the coordinate axes can be moved to an arbitrary location in the \emph{Model View Panel} display by clicking on the axes and dragging them.
+  
+\subsubsection{Interaction Modes Button}
+  
+One of the following interaction modes can be enabled at a time.
+
+\begin{description}
+
+  \item[Move Camera] \hfill \\
+  Enables manipulation of the camera in the Model View Panel via mouse manipulation. You can change the view of the specimen models by rotating, translating, and zooming in on the scene. Clicking and dragging while holding different mouse buttons causes different camera motions:
+
+\begin{itemize}
+\item \textbf{Left mouse button} - rotates the scene
+\item \textbf{Middle mouse button} - translates the scene
+\item \textbf{Right mouse button} - zooms in on the scene
+\end{itemize}
+
+  \item[Move Objects] \hfill \\
+  Enables manipulation of individual specimen model objects via mouse manipulation. Clicking on the desired model object and dragging while holding one of the mouse buttons produces the following transformations:
+  
+\begin{itemize}
+\item \textbf{Left mouse button} - rotates the selected model object
+\item \textbf{Middle mouse button} - translates the selected model object
+\item \textbf{Right mouse button} - in most cases, scales the size of the model object
+\end{itemize}
+
+\end{description}
+
+\subsection{Model Object List}
+
+The model object list appears in the upper right of the program window. All model objects in the simulation are listed here. When you click on a model object in the list, properties for that model object appear in the Model Object Properties Panel. Right-clicking on a model object brings up a context menu that provides several options:
+
+\begin{description}
+
+  \item[Focus on Object] \hfill \\
+  Changes the camera view to center on this model object and zoom in on it so that it nearly fills the Model Object View Panel.
+  
+  \item[Export Geometry] \hfill \\
+  Exports the model object geometry as a VTK Legacy file (*.vtk), VTK Poly Data XML file (*.vtp), PLY file (*.ply), or BYU file (*.byu).
+  
+  \item[Delete Model Object] \hfill \\
+  Deletes this model object.
+
+\end{description}
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=3in]{images/ModelObjectProperties} 
+   \caption{The \emph{Model Settings Control Panel}. The \emph{Model Object List} (top section) shows all the specimen models in the simulation. The \emph{Model Object Properties List} (bottom section) contains an editable list of the selected model object's properties.}
+   \label{fig:example}
+\end{figure}
+
+\subsection{Model Object Properties Panel}
+
+\subsubsection{The Properties Table}
+
+The \emph{Model Object Properties Panel} has four columns showing the properties of the model object selected in the \emph{Model Object List}. Each property is displayed as a row in the table. Most model object properties can be changed in this panel, but some are there to display information about the model object (the size in voxels of an \emph{Image Model Object}, for example).
+
+The \emph{Property} column lists the name of the property. Property names cannot be edited. The \emph{Value} column lists the value of the property. To change the value, click on the table cell. Clicking on a property with a checkbox will toggle the checkbox. Clicking once on a property with a numerical value will select the cell while clicking it twice will highlight the value; in either case, typing a numerical value and pressing the return key will change the property value. The \emph{Units} column shows the units of the parameter and cannot be edited. Unitless properties are denoted with a dash (``-''). The \emph{Optimize} column contains checkboxes to designate which property should be optimized using FluoroSim's model fitting routines (see Section \ref{sec:ModelFittingToFluorescenceImages}).
+
+\subsubsection{Common Model Object Properties}
+
+A few properties common to almost all model objects are listed here:
+
+\begin{description}
+
+  \item[Name] \hfill \\
+  A name for the model object.
+  
+  \item[Visible] \hfill \\
+  Controls whether the model object is visible in the scene or not.
+
+  \item[Scannable] \hfill \\
+  Controls whether the model object is included when calculating a simulated AFM scan.
+
+  \item[Position X] \hfill \\
+   X-component of the model object position.
+
+  \item[Position Y] \hfill \\
+  Y-component of the model object position.
+
+  \item[Position Z] \hfill \\
+  Z-component of the model object position.
+  
+  \item[Rotation Angle] \hfill \\
+  Angle of rotation in rotation about the vector defined by the next three parameters.
+  
+  \item[Rotation Vector X] \hfill \\
+  X-component of the vector about which the model is rotated.
+  
+  \item[Rotation Vector Y] \hfill \\
+  Y-component of the vector about which the model is rotated.
+  
+  \item[Rotation Vector Z] \hfill \\
+  Z-component of the vector about which the model is rotated.
+  
+  \item[Surface Fluorophore Model] \hfill \\
+  A fluorophore model that samples the surface of the specimen model geometry (see Section \ref{sec:FluorophoreModels}).
+  
+  \item[Volume Fluorophore Model] \hfill \\
+  A fluorophore model that samples the volume defined by boundaries of the specimen model geometry (see Section \ref{sec:FluorophoreModels}).
+
+\end{description}
+
+\subsection{Preferences Window}
+\label{sec:PreferencesWindow}
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4in]{images/PreferencesWindow} 
+   \caption{The Preferences window.}
+   \label{fig:PreferencesWindow}
+\end{figure}
+
+The \emph{Preferences Window} (Figure \ref{fig:PreferencesWindow}) lets you specify a directory where the Microscope Simulator can store data files. This directory was set the first time the program ran, but it can be changed by clicking on the button to the right of the directory.
+
+The required and optional graphics card capabilities are also listed in the \emph{Preferences Window}. If you install the Microscope Simulator and later upgrade your graphics card, you can check the capabilities of the new card by clicking the \emph{Check OpenGL Settings Again} button. This will also enable the advanced capabilities of the Microscope Simulatorthe when you restart the program.
+
+\section{FluoroSim}
+\label{sec:FluoroSim}
+
+\subsection{Model Fitting to Fluorescence Images}
+\label{sec:ModelFittingToFluorescenceImages}
+
+
+%\pagebreak
+
+\section{Version History}
+
+\subsection{Version 2.0.0}
+
+\noindent
+Changes from previous release:
+\begin{itemize}
+\item Complete rewrite of the Microscope Simulator program.
+\end{itemize}
+
+\noindent
+Known issues:
+\begin{itemize}
+\item Item
+\end{itemize}
 
 \end{document}  
