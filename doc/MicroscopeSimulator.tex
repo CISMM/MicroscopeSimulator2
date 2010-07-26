@@ -1,4 +1,4 @@
-\documentclass[11pt,titlepage]{article}
+\documentclass[11pt,titlepage,twoside]{article}
 \usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
 \geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
 %\geometry{landscape}                % Activate for for rotated page geometry
@@ -8,11 +8,27 @@
 \usepackage{epstopdf}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{fancyhdr}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{Microscope Simulator 2.0.0 User's Guide}
 \author{Cory Quammen}
 %\date{}                                           % Activate to display a given date or no date
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+ 
+\pagestyle{fancy}
+ 
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\textit{Microscope Simulator 2.0.0 User Guide}}
+\fancyhead[LO]{\textit{\nouppercase{\leftmark}}}
+ 
+\fancypagestyle{plain}{ %
+\fancyhf{} % remove everything
+\renewcommand{\headrulewidth}{0pt} % remove lines as well
+\renewcommand{\footrulewidth}{0pt}}
 
 \begin{document}
 \maketitle
@@ -28,7 +44,7 @@ The Microscope Simulator serves as a visual problem-solving environment with sev
 
 \begin{itemize}
 
-\item building scientist intuition about artifacts in the imaging process by presenting the expected image from a given geometric model
+\item building intuition about artifacts in the imaging process by presenting the expected image from a given geometric model
 
 \item evaluating whether a particular microscope can be used to distinguish among hypotheses in an experiment
 
@@ -43,7 +59,7 @@ The Microscope Simulator has been designed in close collaboration with biologist
 
 \subsection{System Requirements}
 
-The Microscope Simulator requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards including the GeForce 8800 GTX and Quadro FX 580. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested it on any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
+The Microscope Simulator requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher running on an Intel processor. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards including the GeForce 8800 GTX and Quadro FX 580. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
 
 Your system should have at least 100 MB of hard drive space free to install the program. At least 512 MB of RAM is required, but 2 GB is recommended.
 
@@ -81,7 +97,7 @@ If you installed the application in the Applications directory on your hard driv
 
 \subsubsection{Running the program for the first time}
 
-When you run the Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes. Some graphics cards capabilities are required for the program to run while others are optional and enable certain simulation features. If the optional capabilities are not present, then those simulation features will not be enabled. Currently, the only optional graphics card feature enables the generation and addition of pseudo-random Gaussian noise to simulated fluorescence images. If that feature is not available on your graphics card, the control panel section for noise will be disabled.
+When you run the Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes. Some graphics cards capabilities are required for the program to run while others are optional and enable certain simulation enhancements. If the optional capabilities are not present, then those simulation features will not be enabled. Currently, the only optional graphics card feature enables the generation and addition of pseudo-random Gaussian noise to simulated fluorescence images. If that feature is not available on your graphics card, the control panel section for noise will be disabled.
 
 After the graphics card tests run, the Microscope Simulator will ask for you to choose a data directory where it can store data files. This version of the program stores one small file called \emph{PSFList.xml} which contains the list of point-spread functions defined within the program.
 
@@ -144,6 +160,7 @@ The \emph{Edit Menu} contains functions common to many programs.
 \end{description}
 
 \subsubsection{Model Menu}
+\label{sec:ModelMenu}
 
 The \emph{Model Menu} has options for adding and removing geometric models to the simulation. Every model in this menu has parameters that controls its shape. Models are placed at the center of the simulation domain.
 
@@ -241,17 +258,17 @@ The \emph{Model Display Panel} is where the 3D specimen models in the simulation
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=4in]{images/VisualizationIcons} 
-   \caption{The visualization icons.}
-   \label{fig:VisualizationIcons}
+   \caption{Cisualization controls. Starting from the left: \emph{Save Model Object Image}, \emph{Reset Camera}, \emph{View Model Objects Only}, \emph{View Fluorophore Sampling}, \emph{References Axes Button}, \emph{Move Camera}, and \emph{Move Objects}.}
+   \label{fig:VisualizationControls}
 \end{figure}
 
-A row of visualization icons provide various controls related to what is shown in the \emph{Model Display Panel} (see Figure \ref{fig:VisualizationIcons}). The functions represented by the icons are described from left to right below:
+A row of visualization icons provide various controls related to what is shown in the \emph{Model Display Panel} (see Figure \ref{fig:VisualizationControls}). The functions represented by the icons are described from left to right below:
 
 \subsubsection{Utility Buttons}
 
 \begin{description}
 
-  \item[Save Image] \hfill \\
+  \item[Save Model Object Image] \hfill \\
   Save the image currently displayed in the \emph{Model Object Panel}.
   
   \item[Reset Camera] \hfill \\
@@ -265,10 +282,10 @@ Just one of the following visualization modes can be enabled at a time:
 
 \begin{description}
 
-  \item[View Model Only] \hfill \\
+  \item[View Model Objects Only] \hfill \\
   Displays specimen models only.
 
-  \item[View Fluorophore Sampling] \hfill \\
+  \item[View Model Objects and Fluorophore Sampling] \hfill \\
   Displays fluorophores from models in the scene as small spheres.
 
 %  \item[View Models with AFM Scan] \hfill \\
@@ -360,7 +377,7 @@ A few properties common to almost all model objects are listed here:
   Controls whether the model object is visible in the scene or not.
 
   \item[Scannable] \hfill \\
-  Controls whether the model object is included when calculating a simulated AFM scan.
+  Controls whether the model object is included when calculating a simulated AFM scan. \emph{Not yet implemented.}
 
   \item[Position X] \hfill \\
    X-component of the model object position.
@@ -407,6 +424,90 @@ The required and optional graphics card capabilities are also listed in the \emp
 
 \section{FluoroSim}
 \label{sec:FluoroSim}
+
+FluoroSim is a Microscope Simulator module for fluorescence microscope simulation. From the model objects in the scene, FluoroSim computes the image that would be expected in a fluorescence microscope. Different microscopes can by simulated by selecting different point-spread functions (PSFs), each of which characterize the optics of a microscope.
+
+\subsection{Image Formation Model}
+
+A fluorescence microscope can be modeled as a linear system. As such, an image $I$ is formed by the convolution of the true signal $S$ from the fluorescing molecules in the specimens with the point-spread function $H$ that characterizes the optics of the microscope. Mathematically, image formation is modeled by the equation:
+
+\begin{equation}
+I = S \otimes H
+\end{equation}
+where $\otimes$ denotes the convolution operator. In FluoroSim, $S$ is a set of mathematical points in 3D Cartesian space that is automatically generated by a particular type of model object property called a fluorophore model.
+
+\subsection{Fluorophore Models}
+\label{sec:FluorophoreModels}
+
+A \emph{fluorophore model} provides a way to model fluorescent labeling as it occurs at the molecular level. Most model objects have one or more fluorophore models that control aspects of the fluorophore sampling process. There are two primary kinds of fluorophore models, surface models and volume models. In surface models, point samples are taken from the surface of the model object geometry. Volume models sample the volume defined within an enclosing geometry. Volume sampling requires the surface geometry of a model object to form an enclosed volume; objects that do not have this property cannot be sampled with a volume fluorophore model. \footnote{A third type of fluorophore model applies does not perform random sampling of the geometry but instead uses explicitly defined fluorophore locations specified by the model. This type of fluorophore model is used by only the \emph{Point Ring} and \emph{Point Set} model objects (see Section \ref{sec:ModelMenu} for details on these model objects).}
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=4in]{images/FluorophoreModelEditor} 
+   \caption{The Fluorophore Model Editor for a surface fluorophore model.}
+   \label{fig:FluorophoreModelEditor}
+\end{figure}
+
+Both kinds of models can be edited in the \emph{Fluorophore Model Editor}. Figure \ref{fig:FluorophoreModelEditor} shows the editor for a surface fluorophore model. The controls for the editor are organized into four different sections.
+
+\subsubsection{Channel}
+
+The \emph{Channel} controls let you choose whether the fluorophore model is enabled in the simulation and in which color channel it should appear. The control panel items to do this are:
+
+\begin{description}
+
+\item[Enabled] \hfill \\
+When checked, this check box indicates that the fluorophores generated by this model are visible in the simulated fluorescence image.
+
+\item[Color channel] \hfill \\
+This menu lets you select the color channel(s) in which the fluorophores should appear. The color channels are red, green, blue, or all (red, green, \emph{and} blue).
+
+\end{description}
+
+\subsubsection{Sampling Mode}
+
+The \emph{Sampling Mode} controls let you decide whether either the density of the sampling should be fixed or the number of samples should be fixed. 
+
+\begin{description}
+
+\item[Use fixed density] \hfill \\
+Use a fixed spatial density of samples. When selected, the fluorophore model will preserve the approximate density of the fluorophore sampling when the total surface area (or volume) changes because of a change in a shape parameter value. The total number of fluorophore samples may increase or decrease.
+
+\item[Use fixed number of fluorophores] \hfill \\
+Use a fixed number of samples. When selected, the fluorophore model will preserve the number of fluorophores sampled from the geometry. Changes to a shape parameter will not affect the total number of fluorophore samples, but the density may increase or decrease.
+
+\end{description}
+
+\subsubsection{Sampling Density}
+
+The \emph{Sampling Density} controls let you control the density of the fluorophore sampling or the absolute number of samples taken on the geometry.
+
+\begin{description}
+
+\item[Surface area (Volume)] \hfill \\
+Specifies the surface area (or volume) of the portion of the model object on which the fluorophore model operates. Not editable.
+
+\item[Density] \hfill \\
+Specifies the density of the fluorophore sampling. The specified density does not necessarily reflect the density of samples in a local portion of the geometry because random sampling does not generally produce an even distribution of samples. Instead, this figure represents the average density over the geometry. Furthermore, because an integer number of fluorophore samples are taken, only a discrete number of densities can be accurately represented for a given surface area or volume. The actual average sampling density is effectively rounded to the nearest representable density below the desired density.
+
+\item[Number of fluorophores] \hfill \\
+Specifies the number of fluorophores sampled from the geometry. This number is linked to the density through the surface area (or volume) of the geometry.
+
+\end{description}
+
+\subsubsection{Fluorophore Patterns}
+
+In certain applications, it can be useful to model fluorophores as a particular pattern at each sample location instead of a single fluorophore. These controls let you determine which pattern to use and their properties.
+
+\begin{description}
+
+\item[Use one fluorophore per sample] \hfill \\
+When selected, places a single fluorophore at each sample.
+
+\item[Use point ring cluster per sample] \hfill \\
+When selected, places a point ring at each sample position. The number of fluorophores around the ring and the radius of the ring can be specified. Randomization of the ring orientation can also be enabled.
+
+\end{description}
 
 \subsection{Model Fitting to Fluorescence Images}
 \label{sec:ModelFittingToFluorescenceImages}
