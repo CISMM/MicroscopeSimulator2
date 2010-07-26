@@ -32,10 +32,15 @@ class SphereModelObject : public ModelObject {
   SphereModelObject(DirtyListener* dirtyListener);
   virtual ~SphereModelObject();
   
+  void SetRotation(double rotation[4]);
+  void GetRotation(double rotation[4]);
+
   virtual void Update();
 
  protected:
   SphereModelObject() {};
+
+  ModelObjectPropertyList* CreateProperties();
 
   vtkSmartPointer<vtkSphereSource>   m_SphereSource;
   vtkSmartPointer<vtkTriangleFilter> m_GeometrySource;

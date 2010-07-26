@@ -1,4 +1,6 @@
 #include <SphereModelObject.h>
+
+#include <ModelObjectPropertyList.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
 
@@ -15,7 +17,7 @@ const char* SphereModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
 
 SphereModelObject
 ::SphereModelObject(DirtyListener* dirtyListener) :
-  ModelObject(dirtyListener) {
+  ModelObject(dirtyListener, CreateProperties()) {
   m_ObjectTypeName = OBJECT_TYPE_NAME;
   SetName("Sphere");
 
@@ -50,6 +52,40 @@ SphereModelObject
 
 void
 SphereModelObject
+::SetRotation(double rotation[4]) {
+  // NOOP
+}
+
+
+void
+SphereModelObject
+::GetRotation(double rotation[4]) {
+  // No rotation for images
+  rotation[0] = 1.0;
+  rotation[1] = 0.0;
+  rotation[2] = 0.0;
+  rotation[3] = 0.0;
+}
+
+
+void
+SphereModelObject
 ::Update() {
   m_SphereSource->SetRadius(GetProperty("Radius")->GetDoubleValue());
+}
+
+
+ModelObjectPropertyList*
+SphereModelObject
+::CreateProperties() {
+  ModelObjectPropertyList* props = new ModelObjectPropertyList();
+  props->AddProperty(new ModelObjectProperty(NAME_PROP, ModelObjectProperty::STRING_TYPE,
+                                             "-", true, false));
+  props->AddProperty(new ModelObjectProperty(VISIBLE_PROP, true, "-", true, false));
+  props->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true, "-", true, false));
+  props->AddProperty(new ModelObjectProperty(X_POSITION_PROP, 0.0, "nanometers"));
+  props->AddProperty(new ModelObjectProperty(Y_POSITION_PROP, 0.0, "nanometers"));
+  props->AddProperty(new ModelObjectProperty(Z_POSITION_PROP, 0.0, "nanometers"));
+
+  return props;
 }
