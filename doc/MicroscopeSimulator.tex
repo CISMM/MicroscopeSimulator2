@@ -552,7 +552,13 @@ The mouse may be used to interact to change the position of the camera in the th
 
 \subsection{Focus Controls}
 
-FluoroSim generates fluorescence images one focal plane at a time. The focal plane position along the $z$-direction can be set in the Focus section of the FluoroSim control panel by adjusting either the vertical slider bar, entering a number into the text box to the right of the slider bar, or by clicking on one of the arrows on the right side of the text box. The units for the focal plane position shown in the control panel are microns.
+FluoroSim generates fluorescence images one focal plane at a time. In some applications, a single focal plane is sufficient as it emulates the operation of a real microscope. In other applications where simulation of optical sectioning is required to produce 3D images of the specimen, a number of focal plane positions must be defined. 
+
+Each focal plane is referenced by an index, and the \emph{Current plane} shows which plane is being used to generate the simulated image (see Figure \ref{fig:FluoroSimFocusControls}). The \emph{Number of planes} determines how many focal planes are in the 3D volume, and the \emph{Plane spacing} determines the spacing between subsequent focal planes.
+
+The focal plane index can be set through either the slider on the left side or the \emph{Current plane} text box. Focal plane indices start at 1. The physical focal depth corresponding to a focal plane index is displayed to the right of the focus slider.
+
+In some microscopes, the specimen stage may not travel the same distance in $z$ between every adjacent focal plane. If the stage reports the actual distance traveled between focal planes, this distance can be entered into FluoroSim by clicking on the \emph{Edit Custom Plane Positions} button. The \emph{Focal Plane Positions} window will be shown as in Figure \ref{fig:FocalPlanePositions}. The column on the left displays the focal plane index while the column on the left shows the focal plane position in nanometers. By default, all focal plane positions are at position 0 nanometers. The \emph{Reset} button below the table of focal plane positions can be used to populate the table with evenly-spaced focal plane positions that can then be modified by double-clicking the table cell, typing the new position, and pressing the return key.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
@@ -561,9 +567,17 @@ FluoroSim generates fluorescence images one focal plane at a time. The focal pla
    \label{fig:FluoroSimFocusControls}
 \end{figure}
 
-FluoroSim focus settings visualization
+
+\begin{figure}[bp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=3in]{images/FluoroSim/FocalPlanePositions} 
+   \caption{Focal Plane Positions window.}
+   \label{fig:FocalPlanePositions}
+\end{figure}
 
 \subsection{Simulator Settings}
+
+test
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
