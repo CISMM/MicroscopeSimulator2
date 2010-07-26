@@ -132,7 +132,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="gui_PSFParametersGroupBox">
+                <widget class="QGroupBox" name="gui_PSFPropertiesGroupBox">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
                    <horstretch>0</horstretch>
@@ -152,7 +152,7 @@
                   </size>
                  </property>
                  <property name="title">
-                  <string>Point-Spread Function Parameters</string>
+                  <string>Point-Spread Function Properties</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <property name="spacing">
@@ -203,7 +203,7 @@
                 </widget>
                </item>
               </layout>
-              <zorder>gui_PSFParametersGroupBox</zorder>
+              <zorder>gui_PSFPropertiesGroupBox</zorder>
               <zorder>gui_PSFListGroupBox</zorder>
              </widget>
              <widget class="QWidget" name="gui_DisplayTab">

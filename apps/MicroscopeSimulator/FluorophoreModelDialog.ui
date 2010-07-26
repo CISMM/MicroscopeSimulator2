@@ -98,7 +98,7 @@
       <item>
        <widget class="QRadioButton" name="gui_useFixedDensity">
         <property name="text">
-         <string>Use Fixed Density</string>
+         <string>Use fixed density</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -108,7 +108,7 @@
       <item>
        <widget class="QRadioButton" name="gui_useFixedNumberOfFluorophores">
         <property name="text">
-         <string>Use Fixed Number of Fluorophores</string>
+         <string>Use fixed number of fluorophores</string>
         </property>
        </widget>
       </item>

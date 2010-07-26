@@ -1473,10 +1473,10 @@
      <normaloff>:/Disk.png</normaloff>:/Disk.png</iconset>
    </property>
    <property name="text">
-    <string>Save Image</string>
+    <string>Save Model Object Image</string>
    </property>
    <property name="toolTip">
-    <string>Save image</string>
+    <string>Save model object image</string>
    </property>
   </action>
   <action name="actionResetCamera">
@@ -1500,10 +1500,10 @@
      <normaloff>:/ModelOnly.png</normaloff>:/ModelOnly.png</iconset>
    </property>
    <property name="text">
-    <string>Model Only</string>
+    <string>View Model Objects Only</string>
    </property>
    <property name="toolTip">
-    <string>View model only</string>
+    <string>View model objects only</string>
    </property>
   </action>
   <action name="actionViewModelAndPoints">
@@ -1515,10 +1515,10 @@
      <normaloff>:/ModelPoints.png</normaloff>:/ModelPoints.png</iconset>
    </property>
    <property name="text">
-    <string>Model and Points</string>
+    <string>View Model Objects and Fluorophore Sampling</string>
    </property>
    <property name="toolTip">
-    <string>View model and fluorophore sampling</string>
+    <string>View model objects and fluorophore sampling</string>
    </property>
   </action>
   <action name="actionViewModelAndScan">
@@ -1530,10 +1530,10 @@
      <normaloff>:/ModelScan.png</normaloff>:/ModelScan.png</iconset>
    </property>
    <property name="text">
-    <string>Model and Scan</string>
+    <string>View Model Objects and AFM Scan</string>
    </property>
    <property name="toolTip">
-    <string>Show model and AFM scan</string>
+    <string>Show model objects and AFM scan</string>
    </property>
    <property name="visible">
     <bool>false</bool>
