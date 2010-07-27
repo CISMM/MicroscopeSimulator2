@@ -314,10 +314,12 @@ ModelObject
 void
 ModelObject
 ::SetRotation(double rotation[4]) {
-  GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(rotation[0]);
-  GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(rotation[1]);
-  GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(rotation[2]);
-  GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(rotation[3]);
+  if (GetProperty(ROTATION_ANGLE_PROP)) {
+    GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(rotation[0]);
+    GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(rotation[1]);
+    GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(rotation[2]);
+    GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(rotation[3]);
+  } // else NOOP
 
   Sully();
 }
@@ -326,10 +328,17 @@ ModelObject
 void
 ModelObject
 ::GetRotation(double rotation[4]) {
-  rotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
-  rotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
-  rotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
-  rotation[3] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+  if (GetProperty(ROTATION_ANGLE_PROP)) {
+    rotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+    rotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+    rotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+    rotation[3] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+  } else {
+    rotation[0] = 0.0;
+    rotation[1] = 1.0;
+    rotation[2] = 0.0;
+    rotation[3] = 0.0;
+  }
 }
 
 
