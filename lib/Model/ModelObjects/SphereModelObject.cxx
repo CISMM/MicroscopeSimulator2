@@ -17,7 +17,8 @@ const char* SphereModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
 
 SphereModelObject
 ::SphereModelObject(DirtyListener* dirtyListener) :
-  ModelObject(dirtyListener, CreateProperties()) {
+  //ModelObject(dirtyListener, CreateProperties()) {
+  ModelObject(dirtyListener) {
   m_ObjectTypeName = OBJECT_TYPE_NAME;
   SetName("Sphere");
 
@@ -47,24 +48,6 @@ SphereModelObject
 SphereModelObject
 ::~SphereModelObject() {
 
-}
-
-
-void
-SphereModelObject
-::SetRotation(double rotation[4]) {
-  // NOOP
-}
-
-
-void
-SphereModelObject
-::GetRotation(double rotation[4]) {
-  // No rotation for images
-  rotation[0] = 1.0;
-  rotation[1] = 0.0;
-  rotation[2] = 0.0;
-  rotation[3] = 0.0;
 }
 
 
