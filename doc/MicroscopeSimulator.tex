@@ -33,6 +33,7 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\vfill
 
 \pagebreak
 
@@ -360,6 +361,7 @@ The model object list appears in the upper right of the program window. All mode
 \subsection{Model Object Properties Panel}
 
 \subsubsection{The Properties Table}
+\label{sec:PropertiesTable}
 
 The \emph{Model Object Properties Panel} has four columns showing the properties of the model object selected in the \emph{Model Object List}. Each property is displayed as a row in the table. Most model object properties can be changed in this panel, but some are there to display information about the model object (the size in voxels of an \emph{Image Model Object}, for example).
 
@@ -452,7 +454,7 @@ where $N$ is the modeled noise.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/PointSpreadFunctionControls} 
+   \includegraphics[width=3in]{images/FluoroSim/PointSpreadFunctionControls} 
    \caption{Point-Spread Function controls.}
    \label{fig:PointSpreadFunctionControls}
 \end{figure}
@@ -551,6 +553,7 @@ The mouse may be used to interact to change the position of the camera in the th
 \end{figure}
 
 \subsection{Focus Controls}
+\label{sec:FocusControls}
 
 FluoroSim generates fluorescence images one focal plane at a time. In some applications, a single focal plane is sufficient as it emulates the operation of a real microscope. In other applications where simulation of optical sectioning is required to produce 3D images of the specimen, a number of focal plane positions must be defined. 
 
@@ -558,9 +561,9 @@ Each focal plane is referenced by an index, and the \emph{Current plane} shows w
 
 The focal plane index can be set through either the slider on the left side or the \emph{Current plane} text box. Focal plane indices start at 1. The physical focal depth corresponding to a focal plane index is displayed to the right of the focus slider.
 
-In some microscopes, the specimen stage may not travel the same distance in $z$ between every adjacent focal plane. If the stage reports the actual distance traveled between focal planes, this distance can be entered into FluoroSim by clicking on the \emph{Edit Custom Plane Positions} button. The \emph{Focal Plane Positions} window will be shown as in Figure \ref{fig:FocalPlanePositions}. The column on the left displays the focal plane index while the column on the left shows the focal plane position in nanometers. By default, all focal plane positions are at position 0 nanometers. The \emph{Reset} button below the table of focal plane positions can be used to populate the table with evenly-spaced focal plane positions that can then be modified by double-clicking the table cell, typing the new position, and pressing the return key.
+In some microscopes, the specimen stage may not travel the same distance in $z$ between every adjacent focal plane. If the stage reports the actual distance traveled between focal planes, this distance can be entered into FluoroSim by clicking on the \emph{Edit Custom Plane Positions} button. The \emph{Focal Plane Positions} window will be shown as in Figure \ref{fig:FocalPlanePositions}. The column on the left displays the focal plane index while the column on the right shows the focal plane position in nanometers. By default, all focal plane positions are at position 0 nanometers. The \emph{Reset} button below the table of focal plane positions can be used to populate the table with evenly-spaced focal plane positions that can then be modified by double-clicking the table cell, typing the new position, and pressing the return key. When finished editing the focal plane positions, click the \emph{OK} button. To use the $z$-positions just entered, check the \emph{Use custom plane positions} box. Unchecking this box will tell FluoroSim to use evenly spaced focal planes.
 
-\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+\begin{figure}[tbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=4in]{images/FluoroSim/FocusControls} 
    \caption{Focus Controls}
@@ -568,7 +571,7 @@ In some microscopes, the specimen stage may not travel the same distance in $z$ 
 \end{figure}
 
 
-\begin{figure}[bp] %  figure placement: here, top, bottom, or page
+\begin{figure}[hbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=3in]{images/FluoroSim/FocalPlanePositions} 
    \caption{Focal Plane Positions window.}
@@ -577,7 +580,33 @@ In some microscopes, the specimen stage may not travel the same distance in $z$ 
 
 \subsection{Simulator Settings}
 
-test
+Basic settings for FluoroSim (see Figure \ref{fig:FluoroSimSimulatorSettingsControls}) include:
+
+\begin{description}
+
+\item[Exposure] \hfill \\
+This is an intensity scale factor that can be used to model exposure time in a camera. If the intensity of the selected PSF model corresponds to a camera exposure time of 1 second, then setting the \emph{Exposure} term to 2 will model a camera integration time of 2 seconds.
+
+\item[Pixel size] \hfill \\
+The width and height (in nanometers) represented by a pixel at full magnification.
+
+\item[Width] \hfill \\
+The number of pixels in the $x$-direction of the generated fluorescence image.
+
+\item[Height] \hfill \\
+The number of pixels in the $y$-direction of the generated fluorescence image.
+
+\item[Shear in X] \hfill \\
+Models lateral stage movement in the $x$-direction as a linear function directly proportional to the $z$-depth of the focal plane. The $x$-offset in the shear direction is defined as
+\begin{equation}
+x_{\mathrm{offset}} = m_{x} z
+\end{equation}
+where $m_{x}$ is the \emph{Shear in X} setting value and $z$ is the focal plane depth. The $x_{\mathrm{offset}}$ is added to the $x$-coordinate of each voxel position during image generation.
+
+\item[Shear in Y] \hfill \\
+Same as \emph{Shear in X} but in the $y$-direction.
+
+\end{description}
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
@@ -586,11 +615,13 @@ test
    \label{fig:FluoroSimSimulatorSettingsControls}
 \end{figure}
 
-\subsubsection{Image Controls}
-
 \subsubsection{Noise} 
 
+If your graphics card supports noise generation, the noise controls will be enabled. To turn on Gaussian noise, check the \emph{Add Gaussian noise} box. The standard deviation and mean of the noise can be set with the \emph{Std. Dev.} and \emph{Mean} controls, respectively. 
+
 \subsection{Fluorescence Display}
+
+The controls in the \emph{Fluorescence Display} group affect the display of simulated fluorescence images.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
@@ -601,25 +632,69 @@ test
 
 \subsubsection{Contrast Controls}
 
+The \emph{Contrast Controls} set which image intensity will map to black (\emph{Min level}) and which will map to the maximum color channel intensity supported by the monitor (\emph{Max level}). Image intensities between these two values will be linearly interpolated between black and the maximum color channel intensity. Image intensities less than the \emph{Min level} will map to black and intensities above the \emph{Max level} will map to the full color channel intensity.
+
+To automatically set the \emph{Contrast Controls} to the minimum and maximum values in the simulated image, click the \emph{Scale to Full Dynamic Range} button. Note that this will set the contrast controls to the full dynamic range of the current 2D image, not the full 3D image defined by the positions of the focal planes.
+
 \subsubsection{Display Widgets}
+
+Several visualization elements can be added to the \emph{Model Object Display} panel using the controls defined in the \emph{Display Widgets} controls.
+
+\begin{description}
+
+\item[Show grid] \hfill \\
+Display a grid of lines. This can be useful for giving a sense of scale to a specimen model.
+
+\item[Grid spacing] \hfill \\
+Sets the spacing between grid lines. Spacing is defined in nanometers.
+
+\item[Show image volume outline] \hfill \\
+Shows the volume of the 3D image stack that would be generated by generating images at all defined focal planes.
+
+\item[Superimpose simulated fluorescence image] \hfill \\
+Shows the simulated fluorescence image in the model object space.
+
+\item[Superimpose comparison image] \hfill \\
+If a \emph{Comparison Image} is set, a $z$-slice corresponding to the current focal plane index in the simulation is superimposed amidst the model object space. If no \emph{Comparison Image} is set, no plane will be displayed. This feature is useful for initial placement of model objects prior to model fitting.
+
+\end{description}
 
 \subsubsection{Image Export}
 
+It is often useful to export simulated image to files for analysis in other programs. The \emph{Export 2D Image...} button will export a single 2D simulated fluorescence image to a number of file formats including PNG, BMP, JPEG, and 16-bit TIFF. FluoroSim rescales the image intensities from 0-255 for the first three of these formats, but for 16-bit TIFF files no rescaling is performed.
+
+The \emph{Export 3D Stack...} button will save a 3D 16-bit TIFF file generated from stacking simulated images taken at each focal plane depth. No intensity rescaling is performed. Note, however, that because 16-bit TIFF files do not allow negative numbers, you will need to make sure that the simulated image has no negative numbers. Furthermore, because 16-bit TIFF files can only represent integer values in the range 0-65536, you should make sure that the maximum value in the image is much larger than 1. Preferably, the range between the maximum and minimum intensity in your simulated image will be in the hundreds or thousands. To check the intensity range of the current fluorescence image, click on the \emph{Scale to Full Dynamic Range} button.
+
 \subsection{Model Fitting}
 
-\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+\begin{figure}[tbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=4in]{images/FluoroSim/ModelFitting} 
    \caption{Model Fitting controls.}
    \label{fig:FluoroSimModelFittingControls}
 \end{figure}
 
+Model fitting is a common practice in many fields. For example, man scientific phenomena can be modeled as power laws of the form $f(x) = ax^k$. Here, the variables $a$ and $k$ are constant coefficients. Given some data that is suspected to follow the power law, a model fitting procedure can be carried out that determines the values of $a$ and $k$ according to some metric that measure how well the function values at specific values of $x$ match data at those same $x$ values. A common metric is the sum of squared differences (SSD). Minimizing the sum of squared differences is commonly known as least-squares fitting.
+
+In this program, the models being fit are geometric models representing the specimen, and the data is an image from a real microscope. Model fitting in this case involves finding shape properties, such as a cylinder's length and radius, that minimize a comparison metric. FluoroSim enables selection of properties to optimize through the \emph{Optimize} column of the \emph{Model Object Property List} (see Section \ref{sec:PropertiesTable}). Properties for which the optimize box is checked will be optimized. When optimization is complete, the optimized property values can be viewed as the values of the specimen shape properties that best explain the experimental image.
+
 \subsubsection{Comparison Image}
+
+The first step in model fitting is choosing a \emph{Comparison Image}. This pop-up menu contains a list of all the \emph{Image Model Objects} imported into the simulation. This comparison image will be compared to the red channel of the generated image (see Section \ref{sec:Channel}). If your simulation contains model objects that are simulated in the green or blue channel, they cannot be optimized in this version of the software. Future versions may support multi-channel model fitting.
+
+When even $z$-slice spacing is enabled (it is on by default), the voxel spacings in the simulated and comparison image do not need to match, nor does the number of voxels in each dimension. When the option \emph{Use custom plane positions} is selected (see Section \ref{sec:FocusControls}), however, the $z$-positions of the slices in the comparison image are assumed to be those listed in the \emph{Focal Plane Positions} window. Neither the number of voxels in $x$ and $y$ nor their spacing (pixel size) need to match the comparison image.
+
+For convenience, FluoroSim's settings can be changed to generate a 3D image stack with the same properties as the imported image using the \emph{Copy Image Settings} button. The pixel size and focal plane spacing are set to the \emph{X Spacing} and \emph{Z Spacing} of the comparison image, respectively, and the number of voxels in each dimension of the simulated 3D image stack is set to match the number of voxels in each dimension of the comparison image.
 
 \subsubsection{Optimization Method}
 
+FluoroSim features three optimization methods: \emph{Nelder-Mead Downhill Simplex}, {Gradient Descent}, and \emph{Point-based Gradient Descent}. The Nelder-Mead downhill simplex method works well in most cases. The gradient descent method is experimental, and the point-based gradient descent method works with \emph{Point Set Model Objects} only.
+
+The optimization methods have a small number of properties that govern how they run. These properties can be set by clicking the \emph{Optimizer Settings...} button.
+
 \subsubsection{Objective Function}
 
+FluoroSim has three objective functions (comparison metrics). The \emph{Gaussian Noise Maximum Likelihood} objective function is suitable for images where Gaussian noise dominates. The \emph{Poisson Noise Maximum Likelihood} objective function is suitable for images where Poisson noise dominates, and \emph{Normalized Cross Correlation} is a general-purpose objective function that works in many applications where absolute intensities are difficult to match. All three objective functions are available for the Nelder-Mead downhill simplex and gradient descent optimization methods, but the \emph{Gaussian Noise Maximum Likelihood} objective function is the only one available for the point-based gradient descent method.
 
 \subsection{Fluorophore Models}
 \label{sec:FluorophoreModels}
@@ -636,6 +711,7 @@ A \emph{fluorophore model} provides a way to model fluorescent labeling as it oc
 Both kinds of models can be edited in the \emph{Fluorophore Model Editor}. Figure \ref{fig:FluorophoreModelEditor} shows the editor for a surface fluorophore model. The controls for the editor are organized into four different sections.
 
 \subsubsection{Channel}
+\label{sec:Channel}
 
 The \emph{Channel} controls let you choose whether the fluorophore model is enabled in the simulation and in which color channel it should appear. The control panel items to do this are:
 
@@ -704,9 +780,6 @@ Because the \emph{Fixed Fluorophore Model} does not sample the geometry, only th
    \caption{The Fluorophore Model Editor for a fixed fluorophore model.}
    \label{fig:FixedFluorophoreModelEditor}
 \end{figure}
-
-\subsection{Model Fitting to Fluorescence Images}
-\label{sec:ModelFittingToFluorescenceImages}
 
 
 %\pagebreak
