@@ -1,6 +1,0 @@
-2008-06-15 Cory Quammen <cquammen@cs.unc.edu>
-
-   * stopwatch directory: Collection of files borrowed from
-   CUDA SDK release. Someday will replace with UNC-developed
-   stopwatch routines from which I'm pretty sure these files
-   were derived.
