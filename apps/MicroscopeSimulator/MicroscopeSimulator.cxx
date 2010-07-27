@@ -1394,19 +1394,20 @@ MicroscopeSimulator
 ::on_fluoroSimMinLevelEdit_editingFinished() {
   double level = gui->fluoroSimMinLevelEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetMinimumIntensityLevel(level);
-
   m_Visualization->FluorescenceViewRender();
+
+  RefreshUI();
 }
 
 
 void
 MicroscopeSimulator
-::on_fluoroSimMinLevelSlider_valueChanged(int value) {
+::on_fluoroSimMinLevelSlider_sliderMoved(int value) {
   double dValue = static_cast<double>(value);
   m_Simulation->GetFluorescenceSimulation()->SetMinimumIntensityLevel(dValue);
   m_Visualization->FluorescenceViewRender();
   
-  gui->fluoroSimMinLevelEdit->setText(QString().sprintf("%0.1f", dValue));
+  RefreshUI();
 }
 
 
@@ -1416,17 +1417,19 @@ MicroscopeSimulator
   double level = gui->fluoroSimMaxLevelEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetMaximumIntensityLevel(level);
   m_Visualization->FluorescenceViewRender();
+
+  RefreshUI();
 }
 
 
 void
 MicroscopeSimulator
-::on_fluoroSimMaxLevelSlider_valueChanged(int value) {
+::on_fluoroSimMaxLevelSlider_sliderMoved(int value) {
   double dValue = static_cast<double>(value);
   m_Simulation->GetFluorescenceSimulation()->SetMaximumIntensityLevel(dValue);
   m_Visualization->FluorescenceViewRender();
 
-  gui->fluoroSimMaxLevelEdit->setText(QString().sprintf("%0.1f", dValue));
+  RefreshUI();
 }
 
 
@@ -1437,10 +1440,12 @@ MicroscopeSimulator
   double scalarRange[2];
   m_Visualization->GetFluorescenceScalarRange(scalarRange);
 
-  gui->fluoroSimMinLevelEdit->setText(QVariant(scalarRange[0]).toString());
-  gui->fluoroSimMinLevelSlider->setValue(static_cast<int>(scalarRange[0]));
-  gui->fluoroSimMaxLevelEdit->setText(QVariant(scalarRange[1]).toString());
-  gui->fluoroSimMaxLevelSlider->setValue(static_cast<int>(scalarRange[1]));
+  m_Simulation->GetFluorescenceSimulation()->
+    SetMinimumIntensityLevel(scalarRange[0]);
+  m_Simulation->GetFluorescenceSimulation()->
+    SetMaximumIntensityLevel(scalarRange[1]);
+
+  RefreshUI();
 }
 
 
@@ -1837,6 +1842,8 @@ MicroscopeSimulator
   gui->fluoroSimShowImageVolumeOutlineCheckBox->setChecked(QVariant(fluoroSim->GetShowImageVolumeOutline()).toBool());
   gui->fluoroSimMinLevelSlider->setValue((int) fluoroSim->GetMinimumIntensityLevel());
   gui->fluoroSimMaxLevelSlider->setValue((int) fluoroSim->GetMaximumIntensityLevel());
+  gui->fluoroSimMinLevelEdit->setText(QVariant(fluoroSim->GetMinimumIntensityLevel()).toString());
+  gui->fluoroSimMaxLevelEdit->setText(QVariant(fluoroSim->GetMaximumIntensityLevel()).toString());
 
   // Select the chosen fluorescence comparison image model object
   ImageModelObject* comparisonImage = m_Simulation->GetComparisonImageModelObject();

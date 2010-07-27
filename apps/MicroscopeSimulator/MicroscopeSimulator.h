@@ -163,9 +163,9 @@ public slots:
   virtual void on_fluoroSimSuperimposeComparisonImageCheckBox_toggled(bool);
   virtual void on_fluoroSimGridSpacingEdit_editingFinished();
   virtual void on_fluoroSimMinLevelEdit_editingFinished();
-  virtual void on_fluoroSimMinLevelSlider_valueChanged(int value);
+  virtual void on_fluoroSimMinLevelSlider_sliderMoved(int value);
   virtual void on_fluoroSimMaxLevelEdit_editingFinished();
-  virtual void on_fluoroSimMaxLevelSlider_valueChanged(int value);
+  virtual void on_fluoroSimMaxLevelSlider_sliderMoved(int value);
   virtual void on_fluoroSimSetToFullIntensityRange_clicked();
   virtual void on_fluoroSimExportImageButton_clicked();
   virtual void on_fluoroSimExportStackButton_clicked();
