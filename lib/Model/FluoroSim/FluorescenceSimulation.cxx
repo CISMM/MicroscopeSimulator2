@@ -76,7 +76,7 @@ FluorescenceSimulation
   m_SuperimposeSimulatedImage = false;
   m_SuperimposeComparisonImage = false;
   m_MinimumIntensityLevel = 0.0;
-  m_MaximumIntensityLevel = 0.0;
+  m_MaximumIntensityLevel = 4095.0;
   m_ComparisonImageModelObject = NULL;
 }
 
