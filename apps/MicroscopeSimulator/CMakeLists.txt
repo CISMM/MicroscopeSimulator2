@@ -127,10 +127,10 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   vtkImaging
   vtkRendering
   vtkVolumeRendering
-  vtkmsCommon
-  vtkmsFiltering
-  vtkmsImaging
-  vtkmsRendering
+  msvtkCommon
+  msvtkFiltering
+  msvtkImaging
+  msvtkRendering
   itksys
   ITKCommon
   ITKBasicFilters

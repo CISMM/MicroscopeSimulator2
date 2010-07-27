@@ -24,10 +24,10 @@ TARGET_LINK_LIBRARIES( GLCheck
   vtkImaging
   vtkRendering
   vtkVolumeRendering
-  vtkmsCommon
-  vtkmsFiltering
-  vtkmsImaging
-  vtkmsRendering
+  msvtkCommon
+  msvtkFiltering
+  msvtkImaging
+  msvtkRendering
 )
 
 INSTALL( TARGETS GLCheck

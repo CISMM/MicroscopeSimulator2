@@ -43,13 +43,13 @@ ENDIF (VTK_FOUND)
 # Include VTKMS
 #######################################
 
-FIND_PACKAGE(VTKMS)
-IF (VTKMS_FOUND)
-  INCLUDE(${VTKMS_USE_FILE})
-ELSE(VTKMS_FOUND)
-  MESSAGE(FATAL_ERROR
-    "Cannot build without VTKMS. Please set VTKMS_DIR.")
-ENDIF (VTKMS_FOUND)
+#FIND_PACKAGE(VTKMS)
+#IF (VTKMS_FOUND)
+#  INCLUDE(${VTKMS_USE_FILE})
+#ELSE(VTKMS_FOUND)
+#  MESSAGE(FATAL_ERROR
+#    "Cannot build without VTKMS. Please set VTKMS_DIR.")
+#ENDIF (VTKMS_FOUND)
 
 #######################################
 # Personal filter library and support classes.
@@ -70,6 +70,10 @@ INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometrySources
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/GeometryView
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/FluorescenceView
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Common
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Filtering
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Imaging
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Rendering
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Utilities
     ${MicroscopeSimulator_BINARY_DIR}/lib)
 

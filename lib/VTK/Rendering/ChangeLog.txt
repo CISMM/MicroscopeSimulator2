@@ -1,0 +1,481 @@
+2009-10-08  Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.cxx: Added initialization of some
+   member variables that I missed. Added checks that things are setup
+   properly prior to attempting to use them (a vtkFramebufferObjectTexture
+   is assigned, the fragment shader has been compiled and loaded,etc.).
+
+2009-06-23  Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.h,.cxx, vtkFramebufferObjectTexture.h,.cxx:
+   Added funding acknowledgements in comments.
+
+2009-06-05  Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.h,.cxx: Wrapped timing calls
+   with ifdefs so we don't always have to report rendering times.
+   
+   * vtkGatherFluorescencePolyDataMapper.h,.cxx: Added member variable
+   telling how many fluorophores (points) to render per pass and methods
+   to set/get this variable.
+
+2008-09-01  Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBinningFluorescenceRenderer.cxx: When computing slabs
+   used for binning, now subtracts epsilon from one end of the
+   slab to get one side of the interval closed and one side
+   open. Otherwise, fluorophores right at slab boundaries
+   may get counted twice. Fixed texture coordinates so that
+   the PSF is correctly centered at the image origin prior to
+   convolution.
+   
+   * vtkFramebufferObjectRenderer.cxx: Commented out some timing
+   code.
+   
+   * vtkGatherFluorescencePolyDataMapper.cxx: Changed the 
+   dilation of the bounding quad around a set of fluorophores
+   to half the PSF width instead of the entire PSF width
+   because that is all that is necessary to make sure all
+   fluorophore contributions are accounted for.
+
+2008-06-15 Cory Quammen <cquammen@cs.unc.edu>
+
+   * CMakeLists.txt: Added stopwatch source files.
+
+2008-06-15 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBinningFluorescencePolyDataMapper.h, .cxx: Removed old
+   commented-out code and removed a drawing routine for points
+   that replicated what VTK's point rendering does. Now this
+   class basically just turns off depth testing and turns on
+   blending prior to calling the vtkOpenGLPolyDataMapper::DeviceRender()
+   method. Added calls to timing methods to measure render time.
+   
+   * vtkBinningFluorescenceRenderer.cxx: Added occlusion queries
+   for each slab rendered during the binning process. If no points
+   are binned in a slab, then there is no point in convolving the
+   slab with the PSF slice. Potentially a big time saver, especially
+   for specimen models much smaller in z than the PSF.
+   
+   * vtkFluorescenceRenderer.cxx: Added timing code around the
+   DeviceRender method.
+   
+   * vtkFramebufferObjectRenderer.h, .cxx: Added methods for starting
+   and stopping a timer intended for use to measure rendering time.
+
+2008-06-14 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkGatherFluorescencePolyData.h, .cxx: Removed a bunch of
+   cruft from back when I thought I needed to bind a Cg texture
+   sampler to a texture ID instead of a texture unit. Now sets
+   texture units to which the PSF and points textures are bound
+   (required by GLSL).
+
+2008-06-08 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBinningFluorescenceRenderer.cxx: Now bins in z sections
+   centered on each PSF slice with width equal to the PSF slice
+   spacing.
+
+2008-06-06 Cory Quammen <cquammen@cs.unc.edu>
+
+   * ChangeLog.txt: Forgot to check in the change log with the previous
+   commit. See comments below.
+   
+   * vtkBinningFluorescenceRendererCUDA.h, .cu: Forward and inverse
+   FFT plans are now passed in to forwardFFT and inverseFFT. Doesn't
+   seem to save much time, but oh well.
+   
+   * vtkBinningFluorescenceRenderer.h, .cxx: Added a little data
+   structure for storing all the data related to convolution to make
+   it easier to pass all that stuff around. Added methods for
+   creating and destroying all the convolution-related data. These
+   are called before and after the binning and convolution loop, 
+   respectively, saving something like 3-4ms per loop iteration. As a 
+   nice side-effect of this code reorganization, the convolution 
+   routine is much cleaner.
+
+2008-06-05 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBinningFluorescenceRenderer.cxx: Changed the framebuffer object
+   texture into which the PSF is rendered to a luminance texture. This
+   significantly reduces the texture readback time prior to performing
+   the convolution. Also, now only one FFT is needed for the PSF and
+   splitting of the PSF data into RGB channels is no longer needed.
+   Added fine-grained timing for the steps involved in convolution.
+   
+   * vtkBinningFluorescenceRendererCUDA.h: Added empty definitions
+   for CUDA_SAFE_CALL etc for when debugging is turned off.
+
+   * vtkFramebufferObjectTexture.h, .cxx: Added methods for setting 
+   the render texture format to either luminance or RGBA. Previously 
+   allowed RGBA textures only. Default is RGBA.
+   
+2008-06-05 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkOpenGL3DTexture.cxx: Somewhere along the line a bug was introduced
+   causing the 3D data to be downloaded to the card with each render.
+   Fixed, speeding up all the fluorescence renderers.
+
+2008-06-05 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBinningFluorescenceRenderer.cxx: Bumped up the buffer sizes
+   on which the FFT will run to the next highest multiple of 64 in the hopes
+   it will speed up the FFT operation. Fixed problem where the binning
+   texture wasn't completely cleared out. Changed buffer sizes to the
+   size required by real-to-complex transforms (and vice-versa). 
+   
+   * vtkBinningFluorescenceRendererCUDA.h, .cxx: Changed function
+   splitPixelsKernel and mergePixelsKernel to operate on real buffers
+   again. Changed FFT transforms from complex-to-complex to real-to-complex
+   and complex-to-real.
+
+2008-06-04 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkOpenGL3DTexture.h, .cxx: Code cleanup.
+
+2008-06-04 Cory Quammen <cquammen@cs.unc.edu>
+
+	* CMakeLists.txt: Changed library command from TARGET_LINK_LIBRARIES
+	to LINK_LIBRARIES for cufft.lib (CUDA FFT library).
+	
+	* cudaComplex.h: Misc. device functions for manipulating complex numbers.
+	
+	* vtkBinningFluorescenceRenderer.h: Included header file for CUDA host
+	functions.
+	
+	* vtkBinningFluorescenceRenderer.cxx: Got FFT-based convolution working.
+	
+	* vtkBinningFluorescenceRendererCUDA.h, .cu: Contains CUDA functions for
+	convolution called by vtkBinningFluorescenceRenderer.
+
+2008-06-02 Cory Quammen <cquammen@cs.unc.edu>
+
+   * CMakeLists.txt: Added CUDA source file for the binning
+   fluorescence renderer.
+   
+   * vtkBinningFluorescencePolyDataMapper.cxx: Removed some
+   debugging print statements.
+   
+   * vtkBinningFluorescenceRenderer.h: Added member variables
+   for storing handles to pixel buffer objects. Added signatures
+   for pixel buffer object related methods.
+   
+   * vtkBinningFluorescenceRenderer.cxx: Removed unnecessary
+   include statements. Added preliminary code for getting texture
+   data over to CUDA so that FFTs can be computed for the purposes
+   of convolution. This is an intermediate checkin. Added methods
+   for initializing and deleting pixel buffer objects.
+   
+   * vtkBinningFluorescenceRendererCUDA.cu: Placeholder file where
+   CUDA kernels for convolution will be defined.
+   
+   * vtkFramebufferObjectTexture.h, .cxx: Changed texture target 
+   from GL_TEXTURE_RECTANGLE_NV to GL_TEXTURE_RECTANGLE_ARB and 
+   default texture internal format from GL_RGBA_FLOAT16_ATI to
+   GL_RGBA16F_ARB (32 bit is also supported).
+
+2008-05-28 Cory Quammen <cquammen@cs.unc.edu>
+
+   * CMakeLists.txt: Added source file vtkFluorescenceRenderer.
+   
+   * vtkBinningFluorescenceRenderer.h, .cxx: Now a subclass of
+   vtkFluorescenceRenderer. Removed the software-based convolution
+   in preparation for CUDA-based convolution. Added rendering of
+   noise to the accumulation buffer. Fixed error with clipping range.
+   
+   * vtkFluorescenceRenderer.h, .cxx: New class that does the same
+   thing as the vtkFramebufferObjectRenderer but also renders
+   Gaussian noise to the active framebuffer texture. Used by the
+   blending and gather fluorescence simulators.
+   
+   * vtkFramebufferObjectRenderer.h, .cxx: Factored out the code
+   that rescales the framebuffer object texture to the range
+   specified by the user (generally to the range of the display)
+   into a separate method that can easily be called by subclasses
+   following the addition of noise.
+
+2008-05-28 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.cxx: Moved clearing of the
+   default draw buffer out of the TextureRender() method because
+   it's presence there prevents potential blending of
+   vtkFramebufferObjectTextures, as is used in the
+   vtkBinningFluorescenceRenderer. The destination buffer
+   should be cleared by the caller of TextureRender() if so
+   desired.
+
+2008-05-28 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.h, .cxx: Some cleanup of the
+   GLSL shader for scaling and biasing the rendered image into
+   display range.
+
+   * vtkGatherFluorescencePolyDataMapper.h, .cxx: Cleaned up some
+   stuff having to do with loading OpenGL extensions.
+
+2008-05-27 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.cxx: Added deletion of fragment
+   program to the destructor.
+
+2008-05-26 Cory Quammen <cquammen@cs.unc.edu>
+
+   * CMakeLists.txt: Added source file vtkBlendingPolyDataMapper.
+   
+   * vtkBlendingPolyDataMapper.h, .cxx: Simple modification of
+   vtkOpenGLPolyDataMapper that turns on blending prior to
+   rendering geometry and then turns it off afterwards.
+   
+   * vtkFramebufferObjectRenderer.cxx: Added optimization pragma
+   to GLSL program that scales and biases image.
+   
+   * vtkGatherFluorescencePolyDataMapper.cxx: Added disabling of
+   3D texture, just in case it is on. In fact, it will be on from
+   the vtkOpenGL3DTexture that stores the PSF because there is no
+   'PostRender' method in VTK's textures to turn textures off.
+
+2008-05-25 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectRenderer.h, .cxx: Replaced ugly ARB
+   assembly fragment program with simpler GLSL version into which
+   I'll be able to plug in a noise generating function based on
+   MD5 hashing of texture coordinates.
+
+2008-05-22 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBlendingFluorescencePolyDataMapper.cxx: Cleaned up a bit.
+   Now sets another shader variable (half-width of PSF in x and
+   y directions).
+   
+   * vtkFramebufferObjectRenderer.cxx: Added a glClear statement
+   in the TextureRender method.
+
+2008-05-22 Cory Quammen <cquammen@cs.unc.edu>
+
+	* CMakeLists.txt: Removed unused classes from list of source
+	files.
+
+2008-05-20 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBinningFluorescencePolyDataMapper.h: Method signature
+   change.
+   
+   * vtkBinningFluorescencePolyDataMapper.cxx: Set up a mess
+   of code to compute the convolution using VTK's FFT filter.
+   This is really slow, but I'll eventually change it to use
+   CUDA's FFT library. Also, fixed an error in rendering the
+   PSF to a temporary buffer so that it is centered for
+   convolution via multiplication in the Fourier domain.
+   
+   * vtkFramebufferObjectRenderer.cxx: Now the method
+   TextureRender() does not require SetActiveFramebufferTexture()
+   to be called ahead of time.
+   
+   * vtkFramebufferObjectTexture.cxx: Formatting change.
+
+2008-03-19 Cory Quammen <cquammen@cs.unc.edu>
+
+   * CMakeLists.txt: Added new classes to source list.
+   
+   * vtkBinningFluorescencePolyDataMapper.h, .cxx: Responsible
+   for rendering the points in the binning process. While this
+   involves merely rendering the sample points as GL_POINTS,
+   a standard vtkPolyDataMapper is insufficient because any
+   blending turned on prior to rendering the points gets turned
+   off. We need blending for the binning operation. Basically,
+   this mapper simply turns on blending prior to rendering the
+   points and turns it off afterwards.
+   
+   * vtkBinningFluorescenceRenderer.h, .cxx: New class
+   for computing fluorescence images by first binning sample
+   points and then applying an FFT-based convolution routine.
+   The binning proceeds in thin 2D sections at varying distances
+   from the focal plane. After a section is binned, the convolution
+   of the section with the appropriate slice from the PSF is
+   computed. The result is added to an accumulation buffer. After
+   each section is convolved this way and added to the accumulation
+   buffer, we get the final 2D fluorescence image. Currently, the
+   convolution is done in software, necessitating a lot of readback
+   from the GPU. This will get changed over to a CUDA-based
+   convolution so that data leaves the card only when one wants to
+   save it.
+   
+   * vtkFramebufferObjectRenderer.h, .cxx: Now supports more than
+   one texture rendering targets. Basically, you can think of
+   individual texture targets these as different pieces of film
+   to which you can render. This is useful for multi-pass rendering
+   techniques. 
+   
+   * vtkFramebufferObjectTexture.h, .cxx: Added the ability to make 
+   the texture target automatically get set to the size of the 
+   renderer; alternatively, the texture size can be set automatically. 
+   The first mode is for convenience. Also, improved the method for
+   determining when the framebuffer object needs to be reinitialized
+   (basically, an improved method for detecting when the desired
+   texture width and height has changed).
+
+2008-03-03 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBlendingFluorescencePolyDataMapper.cxx:
+   Moved things around to all the rendered quads can be stored
+   in a display list.
+
+2008-03-03 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkBlendingFluorescencePolyDataMapper.h, .cxx:
+   Added method for rendering with most of the billboard 
+   transformation calculation done on the GPU instead of the
+   CPU. 
+   
+2008_02_27 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectTexture.cxx: Now changes the bit depth
+   of the render texture according to the "quality" setting picked
+   by the user. 32-bit by default, but you can switch to 16-bit if
+   necessary.
+
+2008-02-27 Cory Quammen <cquammen@cs.unc.edu>
+
+   * CMakeLists.txt: Had to add path to Cg headers. Tried to do
+   it the "CMake way," but that didn't work, so I hard-coded the
+   path. Should be okay for a standard Cg SDK installation.
+
+2007-09-13 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectTexture.cxx: Now makes sure that the proper 
+   OpenGL context is made current before retrieving the texture data.
+
+2007-09-09 Cory Quammen <cquammen@cs.unc.edu>
+
+   * vtkFramebufferObjectTexture.h, .cxx: Made this class conform more
+   closely to typical subclasses of vtkImageData, which this class is.
+   Somehow, this helps VTK's garbage collector mumble, mumble... Not sure
+   why, but now the simulator doesn't run out of memory when generating
+   a lot of stacks.
+
+2007-08-28  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkFramebufferObjectRenderer.cxx,
+	vtkFramebufferObjectTexture.cxx,
+	vtkOpenGLShadowRenderer.cxx: Removed check for 
+	GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT error because 
+	it has gone away in the latest FBO spec.
+
+2007-04-17  Cory Quammen <cquammen@cs.unc.edu>
+
+	* CMakeLists.txt: Added source files.
+	
+	* vtkAFMTipDilationMapper.cxx: Added some testing code for
+	debugging purposes.
+	
+	* vtkFluorescencePolyDataMapper.h: Cosmetic.
+	
+	* vtkOpenGLAlphaTestTexture.h, .cxx, vtkOpenGLShaderRenderer.h, .cxx:
+	New files for Weigle technique.
+
+2007-04-01 Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkBlendingFluorescencePolyDataMapper.cxx, 
+	vtkFluorescencePolyDataMapper.cxx, .h,
+	vtkGatherFluorescencePolyDataMapper.cxx: Changes to accomodate
+	change in PSF image data member name.
+
+2007-03-01  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkFramebufferOjectTexture.h: Removed some debugging
+	comments.
+	
+	* vtkGatherFluorescencePolyDataMapper.h, .cxx: Added computation
+	of quad in screen space that bounds the PSF contributions of
+	the model object. This saves iterating through fragments that
+	have no light.
+
+2007-02-26  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkGatherFluorescencePolyDataMapper.h, .cxx: Many changes
+	that make it work now.
+
+2007-02-23  Cory Quammen <cquammen@cs.unc.edu>
+
+	* CMakeLists.txt: Added vtkBlendingFluorescencePolyDataMapper
+	and vtkGatherFluorescencePolyDataMapper to build file.
+	
+	* vtkAFMTipDilationMapper.cxx: Added support for tips with
+	differing height and width.
+	
+	* vtkBlendingFluorescencePolyDataMapper.h, .cxx: New home
+	for the simulator that exploited floating-point hardware.
+	
+	* vtkFluorescencePolyDataMapper.h, .cxx: Now is a superclass
+	to all fluorescence simulators that use graphics hardware.
+	
+	* vtkGatherFluorescencePolyDataMapper.h, .cxx: New class that
+	performs a gather in a fragment program to determine the light
+	at each pixel. Exploits 32-bit floating-point hardware available
+	in fragment programs, so we get higher precision. Because of
+	limited fragment program length on G7 and previous NVIDIA hardware,
+	I have to make several passes through the fluorophore points,
+	relying on the 16-bit floating-point hardware to accumulate the
+	partial results.
+	
+
+2007-02-08  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkFluorescencePolyDataMapper.cxx: Tab cleanup.
+
+	* vtkFramebufferObjectTexture.h, .cxx: Removed unused method
+	GetOutputAsUnsignedShorts(). Added loading of some necessary
+	extensions that weren't previously being loaded explicitly
+	by this class. Changed the way I get image data from OpenGL
+	to a vtkImageData object - using a vtkImageImport object for
+	this task now.
+	
+	* vtkFramebufferObjectRenderer.cxx: Took out a check for
+	OpenGL errors that in theory slows down rendering.
+
+	* vtkOpenGL3DTexture.cxx: A little cleanup.
+
+2007-02-08  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkAFMTipDilationMapper.cxx, .h: Fixed bug where
+	the pixels in the AFM tip image were offset by half a pixel
+	from where they should have been.
+
+2007-02-04  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkFluorescencePolyDataMapper.h, .cxx: Extension
+	loader now actually loads the necessary OpenGL version
+	if it is supported (it wasn't before; it just checked
+	that the necessary version was supported). Also, loads 
+	the GL_ARB_imaging extension to get access to glBlendEquation.
+	
+	* vtkFramebufferObjectTexture.cxx: Removed commented-out
+	code.
+	
+	* vtkOpenGL3DTexture.h, .cxx: Added extension loader to
+	this class so it can be used standalone. Before these
+	changes, this class rendered correctly but only if another
+	class that made use of the same extensions was loaded first.
+
+2006-11-27  Cory Quammen <cquammen@cs.unc.edu>
+
+	* vtkFramebufferObjectRenderer.h, .cxx: Added
+	functionality to take floating point values in range
+	[-65536.0, 65536.0] and remap them to range [0.0, 1.0]
+	for display. Uses an ARBfp1.0 fragment program to do
+	the remapping efficiently.
+
+2006-10-09  Cory Quammen <cquammen@cs.unc.edu>
+
+	* CMakeLists.txt: Added target for vtkFramebufferObjectTexture.
+
+	* vtkFramebufferObjectRenderer.h,.cxx: Factored out the
+	framebuffer object texture into a separate class.
+	
+	* vtkFramebufferObjectTexture.h,.cxx: New class that
+	acts as a target for the FBO renderer. The advantage
+	of this class, versus using only the renderer, is that 
+	the image output can be retrieved from the texture
+	via the GetOutput() method. In theory, the texture
+	could also be used to texture other objects.
