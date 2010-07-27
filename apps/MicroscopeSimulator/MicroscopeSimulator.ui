@@ -196,7 +196,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-635</y>
           <width>381</width>
           <height>1344</height>
          </rect>
@@ -1044,14 +1044,14 @@
                    <item>
                     <widget class="QPushButton" name="fluoroSimExportImageButton">
                      <property name="text">
-                      <string>Export Image...</string>
+                      <string>Export 2D Image...</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="fluoroSimExportStackButton">
                      <property name="text">
-                      <string>Export Stack...</string>
+                      <string>Export 3D Stack...</string>
                      </property>
                     </widget>
                    </item>
