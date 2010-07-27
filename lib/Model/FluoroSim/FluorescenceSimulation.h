@@ -34,7 +34,6 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* NOISE_STD_DEV_ATT;
   static const char* NOISE_MEAN_ATT;
   static const char* SHOW_IMAGE_VOLUME_OUTLINE_ATT;
-  static const char* SHOW_REFERENCE_PLANE_ATT;
   static const char* SHOW_REFERENCE_GRID_ATT;
   static const char* REFERENCE_GRID_SPACING_ATT;
   static const char* SUPERIMPOSE_SIMULATED_IMAGE_ATT;
@@ -77,7 +76,6 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(NoiseStdDev, double);
   SetGetMacro(NoiseMean, double);
   SetGetMacro(ShowImageVolumeOutline, bool);
-  SetGetMacro(ShowReferencePlane, bool);
   SetGetMacro(ShowReferenceGrid, bool);
   SetGetMacro(ReferenceGridSpacing, double);
   SetGetMacro(SuperimposeSimulatedImage, bool);
@@ -126,7 +124,6 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   double       m_NoiseStdDev;
   double       m_NoiseMean;
   bool         m_ShowImageVolumeOutline;
-  bool         m_ShowReferencePlane;
   bool         m_ShowReferenceGrid;
   double       m_ReferenceGridSpacing;
   bool         m_SuperimposeSimulatedImage;

@@ -1354,15 +1354,6 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::on_fluoroSimShowReferencePlaneCheckBox_toggled(bool show) {
-  m_Simulation->GetFluorescenceSimulation()->SetShowReferencePlane(show);
-
-  RenderViews();
-}
-
-
-void
-MicroscopeSimulator
 ::on_fluoroSimShowGridCheckBox_toggled(bool show) {
   m_Simulation->GetFluorescenceSimulation()->SetShowReferenceGrid(show);
 
@@ -1839,7 +1830,6 @@ MicroscopeSimulator
   gui->fluoroSimMeanEdit->setText(QVariant(fluoroSim->GetNoiseMean()).toString());
 
   // Fluorescence Display group box
-  gui->fluoroSimShowReferencePlaneCheckBox->setChecked(QVariant(fluoroSim->GetShowReferencePlane()).toBool());
   gui->fluoroSimShowGridCheckBox->setChecked(QVariant(fluoroSim->GetShowReferenceGrid()).toBool());
   gui->fluoroSimGridSpacingEdit->setText(QVariant(fluoroSim->GetReferenceGridSpacing()).toString());
   gui->fluoroSimSuperimposeSimulatedImageCheckBox->setChecked(QVariant(fluoroSim->GetSuperimposeSimulatedImage()).toBool());

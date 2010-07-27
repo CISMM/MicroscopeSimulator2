@@ -210,14 +210,10 @@ vtkFluorescenceWidgetsRepresentation
     this->FocalPlaneGrid->SetPoint2(width, 0.0, 0.0);
     this->FocalPlaneGridActor->SetPosition(0.0, 0.0, depth);
     this->FocalPlaneGridActor->
-      SetVisibility(this->Simulation->GetShowReferencePlane() ? 1 : 0);
+      SetVisibility(this->Simulation->GetShowReferenceGrid() ? 1 : 0);
     
-    if (this->Simulation->GetShowReferenceGrid()) {
-      double spacing = this->Simulation->GetReferenceGridSpacing();
-      this->FocalPlaneGrid->SetSpacing(spacing, spacing);
-    } else {
-      this->FocalPlaneGrid->SetSpacing(width, height);
-    }
+    double spacing = this->Simulation->GetReferenceGridSpacing();
+    this->FocalPlaneGrid->SetSpacing(spacing, spacing);
 
     double minDepth = this->Simulation->GetMinimumFocalPlanePosition();
     double maxDepth = this->Simulation->GetMaximumFocalPlanePosition();

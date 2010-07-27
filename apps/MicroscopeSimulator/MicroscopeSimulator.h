@@ -158,7 +158,6 @@ public slots:
   virtual void on_fluoroSimAddGaussianNoiseCheckBox_toggled(bool);
   virtual void on_fluoroSimStdDevEdit_editingFinished();
   virtual void on_fluoroSimMeanEdit_editingFinished();
-  virtual void on_fluoroSimShowReferencePlaneCheckBox_toggled(bool);
   virtual void on_fluoroSimShowGridCheckBox_toggled(bool);
   virtual void on_fluoroSimSuperimposeSimulatedImageCheckBox_toggled(bool);
   virtual void on_fluoroSimSuperimposeComparisonImageCheckBox_toggled(bool);

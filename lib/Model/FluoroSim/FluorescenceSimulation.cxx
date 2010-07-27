@@ -25,7 +25,6 @@ const char* FluorescenceSimulation::ADD_GAUSSIAN_NOISE_ATT = "addGaussianNoise";
 const char* FluorescenceSimulation::NOISE_STD_DEV_ATT = "noiseStdDev";
 const char* FluorescenceSimulation::NOISE_MEAN_ATT = "noiseMean";
 const char* FluorescenceSimulation::SHOW_IMAGE_VOLUME_OUTLINE_ATT = "showImageVolumeOutline";
-const char* FluorescenceSimulation::SHOW_REFERENCE_PLANE_ATT = "showRefPlane";
 const char* FluorescenceSimulation::SHOW_REFERENCE_GRID_ATT = "showRefGrid";
 const char* FluorescenceSimulation::REFERENCE_GRID_SPACING_ATT = "refGridSpacing";
 const char* FluorescenceSimulation::SUPERIMPOSE_SIMULATED_IMAGE_ATT = "superimposeSimulatedImage";
@@ -72,7 +71,6 @@ FluorescenceSimulation
   m_NoiseStdDev = 0.0;
   m_NoiseMean   = 0.0;
   m_ShowImageVolumeOutline = false;
-  m_ShowReferencePlane = true;
   m_ShowReferenceGrid = true;
   m_ReferenceGridSpacing = 1000.0;
   m_SuperimposeSimulatedImage = false;
@@ -136,8 +134,6 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST NOISE_MEAN_ATT, BAD_CAST buf);
   sprintf(buf, "%s", GetShowImageVolumeOutline() ? trueStr : falseStr);
   xmlNewProp(node, BAD_CAST SHOW_IMAGE_VOLUME_OUTLINE_ATT, BAD_CAST buf);
-  sprintf(buf, "%s", GetShowReferencePlane() ? trueStr : falseStr);
-  xmlNewProp(node, BAD_CAST SHOW_REFERENCE_PLANE_ATT, BAD_CAST buf);
   sprintf(buf, "%s", GetShowReferenceGrid() ? trueStr : falseStr);
   xmlNewProp(node, BAD_CAST SHOW_REFERENCE_GRID_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetReferenceGridSpacing());
@@ -264,11 +260,6 @@ FluorescenceSimulation
   char* showImageVolumeOutlineStr = (char*) xmlGetProp(node, BAD_CAST SHOW_IMAGE_VOLUME_OUTLINE_ATT);
   if (showImageVolumeOutlineStr) {
     SetShowImageVolumeOutline((std::string(showImageVolumeOutlineStr) == trueValue));
-  }
-
-  char* showReferencePlaneStr = (char*) xmlGetProp(node, BAD_CAST SHOW_REFERENCE_PLANE_ATT);
-  if (showReferencePlaneStr) {
-    SetShowReferencePlane((std::string(showReferencePlaneStr) == trueValue));
   }
 
   char* showReferenceGridStr = (char*) xmlGetProp(node, BAD_CAST SHOW_REFERENCE_GRID_ATT);
