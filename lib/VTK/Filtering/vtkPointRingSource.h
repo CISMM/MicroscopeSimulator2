@@ -24,7 +24,7 @@
 
 #include "vtkPolyDataAlgorithm.h"
 
-class VTK_FILTERING_EXPORT vtkPointRingSource : public vtkPolyDataAlgorithm {
+class vtkPointRingSource : public vtkPolyDataAlgorithm {
  public:
   // Description:
   // Construct a ring about the x-axis with radius 1 and 5 vertices.

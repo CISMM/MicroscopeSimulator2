@@ -30,7 +30,7 @@
 
 #include "vtkOpenGL.h"
 
-class VTK_RENDERING_EXPORT vtkAFMTipDilationMapper : public vtkDataSetMapper 
+class vtkAFMTipDilationMapper : public vtkDataSetMapper 
 {
 public:
   static vtkAFMTipDilationMapper *New();

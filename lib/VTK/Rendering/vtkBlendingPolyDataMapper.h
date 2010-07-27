@@ -31,7 +31,7 @@
 #endif
 #include "vtkgl.h"
 
-class VTK_RENDERING_EXPORT vtkBlendingPolyDataMapper : public vtkOpenGLPolyDataMapper
+class vtkBlendingPolyDataMapper : public vtkOpenGLPolyDataMapper
 {
 public:
   static vtkBlendingPolyDataMapper *New();

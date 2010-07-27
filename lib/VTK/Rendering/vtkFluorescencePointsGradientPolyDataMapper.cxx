@@ -27,10 +27,8 @@
 #include <vector>
 
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
 vtkCxxRevisionMacro(vtkFluorescencePointsGradientPolyDataMapper, "$Revision: 1.9 $");
 vtkStandardNewMacro(vtkFluorescencePointsGradientPolyDataMapper);
-#endif
 
 
 // Construct empty object.

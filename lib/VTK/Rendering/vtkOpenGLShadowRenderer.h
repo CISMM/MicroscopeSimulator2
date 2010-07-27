@@ -28,7 +28,7 @@
 #include "vtkOpenGLRenderer.h"
 
 
-class VTK_RENDERING_EXPORT vtkOpenGLShadowRenderer : public vtkOpenGLRenderer
+class vtkOpenGLShadowRenderer : public vtkOpenGLRenderer
 {
 protected:
    int NumberOfLightsBound;

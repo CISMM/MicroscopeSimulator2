@@ -33,7 +33,7 @@ class vtkOpenGLRenderer;
 class vtkUnsignedShortArray;
 class vtkImageData;
 
-class VTK_RENDERING_EXPORT vtkFramebufferObjectTexture : public vtkOpenGLTexture
+class vtkFramebufferObjectTexture : public vtkOpenGLTexture
 {
 public:
   static vtkFramebufferObjectTexture *New();

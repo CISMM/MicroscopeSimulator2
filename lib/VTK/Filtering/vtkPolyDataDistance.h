@@ -22,7 +22,7 @@
 
 #include <vtkPolyDataAlgorithm.h>
 
-class VTK_FILTERING_EXPORT vtkPolyDataDistance : public vtkPolyDataAlgorithm {
+class vtkPolyDataDistance : public vtkPolyDataAlgorithm {
    public:
       vtkTypeRevisionMacro(vtkPolyDataDistance, vtkPolyDataAlgorithm);
       void PrintSelf(ostream& os, vtkIndent indent);

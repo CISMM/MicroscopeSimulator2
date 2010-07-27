@@ -29,12 +29,7 @@ class vtkFramebufferObjectTexture;
 class vtkImageData;
 class vtkRenderer;
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-# include "vtkOpenGL.h"
-#endif
-#include "vtkgl.h"
-
-class VTK_RENDERING_EXPORT vtkFluorescencePointsGradientPolyDataMapper : public vtkFluorescencePolyDataMapper
+class vtkFluorescencePointsGradientPolyDataMapper : public vtkFluorescencePolyDataMapper
 {
 public:
   static vtkFluorescencePointsGradientPolyDataMapper *New();

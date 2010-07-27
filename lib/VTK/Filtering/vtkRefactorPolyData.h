@@ -25,7 +25,7 @@
 class vtkIdList;
 class vtkImplicitPolyData;
 
-class VTK_FILTERING_EXPORT vtkRefactorPolyData : public vtkPolyDataAlgorithm
+class vtkRefactorPolyData : public vtkPolyDataAlgorithm
 {
    public:
       vtkTypeRevisionMacro(vtkRefactorPolyData, vtkPolyDataAlgorithm);

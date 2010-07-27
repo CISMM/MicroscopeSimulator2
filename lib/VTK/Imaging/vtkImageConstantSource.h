@@ -24,7 +24,7 @@
 #include "vtkImageAlgorithm.h"
 
 
-class VTK_IMAGING_EXPORT vtkImageConstantSource : public vtkImageAlgorithm 
+class vtkImageConstantSource : public vtkImageAlgorithm 
 {
 public:
   static vtkImageConstantSource *New();

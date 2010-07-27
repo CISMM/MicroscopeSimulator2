@@ -27,16 +27,11 @@
 #include "vtkRenderWindow.h"
 #include "vtkOpenGLExtensionManager.h"
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-# include "vtkOpenGL.h"
-#endif
 
 #include <math.h>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
 vtkCxxRevisionMacro(vtkFramebufferObjectRenderer, "$Revision$");
 vtkStandardNewMacro(vtkFramebufferObjectRenderer);
-#endif
 
 
 vtkFramebufferObjectRenderer::vtkFramebufferObjectRenderer() {

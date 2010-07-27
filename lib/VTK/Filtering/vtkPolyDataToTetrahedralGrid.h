@@ -38,7 +38,7 @@
 
 class vtkDoubleArray;
 
-class VTK_FILTERING_EXPORT vtkPolyDataToTetrahedralGrid : public vtkUnstructuredGridAlgorithm
+class vtkPolyDataToTetrahedralGrid : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkPolyDataToTetrahedralGrid *New();

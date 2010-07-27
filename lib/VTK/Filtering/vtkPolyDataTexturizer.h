@@ -22,7 +22,7 @@
 
 #include <vtkPolyDataAlgorithm.h>
 
-class VTK_FILTERING_EXPORT vtkPolyDataTexturizer : public vtkPolyDataAlgorithm {
+class vtkPolyDataTexturizer : public vtkPolyDataAlgorithm {
    public:
       vtkTypeRevisionMacro(vtkPolyDataTexturizer, vtkPolyDataAlgorithm);
 

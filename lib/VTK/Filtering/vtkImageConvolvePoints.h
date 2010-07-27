@@ -41,7 +41,7 @@
 
 class vtkDoubleArray;
 
-class VTK_FILTERING_EXPORT vtkImageConvolvePoints : public vtkImageAlgorithm 
+class vtkImageConvolvePoints : public vtkImageAlgorithm 
 {
 public:
   static vtkImageConvolvePoints *New();

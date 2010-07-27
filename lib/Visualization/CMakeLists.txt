@@ -40,3 +40,10 @@ ADD_LIBRARY( msimVisualization
   ${visualizationSrc}
   ${visualizationViewsSrc}
 )
+
+TARGET_LINK_LIBRARIES( msimVisualization
+  msvtkCommon
+  msvtkFiltering
+  msvtkImaging
+  msvtkRendering
+)

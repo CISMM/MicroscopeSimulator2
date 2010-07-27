@@ -25,7 +25,7 @@
 
 class vtkDoubleArray;
 
-class VTK_FILTERING_EXPORT vtkUniformPointSampler : public vtkPolyDataAlgorithm
+class vtkUniformPointSampler : public vtkPolyDataAlgorithm
 {
 public:
   vtkTypeRevisionMacro(vtkUniformPointSampler,vtkPolyDataAlgorithm);

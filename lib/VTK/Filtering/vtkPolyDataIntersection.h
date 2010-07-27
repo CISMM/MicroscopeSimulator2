@@ -28,7 +28,7 @@ class vtkOBBTree;
 class vtkOBBNode;
 class vtkMatrix4x4;
 
-class VTK_FILTERING_EXPORT vtkPolyDataIntersection : public vtkPolyDataAlgorithm
+class vtkPolyDataIntersection : public vtkPolyDataAlgorithm
 {
    public:
       vtkTypeRevisionMacro(vtkPolyDataIntersection, vtkPolyDataAlgorithm);

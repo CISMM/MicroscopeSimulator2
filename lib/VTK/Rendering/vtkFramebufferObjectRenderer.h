@@ -37,7 +37,7 @@
 #endif
 #include "vtkgl.h"
 
-class VTK_RENDERING_EXPORT vtkFramebufferObjectRenderer : public vtkOpenGLRenderer
+class vtkFramebufferObjectRenderer : public vtkOpenGLRenderer
 {
 
 public:

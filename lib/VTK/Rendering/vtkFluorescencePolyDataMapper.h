@@ -41,7 +41,7 @@
 #endif
 #include "vtkgl.h"
 
-class VTK_RENDERING_EXPORT vtkFluorescencePolyDataMapper : public vtkOpenGLPolyDataMapper
+class vtkFluorescencePolyDataMapper : public vtkOpenGLPolyDataMapper
 {
 public:
   vtkTypeRevisionMacro(vtkFluorescencePolyDataMapper,vtkOpenGLPolyDataMapper);

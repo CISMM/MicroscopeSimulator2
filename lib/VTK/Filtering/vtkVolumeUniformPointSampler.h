@@ -28,7 +28,7 @@
 
 class vtkDoubleArray;
 
-class VTK_FILTERING_EXPORT vtkVolumeUniformPointSampler : public vtkUniformPointSampler
+class vtkVolumeUniformPointSampler : public vtkUniformPointSampler
 {
 public:
   static vtkVolumeUniformPointSampler *New();

@@ -23,7 +23,7 @@
 
 #include <vtkPolyDataAlgorithm.h>
 
-class VTK_FILTERING_EXPORT vtkPrincipalCurvatures : public vtkPolyDataAlgorithm
+class vtkPrincipalCurvatures : public vtkPolyDataAlgorithm
 {
    public:
       vtkTypeRevisionMacro(vtkPrincipalCurvatures, vtkPolyDataAlgorithm);

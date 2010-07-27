@@ -35,7 +35,7 @@ class vtkRenderWindow;
 class vtkWindow;
 
 
-class VTK_RENDERING_EXPORT vtkOpenGL3DTexture : public vtkTexture
+class vtkOpenGL3DTexture : public vtkTexture
 {
 public:
   static vtkOpenGL3DTexture *New();

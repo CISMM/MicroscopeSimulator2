@@ -40,7 +40,7 @@
 #endif
 #include "vtkgl.h"
 
-class VTK_RENDERING_EXPORT vtkGatherFluorescencePolyDataMapper : public vtkFluorescencePolyDataMapper
+class vtkGatherFluorescencePolyDataMapper : public vtkFluorescencePolyDataMapper
 {
 public:
   static vtkGatherFluorescencePolyDataMapper *New();

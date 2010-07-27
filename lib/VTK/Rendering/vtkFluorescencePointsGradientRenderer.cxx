@@ -124,7 +124,7 @@ int vtkFluorescencePointsGradientRenderer::LoadExtensions(vtkRenderWindow* renWi
   versions.push_back("GL_VERSION_1_2");
   versions.push_back("GL_VERSION_1_3");
 
-  for (int i = 0; i < versions.size(); i++) {
+  for (unsigned int i = 0; i < versions.size(); i++) {
     manager->LoadSupportedExtension(versions[i].c_str());
   }
 

@@ -31,7 +31,7 @@
 #endif
 #include "vtkgl.h"
 
-class VTK_RENDERING_EXPORT vtkFluorescencePointsGradientRenderer : public vtkFramebufferObjectRenderer
+class vtkFluorescencePointsGradientRenderer : public vtkFramebufferObjectRenderer
 {
 
 public:

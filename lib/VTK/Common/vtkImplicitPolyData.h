@@ -31,7 +31,7 @@ MODIFICATIONS.
 #include "vtkOBBTree.h"
 
 
-class VTK_COMMON_EXPORT vtkImplicitPolyData : public vtkImplicitFunction
+class vtkImplicitPolyData : public vtkImplicitFunction
 {
 public:
   vtkTypeRevisionMacro(vtkImplicitPolyData,vtkImplicitFunction);

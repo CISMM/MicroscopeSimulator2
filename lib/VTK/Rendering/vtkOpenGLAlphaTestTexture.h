@@ -29,7 +29,7 @@
 
 #include "vtkOpenGLTexture.h"
 
-class VTK_RENDERING_EXPORT vtkOpenGLAlphaTestTexture : public vtkOpenGLTexture
+class vtkOpenGLAlphaTestTexture : public vtkOpenGLTexture
 {
 public:
   static vtkOpenGLAlphaTestTexture *New();
