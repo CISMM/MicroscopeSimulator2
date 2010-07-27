@@ -1166,9 +1166,8 @@ MicroscopeSimulator
     (gui->fluoroSimCurrentPlaneEdit->text().toInt()) - 1;
   if (plane >= 0 && plane < m_Simulation->GetFluorescenceSimulation()->GetNumberOfFocalPlanes()) {
     m_Simulation->GetFluorescenceSimulation()->SetFocalPlaneIndex(plane);
-  } else {
-    RefreshUI();
   }
+  RefreshUI();
 }
 
 
@@ -1814,7 +1813,7 @@ MicroscopeSimulator
   focalDepth.append(" nm");
   gui->fluoroSimFocalDepthEdit->setText(focalDepth);
   
-  gui->fluoroSimCurrentPlaneEdit->setText(QVariant(fluoroSim->GetFocalPlaneIndex()).toString());
+  gui->fluoroSimCurrentPlaneEdit->setText(QVariant(fluoroSim->GetFocalPlaneIndex()+1).toString());
   gui->fluoroSimNumberOfFocalPlanesEdit->setText(QVariant(fluoroSim->GetNumberOfFocalPlanes()).toString());
   gui->fluoroSimFocalPlaneSpacingEdit->setText(QVariant(fluoroSim->GetFocalPlaneSpacing()).toString());
   gui->fluoroSimUseCustomFocalPlanePositionsCheckBox->setChecked(fluoroSim->GetUseCustomFocalPlanePositions());
