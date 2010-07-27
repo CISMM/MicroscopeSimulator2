@@ -941,7 +941,7 @@
                     </widget>
                    </item>
                    <item row="5" column="0" colspan="2">
-                    <widget class="QPushButton" name="fluoroSimScaleToFullDynamicRange">
+                    <widget class="QPushButton" name="fluoroSimSetToFullIntensityRange">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -952,7 +952,7 @@
                       <enum>Qt::LeftToRight</enum>
                      </property>
                      <property name="text">
-                      <string>Scale to Full Dynamic Range</string>
+                      <string>Set to Full Intensity Range</string>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
@@ -1091,7 +1091,7 @@
                    <item>
                     <widget class="QPushButton" name="fluoroSimCopyImageSettingsButton">
                      <property name="text">
-                      <string>Copy Image Settings</string>
+                      <string>Copy Comparison Image Settings</string>
                      </property>
                     </widget>
                    </item>
