@@ -1266,6 +1266,16 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimBackgroundIntensityEdit_textChanged(QString text) {
+  double background = text.toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetBackgroundIntensity(background);
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimPixelSizeEdit_editingFinished() {
   double pixelSize = gui->fluoroSimPixelSizeEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetPixelSize(pixelSize);
@@ -1337,16 +1347,6 @@ MicroscopeSimulator
 ::on_fluoroSimStdDevEdit_editingFinished() {
   double stdDev = gui->fluoroSimStdDevEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetNoiseStdDev(stdDev);
-
-  RenderViews();
-}
-
-
-void
-MicroscopeSimulator
-::on_fluoroSimMeanEdit_editingFinished() {
-  double mean = gui->fluoroSimMeanEdit->text().toDouble();
-  m_Simulation->GetFluorescenceSimulation()->SetNoiseMean(mean);
 
   RenderViews();
 }
@@ -1819,6 +1819,7 @@ MicroscopeSimulator
 
   // Simulator Settings group box
   gui->fluoroSimExposureEdit->setText(QVariant(fluoroSim->GetExposure()).toString());
+  gui->fluoroSimBackgroundIntensityEdit->setText(QVariant(fluoroSim->GetBackgroundIntensity()).toString());
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
   gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
   gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());
@@ -1832,7 +1833,6 @@ MicroscopeSimulator
 
   gui->fluoroSimAddGaussianNoiseCheckBox->setChecked(QVariant(fluoroSim->GetAddGaussianNoise()).toBool());
   gui->fluoroSimStdDevEdit->setText(QVariant(fluoroSim->GetNoiseStdDev()).toString());
-  gui->fluoroSimMeanEdit->setText(QVariant(fluoroSim->GetNoiseMean()).toString());
 
   // Fluorescence Display group box
   gui->fluoroSimShowGridCheckBox->setChecked(QVariant(fluoroSim->GetShowReferenceGrid()).toBool());

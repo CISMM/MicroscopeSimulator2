@@ -150,6 +150,7 @@ public slots:
   virtual void on_fluoroSimEditPSFsButton_clicked();
   virtual void on_fluoroSimShowImageVolumeOutlineCheckBox_toggled(bool);
   virtual void on_fluoroSimExposureEdit_textChanged(QString text);
+  virtual void on_fluoroSimBackgroundIntensityEdit_textChanged(QString text);
   virtual void on_fluoroSimPixelSizeEdit_editingFinished();
   virtual void on_fluoroSimImageWidthEdit_editingFinished();
   virtual void on_fluoroSimImageHeightEdit_editingFinished();
@@ -157,7 +158,6 @@ public slots:
   virtual void on_fluoroSimShearInYEdit_editingFinished();
   virtual void on_fluoroSimAddGaussianNoiseCheckBox_toggled(bool);
   virtual void on_fluoroSimStdDevEdit_editingFinished();
-  virtual void on_fluoroSimMeanEdit_editingFinished();
   virtual void on_fluoroSimShowGridCheckBox_toggled(bool);
   virtual void on_fluoroSimSuperimposeSimulatedImageCheckBox_toggled(bool);
   virtual void on_fluoroSimSuperimposeComparisonImageCheckBox_toggled(bool);

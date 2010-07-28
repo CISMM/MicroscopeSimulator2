@@ -134,9 +134,9 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
 
   this->Renderer->SetMapsToZero(this->FluoroSim->GetMinimumIntensityLevel());
   this->Renderer->SetMapsToOne(this->FluoroSim->GetMaximumIntensityLevel());
+  this->Renderer->SetBackgroundIntensity(this->FluoroSim->GetBackgroundIntensity());
   if (this->FluoroSim->GetAddGaussianNoise()) {
     this->Renderer->GenerateNoiseOn();
-    this->Renderer->SetNoiseMean(this->FluoroSim->GetNoiseMean());
     this->Renderer->SetNoiseStdDev(this->FluoroSim->GetNoiseStdDev());
   } else {
     this->Renderer->GenerateNoiseOff();
@@ -149,6 +149,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
     this->ExperimentalImageTexture->SetInput(comparisonImage->GetImageData());
     this->GradientRenderer->
       SetExperimentalImageTexture(this->ExperimentalImageTexture);
+    this->GradientRenderer->SetBackgroundIntensity(this->FluoroSim->GetBackgroundIntensity());
   } else {
     this->GradientRenderer->SetExperimentalImageTexture(NULL);
   }

@@ -15,6 +15,7 @@ const char* FluorescenceSimulation::PLANE_ELEM = "Plane";
 const char* FluorescenceSimulation::INDEX_ATT = "index";
 const char* FluorescenceSimulation::POSITION_ATT = "position";
 const char* FluorescenceSimulation::EXPOSURE_TIME_ATT = "exposureTime";
+const char* FluorescenceSimulation::BACKGROUND_INTENSITY_ATT = "backgroundIntensity";
 const char* FluorescenceSimulation::PIXEL_SIZE_ATT = "pixelSize";
 const char* FluorescenceSimulation::PSF_NAME_ATT = "psfName";
 const char* FluorescenceSimulation::IMAGE_WIDTH_ATT = "imageWidth";
@@ -23,7 +24,6 @@ const char* FluorescenceSimulation::SHEAR_IN_X_ATT = "shearInX";
 const char* FluorescenceSimulation::SHEAR_IN_Y_ATT = "shearInY";
 const char* FluorescenceSimulation::ADD_GAUSSIAN_NOISE_ATT = "addGaussianNoise";
 const char* FluorescenceSimulation::NOISE_STD_DEV_ATT = "noiseStdDev";
-const char* FluorescenceSimulation::NOISE_MEAN_ATT = "noiseMean";
 const char* FluorescenceSimulation::SHOW_IMAGE_VOLUME_OUTLINE_ATT = "showImageVolumeOutline";
 const char* FluorescenceSimulation::SHOW_REFERENCE_GRID_ATT = "showRefGrid";
 const char* FluorescenceSimulation::REFERENCE_GRID_SPACING_ATT = "refGridSpacing";
@@ -62,6 +62,7 @@ FluorescenceSimulation
   m_UseCustomFocalPlanePositions = false;
   m_ActivePSFIndex = -1;
   m_Exposure    = 1.0;
+  m_BackgroundIntensity = 0.0;
   m_PixelSize   = 65.0;
   m_ImageWidth  = 200;
   m_ImageHeight = 200;
@@ -69,7 +70,6 @@ FluorescenceSimulation
   m_ShearInY    = 0.0;
   m_AddGaussianNoise = false;
   m_NoiseStdDev = 0.0;
-  m_NoiseMean   = 0.0;
   m_ShowImageVolumeOutline = false;
   m_ShowReferenceGrid = true;
   m_ReferenceGridSpacing = 1000.0;
@@ -107,6 +107,8 @@ FluorescenceSimulation
 
   sprintf(buf, "%f", GetExposure());
   xmlNewProp(node, BAD_CAST EXPOSURE_TIME_ATT, BAD_CAST buf);
+  sprintf(buf, "%f", GetBackgroundIntensity());
+  xmlNewProp(node, BAD_CAST BACKGROUND_INTENSITY_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetPixelSize());
   xmlNewProp(node, BAD_CAST PIXEL_SIZE_ATT, BAD_CAST buf);
 
@@ -130,8 +132,6 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST ADD_GAUSSIAN_NOISE_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetNoiseStdDev());
   xmlNewProp(node, BAD_CAST NOISE_STD_DEV_ATT, BAD_CAST buf);
-  sprintf(buf, "%f", GetNoiseMean());
-  xmlNewProp(node, BAD_CAST NOISE_MEAN_ATT, BAD_CAST buf);
   sprintf(buf, "%s", GetShowImageVolumeOutline() ? trueStr : falseStr);
   xmlNewProp(node, BAD_CAST SHOW_IMAGE_VOLUME_OUTLINE_ATT, BAD_CAST buf);
   sprintf(buf, "%s", GetShowReferenceGrid() ? trueStr : falseStr);
@@ -212,6 +212,11 @@ FluorescenceSimulation
     SetExposure(atof(exposureTimeStr));
   }
 
+  char* backgroundIntensityStr = (char*) xmlGetProp(node, BAD_CAST BACKGROUND_INTENSITY_ATT);
+  if (backgroundIntensityStr) {
+    SetBackgroundIntensity(atof(backgroundIntensityStr));
+  }
+
   char* pixelSizeStr = (char*) xmlGetProp(node, BAD_CAST PIXEL_SIZE_ATT);
   if (pixelSizeStr) {
     SetPixelSize(atof(pixelSizeStr));
@@ -250,11 +255,6 @@ FluorescenceSimulation
   char* noiseStdDevStr = (char*) xmlGetProp(node, BAD_CAST NOISE_STD_DEV_ATT);
   if (noiseStdDevStr) {
     SetNoiseStdDev(atof(noiseStdDevStr));
-  }
-
-  char* noiseMeanStr = (char*) xmlGetProp(node, BAD_CAST NOISE_MEAN_ATT);
-  if (noiseMeanStr) {
-    SetNoiseMean(atof(noiseMeanStr));
   }
 
   char* showImageVolumeOutlineStr = (char*) xmlGetProp(node, BAD_CAST SHOW_IMAGE_VOLUME_OUTLINE_ATT);

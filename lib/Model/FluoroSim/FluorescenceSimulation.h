@@ -24,6 +24,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* INDEX_ATT;
   static const char* POSITION_ATT;
   static const char* EXPOSURE_TIME_ATT;
+  static const char* BACKGROUND_INTENSITY_ATT;
   static const char* PIXEL_SIZE_ATT;
   static const char* PSF_NAME_ATT;
   static const char* IMAGE_WIDTH_ATT;
@@ -32,7 +33,6 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* SHEAR_IN_Y_ATT;
   static const char* ADD_GAUSSIAN_NOISE_ATT;
   static const char* NOISE_STD_DEV_ATT;
-  static const char* NOISE_MEAN_ATT;
   static const char* SHOW_IMAGE_VOLUME_OUTLINE_ATT;
   static const char* SHOW_REFERENCE_GRID_ATT;
   static const char* REFERENCE_GRID_SPACING_ATT;
@@ -67,6 +67,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(UseCustomFocalPlanePositions, bool);
   SetGetMacro(ActivePSFIndex, int);
   SetGetMacro(Exposure, double);
+  SetGetMacro(BackgroundIntensity, double);
   SetGetMacro(PixelSize, double);
   SetGetMacro(ImageWidth, unsigned int);
   SetGetMacro(ImageHeight, unsigned int);
@@ -74,7 +75,6 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(ShearInY, double);
   SetGetMacro(AddGaussianNoise, bool);
   SetGetMacro(NoiseStdDev, double);
-  SetGetMacro(NoiseMean, double);
   SetGetMacro(ShowImageVolumeOutline, bool);
   SetGetMacro(ShowReferenceGrid, bool);
   SetGetMacro(ReferenceGridSpacing, double);
@@ -115,6 +115,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   bool         m_UseCustomFocalPlanePositions;
   int          m_ActivePSFIndex;
   double       m_Exposure;
+  double       m_BackgroundIntensity;
   double       m_PixelSize;
   unsigned int m_ImageWidth;
   unsigned int m_ImageHeight;
@@ -122,7 +123,6 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   double       m_ShearInY;
   bool         m_AddGaussianNoise;
   double       m_NoiseStdDev;
-  double       m_NoiseMean;
   bool         m_ShowImageVolumeOutline;
   bool         m_ShowReferenceGrid;
   double       m_ReferenceGridSpacing;
