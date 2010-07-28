@@ -60,6 +60,11 @@ public:
   // Sets/gets the mean of the Gaussian noise added to the fluorescence rendering.
   vtkGetMacro(NoiseMean, double);
   vtkSetMacro(NoiseMean, double);
+
+  // Description:
+  // Sets/gets the background intensity added to the simulated fluorescence image
+  vtkGetMacro(BackgroundIntensity, double);
+  vtkSetMacro(BackgroundIntensity, double);
   
 protected:
   vtkFluorescenceRenderer();
@@ -76,10 +81,18 @@ protected:
   // Description:
   // Mean of Gaussian noise to be added to a fluorescence rendering.
   double NoiseMean;
+
+  // Description:
+  // Background intensity to add to the simulated fluorescence image
+  double BackgroundIntensity;
   
   // Description:
-  // Loads ARB fragment program for remapping texture values to displayable values.
+  // Loads fragment program for remapping texture values to displayable values.
   void LoadNoiseFragmentProgram(void);
+
+  // Description:
+  // Loads fragment program for adding background intensity.
+  void LoadBackgroundIntensityProgram(void);
 
   // Description:
   // Renders noise into the active framebuffer texture.
@@ -88,6 +101,10 @@ protected:
   // Description:
   // Renders noise into the framebuffer texture given by index.
   void RenderNoise(int index);
+
+  // Description:
+  // Renders the background intensity into the active framebuffer texture.
+  void RenderBackgroundIntensity();
 
 private:
   vtkFluorescenceRenderer(const vtkFluorescenceRenderer&);  // Not implemented.
@@ -104,6 +121,12 @@ private:
   // Description:
   // Handle for fragment shader.
   GLuint NoiseFragmentShaderHandle;
+
+  // Description:
+  GLuint BackgroundIntensityProgramHandle;
+
+  // Description:
+  GLuint BackgroundIntensityFragmentShaderHandle;
   
 };
 

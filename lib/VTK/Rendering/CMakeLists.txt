@@ -21,6 +21,7 @@ SET (Rendering_SRCS
 )
 
 SET( SHADER_FILES
+   "lib/VTK/Rendering/Shaders/BackgroundIntensity_fragment.glsl"
    "lib/VTK/Rendering/Shaders/GaussianNoise_fragment.glsl"
    "lib/VTK/Rendering/Shaders/vtkFluorescencePointsGradientPolyDataMapper_fragment.glsl"
    "lib/VTK/Rendering/Shaders/vtkFluorescencePointsGradientPolyDataMapper_vertex.glsl"
