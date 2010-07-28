@@ -24,14 +24,14 @@
 
 #include "vtkOpenGL3DTexture.h"
 #include "vtkOpenGLRenderer.h"
-#include "vtkFramebufferObjectRenderer.h"
+#include "vtkFluorescenceRenderer.h"
 
 #ifndef VTK_IMPLEMENT_MESA_CXX
 # include "vtkOpenGL.h"
 #endif
 #include "vtkgl.h"
 
-class vtkFluorescencePointsGradientRenderer : public vtkFramebufferObjectRenderer
+class vtkFluorescencePointsGradientRenderer : public vtkFluorescenceRenderer
 {
 
 public:

@@ -90,7 +90,7 @@ void vtkFluorescencePointsGradientRenderer::DeviceRender(void) {
   vtkCollectionSimpleIterator sit;
   this->Props->InitTraversal(sit);
   vtkProp* prop;
-  while (prop = this->Props->GetNextProp(sit)) {
+  while ((prop = this->Props->GetNextProp(sit))) {
     prop->RenderOpaqueGeometry(this);
   }
 
