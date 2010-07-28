@@ -446,7 +446,7 @@ int vtkFluorescencePointsGradientPolyDataMapper::EnableShaderProgram(vtkFluoresc
     this->SetUniform3dv("synthScale", synthScale);
     this->SetUniform3dv("synthMaxTexCoords", synthMaxTexCoords);
     this->SetUniform1f("focalDepth", this->FocalPlaneDepth);
-    this->SetUniform1f("exposure", this->Exposure);
+    this->SetUniform1f("gain", this->Gain);
     this->SetUniform1f("shearInX", this->Shear[0]);
     this->SetUniform1f("shearInY", this->Shear[1]);
     

@@ -196,7 +196,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-143</y>
+          <y>-156</y>
           <width>381</width>
           <height>1320</height>
          </rect>
@@ -758,46 +758,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="0">
-                 <widget class="QLabel" name="fluoroSimExposureLabel">
-                  <property name="text">
-                   <string>Exposure:</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="1">
-                 <widget class="QLineEdit" name="fluoroSimExposureEdit">
-                  <property name="text">
-                   <string>1.0</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="2">
-                 <widget class="QLabel" name="fluoroSimBackgroundIntensityLabel">
-                  <property name="toolTip">
-                   <string>Background intensity</string>
-                  </property>
-                  <property name="text">
-                   <string>Background:</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="3">
-                 <widget class="QLineEdit" name="fluoroSimBackgroundIntensityEdit">
-                  <property name="toolTip">
-                   <string>Background intensity</string>
-                  </property>
-                  <property name="text">
-                   <string>0.0</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="fluoroSimImageWidthLabel">
                   <property name="toolTip">
@@ -841,6 +801,46 @@
                   </property>
                   <property name="text">
                    <string>200</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="fluoroSimGainLabel">
+                  <property name="text">
+                   <string>Gain:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="fluoroSimGainEdit">
+                  <property name="text">
+                   <string>1.0</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QLabel" name="fluoroSimOffsetLabel">
+                  <property name="toolTip">
+                   <string>Background intensity</string>
+                  </property>
+                  <property name="text">
+                   <string>Offset:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QLineEdit" name="fluoroSimOffsetEdit">
+                  <property name="toolTip">
+                   <string>Background intensity</string>
+                  </property>
+                  <property name="text">
+                   <string>0.0</string>
                   </property>
                  </widget>
                 </item>

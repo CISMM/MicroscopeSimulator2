@@ -134,7 +134,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
 
   this->Renderer->SetMapsToZero(this->FluoroSim->GetMinimumIntensityLevel());
   this->Renderer->SetMapsToOne(this->FluoroSim->GetMaximumIntensityLevel());
-  this->Renderer->SetBackgroundIntensity(this->FluoroSim->GetBackgroundIntensity());
+  this->Renderer->SetBackgroundIntensity(this->FluoroSim->GetOffset());
   if (this->FluoroSim->GetAddGaussianNoise()) {
     this->Renderer->GenerateNoiseOn();
     this->Renderer->SetNoiseStdDev(this->FluoroSim->GetNoiseStdDev());
@@ -149,7 +149,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
     this->ExperimentalImageTexture->SetInput(comparisonImage->GetImageData());
     this->GradientRenderer->
       SetExperimentalImageTexture(this->ExperimentalImageTexture);
-    this->GradientRenderer->SetBackgroundIntensity(this->FluoroSim->GetBackgroundIntensity());
+    this->GradientRenderer->SetBackgroundIntensity(this->FluoroSim->GetOffset());
   } else {
     this->GradientRenderer->SetExperimentalImageTexture(NULL);
   }
@@ -172,7 +172,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
         vtkFluorescencePolyDataMapper::SafeDownCast(rep->GetActor()->GetMapper());
       if (fluorMapper) {
         fluorMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlanePosition());
-        fluorMapper->SetExposure(this->FluoroSim->GetExposure());
+        fluorMapper->SetGain(this->FluoroSim->GetGain());
         fluorMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                   this->FluoroSim->GetPixelSize());
         fluorMapper->SetShear(this->FluoroSim->GetShearInX(),
@@ -187,7 +187,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
           vtkFluorescencePointsGradientPolyDataMapper::SafeDownCast(rep->GetGradientActor()->GetMapper());
         if (gradientMapper) {
           gradientMapper->SetFocalPlaneDepth(this->FluoroSim->GetFocalPlanePosition());
-          gradientMapper->SetExposure(this->FluoroSim->GetExposure());
+          gradientMapper->SetGain(this->FluoroSim->GetGain());
           gradientMapper->SetPixelSize(this->FluoroSim->GetPixelSize(),
                                        this->FluoroSim->GetPixelSize());
           gradientMapper->SetShear(this->FluoroSim->GetShearInX(),

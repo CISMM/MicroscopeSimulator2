@@ -8,7 +8,7 @@ uniform vec3  psfOrigin;
 uniform vec3  psfScale;
 uniform vec3  psfMaxTexCoords;
 uniform float focalDepth;
-uniform float exposure;
+uniform float gain;
 uniform int   startIndex;
 uniform int   endIndex;
 
@@ -52,6 +52,6 @@ void main() {
          done = index >= endIndex;
       }
    }
-   gl_FragColor.rgb = sum * exposure * gl_Color.rgb;
+   gl_FragColor.rgb = sum * gain * gl_Color.rgb;
    gl_FragColor.a = 1.0;
 }

@@ -19,7 +19,7 @@ uniform vec3  synthOrigin;
 uniform vec3  synthScale;
 uniform vec3  synthMaxTexCoords;
 uniform float focalDepth;
-uniform float exposure;
+uniform float gain;
 uniform int   startRow;
 uniform int   endRow;
 

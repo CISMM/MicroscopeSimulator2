@@ -14,8 +14,8 @@ const char* FluorescenceSimulation::CUSTOM_FOCAL_PLANE_POSITIONS_ELEM = "FocalPl
 const char* FluorescenceSimulation::PLANE_ELEM = "Plane";
 const char* FluorescenceSimulation::INDEX_ATT = "index";
 const char* FluorescenceSimulation::POSITION_ATT = "position";
-const char* FluorescenceSimulation::EXPOSURE_TIME_ATT = "exposureTime";
-const char* FluorescenceSimulation::BACKGROUND_INTENSITY_ATT = "backgroundIntensity";
+const char* FluorescenceSimulation::GAIN_ATT = "gain";
+const char* FluorescenceSimulation::OFFSET_ATT = "offset";
 const char* FluorescenceSimulation::PIXEL_SIZE_ATT = "pixelSize";
 const char* FluorescenceSimulation::PSF_NAME_ATT = "psfName";
 const char* FluorescenceSimulation::IMAGE_WIDTH_ATT = "imageWidth";
@@ -61,8 +61,8 @@ FluorescenceSimulation
   m_FocalPlanePositions.resize(m_NumberOfFocalPlanes, 0.0);
   m_UseCustomFocalPlanePositions = false;
   m_ActivePSFIndex = -1;
-  m_Exposure    = 1.0;
-  m_BackgroundIntensity = 0.0;
+  m_Gain           = 1.0;
+  m_Offset         = 0.0;
   m_PixelSize   = 65.0;
   m_ImageWidth  = 200;
   m_ImageHeight = 200;
@@ -105,10 +105,10 @@ FluorescenceSimulation
     xmlNewProp(positionNode, BAD_CAST POSITION_ATT, BAD_CAST buf);
   }
 
-  sprintf(buf, "%f", GetExposure());
-  xmlNewProp(node, BAD_CAST EXPOSURE_TIME_ATT, BAD_CAST buf);
-  sprintf(buf, "%f", GetBackgroundIntensity());
-  xmlNewProp(node, BAD_CAST BACKGROUND_INTENSITY_ATT, BAD_CAST buf);
+  sprintf(buf, "%f", GetGain());
+  xmlNewProp(node, BAD_CAST GAIN_ATT, BAD_CAST buf);
+  sprintf(buf, "%f", GetOffset());
+  xmlNewProp(node, BAD_CAST OFFSET_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetPixelSize());
   xmlNewProp(node, BAD_CAST PIXEL_SIZE_ATT, BAD_CAST buf);
 
@@ -207,14 +207,14 @@ FluorescenceSimulation
     }
   }
 
-  char* exposureTimeStr = (char*) xmlGetProp(node, BAD_CAST EXPOSURE_TIME_ATT);
-  if (exposureTimeStr) {
-    SetExposure(atof(exposureTimeStr));
+  char* gainStr = (char*) xmlGetProp(node, BAD_CAST GAIN_ATT);
+  if (gainStr) {
+    SetGain(atof(gainStr));
   }
 
-  char* backgroundIntensityStr = (char*) xmlGetProp(node, BAD_CAST BACKGROUND_INTENSITY_ATT);
-  if (backgroundIntensityStr) {
-    SetBackgroundIntensity(atof(backgroundIntensityStr));
+  char* offsetStr = (char*) xmlGetProp(node, BAD_CAST OFFSET_ATT);
+  if (offsetStr) {
+    SetOffset(atof(offsetStr));
   }
 
   char* pixelSizeStr = (char*) xmlGetProp(node, BAD_CAST PIXEL_SIZE_ATT);

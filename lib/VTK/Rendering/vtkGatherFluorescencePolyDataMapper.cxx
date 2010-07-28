@@ -164,7 +164,7 @@ void vtkGatherFluorescencePolyDataMapper::RenderPoints(vtkActor *actor, vtkRende
       this->SetUniform3dv("psfScale", psfScale);
       this->SetUniform3dv("psfMaxTexCoords", psfMaxTexCoords);
       this->SetUniform1f("focalDepth", this->FocalPlaneDepth);
-      this->SetUniform1f("exposure", this->Exposure);
+      this->SetUniform1f("gain", this->Gain);
       this->SetUniform1f("shearInX", this->Shear[0]);
       this->SetUniform1f("shearInY", this->Shear[1]);
     }

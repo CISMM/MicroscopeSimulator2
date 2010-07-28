@@ -21,7 +21,7 @@ vtkCxxRevisionMacro(vtkFluorescencePolyDataMapper, "$Revision: 1.11 $");
 // Construct empty object.
 vtkFluorescencePolyDataMapper::vtkFluorescencePolyDataMapper() {
   this->ListId = 0;
-  this->Exposure = 1.0;
+  this->Gain = 1.0;
   this->Renderer = NULL;
   this->SimulatedRegion[0] = 0;
   this->SimulatedRegion[1] = 1;

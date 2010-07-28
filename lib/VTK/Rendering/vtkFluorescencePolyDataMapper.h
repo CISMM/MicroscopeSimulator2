@@ -48,9 +48,9 @@ public:
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
-  // Sets/gets exposure.
-  vtkSetMacro(Exposure, double);
-  vtkGetMacro(Exposure, double);
+  // Sets/gets gain.
+  vtkSetMacro(Gain, double);
+  vtkGetMacro(Gain, double);
 
   // Description:
   // Sets/gets pixel size.
@@ -103,9 +103,8 @@ protected:
   ~vtkFluorescencePolyDataMapper();
   
   // Description:
-  // Mimics exposure. Does not represent a physical quantity such as
-  // photons per second.
-  double Exposure;
+  // Gain setting for the camera.
+  double Gain;
 
   // Description:
   // Pointer to the renderer in which this data mapper operates. The renderer

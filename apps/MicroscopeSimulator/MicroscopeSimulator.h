@@ -149,8 +149,8 @@ public slots:
   virtual void on_fluoroSimPSFMenuComboBox_currentIndexChanged(int i);
   virtual void on_fluoroSimEditPSFsButton_clicked();
   virtual void on_fluoroSimShowImageVolumeOutlineCheckBox_toggled(bool);
-  virtual void on_fluoroSimExposureEdit_textChanged(QString text);
-  virtual void on_fluoroSimBackgroundIntensityEdit_textChanged(QString text);
+  virtual void on_fluoroSimGainEdit_textChanged(QString text);
+  virtual void on_fluoroSimOffsetEdit_textChanged(QString text);
   virtual void on_fluoroSimPixelSizeEdit_editingFinished();
   virtual void on_fluoroSimImageWidthEdit_editingFinished();
   virtual void on_fluoroSimImageHeightEdit_editingFinished();
