@@ -69,7 +69,7 @@ ModelObject
   props->AddProperty(new ModelObjectProperty(NAME_PROP, ModelObjectProperty::STRING_TYPE,
                                              "-", true, false));
   props->AddProperty(new ModelObjectProperty(VISIBLE_PROP, true, "-", true, false));
-  props->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true, "-", true, false));
+  //props->AddProperty(new ModelObjectProperty(SCANNABLE_PROP, true, "-", true, false));
   props->AddProperty(new ModelObjectProperty(X_POSITION_PROP, 0.0, "nanometers"));
   props->AddProperty(new ModelObjectProperty(Y_POSITION_PROP, 0.0, "nanometers"));
   props->AddProperty(new ModelObjectProperty(Z_POSITION_PROP, 0.0, "nanometers"));
