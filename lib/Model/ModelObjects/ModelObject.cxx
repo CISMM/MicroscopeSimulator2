@@ -294,11 +294,26 @@ ModelObject
 void
 ModelObject
 ::SetPosition(double position[3]) {
-  GetProperty(X_POSITION_PROP)->SetDoubleValue(position[0]);
-  GetProperty(Y_POSITION_PROP)->SetDoubleValue(position[1]);
-  GetProperty(Z_POSITION_PROP)->SetDoubleValue(position[2]);
+  
+  // Check that this ModelObject has position properties.
+  if (GetProperty(X_POSITION_PROP)) {
+    double origPosition[3];
+    origPosition[0] = GetProperty(X_POSITION_PROP)->GetDoubleValue();
+    origPosition[1] = GetProperty(Y_POSITION_PROP)->GetDoubleValue();
+    origPosition[2] = GetProperty(Z_POSITION_PROP)->GetDoubleValue();
 
-  Sully();
+    bool samePosition = true;
+    for (int i = 0; i < 3; i++) {
+      samePosition = samePosition && (origPosition[i] == position[i]);
+    }
+
+    if (!samePosition) {
+      GetProperty(X_POSITION_PROP)->SetDoubleValue(position[0]);
+      GetProperty(Y_POSITION_PROP)->SetDoubleValue(position[1]);
+      GetProperty(Z_POSITION_PROP)->SetDoubleValue(position[2]);
+      Sully();
+    }
+  }
 }
 
 
@@ -314,14 +329,28 @@ ModelObject
 void
 ModelObject
 ::SetRotation(double rotation[4]) {
-  if (GetProperty(ROTATION_ANGLE_PROP)) {
-    GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(rotation[0]);
-    GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(rotation[1]);
-    GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(rotation[2]);
-    GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(rotation[3]);
-  } // else NOOP
 
-  Sully();
+  // Check that this ModelObject has rotation properties.
+  if (GetProperty(ROTATION_ANGLE_PROP)) {
+    double origRotation[4];
+    origRotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+    origRotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+    origRotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+    origRotation[3] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+
+    bool sameRotation = true;
+    for (int i = 0; i < 4; i++) {
+      sameRotation = sameRotation && (origRotation[i] == rotation[i]);
+    }
+
+    if (!sameRotation) {
+      GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(rotation[0]);
+      GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(rotation[1]);
+      GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(rotation[2]);
+      GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(rotation[3]);
+      Sully();
+    }
+  } // else NOOP
 }
 
 
