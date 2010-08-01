@@ -35,7 +35,7 @@ const char* ModelObject::FLUOROPHORE_MODEL_LIST_ELEM = "FluorophoreModelList";
 ModelObject
 ::ModelObject(DirtyListener* dirtyListener) {
   m_DirtyListener = dirtyListener;
-  m_Pickable = true;
+  SetPickable(true);
   m_Properties = CreateDefaultProperties();
   m_FluorophoreProperties = new ModelObjectPropertyList();
 
@@ -46,6 +46,7 @@ ModelObject
 ModelObject
 ::ModelObject(DirtyListener* dirtyListener, ModelObjectPropertyList* properties) {
   m_DirtyListener = dirtyListener;
+  SetPickable(true);
   m_Properties = properties;
 
   // Go through properties list and pluck out FluorophoreModelObjectProperties
@@ -330,6 +331,8 @@ void
 ModelObject
 ::SetRotation(double rotation[4]) {
 
+  return;
+
   // Check that this ModelObject has rotation properties.
   if (GetProperty(ROTATION_ANGLE_PROP)) {
     double origRotation[4];
@@ -357,7 +360,8 @@ ModelObject
 void
 ModelObject
 ::GetRotation(double rotation[4]) {
-  if (GetProperty(ROTATION_ANGLE_PROP)) {
+  if (false) {
+  //if (GetProperty(ROTATION_ANGLE_PROP)) {
     rotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
     rotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
     rotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
