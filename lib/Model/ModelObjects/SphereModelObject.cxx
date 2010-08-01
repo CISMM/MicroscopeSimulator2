@@ -17,8 +17,8 @@ const char* SphereModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
 
 SphereModelObject
 ::SphereModelObject(DirtyListener* dirtyListener) :
-  //ModelObject(dirtyListener, CreateProperties()) {
-  ModelObject(dirtyListener) {
+  ModelObject(dirtyListener, CreateProperties()) {
+
   m_ObjectTypeName = OBJECT_TYPE_NAME;
   SetName("Sphere");
 
