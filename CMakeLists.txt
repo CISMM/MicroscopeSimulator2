@@ -86,3 +86,8 @@ ADD_SUBDIRECTORY(apps)
 
 INCLUDE(CTest)
 ENABLE_TESTING()
+
+#######################################
+# Documentation
+#######################################
+ADD_SUBDIRECTORY(docs)

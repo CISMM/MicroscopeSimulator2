@@ -11,7 +11,9 @@
 \usepackage{fancyhdr}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-\title{Microscope Simulator 2.0.0 User's Guide}
+\input{Configuration.tex}
+
+\title{Microscope Simulator \ProgramVersion User's Guide}
 \author{Cory Quammen}
 %\date{}                                           % Activate to display a given date or no date
 
@@ -22,7 +24,7 @@
  
 \fancyhf{}
 \fancyhead[LE,RO]{\thepage}
-\fancyhead[RE]{\textit{Microscope Simulator 2.0.0 User Guide}}
+\fancyhead[RE]{\textit{Microscope Simulator \ProgramVersion User Guide}}
 \fancyhead[LO]{\textit{\nouppercase{\leftmark}}}
  
 \fancypagestyle{plain}{ %
@@ -39,7 +41,7 @@
 
 \section{Introduction}
 
-The Microscope Simulator is a program for simulating the imaging process of various microscopes. Currently, simulation of fluorescence microscopes is supported through the FluoroSim module. This modules enables you to see what a geometric model of specimen would look like in a fluorescence microscope under different imaging conditions. Graphics acceleration hardware allows real time generation of simulated microscope images while you interact with specimen models.
+The Microscope Simulator \ProgramVersion is a program for simulating the imaging process of various microscopes. Currently, simulation of fluorescence microscopes is supported through the FluoroSim module. This modules enables you to see how a geometric model of specimen would appear in a fluorescence microscope under different imaging conditions. Graphics acceleration hardware allows real time generation of simulated microscope images while you interact with specimen models.
 
 The Microscope Simulator serves as a visual problem-solving environment with several applications:
 
@@ -78,23 +80,23 @@ To obtain the latest installer for the Microscope Simulator, visit \url{http://w
 
 \subsection{Windows installation}
 
-Double-click the setup program named \textbf{MicroscopeSimulator-2.0.0-win32.exe}. On the first screen, click \emph{Next}. Please read the program license. If you agree to the terms of the license, click \emph{I Agree}. On the next screen, choose where you want to install the program. The default directory is the most-used option. Click \emph{Next}. You may optionally choose a different location in the Start Menu. By default, it will be placed in the CISMM folder. Click \emph{Install}.
+Double-click the setup program named \textbf{MicroscopeSimulator-\ProgramVersionNoSpace-win32.exe}. On the first screen, click \emph{Next}. Please read the program license. If you agree to the terms of the license, click \emph{I Agree}. On the next screen, choose where you want to install the program. The default directory is the most-used option. Click \emph{Next}. You may optionally choose a different location in the Start Menu. By default, it will be placed in the CISMM folder. Click \emph{Install}.
 
 \subsection{Mac installation}
 
-Double-click the Macintosh disk image named \textbf{MicroscopeSimulator-2.0.0-darwin.dmg}. An installer program will launch and ask you to agree to the terms of the license. If you agree, a disk image named \textbf{MicroscopeSimulator-2.0.0-Darwin} will appear on your desktop and a new Finder window will open.
+Double-click the Macintosh disk image named \textbf{MicroscopeSimulator-\ProgramVersionNoSpace-darwin.dmg}. An installer program will launch and ask you to agree to the terms of the license. If you agree, a disk image named \textbf{MicroscopeSimulator-\ProgramVersionNoSpace-Darwin} will appear on your desktop and a new Finder window will open.
 
-To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator 2.0.0 application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
+To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator \ProgramVersion application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
 
 \subsection{Running the program}
 
 \subsubsection{Windows}
 
-You can launch the Microscope Simulator program from the Start menu. If you chose the default installation location and menu folder, select \emph{Start} $\rightarrow$ \emph{All Programs} $\rightarrow$ \emph{Microscope Simulator 2.0.0} $\rightarrow$ \emph{Microscope Simulator 2.0.0}.
+You can launch the Microscope Simulator program from the Start menu. If you chose the default installation location and menu folder, select \emph{Start} $\rightarrow$ \emph{All Programs} $\rightarrow$ \emph{Microscope Simulator \ProgramVersion} $\rightarrow$ \emph{Microscope Simulator \ProgramVersion}.
 
 \subsubsection{Macintosh}
 
-If you installed the application in the Applications directory on your hard drive, double-click the program \emph{Microscope Simulator 2.0.0}.
+If you installed the application in the Applications directory on your hard drive, double-click the program \emph{Microscope Simulator \ProgramVersionNoSpace}.
 
 \subsubsection{Running the program for the first time}
 
@@ -112,7 +114,7 @@ The program window, shown in Figure \ref{fig:ProgramWindow}, consists of several
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=1\linewidth]{images/ProgramWindow-small} 
+   \includegraphics[width=1\linewidth]{\ImagePath/ProgramWindow-small} 
    \caption{The program window after startup.}
    \label{fig:ProgramWindow}
 \end{figure}
@@ -241,7 +243,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=3in]{images/SimulatorControlPanel} 
+   \includegraphics[width=3in]{\ImagePath/SimulatorControlPanel} 
    \caption{The \emph{Simulator Control Panel} with the \emph{FluoroSim Tab} selected.}
    \label{fig:SimulatorControlPanel}
 \end{figure}
@@ -258,7 +260,7 @@ The \emph{Model Display Panel} is where the 3D specimen models in the simulation
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/VisualizationIcons} 
+   \includegraphics[width=4in]{\ImagePath/VisualizationIcons} 
    \caption{Cisualization controls. Starting from the left: \emph{Save Model Object Image}, \emph{Reset Camera}, \emph{View Model Objects Only}, \emph{View Fluorophore Sampling}, \emph{References Axes Button}, \emph{Move Camera}, and \emph{Move Objects}.}
    \label{fig:VisualizationControls}
 \end{figure}
@@ -353,7 +355,7 @@ The model object list appears in the upper right of the program window. All mode
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=3in]{images/ModelObjectProperties} 
+   \includegraphics[width=3in]{\ImagePath/ModelObjectProperties} 
    \caption{The \emph{Model Settings Control Panel}. The \emph{Model Object List} (top section) shows all the specimen models in the simulation. The \emph{Model Object Properties List} (bottom section) contains an editable list of the selected model object's properties.}
    \label{fig:example}
 \end{figure}
@@ -416,7 +418,7 @@ A few properties common to almost all model objects are listed here:
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/PreferencesWindow} 
+   \includegraphics[width=4in]{\ImagePath/PreferencesWindow} 
    \caption{The Preferences window.}
    \label{fig:PreferencesWindow}
 \end{figure}
@@ -454,7 +456,7 @@ where $N$ is the modeled noise.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=3in]{images/FluoroSim/PointSpreadFunctionControls} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/PointSpreadFunctionControls} 
    \caption{Point-Spread Function controls.}
    \label{fig:PointSpreadFunctionControls}
 \end{figure}
@@ -465,7 +467,7 @@ A critical component of generating realistic simulated fluorescence images is th
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4.5in]{images/FluoroSim/PSFEditor} 
+   \includegraphics[width=4.5in]{\ImagePath/FluoroSim/PSFEditor} 
    \caption{The PSF Editor window.}
    \label{fig:PSFEditor}
 \end{figure}
@@ -547,7 +549,7 @@ The mouse may be used to interact to change the position of the camera in the th
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/PSFEditorDisplaySettings} 
+   \includegraphics[width=4in]{\ImagePath/FluoroSim/PSFEditorDisplaySettings} 
    \caption{Display Settings in the \emph{Point-Spread Function Editor}.}
    \label{fig:PSFEditorDisplaySettings}
 \end{figure}
@@ -565,7 +567,7 @@ In some microscopes, the specimen stage may not travel the same distance in $z$ 
 
 \begin{figure}[tbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/FocusControls} 
+   \includegraphics[width=4in]{\ImagePath/FluoroSim/FocusControls} 
    \caption{Focus Controls}
    \label{fig:FluoroSimFocusControls}
 \end{figure}
@@ -573,7 +575,7 @@ In some microscopes, the specimen stage may not travel the same distance in $z$ 
 
 \begin{figure}[hbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=3in]{images/FluoroSim/FocalPlanePositions} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/FocalPlanePositions} 
    \caption{Focal Plane Positions window.}
    \label{fig:FocalPlanePositions}
 \end{figure}
@@ -610,7 +612,7 @@ Same as \emph{Shear in X} but in the $y$-direction.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/SimulatorSettings} 
+   \includegraphics[width=4in]{\ImagePath/FluoroSim/SimulatorSettings} 
    \caption{Simulator Settings controls.}
    \label{fig:FluoroSimSimulatorSettingsControls}
 \end{figure}
@@ -625,7 +627,7 @@ The controls in the \emph{Fluorescence Display} group affect the display of simu
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/FluorescenceDisplay} 
+   \includegraphics[width=4in]{\ImagePath/FluoroSim/FluorescenceDisplay} 
    \caption{Fluorescence Display controls}
    \label{fig:FluoroSimFluorescenceDisplayControls}
 \end{figure}
@@ -669,7 +671,7 @@ The \emph{Export 3D Stack...} button will save a 3D 16-bit TIFF file generated f
 
 \begin{figure}[tbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/ModelFitting} 
+   \includegraphics[width=4in]{\ImagePath/FluoroSim/ModelFitting} 
    \caption{Model Fitting controls.}
    \label{fig:FluoroSimModelFittingControls}
 \end{figure}
@@ -703,7 +705,7 @@ A \emph{fluorophore model} provides a way to model fluorescent labeling as it oc
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{images/FluoroSim/FluorophoreModelEditor} 
+   \includegraphics[width=4in]{\ImagePath/FluoroSim/FluorophoreModelEditor} 
    \caption{The Fluorophore Model Editor for a surface fluorophore model.}
    \label{fig:FluorophoreModelEditor}
 \end{figure}
@@ -776,7 +778,7 @@ Because the \emph{Fixed Fluorophore Model} does not sample the geometry, only th
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=2.5in]{images/FluoroSim/FixedFluorophoreModelEditor} 
+   \includegraphics[width=2.5in]{\ImagePath/FluoroSim/FixedFluorophoreModelEditor} 
    \caption{The Fluorophore Model Editor for a fixed fluorophore model.}
    \label{fig:FixedFluorophoreModelEditor}
 \end{figure}
