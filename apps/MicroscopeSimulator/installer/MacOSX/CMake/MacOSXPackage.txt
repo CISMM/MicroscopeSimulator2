@@ -54,13 +54,13 @@ FOREACH( LIBRARY ${HISTORY_LIBS} )
 ENDFOREACH( LIBRARY )
 
 
-FIND_FILE( USER_GUIDE_FILE "${MicroscopeSimulator_BINARY_DIR}/docs/MicroscopeSimulator-${MicroscopeSimulator_VERSION_STRING}-UserGuide.pdf" )
-IF ( ${USER_GUIDE_FILE} )
+SET( USER_GUIDE_FILE "${MicroscopeSimulator_BINARY_DIR}/docs/MicroscopeSimulator-${MicroscopeSimulator_VERSION_STRING}-UserGuide.pdf" )
+IF ( EXISTS "${USER_GUIDE_FILE}" )
   INSTALL( FILES "${MicroscopeSimulator_BINARY_DIR}/docs/MicroscopeSimulator-${MicroscopeSimulator_VERSION_STRING}-UserGuide.pdf"
     DESTINATION "../../../" )
-ELSE ( ${USER_GUIDE_FILE} )
+ELSE ( EXISTS "${USER_GUIDE_FILE}" )
   MESSAGE( WARNING "Could not find the user guide PDF file. Please generate it by running LaTeX on ${MicroscopeSimulator_BINARY_DIR}/docs/MicroscopeSimulator-${MicroscopeSimulator_VERSION_STRING}-UserGuide.tex" )
-ENDIF( ${USER_GUIDE_FILE} )
+ENDIF ( EXISTS "${USER_GUIDE_FILE}" )
 
 
 SET( CPACK_GENERATOR "Bundle" )
