@@ -9,7 +9,7 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
-\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+%\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \input{Configuration.tex}
 
@@ -41,13 +41,13 @@
 
 \section{Introduction}
 
-The Microscope Simulator \ProgramVersion is a program for simulating the imaging process of various microscopes. Currently, simulation of fluorescence microscopes is supported through the FluoroSim module. This modules enables you to see how a geometric model of specimen would appear in a fluorescence microscope under different imaging conditions. Graphics acceleration hardware allows real time generation of simulated microscope images while you interact with specimen models.
+Microscope Simulator \ProgramVersion is a program for simulating the imaging process of various microscopes. Simulation of widefield, laser-scanning, and spinning disk fluorescence microscopes is supported through the FluoroSim module. This modules enables visualization  a geometric model of specimen as it would appear in a fluorescence microscope under different imaging conditions (\emph{e.g.} emission wavelength, numerical aperture, magnification \emph{etc.}). Graphics acceleration hardware allows real-time generation of simulated microscope images during interactive manipulation of specimen model geometry.
 
-The Microscope Simulator serves as a visual problem-solving environment with several applications:
+Microscope Simulator \ProgramVersion serves as a visual problem-solving environment with several applications:
 
 \begin{itemize}
 
-\item building intuition about artifacts in the imaging process by presenting the expected image from a given geometric model
+\item building intuition about artifacts introduced by the imaging process through presentation of the image expected from a given geometric model
 
 \item evaluating whether a particular microscope can be used to distinguish among hypotheses in an experiment
 
@@ -57,26 +57,28 @@ The Microscope Simulator serves as a visual problem-solving environment with sev
 
 \end{itemize}
 
-The Microscope Simulator has been designed in close collaboration with biologists to ensure the most useful features are implemented. If you have requests for features, please contact  \href{mailto:cquammen@cs.unc.edu}{Cory Quammen $\langle$cquammen@cs.unc.edu$\rangle$}.
+Microscope Simulator \ProgramVersion has been designed in close collaboration with biologists to ensure the most useful features have been implemented. If you have requests for additional features, please contact  \href{mailto:cquammen@cs.unc.edu}{Cory Quammen $\langle$cquammen@cs.unc.edu$\rangle$}.
 
 
 \subsection{System Requirements}
 
-The Microscope Simulator requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher running on an Intel processor. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards including the GeForce 8800 GTX and Quadro FX 580. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
+Microscope Simulator \ProgramVersion requires Windows XP, Windows 7, or Macintosh OS X 10.5 or higher running on an Intel processor. A recent graphics card is recommended. We have tested the Microscope Simulator on NVIDIA GeForce 8000 series graphics cards including the GeForce 8800 GTX and Quadro FX 580. More recent NVIDIA graphics cards should also be supported. The Microscope Simulator may work with ATI graphics cards, but we have not tested any. The Microscope Simulator will check the capabilities of your graphics card the first time it starts and will warn you if your graphics card is not compatible.
 
-Your system should have at least 100 MB of hard drive space free to install the program. At least 512 MB of RAM is required, but 2 GB is recommended.
+Your system should have at least 150 MB of hard drive space free to install the program. At least 512 MB of RAM is required, but 2 GB is recommended.
 
 \subsection{Acknowledgements}
 
-The Microscope Simulator is developed and maintained by the \href{http://www.cismm.org}{Center for Computer Integrated Systems for Microscopy and Manipulation}, a \href{http://www.nibib.nih.gov/}{National Institute of Biomedical Imaging and Bioengineering Resource}, award number P41-EB002025.
+Microscope Simulator \ProgramVersion is developed and maintained by the \href{http://www.cismm.org}{Center for Computer Integrated Systems for Microscopy and Manipulation}, a \href{http://www.nibib.nih.gov/}{National Institute of Biomedical Imaging and Bioengineering Resource}, award number P41-EB002025.
 
 \section{Installation}
 
-Installation of the Microscope Simulator is similar to installation of any other program.
+Installation of Microscope Simulator \ProgramVersion is similar to installation of any other program.
 
 \subsection{Getting the software}
 
-To obtain the latest installer for the Microscope Simulator, visit \url{http://www.cismm.org/downloads}. Source code for the simulator is also available there.
+To obtain the latest installer for the Microscope Simulator \ProgramVersionNoSpace, visit \url{http://www.cismm.org/downloads}. Please choose either the Mac or Windows version of the program, whichever is suitable for your system.
+
+Source code for the program is also available there in the form of a Git repository, enabling you full access to the algorithms used to generate the images and providing the opportunity to submit bug fixes back to the project. 
 
 \subsection{Windows installation}
 
@@ -86,31 +88,35 @@ Double-click the setup program named \textbf{MicroscopeSimulator-\ProgramVersion
 
 Double-click the Macintosh disk image named \textbf{MicroscopeSimulator-\ProgramVersionNoSpace-darwin.dmg}. An installer program will launch and ask you to agree to the terms of the license. If you agree, a disk image named \textbf{MicroscopeSimulator-\ProgramVersionNoSpace-Darwin} will appear on your desktop and a new Finder window will open.
 
-To install the program in your Applications directory on your computer's hard drive, drag the Microscope Simulator \ProgramVersion application to either the Applications alias in the Finder window that just appeared or drag it directly to your Applications directory.
+To install the program in your \emph{Applications} directory on your computer's hard drive, drag the Microscope Simulator \ProgramVersion application to either the \emph{Applications} alias in the Finder window that just appeared or drag it directly to your \emph{Applications} directory.
 
 \subsection{Running the program}
 
 \subsubsection{Windows}
 
-You can launch the Microscope Simulator program from the Start menu. If you chose the default installation location and menu folder, select \emph{Start} $\rightarrow$ \emph{All Programs} $\rightarrow$ \emph{Microscope Simulator \ProgramVersion} $\rightarrow$ \emph{Microscope Simulator \ProgramVersion}.
+You can launch the Microscope Simulator program from the Start menu. If you chose the default installation location and menu folder, select \emph{Start} $\rightarrow$ \emph{All Programs} $\rightarrow$ \emph{Microscope Simulator \ProgramVersionNoSpace} $\rightarrow$ \emph{Microscope Simulator \ProgramVersionNoSpace}.
 
 \subsubsection{Macintosh}
 
-If you installed the application in the Applications directory on your hard drive, double-click the program \emph{Microscope Simulator \ProgramVersionNoSpace}.
+If you installed the application in the \emph{Applications} directory on your hard drive, double-click the program \emph{Microscope Simulator \ProgramVersionNoSpace}.
 
 \subsubsection{Running the program for the first time}
 
-When you run the Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes. Some graphics cards capabilities are required for the program to run while others are optional and enable certain simulation enhancements. If the optional capabilities are not present, then those simulation features will not be enabled. Currently, the only optional graphics card feature enables the generation and addition of pseudo-random Gaussian noise to simulated fluorescence images. If that feature is not available on your graphics card, the control panel section for noise will be disabled.
+When you run Microscope Simulator for the first time, it will run some tests to determine the capabilities of your graphics card. These tests may take a few minutes to run\footnote{If these tests pass but take more than one minute to complete, you will likely find that the program will be too slow using the computer on which you installed it. Please try another computer system, or consider upgrading your graphics card. A mid-range graphics card should be sufficient.}. Certain graphics cards capabilities are required for the program to run with minimal simulation features while others enable optional enhanced simulation features. If the optional capabilities are not present, then those simulation features will not be enabled. For example, the rapid generation and addition of pseudo-random Gaussian noise to simulated fluorescence images requires a capability found in graphics cards release in the last three years. If that capability is not available on your graphics card, the control panel section for noise in FluoroSim will be disabled.
 
-After the graphics card tests run, the Microscope Simulator will ask for you to choose a data directory where it can store data files. This version of the program stores one small file called \emph{PSFList.xml} which contains the list of point-spread functions defined within the program.
+After the graphics card tests run, Microscope Simulator will ask for you to choose a data directory where it can store data files. This version of the program stores one small file called \emph{PSFList.xml} which contains the list of point-spread functions defined within the program (see Section \ref{sec:PointSpreadFunctionEditor} for more details on editing the point-spread function list).
 
-\section{Getting to know the Microscope Simulator}
+\subsection{Where to get help}
 
-This section gives you a tour of the many features in the Microscope Simulator.
+If you have trouble installing or running the program or have questions about its usage, please please contact  \href{mailto:cquammen@cs.unc.edu}{Cory Quammen $\langle$cquammen@cs.unc.edu$\rangle$}. Unfortunately, no guarantee of support can be provided, but we will do our best to help you solve your problem.
+
+\section{Getting to know Microscope Simulator}
+
+This section gives a tour of the many features in Microscope Simulator.
 
 \subsection{Program Window}
 
-The program window, shown in Figure \ref{fig:ProgramWindow}, consists of several panels. A standard menu bar appears at the top of the window (Windows) or in the system menu bar. Below the menu bar is the \emph{Simulator Control Panel} where settings for the microscopes can be edited. The large panel in the center of the window showing a blue color gradient and grid of white lines is the \emph{Model Display Panel} where specimen models are displayed. Rotating, translating, and scaling models interactively with the mouse also takes place in this window. A row of icons above the \emph{Model Display Panel} controls how specimen models appear and whether simulation results are superimposed with the models. The \emph{Model Settings Control Panel} on the right consists of two parts; the \emph{Model Object List} at the top displays a list of models in the simulation, and the \emph{Model Object Properties Panel} at the bottom displays a list of model properties that can typically be edited. Each of these panels is described in more detail below.
+The program window, shown in Figure \ref{fig:ProgramWindow}, consists of several panels. A standard menu bar appears at the top of the window (Windows) or in the system menu bar (Mac). Below the menu bar sits the \emph{Simulator Control Panel} where settings for the microscopes can be edited. The large blue panel in the center of the window is the \emph{Model Display Panel} where specimen models are shown. Models in this window may be rotated, translated, and scaled interactively with the mouse. A row of icons above the \emph{Model Display Panel} controls how specimen models appear. The \emph{Model Settings Control Panel} on the right consists of two parts; the \emph{Model Object List} at the top displays a list of models in the simulation, and the \emph{Model Object Properties Panel} at the bottom displays a list of model properties that can typically be edited. Each of these panels is described in more detail below.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
@@ -121,7 +127,7 @@ The program window, shown in Figure \ref{fig:ProgramWindow}, consists of several
 
 \subsection{Menu Bar}
 
-The menu bar in the Microscope Simulator contains five menus that provide commands useful to creating new simulations, adding specimen models to a simulation, saving simulations, and loading saved simulations, among other actions. Each menu is described in more detail below.
+The menu bar in Microscope Simulator contains four menus that provide commands useful to creating new simulations, adding specimen models to a simulation, saving simulations, and loading saved simulations, among other actions. Each menu is described in more detail below.
 
 \subsubsection{File Menu}
 
@@ -145,27 +151,27 @@ The \emph{File Menu} features typical options for creating and saving simulation
 
 \end{description}
 
-\subsubsection{Edit Menu}
-
-The \emph{Edit Menu} contains functions common to many programs.
-
-\begin{description}
-
-  \item[Cut] \hfill \\
-  \emph{Currently not implemented}
-  
-  \item[Copy] \hfill \\
-  \emph{Currently not implemented}
-  
-  \item[Paste] \hfill \\
-  \emph{Currently not implemented}
-
-\end{description}
+%\subsubsection{Edit Menu}
+%
+%The \emph{Edit Menu} contains functions common to many programs.
+%
+%\begin{description}
+%
+%  \item[Cut] \hfill \\
+%  \emph{Currently not implemented}
+%
+%  \item[Copy] \hfill \\
+%  \emph{Currently not implemented}
+%  
+%  \item[Paste] \hfill \\
+%  \emph{Currently not implemented}
+%
+%\end{description}
 
 \subsubsection{Model Menu}
 \label{sec:ModelMenu}
 
-The \emph{Model Menu} has options for adding and removing geometric models to the simulation. Every model in this menu has parameters that controls its shape. Models are placed at the center of the simulation domain.
+The \emph{Model Menu} has options for adding and removing geometric models to the simulation. Every model in this menu has parameters that controls its shape. Most models also have position and rotation parameters that can be changed. When first created, models are placed at the center of the simulation domain.
 
 \begin{description}
 
@@ -173,7 +179,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
   Adds a model of a cylinder to the simulation. The ends of the model are capped with flat ends. The length and radius of the tube can be changed.
   
   \item[Add Hollow Cylinder] \hfill \\
-  Adds a model of a cylinder with a hollow center to the simulation. Like the cylinder model, the length and outer radius of the tube can be changed. A separate parameter controls the thickness of the tube walls where thickness is defined as the difference between the diameter of the outer and inner cylinder walls.
+  Adds a model of a cylinder with a hollow center to the simulation. Like the cylinder model, the length and outer radius of the tube can be changed. A separate parameter controls the thickness of the tube walls where thickness is defined as the difference between the outer and inner cylinder wall diameters.
 
   \item[Add Disk] \hfill \\
   Adds a model of a planar disk to the simulation. The disk is defined by its center and a radius.
@@ -203,7 +209,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
 \begin{description}
 
   \item[Import Image Data...] \hfill \\
-  Imports an image file. Single TIFF (2D and 3D) and LSM (Zeiss) files can be imported. You will typically use this when importing an image file to which models should be fit using FluoroSim.
+  Imports an image file. Single TIFF (2D and 3D) and LSM (Zeiss) files can be imported. This item is typically used to import an image file to which models should be fit using FluoroSim.
   
   \item[Import Geometry File...] \hfill \\
   Imports geometry from a file. Supported files include:
@@ -222,7 +228,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
 \begin{description}
 
   \item[About] \hfill \\
-  Shows a window with information about the Microscope Simulator program. \textbf{Macintosh users:} The \emph{About Microscope Simulator} menu item appears under the \emph{Microscope Simulator} menu instead of the \emph{Window} menu. 
+  Shows a window with information about Microscope Simulator. \textbf{Macintosh users:} The \emph{About Microscope Simulator} menu item appears under the \emph{Microscope Simulator} menu instead of the \emph{Window} menu. 
 
   \item[Show Simulator Control Panel] \hfill \\
   Shows/hides the \emph{Simulator Control Panel}. If you close the \emph{Simulator Control Panel}, you can show it again with this menu item.
@@ -234,7 +240,7 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
   Shows/hides a separate panel that displays the fluorescence images simulated by FluoroSim.
   
   \item[Show Errors] \hfill \\
-  Displays a window listing any errors in the program.
+  Displays a window listing errors that occur in the program.
   
   \item[Preferences] \hfill \\
   Displays the \emph{Preferences Window} (see Section \ref{sec:PreferencesWindow}).
@@ -250,22 +256,22 @@ The \emph{Model Menu} has options for adding and removing geometric models to th
 
 \subsection{Simulator Control Panel}
 
-This control panel has two tabs. The \emph{FluoroSim Tab} contains controls for fluorescence simulation. More details on these controls are available in the FluoroSim section of this manual (Section \ref{sec:FluoroSim}). The \emph{Notes Tab} contains a text editor where notes about the current simulation may be written. These notes will be saved in the simulation file and will be loaded when the simulation file is loaded.
+This control panel has two tabs. The \emph{FluoroSim Tab} contains controls for fluorescence simulation. More details on these controls are available in the FluoroSim section of this user guide (Section \ref{sec:FluoroSim}). The \emph{Notes Tab} contains a text editor where notes about the current simulation may be written. These notes will be saved in the simulation file and will be loaded when the simulation file is loaded.
 
 \subsection{Model Display Panel}
 
-The \emph{Model Display Panel} is where the 3D specimen models in the simulation are displayed. Output from the Microscope Simulator modules can also be displayed in this window. Such output include fluorophores generated by FluoroSim and fluorescence images superimposed in among the specimen models.
+The \emph{Model Display Panel} is where the 3D specimen models in the simulation are displayed. Output from the Microscope Simulator modules can also be displayed in this window. Such output include fluorophores generated by FluoroSim and fluorescence images superimposed among the specimen models.
 
 \subsection{Visualization Buttons}
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=4in]{\ImagePath/VisualizationIcons} 
-   \caption{Cisualization controls. Starting from the left: \emph{Save Model Object Image}, \emph{Reset Camera}, \emph{View Model Objects Only}, \emph{View Fluorophore Sampling}, \emph{References Axes Button}, \emph{Move Camera}, and \emph{Move Objects}.}
+   \caption{Visualization controls. Starting from the left: \emph{Save Model Object Image}, \emph{Reset Camera}, \emph{View Model Objects Only}, \emph{View Fluorophore Sampling}, \emph{References Axes Button}, \emph{Move Camera}, and \emph{Move Objects}.}
    \label{fig:VisualizationControls}
 \end{figure}
 
-A row of visualization icons provide various controls related to what is shown in the \emph{Model Display Panel} (see Figure \ref{fig:VisualizationControls}). The functions represented by the icons are described from left to right below:
+A row of visualization icons provide various controls related to what is shown in the \emph{Model Display Panel} (see Figure \ref{fig:VisualizationControls}). From left to right, the functions represented by the icons are described below:
 
 \subsubsection{Utility Buttons}
 
@@ -281,7 +287,7 @@ A row of visualization icons provide various controls related to what is shown i
 
 \subsubsection{Visualization Buttons}
 
-Just one of the following visualization modes can be enabled at a time:
+One of the following visualization modes can be enabled at a time:
 
 \begin{description}
 
@@ -336,20 +342,24 @@ One of the following interaction modes can be enabled at a time.
 
 \end{description}
 
-\subsection{Model Object List}
+\subsection{Model Object Settings}
 
-The model object list appears in the upper right of the program window. All model objects in the simulation are listed here. When you click on a model object in the list, properties for that model object appear in the Model Object Properties Panel. Right-clicking on a model object brings up a context menu that provides several options:
+Controls for changing model object settings are available on the right-hand side of the program. These controls are divided into two sections, the \emph{Model Object List} and the \emph{Model Object Properties Panel}.
+
+\subsubsection{Model Object List}
+
+All model objects in the simulation are listed in the \emph{Model Object List}. When you click on a model object in the list, its properties appear in the \emph{Model Object Properties Panel}. Right-clicking on a model object brings up a context menu that provides several options:
 
 \begin{description}
 
   \item[Focus on Object] \hfill \\
-  Changes the camera view to center on this model object and zoom in on it so that it nearly fills the Model Object View Panel.
+  Changes the camera view to center on this model object and zoom in on it so that it nearly fills the \emph{Model Object View Panel}.
   
   \item[Export Geometry] \hfill \\
-  Exports the model object geometry as a VTK Legacy file (*.vtk), VTK Poly Data XML file (*.vtp), PLY file (*.ply), or BYU file (*.byu).
+  Exports the model object geometry as a VTK Legacy file (*.vtk), VTK Poly Data XML file (*.vtp), PLY file (*.ply), or BYU file (*.byu). The exported geometry is translated and rotated according to the position given by the model object's position and rotation properties.
   
   \item[Delete Model Object] \hfill \\
-  Deletes this model object.
+  Removes this model object from the simulation.
 
 \end{description}
 
@@ -360,29 +370,27 @@ The model object list appears in the upper right of the program window. All mode
    \label{fig:example}
 \end{figure}
 
-\subsection{Model Object Properties Panel}
-
-\subsubsection{The Properties Table}
-\label{sec:PropertiesTable}
+\subsubsection{Model Object Properties Panel}
+\label{sec:ModelObjectPropertiesPanel}
 
 The \emph{Model Object Properties Panel} has four columns showing the properties of the model object selected in the \emph{Model Object List}. Each property is displayed as a row in the table. Most model object properties can be changed in this panel, but some are there to display information about the model object (the size in voxels of an \emph{Image Model Object}, for example).
 
-The \emph{Property} column lists the name of the property. Property names cannot be edited. The \emph{Value} column lists the value of the property. To change the value, click on the table cell. Clicking on a property with a checkbox will toggle the checkbox. Clicking once on a property with a numerical value will select the cell while clicking it twice will highlight the value; in either case, typing a numerical value and pressing the return key will change the property value. The \emph{Units} column shows the units of the parameter and cannot be edited. Unitless properties are denoted with a dash (``-''). The \emph{Optimize} column contains checkboxes to designate which property should be optimized using FluoroSim's model fitting routines (see Section \ref{sec:ModelFittingToFluorescenceImages}).
+The \emph{Property} column lists the name of the property. Property names cannot be edited. The \emph{Value} column lists the value of the property. To change a property with a checkbox, click on the checkbox to change its state. To change a numerical property, click twice on its table cell, type a numerical value, and press the return key. The \emph{Units} column shows the units of the parameter and cannot be edited. Unitless properties are denoted with a dash (``-''). The \emph{Optimize} column contains checkboxes to designate which property should be optimized using the model fitting routines of a microscope simulator (see Section \ref{sec:ModelFittingToFluorescenceImages} for FluoroSim's model fitting features).
 
-\subsubsection{Common Model Object Properties}
+\subsection{Common Model Object Properties}
 
 A few properties common to almost all model objects are listed here:
 
 \begin{description}
 
   \item[Name] \hfill \\
-  A name for the model object.
+  The name for the model object.
   
   \item[Visible] \hfill \\
-  Controls whether the model object is visible in the scene or not.
+  Determines whether the model object is visible in the scene or not.
 
-  \item[Scannable] \hfill \\
-  Controls whether the model object is included when calculating a simulated AFM scan. \emph{Not yet implemented.}
+%  \item[Scannable] \hfill \\
+%  Controls whether the model object is included when calculating a simulated AFM scan. \emph{Not yet implemented.}
 
   \item[Position X] \hfill \\
    X-component of the model object position.
@@ -423,9 +431,9 @@ A few properties common to almost all model objects are listed here:
    \label{fig:PreferencesWindow}
 \end{figure}
 
-The \emph{Preferences Window} (Figure \ref{fig:PreferencesWindow}) lets you specify a directory where the Microscope Simulator can store data files. This directory was set the first time the program ran, but it can be changed by clicking on the button to the right of the directory.
+The \emph{Preferences Window} (Figure \ref{fig:PreferencesWindow}) lets you specify a directory where Microscope Simulator can store data files. This directory was set the first time the program ran, but it can be changed by clicking on the button to the right of the directory.
 
-The required and optional graphics card capabilities are also listed in the \emph{Preferences Window}. If you install the Microscope Simulator and later upgrade your graphics card, you can check the capabilities of the new card by clicking the \emph{Check OpenGL Settings Again} button. This will also enable the advanced capabilities of the Microscope Simulatorthe when you restart the program.
+The required and optional graphics card capabilities are also listed in the \emph{Preferences Window}. If you install the Microscope Simulator and later upgrade your graphics card, you can check the capabilities of the new card by clicking the \emph{Check OpenGL Settings Again} button. If any new capabilities are detected, the advanced features of Microscope Simulator that require them will be enabled when you restart the program.
 
 \section{FluoroSim}
 \label{sec:FluoroSim}
@@ -443,7 +451,7 @@ where $\otimes$ denotes the convolution operator. In FluoroSim, $S$ is a set of 
 
 \subsection{Noise Model}
 
-FluoroSim can also simulate additive noise in fluorescence images. Noise in comes from several sources in the microscope. Shot noise arises from fluctuations in the number of photons emitted from the fluorophores in the specimen and detected by the CCD elements in the camera, background noise comes from stray photons in the system, and read-out noise comes from the CCD electronics.
+FluoroSim can also simulate additive noise in fluorescence images. Noise comes from several sources in the microscope. Shot noise arises from fluctuations in the number of photons emitted from the fluorophores in the specimen and detected by the CCD elements in the camera, background noise comes from stray photons in the system, and read-out noise comes from the CCD electronics.
 
 The various noise sources follow different probability distributions. Taken together, their effects can be often be approximated by a Gaussian distribution. The fluorescence microscope simulator models noise according to a Gaussian distribution, adding the noise to the result of the convolution of the fluorophores with the PSF. The final image formation model, then, is:
 
@@ -461,9 +469,10 @@ where $N$ is the modeled noise.
    \label{fig:PointSpreadFunctionControls}
 \end{figure}
 
-A critical component of generating realistic simulated fluorescence images is the PSF of the microscope. FluoroSim lets you create a list of PSFs characterizing the different microscopes you use. PSFs you have defined appear in the pop-up menu in the \emph{Point-Spread Function} controls (see Figure \ref{fig:PointSpreadFunctionControls}). The pop-up menu let's you choose which point-spread function (PSF) to use. The \emph{Edit Point-Spread Functions} let's you edit PSF properties.
+A critical component of generating realistic simulated fluorescence images is the PSF of the microscope. FluoroSim lets you create a list of PSFs characterizing the different microscopes you use. PSFs you have defined appear in the pop-up menu in the \emph{Point-Spread Function} controls (see Figure \ref{fig:PointSpreadFunctionControls}). The pop-up menu lets you choose which point-spread function (PSF) to use. The \emph{Edit Point-Spread Functions} lets you edit PSF properties.
 
 \subsection{The Point-Spread Function Editor}
+\label{sec:PointSpreadFunctionEditor}
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
@@ -474,7 +483,7 @@ A critical component of generating realistic simulated fluorescence images is th
 
 When you click on the \emph{Edit Point-Spread Functions} button, a new window called the \emph{Point-Spread Function Editor} appears as shown in Figure (\ref{fig:PSFEditor}). This window has a control panel on the left side and a visualization panel for displaying PSFs on the right side.
 
-The top half of the control panel lists the available PSFs. To select a PSF to visualize and edit, click on the name of the PSF in the PSF list. To rename a PSF, double-click on its entry in the PSF list, type the new name, and press the return key.
+The top half of the control panel lists the available PSFs. To select a PSF to visualize and edit, click on the name of the PSF in the list. To rename a PSF, double-click on its entry in the PSF list, type the new name, and press the return key.
 
 \subsubsection{Adding and Deleting PSFs}
 \label{sec:AddingAndDeletingPSFs}
@@ -487,7 +496,7 @@ Four buttons below the PSF list enable adding and deleting PSFs:
 A 3D Gaussian is often used to model the PSF of a confocal microscope. The parameters of this model include the standard deviation of the Gaussian in each of the three spatial dimensions.
 
 \item[Add Calculated Widefield PSF] \hfill \\
-Gibson and Lanni\footnote{Gibson, S. F. and Lanni, F. (1992 ). Experimental test of an analytical model of aberration in an oil-immersion objective lens used in 3-D microscopy. \emph{Journal of the Optical Society of America}, 9(1):154Ð166.} proposed a model for aberrated PSFs in widefield microscopes. This model assumes that an objective lens has been designed for specific microscope parameters. When the actual parameters of the microscope match the design parameters, an ideal PSF is formed. When the actual parameters do not match, the difference in the length of the path traveled by a ray in the design system and a ray in the actual system causes a phase shift that leads to an aberrated PSF. This model parameters include: emission wavelength, numerical aperture, magnification, design and actual cover slip refractive indices, design and actual cover slip thicknesses, design and actual immersion oil refractive indices, design immersion oil thickness, design and actual specimen layer refractive indices, depth in specimen layer, and the design and actual distances from the back focal plane.
+Gibson and Lanni\footnote{Gibson, S. F. and Lanni, F. (1992 ). Experimental test of an analytical model of aberration in an oil-immersion objective lens used in 3-D microscopy. \emph{Journal of the Optical Society of America}, 9(1):154Ð166.} proposed a model for aberrated PSFs in widefield microscopes. This model assumes that an objective lens has been designed for specific microscope parameters. When the actual parameters of the microscope match the design parameters, an ideal PSF is formed. When the actual parameters do not match, the difference in the length of the path traveled by a ray in the design system and a ray in the actual system causes a phase shift that leads to an aberrated PSF. This model's parameters include: emission wavelength, numerical aperture, magnification, design and actual cover slip refractive indices, design and actual cover slip thicknesses, design and actual immersion oil refractive indices, design immersion oil thickness, design and actual specimen layer refractive indices, depth in specimen layer, and the design and actual distances from the back focal plane.
 
 \item[Import PSF Image...] \hfill \\
 A PSF image generated from an external program may be imported by clicking on this button. 3D TIFF and Zeiss LSM files can be imported.
@@ -541,7 +550,7 @@ Two tabs appear at the top of the control panel in the \emph{Point-Spread Functi
 
 The \emph{Image Planes} controls affect the placement of slice planes through the PSF volume. Three such planes are provided, spanning the $x-$, $y-$, and $z-$planes. The checkbox next to each plane controls whether the plane is visible, the number of the slice plane determines which slice is displayed, and the slider bar can be used to change the position of the slice plane.
 
-The \emph{Contrast} controls determine how the intensity values in the PSF map to the screen. Clicking on the \emph{Reset Levels} button resets the controls so that the smallest intensity maps to black and the greatest intensity maps to white. The slider bars can be used to adjust both the min and max levels.
+The \emph{Contrast} controls determine how the intensity values in the PSF map to the screen. Clicking on the \emph{Reset Levels} button resets the controls so that the smallest intensity maps to black and the greatest intensity maps to white. The slider bars can be used to adjust both the minimum and maximum levels.
 
 The \emph{Camera} controls consist of six buttons that move the camera to six canonical positions. The +X button moves the camera to look down the positive $x$-axis and the -X button move the camera to look down the negative $x$-axis. The -Y, +Y, -Z, and +Z have similar functions, but operate on different coordinate axes.
 
@@ -563,11 +572,11 @@ Each focal plane is referenced by an index, and the \emph{Current plane} shows w
 
 The focal plane index can be set through either the slider on the left side or the \emph{Current plane} text box. Focal plane indices start at 1. The physical focal depth corresponding to a focal plane index is displayed to the right of the focus slider.
 
-In some microscopes, the specimen stage may not travel the same distance in $z$ between every adjacent focal plane. If the stage reports the actual distance traveled between focal planes, this distance can be entered into FluoroSim by clicking on the \emph{Edit Custom Plane Positions} button. The \emph{Focal Plane Positions} window will be shown as in Figure \ref{fig:FocalPlanePositions}. The column on the left displays the focal plane index while the column on the right shows the focal plane position in nanometers. By default, all focal plane positions are at position 0 nanometers. The \emph{Reset} button below the table of focal plane positions can be used to populate the table with evenly-spaced focal plane positions that can then be modified by double-clicking the table cell, typing the new position, and pressing the return key. When finished editing the focal plane positions, click the \emph{OK} button. To use the $z$-positions just entered, check the \emph{Use custom plane positions} box. Unchecking this box will tell FluoroSim to use evenly spaced focal planes.
+In some microscopes, the specimen stage may not travel the same distance in $z$ between every adjacent focal plane. If the stage reports the actual distance traveled between focal planes, this distance can be entered into FluoroSim by clicking on the \emph{Edit Custom Plane Positions} button. The \emph{Focal Plane Positions} window will be shown as in Figure \ref{fig:FocalPlanePositions}. The column on the left displays the focal plane index while the column on the right shows the focal plane position in nanometers. By default, all focal plane positions are at position 0 nanometers. The \emph{Reset} button below the table of focal plane positions can be used to populate the table with evenly-spaced focal plane positions that can then be modified by double-clicking the table cell, typing the new position, and pressing the return key. When finished editing the focal plane positions, click the \emph{OK} button. To use the $z$-positions just entered, check the \emph{Use custom plane positions} box. Unchecking this box will tell FluoroSim to use evenly spaced focal planes separated by the distance defined by the \emph{Plane spacing} setting.
 
 \begin{figure}[tbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{\ImagePath/FluoroSim/FocusControls} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/FocusControls} 
    \caption{Focus Controls}
    \label{fig:FluoroSimFocusControls}
 \end{figure}
@@ -586,17 +595,20 @@ Basic settings for FluoroSim (see Figure \ref{fig:FluoroSimSimulatorSettingsCont
 
 \begin{description}
 
-\item[Exposure] \hfill \\
-This is an intensity scale factor that can be used to model exposure time in a camera. If the intensity of the selected PSF model corresponds to a camera exposure time of 1 second, then setting the \emph{Exposure} term to 2 will model a camera integration time of 2 seconds.
-
-\item[Pixel size] \hfill \\
-The width and height (in nanometers) represented by a pixel at full magnification.
-
-\item[Width] \hfill \\
+\item[Width (pixels)] \hfill \\
 The number of pixels in the $x$-direction of the generated fluorescence image.
 
-\item[Height] \hfill \\
+\item[Height (pixels)] \hfill \\
 The number of pixels in the $y$-direction of the generated fluorescence image.
+
+\item[Pixel size (nm)] \hfill \\
+The width and height (in nanometers) represented by a pixel at full magnification.
+
+\item[Gain] \hfill \\
+This is an intensity scale factor that models the gain setting in an electronic detector.
+
+\item[Offset] \hfill \\
+The offset is an additive constant that shifts the intensity values in the simulated image. The offset is applied after the gain setting.
 
 \item[Shear in X] \hfill \\
 Models lateral stage movement in the $x$-direction as a linear function directly proportional to the $z$-depth of the focal plane. The $x$-offset in the shear direction is defined as
@@ -612,14 +624,14 @@ Same as \emph{Shear in X} but in the $y$-direction.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{\ImagePath/FluoroSim/SimulatorSettings} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/SimulatorSettings} 
    \caption{Simulator Settings controls.}
    \label{fig:FluoroSimSimulatorSettingsControls}
 \end{figure}
 
 \subsubsection{Noise} 
 
-If your graphics card supports noise generation, the noise controls will be enabled. To turn on Gaussian noise, check the \emph{Add Gaussian noise} box. The standard deviation and mean of the noise can be set with the \emph{Std. Dev.} and \emph{Mean} controls, respectively. 
+If your graphics card supports noise generation, the noise controls will be enabled. To turn on Gaussian noise, check the \emph{Add Gaussian noise} box. The standard deviation of the noise is defined by the \emph{Std. Dev.} setting.
 
 \subsection{Fluorescence Display}
 
@@ -627,16 +639,16 @@ The controls in the \emph{Fluorescence Display} group affect the display of simu
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{\ImagePath/FluoroSim/FluorescenceDisplay} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/FluorescenceDisplay} 
    \caption{Fluorescence Display controls}
    \label{fig:FluoroSimFluorescenceDisplayControls}
 \end{figure}
 
 \subsubsection{Contrast Controls}
 
-The \emph{Contrast Controls} set which image intensity will map to black (\emph{Min level}) and which will map to the maximum color channel intensity supported by the monitor (\emph{Max level}). Image intensities between these two values will be linearly interpolated between black and the maximum color channel intensity. Image intensities less than the \emph{Min level} will map to black and intensities above the \emph{Max level} will map to the full color channel intensity.
+The \emph{Contrast Controls} (shown in Figure \ref{fig:FluoroSimFluorescenceDisplayControls}) set which image intensity will map to black (\emph{Min level}) and which will map to the maximum color channel intensity supported by the monitor (\emph{Max level}). Image intensities between these two values will be linearly interpolated between black and the maximum color channel intensity. Image intensities less than the \emph{Min level} will map to black and intensities above the \emph{Max level} will map to the full color channel intensity.
 
-To automatically set the \emph{Contrast Controls} to the minimum and maximum values in the simulated image, click the \emph{Scale to Full Dynamic Range} button. Note that this will set the contrast controls to the full dynamic range of the current 2D image, not the full 3D image defined by the positions of the focal planes.
+To automatically set the \emph{Contrast Controls} to the minimum and maximum values in the simulated image, click the \emph{Set to Full Intensity Range} button. Note that this will set the contrast controls to the full dynamic range of the current 2D image, not the full 3D image defined by the positions of the focal planes.
 
 \subsubsection{Display Widgets}
 
@@ -644,17 +656,17 @@ Several visualization elements can be added to the \emph{Model Object Display} p
 
 \begin{description}
 
-\item[Show grid] \hfill \\
-Display a grid of lines. This can be useful for giving a sense of scale to a specimen model.
+\item[Grid spacing (nm)] \hfill \\
+Sets the spacing between grid lines that are displayed in the \emph{Model Object Display}. Spacing is defined in nanometers.
 
-\item[Grid spacing] \hfill \\
-Sets the spacing between grid lines. Spacing is defined in nanometers.
+\item[Show grid] \hfill \\
+Display grid lines in the \emph{Model Object Display}. This can be useful for giving a sense of scale to a specimen model.
 
 \item[Show image volume outline] \hfill \\
-Shows the volume of the 3D image stack that would be generated by generating images at all defined focal planes.
+Shows an outline of the volume of the 3D image stack that would be generated by generating images at all defined focal planes.
 
 \item[Superimpose simulated fluorescence image] \hfill \\
-Shows the simulated fluorescence image in the model object space.
+Shows the simulated fluorescence image on a plane placed in the correct relative position in the model object space.
 
 \item[Superimpose comparison image] \hfill \\
 If a \emph{Comparison Image} is set, a $z$-slice corresponding to the current focal plane index in the simulation is superimposed amidst the model object space. If no \emph{Comparison Image} is set, no plane will be displayed. This feature is useful for initial placement of model objects prior to model fitting.
@@ -663,22 +675,23 @@ If a \emph{Comparison Image} is set, a $z$-slice corresponding to the current fo
 
 \subsubsection{Image Export}
 
-It is often useful to export simulated image to files for analysis in other programs. The \emph{Export 2D Image...} button will export a single 2D simulated fluorescence image to a number of file formats including PNG, BMP, JPEG, and 16-bit TIFF. FluoroSim rescales the image intensities from 0-255 for the first three of these formats, but for 16-bit TIFF files no rescaling is performed.
+It is often useful to export simulated image to files for analysis in other programs. The \emph{Export 2D Image} button will export a single 2D simulated fluorescence image to a number of file formats including PNG, BMP, JPEG, and 16-bit TIFF. FluoroSim rescales the image intensities from 0-255 for the first three of these formats, but for 16-bit TIFF files no rescaling is performed.
 
-The \emph{Export 3D Stack...} button will save a 3D 16-bit TIFF file generated from stacking simulated images taken at each focal plane depth. No intensity rescaling is performed. Note, however, that because 16-bit TIFF files do not allow negative numbers, you will need to make sure that the simulated image has no negative numbers. Furthermore, because 16-bit TIFF files can only represent integer values in the range 0-65536, you should make sure that the maximum value in the image is much larger than 1. Preferably, the range between the maximum and minimum intensity in your simulated image will be in the hundreds or thousands. To check the intensity range of the current fluorescence image, click on the \emph{Scale to Full Dynamic Range} button.
+The \emph{Export 3D Stack} button will save a 3D 16-bit TIFF file generated from stacking simulated images taken at each focal plane depth. No intensity rescaling is performed. Note, however, that because 16-bit TIFF files do not allow negative numbers, you will need to make sure that the simulated image has no negative numbers. Furthermore, because 16-bit TIFF files can only represent integer values in the range 0-65536, you should make sure that the maximum value in the image is much larger than 1. Preferably, the range between the maximum and minimum intensity in your simulated image will be in the hundreds or thousands. To check the intensity range of the current fluorescence image, click on the \emph{Set to Full Intensity Range} button.
 
 \subsection{Model Fitting}
+\label{sec:ModelFittingToFluorescenceImages}
 
 \begin{figure}[tbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{\ImagePath/FluoroSim/ModelFitting} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/ModelFitting} 
    \caption{Model Fitting controls.}
    \label{fig:FluoroSimModelFittingControls}
 \end{figure}
 
 Model fitting is a common practice in many fields. For example, man scientific phenomena can be modeled as power laws of the form $f(x) = ax^k$. Here, the variables $a$ and $k$ are constant coefficients. Given some data that is suspected to follow the power law, a model fitting procedure can be carried out that determines the values of $a$ and $k$ according to some metric that measure how well the function values at specific values of $x$ match data at those same $x$ values. A common metric is the sum of squared differences (SSD). Minimizing the sum of squared differences is commonly known as least-squares fitting.
 
-In this program, the models being fit are geometric models representing the specimen, and the data is an image from a real microscope. Model fitting in this case involves finding shape properties, such as a cylinder's length and radius, that minimize a comparison metric. FluoroSim enables selection of properties to optimize through the \emph{Optimize} column of the \emph{Model Object Property List} (see Section \ref{sec:PropertiesTable}). Properties for which the optimize box is checked will be optimized. When optimization is complete, the optimized property values can be viewed as the values of the specimen shape properties that best explain the experimental image.
+In this program, the models being fit are geometric models representing the specimen, and the data is an image from a real microscope. Model fitting in this case involves finding shape properties, such as a cylinder's length and radius, that minimize a comparison metric. FluoroSim enables selection of properties to optimize through the \emph{Optimize} column of the \emph{Model Object Property List} (see Section \ref{sec:ModelObjectPropertiesPanel}). Properties for which the optimize box is checked will be optimized. When optimization is complete, the optimized property values can be viewed as the values of the specimen shape properties that best explain the experimental image.
 
 \subsubsection{Comparison Image}
 
@@ -692,7 +705,7 @@ For convenience, FluoroSim's settings can be changed to generate a 3D image stac
 
 FluoroSim features three optimization methods: \emph{Nelder-Mead Downhill Simplex}, {Gradient Descent}, and \emph{Point-based Gradient Descent}. The Nelder-Mead downhill simplex method works well in most cases. The gradient descent method is experimental, and the point-based gradient descent method works with \emph{Point Set Model Objects} only.
 
-The optimization methods have a small number of properties that govern how they run. These properties can be set by clicking the \emph{Optimizer Settings...} button.
+The optimization methods have a small number of properties that govern how they run. These properties can be set by clicking the \emph{Optimizer Settings} button.
 
 \subsubsection{Objective Function}
 
@@ -705,7 +718,7 @@ A \emph{fluorophore model} provides a way to model fluorescent labeling as it oc
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=4in]{\ImagePath/FluoroSim/FluorophoreModelEditor} 
+   \includegraphics[width=3in]{\ImagePath/FluoroSim/FluorophoreModelEditor} 
    \caption{The Fluorophore Model Editor for a surface fluorophore model.}
    \label{fig:FluorophoreModelEditor}
 \end{figure}
@@ -799,7 +812,11 @@ Changes from previous release:
 \noindent
 Known issues:
 \begin{itemize}
-\item Item
+
+\item (Bug 11) The saved FluoroSim comparison image is not always loaded when file is re-opened.
+
+\item (Bug 12) The size of the imported PSF is not reported correctly in the Point-Spread Function Editor.
+
 \end{itemize}
 
 \end{document}  
