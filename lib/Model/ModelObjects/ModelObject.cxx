@@ -331,8 +331,6 @@ void
 ModelObject
 ::SetRotation(double rotation[4]) {
 
-  return;
-
   // Check that this ModelObject has rotation properties.
   if (GetProperty(ROTATION_ANGLE_PROP)) {
     double origRotation[4];
@@ -360,8 +358,7 @@ ModelObject
 void
 ModelObject
 ::GetRotation(double rotation[4]) {
-  if (false) {
-  //if (GetProperty(ROTATION_ANGLE_PROP)) {
+  if (GetProperty(ROTATION_ANGLE_PROP)) {
     rotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
     rotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
     rotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
