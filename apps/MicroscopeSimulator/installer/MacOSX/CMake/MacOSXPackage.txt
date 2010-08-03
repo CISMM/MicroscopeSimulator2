@@ -1,10 +1,21 @@
 # Qt frameworks
 SET( QT_FRAMEWORKS
+  Qt3Support
+  QtAssistant
   QtCore
+  QtDBus
   QtGui
+  QtHelp
+  QtNetwork
+  QtOpenGL
+  QtScript
+  QtScriptTools
   QtSql
   QtSvg
+  QtWebKit
   QtXml
+  QtXMLPatterns
+  phonon
 )
 
 FOREACH( FRAMEWORK ${QT_FRAMEWORKS} )
@@ -40,6 +51,15 @@ FOREACH( LIBRARY ${VTK_LIBRARIES} )
   INSTALL( FILES
      "${LIBRARY}"
      DESTINATION lib
+  )
+ENDFOREACH( LIBRARY )
+
+# Include all dynamic libraries from ITK.
+FILE (GLOB ITK_LIBRARIES ${ITK_LIBRARY_DIRS}/*.dylib )
+FOREACH( LIBRARY ${ITK_LIBRARIES} )
+  INSTALL( FILES
+    "${LIBRARY}"
+    DESTINATION lib
   )
 ENDFOREACH( LIBRARY )
 
