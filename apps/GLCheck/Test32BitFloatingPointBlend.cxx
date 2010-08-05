@@ -91,8 +91,10 @@ GLCheck
     float textureValue = ((float*) texOutput->GetScalarPointer(10,10,0))[0];
 
     if (fabs(textureValue - (float) i) > 1e-5) {
-      //std::cout << "16BitFloatingPointBlend texture value (" << textureValue <<
-      //  ") is different from the expected value (" << i << ")" << std::endl;
+      if (m_Verbose) {
+        std::cout << "32BitFloatingPointBlend texture value (" << textureValue <<
+          ") is different from the expected value (" << i << ")" << std::endl;
+      }
       return false;
     }
   }
