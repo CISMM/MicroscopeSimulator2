@@ -7,6 +7,10 @@ class GLCheck {
   GLCheck();
   virtual ~GLCheck();
 
+  void VerboseOn();
+  void VerboseOff();
+  void SetVerbose(bool verbose);
+
   bool TestRequiredExtensions();
   bool Test16BitFloatingPointBlend();
   bool Test32BitFloatingPointBlend();
@@ -14,7 +18,7 @@ class GLCheck {
   bool TestGLSLUnsignedInts();
 
  protected:
-  
+  bool m_Verbose;
 
 };
 
