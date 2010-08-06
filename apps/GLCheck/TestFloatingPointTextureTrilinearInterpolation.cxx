@@ -6,6 +6,7 @@
 #include <vtkFramebufferObjectTexture.h>
 #include <vtkGatherFluorescencePolyDataMapper.h>
 #include <vtkImageConstantSource.h>
+#include <vtkImageMathematics.h>
 #include <vtkOpenGL3DTexture.h>
 #include <vtkPointSource.h>
 #include <vtkPolyDataMapper.h>
@@ -15,93 +16,80 @@
 #include <vtkSmartPointer.h>
 
 
+#include <FluorescenceSimulation.h>
+#include <GaussianPointSpreadFunction.h>
+#include <ModelObjectList.h>
+#include <PointSetModelObject.h>
+#include <PointSpreadFunction.h>
+#include <PointSpreadFunctionList.h>
+#include <Simulation.h>
+#include <Visualization.h>
+
+
 bool
 GLCheck
 ::TestFloatingPointTextureTrilinearInterpolation() {
-  vtkSmartPointer<vtkFramebufferObjectTexture> renTexture =
-    vtkSmartPointer<vtkFramebufferObjectTexture>::New();
-  renTexture->SetQualityTo16Bit();
+  Visualization* vis = new Visualization();
+  vis->SetBlendingTo16Bit();
+  
+  vis->GetFluorescenceRenderWindow()->SetSize(200,200);
+  
+  Simulation*sim = new Simulation(NULL);
+  vis->SetSimulation(sim);
 
-  vtkSmartPointer<vtkFramebufferObjectRenderer> renderer =
-    vtkSmartPointer<vtkFramebufferObjectRenderer>::New();
-  renderer->AddFramebufferTexture(renTexture);
-  renderer->SetMapsToOne(2.0);
+  FluorescenceSimulation* fluoroSim = sim->GetFluorescenceSimulation();
+  fluoroSim->SetGain(1.0e7);
+  double pixelSize = fluoroSim->GetPixelSize();
 
-  vtkSmartPointer<vtkRenderWindow> renWin = vtkSmartPointer<vtkRenderWindow>::New();
-  renWin->SetSize(200, 200);
-  renWin->AddRenderer(renderer);
+  fluoroSim->GetPSFList()->AddGaussianPointSpreadFunction("PSF");
+  fluoroSim->SetActivePSFByName("PSF");
+  PointSpreadFunction* psf = fluoroSim->GetActivePointSpreadFunction();
+  GaussianPointSpreadFunction* gaussianPSF = dynamic_cast<GaussianPointSpreadFunction*>(psf);
+  gaussianPSF->SetParameterValue(7, 1000.0); // Std dev in X
+  gaussianPSF->SetParameterValue(8, 1000.0); // Std dev in Y
+  gaussianPSF->SetParameterValue(9, 1000.0); // Std dev in Z
 
-  vtkSmartPointer<vtkOpenGLExtensionManager> extManager =
-    vtkSmartPointer<vtkOpenGLExtensionManager>::New();
-  extManager->SetRenderWindow(renWin);
+  psf->SetSummedIntensity(1.0);
+  psf->Update(); // Must call this for the above PSF setting to take effect
 
-  if (!extManager->ExtensionSupported("GL_VERSION_2_0")) {
-    return false;
+  // Add a point set object
+  sim->AddNewModelObject("PointSetModel");
+  ModelObject* mo = sim->GetModelObjectList()->GetModelObjectAtIndex(0);
+  mo->GetProperty(PointSetModelObject::NUMBER_OF_POINTS_PROP)->SetIntValue(1);
+  mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(0.3*pixelSize);
+  mo->Update();
+
+  // Render the scene
+  vis->RefreshModelObjectView();
+  
+  // Read back the pixel value
+  vis->FluorescenceViewRender();
+
+  vtkSmartPointer<vtkImageData> initialImage = vis->GenerateFluorescenceImage();
+
+  // Now shift the model object by a sub-pixel amount. If there is no
+  // interpolation, there should be no change between the previous image and
+  // the next image.
+  mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(0.4*pixelSize);
+  mo->Update();
+  vis->FluorescenceViewRender();
+
+  vtkSmartPointer<vtkImageData> shiftedImage = vis->GenerateFluorescenceImage();
+  vtkSmartPointer<vtkImageMathematics> diffFilter = 
+    vtkSmartPointer<vtkImageMathematics>::New();
+  diffFilter->SetOperationToSubtract();
+  diffFilter->SetInput1(initialImage);
+  diffFilter->SetInput2(shiftedImage);
+  vtkImageData* difference = diffFilter->GetOutput();
+  difference->Update();
+
+  double* range = difference->GetScalarRange();
+  
+  if (m_Verbose) {
+    std::cout << "Image difference range: " << range[0] << ", " << range[1] << std::endl;
   }
-  extManager->LoadExtension("GL_VERSION_2_0");
 
-  vtkSmartPointer<vtkPointSource> points = vtkSmartPointer<vtkPointSource>::New();
-  points->SetNumberOfPoints(1);
-  points->SetCenter(100.0, 100.0, 0.0);
-  points->SetRadius(0.0);
-
-  vtkSmartPointer<vtkImageConstantSource> psf =
-    vtkSmartPointer<vtkImageConstantSource>::New();
-  psf->SetConstant(2.0);
-  psf->SetSpacing(200.0/3.0, 200.0/3.0, 200.0/3.0);
-  psf->SetWholeExtent(0,3,0,3,0,3);
-  psf->SetOrigin(-100.0, -100.0, -100.0);
-  psf->UpdateWholeExtent();
-
-  vtkSmartPointer<vtkImageData> psfImage = vtkSmartPointer<vtkImageData>::New();
-  psfImage->DeepCopy(psf->GetOutput());
-
-  // Set half the image to black and leave half of it white so that some 
-  // interpolation may occur.
-  for (int z = 0; z < 4; z++) {
-    for (int y = 0; y < 2; y++) {
-      for (int x = 0; x < 4; x++) {
-        psfImage->SetScalarComponentFromFloat(x,y,z,0,0.0);
-      }
-    }
-  }
-
-  vtkSmartPointer<vtkOpenGL3DTexture> psfTexture =
-    vtkSmartPointer<vtkOpenGL3DTexture>::New();
-  psfTexture->InterpolateOn();
-  psfTexture->SetInput(psfImage);
-
-  vtkSmartPointer<vtkGatherFluorescencePolyDataMapper> mapper =
-    vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>::New();
-  mapper->SetPixelSize(1.0,1.0);
-  mapper->SetPointsPerPass(1);
-  mapper->SetInputConnection(points->GetOutputPort());
-  mapper->SetPSFTexture(psfTexture);
-
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-  actor->SetMapper(mapper);
-
-  renderer->AddActor(actor);
-  renderer->ResetCamera();
-
-  renWin->Render();
-    
-  // Read out FBO texture value.
-  vtkSmartPointer<vtkImageData> texOutput = renTexture->GetOutput();
-  texOutput->Update();
-
-  // Get the red value at pixel (100,100)
-  float textureValue = ((float*) texOutput->GetScalarPointer(100,100,0))[0];
-
-  // The interpolated value should be about 1.0, not 0 or 2
-  if ((fabs(textureValue - (float) 0) < 1e-5 ||
-       fabs(textureValue - (float) 2) < 1e-5) &&
-      textureValue >= 0.0 && textureValue <= 2.0) {
-    if (m_Verbose) {
-      std::cout << "FloatingPointTextureTrilinearInterpolation texture value ("
-                << textureValue << ") appears to not be interpolated" 
-                << std::endl;
-    }
+  if (range[0] == 0.0 && range[1] == 0.0) {
     return false;
   }
 
