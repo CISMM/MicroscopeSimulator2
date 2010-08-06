@@ -15,88 +15,80 @@
 #include <vtkSmartPointer.h>
 
 
+#include <FluorescenceSimulation.h>
+#include <GaussianPointSpreadFunction.h>
+#include <ModelObjectList.h>
+#include <PointSetModelObject.h>
+#include <PointSpreadFunction.h>
+#include <PointSpreadFunctionList.h>
+#include <Simulation.h>
+#include <Visualization.h>
+
+
 bool
 GLCheck
 ::Test32BitFloatingPointBlend() {
-  vtkSmartPointer<vtkFramebufferObjectTexture> renTexture =
-    vtkSmartPointer<vtkFramebufferObjectTexture>::New();
-  renTexture->SetQualityTo32Bit();
+  Visualization* vis = new Visualization();
+  vis->SetBlendingTo32Bit();
+  
+  vis->GetFluorescenceRenderWindow()->SetSize(200,200);
+  
+  Simulation*sim = new Simulation(NULL);
+  vis->SetSimulation(sim);
 
-  vtkSmartPointer<vtkFramebufferObjectRenderer> renderer =
-    vtkSmartPointer<vtkFramebufferObjectRenderer>::New();
-  renderer->AddFramebufferTexture(renTexture);
-  renderer->SetMapsToOne(2048.0);
+  FluorescenceSimulation* fluoroSim = sim->GetFluorescenceSimulation();
+  fluoroSim->GetPSFList()->AddGaussianPointSpreadFunction("PSF");
+  fluoroSim->SetActivePSFByName("PSF");
+  PointSpreadFunction* psf = fluoroSim->GetActivePointSpreadFunction();
+  GaussianPointSpreadFunction* gaussianPSF = dynamic_cast<GaussianPointSpreadFunction*>(psf);
+  gaussianPSF->SetParameterValue(7, 1000.0); // Std dev in X
+  gaussianPSF->SetParameterValue(8, 1000.0); // Std dev in Y
+  gaussianPSF->SetParameterValue(9, 1000.0); // Std dev in Z
 
-  vtkSmartPointer<vtkRenderWindow> renWin = vtkSmartPointer<vtkRenderWindow>::New();
-  renWin->SetSize(20, 20);
-  renWin->AddRenderer(renderer);
+  psf->SetSummedIntensity(1.0);
+  psf->Update(); // Must call this for the above PSF setting to take effect
 
-  vtkSmartPointer<vtkOpenGLExtensionManager> extManager =
-    vtkSmartPointer<vtkOpenGLExtensionManager>::New();
-  extManager->SetRenderWindow(renWin);
+  // Add a point set object
+  sim->AddNewModelObject("PointSetModel");
+  ModelObject* mo = sim->GetModelObjectList()->GetModelObjectAtIndex(0);
+  mo->GetProperty(PointSetModelObject::NUMBER_OF_POINTS_PROP)->SetIntValue(2048);
+  mo->Update();
 
-  if (!extManager->ExtensionSupported("GL_VERSION_2_0")) {
-    return false;
+  // Render the scene
+  vis->RefreshModelObjectView();
+  
+  // Read back the pixel value
+  double range[2];
+  vis->FluorescenceViewRender();
+  vis->GetFluorescenceScalarRange(range);
+
+  // Set the contrast levels
+  fluoroSim->SetMinimumIntensityLevel(range[0]);
+  fluoroSim->SetMaximumIntensityLevel(range[1]);
+
+  // Set the gain to produce an image with max intensity 2048
+  double gain2048 = 2048.0 / range[1];
+  fluoroSim->SetGain(gain2048);
+
+  // Now add another model object with one point. This should add an intensity
+  // of 1 to the maximum intensity value in the image. Because results from
+  // different model objects are blended together, this tests the precision
+  // of floating-point blending.
+  sim->AddNewModelObject("PointSetModel");
+  mo = sim->GetModelObjectList()->GetModelObjectAtIndex(1);
+  mo->GetProperty(PointSetModelObject::NUMBER_OF_POINTS_PROP)->SetIntValue(1);
+  mo->Update();
+
+  vis->RefreshModelObjectView();
+
+  vis->FluorescenceViewRender();
+  vis->GetFluorescenceScalarRange(range);
+  if (m_Verbose) {
+    std::cout << "Image intensity range: " << range[0] << ", " << range[1] << std::endl;
   }
-  extManager->LoadExtension("GL_VERSION_2_0");
 
-  vtkSmartPointer<vtkPointSource> points = vtkSmartPointer<vtkPointSource>::New();
-  points->SetNumberOfPoints(2000);
-  points->SetCenter(0.0, 0.0, 0.0);
-  points->SetRadius(0.0);
-
-  vtkSmartPointer<vtkImageConstantSource> psf =
-    vtkSmartPointer<vtkImageConstantSource>::New();
-  psf->SetConstant(1.0);
-  psf->SetSpacing(1.0,1.0,1.0);
-  psf->SetWholeExtent(0,3,0,3,0,3);
-  psf->SetOrigin(-1.5, -1.5, -1.5);
-  psf->UpdateWholeExtent();
-
-  vtkSmartPointer<vtkOpenGL3DTexture> psfTexture =
-    vtkSmartPointer<vtkOpenGL3DTexture>::New();
-  psfTexture->InterpolateOn();
-  psfTexture->SetInputConnection(psf->GetOutputPort());
-
-  vtkSmartPointer<vtkGatherFluorescencePolyDataMapper> mapper =
-    vtkSmartPointer<vtkGatherFluorescencePolyDataMapper>::New();
-  mapper->SetPixelSize(1.0/20.0, 1/20.0);
-  mapper->SetInputConnection(points->GetOutputPort());
-  mapper->SetPSFTexture(psfTexture);
-
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-  actor->SetMapper(mapper);
-
-  renderer->AddActor(actor);
-  renWin->Render();
-
-  // This forces the shader in the mapper to draw just one point to the FBO,
-  // forcing blending to be used for the addition.
-  mapper->SetPointsPerPass(1);
-
-  vtkCamera *cam = renderer->GetActiveCamera();
-  cam->ParallelProjectionOn();
-  cam->SetParallelScale(20.0);
-  renderer->ResetCameraClippingRange();
-
-  for (int i = 2048; i <= 2080; i++) {
-    points->SetNumberOfPoints(i);
-    renWin->Render();
-
-    // Read out FBO texture value.
-    vtkSmartPointer<vtkImageData> texOutput = renTexture->GetOutput();
-    texOutput->Update();
-
-    // Get the red value at pixel (10,10)
-    float textureValue = ((float*) texOutput->GetScalarPointer(10,10,0))[0];
-
-    if (fabs(textureValue - (float) i) > 1e-5) {
-      if (m_Verbose) {
-        std::cout << "32BitFloatingPointBlend texture value (" << textureValue <<
-          ") is different from the expected value (" << i << ")" << std::endl;
-      }
-      return false;
-    }
+  if (fabs(range[1] - 2049.0) > 1e-3) {
+    return false;
   }
 
   return true;
