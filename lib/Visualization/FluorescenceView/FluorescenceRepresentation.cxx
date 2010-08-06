@@ -101,8 +101,6 @@ vtkModelObjectFluorescenceRepresentation*
 FluorescenceRepresentation
 ::CreateRepresentation(ModelObject* object,
                        FluorophoreModelObjectProperty* property) {
-  std::cout << "Creating fluorescence representation for " << property->GetName() << std::endl;
-
   vtkModelObjectFluorescenceRepresentation* fluorRep = vtkModelObjectFluorescenceRepresentation::New();
   fluorRep->SetModelObject(object);
   fluorRep->SetFluorophoreModelObjectProperty(property);
