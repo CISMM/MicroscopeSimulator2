@@ -84,6 +84,7 @@ void vtkOpenGL3DTexture::LoadExtensions() {
   manager->LoadExtension("GL_VERSION_1_4");
   versionOK += manager->ExtensionSupported("GL_VERSION_1_5");
   manager->LoadExtension("GL_VERSION_1_5");
+  manager->LoadSupportedExtension("GL_ARB_texture_float");
   manager->Delete();
 
   if (versionOK == 0) {

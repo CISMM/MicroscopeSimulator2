@@ -16,6 +16,15 @@ INCLUDE_DIRECTORIES(
 ADD_EXECUTABLE( GLCheck ${SourceFiles} )
 
 TARGET_LINK_LIBRARIES( GLCheck
+  msimFilter
+  msimIO
+  msimModel
+  msimVisualization
+  msimUtilities
+  msvtkCommon
+  msvtkFiltering
+  msvtkImaging
+  msvtkRendering
   vtksys
   vtkCommon
   vtkFiltering
@@ -24,10 +33,6 @@ TARGET_LINK_LIBRARIES( GLCheck
   vtkImaging
   vtkRendering
   vtkVolumeRendering
-  msvtkCommon
-  msvtkFiltering
-  msvtkImaging
-  msvtkRendering
 )
 
 INSTALL( TARGETS GLCheck

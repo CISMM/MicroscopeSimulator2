@@ -97,8 +97,6 @@ GeometryRepresentation
 vtkModelObjectGeometryRepresentation*
 GeometryRepresentation
 ::CreateRepresentation(ModelObject* modelObject) {
-  std::cout << "Creating geometry representation for " << modelObject->GetName() << std::endl;
-
   vtkModelObjectGeometryRepresentation* geomRep =
     vtkModelObjectGeometryRepresentation::New();
   geomRep->SetModelObject(modelObject);

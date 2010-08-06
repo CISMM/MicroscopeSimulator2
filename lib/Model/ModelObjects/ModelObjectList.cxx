@@ -92,8 +92,6 @@ ModelObjectList
 ModelObjectPtr
 ModelObjectList
 ::AddModelObject(const std::string& objectTypeName) {
-  std::cout << "Adding model object: " << objectTypeName << std::endl;
-
   ModelObjectPtr mo = m_ModelObjectFactory->CreateModelObject(objectTypeName);
   if (mo) {
     std::string name = GenerateUniqueName(mo->GetName());
@@ -111,8 +109,6 @@ ModelObjectList
 ModelObjectPtr
 ModelObjectList
 ::ImportModelObject(const std::string& objectTypeName, const std::string& fileName) {
-  std::cout << "Importing model object: " << objectTypeName << std::endl;
-
   ModelObjectPtr mo = m_ModelObjectFactory->ImportModelObject(objectTypeName, fileName);
   if (mo) {
     std::string name = GenerateUniqueName(mo->GetName());
