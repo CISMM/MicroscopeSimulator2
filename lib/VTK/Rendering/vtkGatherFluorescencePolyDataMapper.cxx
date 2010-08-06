@@ -72,14 +72,16 @@ void vtkGatherFluorescencePolyDataMapper::ReleaseGraphicsResources(vtkWindow *wi
   }
   this->LastWindow = NULL;
 
-  vtkgl::DeleteShader(this->VertexProgramHandle);
-  this->VertexProgramHandle = 0;
+  if (vtkgl::DeleteShader) {
+    vtkgl::DeleteShader(this->VertexProgramHandle);
+    this->VertexProgramHandle = 0;
 
-  vtkgl::DeleteShader(this->FragmentProgramHandle);
-  this->FragmentProgramHandle = 0;
+    vtkgl::DeleteShader(this->FragmentProgramHandle);
+    this->FragmentProgramHandle = 0;
 
-  vtkgl::DeleteProgram(this->ShaderProgramHandle);
-  this->ShaderProgramHandle = 0;
+    vtkgl::DeleteProgram(this->ShaderProgramHandle);
+    this->ShaderProgramHandle = 0;
+  }
 }
 
 
