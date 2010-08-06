@@ -18,6 +18,8 @@ class GradientDescentFluorescenceOptimizer : public ITKFluorescenceOptimizer {
 
   static const char* DERIVATIVE_ESTIMATE_STEP_SIZE;
 
+  static const char* STEP_SIZE_SCALE_FACTOR;
+
   typedef itk::GradientDescentOptimizer GradientDescentOptimizerType;
 
   /** Constructor/destructor. */

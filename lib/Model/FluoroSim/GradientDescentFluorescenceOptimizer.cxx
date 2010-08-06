@@ -14,6 +14,9 @@ const char* GradientDescentFluorescenceOptimizer::ITERATIONS_PARAM = "Iterations
 const char* GradientDescentFluorescenceOptimizer::DERIVATIVE_ESTIMATE_STEP_SIZE =
   "Derivative Estimate Step Size";
 
+const char* GradientDescentFluorescenceOptimizer::STEP_SIZE_SCALE_FACTOR =
+  "Step Scale Factor";
+
 
 GradientDescentFluorescenceOptimizer
 ::GradientDescentFluorescenceOptimizer(DirtyListener* listener)
@@ -25,6 +28,10 @@ GradientDescentFluorescenceOptimizer
   Variant derivativeStepSize;
   derivativeStepSize.dValue = 1e-8;
   AddOptimizerParameter(std::string(DERIVATIVE_ESTIMATE_STEP_SIZE), DOUBLE_TYPE, derivativeStepSize);
+
+  Variant stepSizeScaleFactor;
+  stepSizeScaleFactor.dValue = 1.0;
+  AddOptimizerParameter(std::string(STEP_SIZE_SCALE_FACTOR), DOUBLE_TYPE, stepSizeScaleFactor);
 }
 
 
@@ -52,6 +59,9 @@ GradientDescentFluorescenceOptimizer
 
   double derivativeStepSize = GetOptimizerParameterValue(DERIVATIVE_ESTIMATE_STEP_SIZE).dValue;
   m_CostFunction->SetDerivativeStepSize(derivativeStepSize);
+
+  double stepSizeScaleFactor = GetOptimizerParameterValue(STEP_SIZE_SCALE_FACTOR).dValue;
+  optimizer->SetLearningRate(stepSizeScaleFactor);
   
 
   // Make sure to set the fluorescence image source and moving image.
