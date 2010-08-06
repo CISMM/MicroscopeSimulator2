@@ -33,7 +33,7 @@ GLCheck
   for (size_t i = 0; i < extensions.size(); i++) {
     if (!extManager->ExtensionSupported(extensions[i].c_str())) {
       if (m_Verbose) {
-        std::cout << "OpenGL extension '" << extensions[i] << "' not supported."
+        std::cout << "OpenGL extension '" << extensions[i].c_str() << "' not supported."
                   << std::endl;
       }
       return false;
