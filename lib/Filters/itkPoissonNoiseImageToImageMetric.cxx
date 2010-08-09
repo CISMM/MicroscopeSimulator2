@@ -323,8 +323,8 @@ PoissonNoiseImageToImageMetric<TFixedImage,TMovingImage>
       {
       const RealType movingValue  = this->m_Interpolator->Evaluate( transformedPoint );
 
-      const TransformJacobianType & jacobian =
-        this->m_Transform->GetJacobian( inputPoint ); 
+      //const TransformJacobianType & jacobian =
+      //  this->m_Transform->GetJacobian( inputPoint ); 
 
       
       const RealType fixedValue     = ti.Value();

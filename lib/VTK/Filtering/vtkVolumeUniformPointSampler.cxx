@@ -102,7 +102,6 @@ void vtkVolumeUniformPointSampler::ComputeTetrahedraVolumes(vtkUnstructuredGrid*
   // This will be used to randomly select a tetrahedron for point sampling using
   // an uniform distribution.
   this->Volume = 0.0;
-  int numTets = input->GetNumberOfCells();
   for (tetrahedra->InitTraversal(); tetrahedra->GetNextCell(npts, pts); ) {
     double p0[3], p1[3], p2[3], p3[3];
     if (npts == 4) {

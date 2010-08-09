@@ -3506,7 +3506,7 @@ int tetgenmesh::compare_2_unsignedlongs(const void* x, const void* y) {
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-void tetgenmesh::set_compfunc(char* str, int* itbytes, compfunc* pcomp)
+void tetgenmesh::set_compfunc(const char* str, int* itbytes, compfunc* pcomp)
 {
   // First figure out whether it is a pointer or not.
   if (str[strlen(str) - 1] == '*') {
@@ -16489,7 +16489,6 @@ void tetgenmesh::incrflipdelaunay(triface* oldtet, point* insertarray,
   REAL det, n[3];
   REAL attrib, volume;
   int i, j;
-  clock_t loc_start, loc_end;
 
   if (b->verbose > 0) {
     printf("  Creating initial tetrahedralization.\n");

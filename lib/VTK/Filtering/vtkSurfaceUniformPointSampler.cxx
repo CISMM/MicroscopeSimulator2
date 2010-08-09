@@ -96,7 +96,6 @@ void vtkSurfaceUniformPointSampler::ComputePolygonAreas(vtkPolyData* input) {
   // This will be used to randomly select a polygon for point sampling using
   // an uniform distribution.
   this->SurfaceArea = 0.0;
-  int polys = input->GetNumberOfCells();
   for (triangles->InitTraversal(); triangles->GetNextCell(npts, pts); ) {
     double p1[3], p2[3], p3[3];
     if (npts == 3) {
@@ -179,7 +178,6 @@ void vtkSurfaceUniformPointSampler::RandomTrianglePoint(vtkTriangle *triangle,
   polyData->GetPoint(triangle->GetPointId(0), p1);
   polyData->GetPoint(triangle->GetPointId(1), p2);
   polyData->GetPoint(triangle->GetPointId(2), p3);
-  double area = vtkTriangle::TriangleArea(p1, p2, p3);
 
   double ux = p3[0] - p1[0];
   double uy = p3[1] - p1[1];

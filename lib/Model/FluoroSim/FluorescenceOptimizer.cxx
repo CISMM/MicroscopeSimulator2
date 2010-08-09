@@ -271,7 +271,7 @@ FluorescenceOptimizer
 std::string
 FluorescenceOptimizer
 ::GetAvailableObjectiveFunctionName(int index) {
-  if (index < 0 || index >= m_ObjectiveFunctionNames.size()) {
+  if (index < 0 || static_cast<unsigned int>(index) >= m_ObjectiveFunctionNames.size()) {
     return std::string();
   }
 

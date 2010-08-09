@@ -84,6 +84,7 @@ void CheckFBO()
 
 const GLubyte* gluErrorString( GLenum errorCode )
 {
+#if 0
    static char tess_error[][128] = {
       "missing gluBeginPolygon",
       "missing gluBeginContour",
@@ -133,6 +134,8 @@ const GLubyte* gluErrorString( GLenum errorCode )
       "null control array or knot vector",
       "duplicate point on pwlcurve"
    };
+}
+#endif
 
    /* GL Errors */
    if (errorCode==GL_NO_ERROR) {

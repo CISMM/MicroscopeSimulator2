@@ -104,7 +104,6 @@ void vtkBlendingFluorescencePolyDataMapper::RenderPoints(vtkActor *actor) {
   double* spacing = actor->GetTexture()->GetInput()->GetSpacing();
   int* dimensions = actor->GetTexture()->GetInput()->GetDimensions();
   double width = static_cast<double>(dimensions[0]) * spacing[0];
-  double pointSize = width * WorldToScreen;
 
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   //if (pointSize > maxPointSize || !NVPointSpriteSupported) {
@@ -135,7 +134,6 @@ void vtkBlendingFluorescencePolyDataMapper::RenderPointsAsPoints(vtkActor *actor
   // and draw the points
   vtkPoints *points = this->GetInput()->GetPoints();
   int numPoints = points->GetNumberOfPoints();
-  double *pos = actor->GetPosition();
   double transformedFocalPlaneDepth = this->GetTransformedFocalPlaneDepth(actor);
   double pointSize = width * this->WorldToScreen;
 
@@ -163,7 +161,6 @@ void vtkBlendingFluorescencePolyDataMapper::RenderPointsAsPoints(vtkActor *actor
 void vtkBlendingFluorescencePolyDataMapper::RenderPointsAsRectsCPU(vtkActor *actor, double width) {
 
   // Get info on the number of points
-  double *pos = actor->GetPosition();
   double *scale = actor->GetScale();
   double offset = (0.5 * width) / (scale[0]);
 
@@ -185,7 +182,6 @@ void vtkBlendingFluorescencePolyDataMapper::RenderPointsAsRectsCPU(vtkActor *act
   AddAndScaleMacro(ur,  right,  up, offset); // Upper right
   AddAndScaleMacro(lr,  right, -up, offset); // Lower right
 
-  double transformedFPD = this->GetTransformedFocalPlaneDepth(actor);
   vtkPoints *points = this->GetInput()->GetPoints();
   int numPoints = points->GetNumberOfPoints();
 
@@ -240,7 +236,6 @@ void vtkBlendingFluorescencePolyDataMapper::RenderPointsAsRectsCPU(vtkActor *act
 void vtkBlendingFluorescencePolyDataMapper::RenderPointsAsRectsGPU(vtkActor *actor, double width) {
 
   vtkProperty *property = actor->GetProperty();
-  double transformedFPD = this->GetTransformedFocalPlaneDepth(actor);
   vtkPoints *points = this->GetInput()->GetPoints();
   int numPoints = points->GetNumberOfPoints();
 

@@ -76,11 +76,11 @@ int vtkBlendingPolyDataMapper::LoadExtensions(vtkRenderer *renderer) {
     return 0;
   }
 
-  char *arbImaging = "GL_ARB_imaging";
-  if (manager->ExtensionSupported(arbImaging)) {
-    manager->LoadExtension(arbImaging);
+  std::string arbImaging("GL_ARB_imaging");
+  if (manager->ExtensionSupported(arbImaging.c_str())) {
+    manager->LoadExtension(arbImaging.c_str());
   } else {
-    vtkErrorMacro(<< "Your graphics card does not support OpenGL extension '" << arbImaging << "'");
+    vtkErrorMacro(<< "Your graphics card does not support OpenGL extension '" << arbImaging.c_str() << "'");
   }
 
   this->ExtensionsLoaded = 1;

@@ -157,7 +157,6 @@ int vtkPolyDataToTetrahedralGrid::RequestData(
   vtkPoints *points = vtkPoints::New();
   points->SetNumberOfPoints(out.numberofpoints);
   for (int i = 0; i < out.numberofpoints; i++) {
-    double *ptlist = i*3 + out.pointlist;
     points->InsertPoint(i, i*3 + out.pointlist);
   }
   

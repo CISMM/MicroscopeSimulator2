@@ -158,7 +158,7 @@ void vtkAFMTipDilationMapper::Render(vtkRenderer *ren, vtkActor *act)
 // Create the OpenGL representation of the AFM tip
 void vtkAFMTipDilationMapper::CreateTip() {
   float height;
-	double* tipOrigin = this->TipImage->GetOrigin();
+  //double* tipOrigin = this->TipImage->GetOrigin();
   
   // tip for dilation
   this->TipList = glGenLists(1);

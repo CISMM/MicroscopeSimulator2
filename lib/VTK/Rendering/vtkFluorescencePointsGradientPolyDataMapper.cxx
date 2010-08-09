@@ -187,7 +187,6 @@ void vtkFluorescencePointsGradientPolyDataMapper::RenderPoints(vtkActor *actor, 
     // than 2^16, so we need to draw in several passes, gathering from a 
     // different set of pixels in each one.
     int* psfDimensions = this->PSFTexture->GetInput()->GetDimensions();
-    int totalPixels = psfDimensions[0] * psfDimensions[1];
     int rowsPerPass = this->PixelsPerPass / psfDimensions[0];
     for (int startRow = 0; startRow < psfDimensions[1]; startRow += rowsPerPass) {
       int endRow = startRow + rowsPerPass;

@@ -515,7 +515,7 @@ int CalcGeodesic(vtkPolyData* const mesh, vtkPriorityQueue* queue, double* geode
                          wu[3] = {pw[0]-pu[0],pw[1]-pu[1],pw[2]-pu[2]},
                          xu[3] = {px[0]-pu[0],px[1]-pu[1],px[2]-pu[2]},
                          lvu = vtkMath::Normalize(vu),
-                         lwu = vtkMath::Normalize(wu),
+                         //lwu = vtkMath::Normalize(wu),
                          lxu = vtkMath::Normalize(xu),
                          acosvuw = acos(vtkMath::Dot(vu,wu)),
                          acoswux = acos(vtkMath::Dot(wu,xu));

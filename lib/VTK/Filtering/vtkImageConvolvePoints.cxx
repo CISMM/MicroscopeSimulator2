@@ -124,7 +124,6 @@ int vtkImageConvolvePoints::RequestData(
     return 1;
   }
   
-  vtkIdType numImagePts = dims[0] * dims[1] * dims[2];
   vtkIdType i;
   
   // Traverse all points - splatting each into the volume.

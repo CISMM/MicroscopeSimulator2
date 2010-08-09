@@ -303,8 +303,6 @@ int vtkFramebufferObjectTexture::RequestData(vtkInformation* vtkNotUsed(request)
 
   this->RenderWindow->MakeCurrent();
 
-  int components = this->TextureFormat == GL_RGBA ? 3 : 1;
-  int size = components * this->TextureWidth * this->TextureHeight;
   glBindTexture(this->TextureTarget, this->Index);
 
   if (this->TextureFormat == GL_RGBA)

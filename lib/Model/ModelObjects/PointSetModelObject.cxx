@@ -158,7 +158,6 @@ PointSetModelObject
 
   for (int i = 1; i <= numPoints; i++) {
     char buf[128];
-    double xyz[3] = {0.0, 0.0, 0.0};
 
     sprintf(buf, "X%d", i);
     ModelObjectProperty* prop1 = GetProperty(std::string(buf));

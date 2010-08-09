@@ -69,8 +69,7 @@ vtkRefactorPolyData::~vtkRefactorPolyData()
 void vtkRefactorPolyData::SortPolyData(vtkPolyData* mesh, vtkPolyData* inter,
                                        vtkIdList* inList, vtkIdList* outList)
 {
-   int numCells = mesh->GetNumberOfCells(),
-       numPts = mesh->GetNumberOfPoints();
+   int numCells = mesh->GetNumberOfCells();
 
    // initialize cells to -1 (unknown), later mark as inside (0), or outside (1)
    int* label = new int[numCells];
