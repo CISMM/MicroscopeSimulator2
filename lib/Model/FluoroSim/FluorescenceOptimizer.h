@@ -57,6 +57,7 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
 
   virtual void Optimize() = 0;
 
+  int          GetNumberOfParameters();
   void         SetParameters(double* params);
 
   virtual int  GetNumberOfAvailableObjectiveFunctions() const;

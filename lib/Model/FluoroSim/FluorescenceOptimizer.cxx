@@ -249,6 +249,19 @@ FluorescenceOptimizer
 }
 
 
+int
+FluorescenceOptimizer
+::GetNumberOfParameters() {
+  if (m_ModelObjectList && 
+      m_FluoroSim && 
+      m_FluoroSim->GetFluorescenceImageSource()) {
+    return m_FluoroSim->GetFluorescenceImageSource()->GetNumberOfParameters();
+  }
+
+  return 0;
+}
+
+
 void
 FluorescenceOptimizer
 ::SetParameters(double* params) {

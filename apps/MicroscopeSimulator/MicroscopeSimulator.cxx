@@ -32,6 +32,7 @@
 #include <QVariant>
 
 #include <ErrorLogDialog.h>
+#include <FluorescenceImageSource.h>
 #include <FluorophoreModelDialog.h>
 #include <FocalPlanePositionsDialog.h>
 #include <ImageExportOptionsDialog.h>
@@ -1694,7 +1695,14 @@ MicroscopeSimulator
 ::on_fluoroSimOptimizeButton_clicked() {
   QMessageBox messageBox;
 
-  if (m_Simulation->GetComparisonImageModelObject()) {
+  if (m_Simulation->GetFluorescenceOptimizer()->GetNumberOfParameters() <= 0) {
+    messageBox.setText(tr("No model object properties have been selected "
+                          "for optimization. Please select one or more "
+                          "properties to be optimized and try again."));
+    messageBox.setStandardButtons(QMessageBox::Ok);
+    messageBox.setDefaultButton(QMessageBox::Ok);
+    messageBox.exec();
+  } else if (m_Simulation->GetComparisonImageModelObject()) {
     messageBox.setText(tr("WARNING: Optimization may take a long time. Run the optimizer?"));
     messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     messageBox.setDefaultButton(QMessageBox::Yes);
