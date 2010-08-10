@@ -179,21 +179,20 @@ vtkFluorescenceWidgetsRepresentation
       this->ComparisonFocalPlaneImageShiftScale->SetShift(-mapsToZero);
       this->ComparisonFocalPlaneImageShiftScale->SetScale(255.0 / (mapsToOne - mapsToZero));
 
-      ImageModelObject* comparisonImage = this->Simulation->GetComparisonImageModelObject();
-      if (comparisonImage) {
-        vtkImageData* experimentalImage = 
-          this->Simulation->GetComparisonImageModelObject()->GetImageData();
+      ImageModelObject* comparisonImageObject = this->Simulation->GetComparisonImageModelObject();
+      if (comparisonImageObject) {
+        vtkImageData* comparisonImage = comparisonImageObject->GetImageData();
         int extent[6];
-        experimentalImage->GetExtent(extent);
+        comparisonImage->GetExtent(extent);
         extent[4] = extent[5] = this->Simulation->GetFocalPlaneIndex();
 
-        double comparisonImageWidth  = extent[1] * comparisonImage->
+        double comparisonImageWidth  = (extent[1]+1) * comparisonImageObject->
           GetProperty(ImageModelObject::X_SPACING_PROP)->GetDoubleValue();
-        double comparisonImageHeight = extent[3] * comparisonImage->
+        double comparisonImageHeight = (extent[3]+1) * comparisonImageObject->
           GetProperty(ImageModelObject::Y_SPACING_PROP)->GetDoubleValue();
 
         vtkImageClip* clipper = vtkImageClip::New();
-        clipper->SetInput(experimentalImage);
+        clipper->SetInput(comparisonImage);
         clipper->SetOutputWholeExtent(extent);
 
         this->ComparisonFocalPlaneImageShiftScale->SetInputConnection
