@@ -27,8 +27,6 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   virtual void SetFileName(const std::string& fileName);
   virtual std::string GetFileName();
 
-  void GetSize(int& ix, int& iy, int& iz);
-
   virtual vtkImageData* GetOutput();
   virtual vtkAlgorithmOutput* GetOutputPort();
 

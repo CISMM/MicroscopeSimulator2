@@ -91,13 +91,6 @@ ImportedPointSpreadFunction
 }
 
 
-void
-ImportedPointSpreadFunction
-::GetSize(int& ix, int& iy, int& iz) {
-
-}
-
-
 vtkImageData*
 ImportedPointSpreadFunction
 ::GetOutput() {
@@ -140,9 +133,9 @@ ImportedPointSpreadFunction
 ::GetParameterValue(int index) {
   switch (index) {
   case 0: return m_SummedIntensity;
-  case 1: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[0]; break;
-  case 2: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[1]; break;
-  case 3: return m_ITKToVTKFilter->GetOutput()->GetDimensions()[2]; break;
+  case 1: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[0]; break;
+  case 2: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[1]; break;
+  case 3: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[2]; break;
   case 4: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
   case 5: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
   case 6: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
