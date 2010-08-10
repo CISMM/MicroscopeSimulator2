@@ -125,7 +125,8 @@ UniformFluorophoreProperty
 int
 UniformFluorophoreProperty
 ::GetNumberOfFluorophores() {
-  return m_Sampler->GetNumberOfSamples();
+  m_Sampler->GetOutput()->Update();
+  return m_Sampler->GetOutput()->GetNumberOfPoints();
 }
 
 
