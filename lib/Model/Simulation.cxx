@@ -462,7 +462,14 @@ Simulation
 void
 Simulation
 ::OptimizeToFluorescence() {
+  // Save the position of the focal plane
+  unsigned int focalPlaneIndex = m_FluoroSim->GetFocalPlaneIndex();
+
+  // Run the optimization
   m_FluoroOptimizer->Optimize();
+
+  // Reset the focal plane position
+  m_FluoroSim->SetFocalPlaneIndex(focalPlaneIndex);
 }
 
 
