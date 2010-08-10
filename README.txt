@@ -1,4 +1,4 @@
-Last update: 2010-04-21
+Last update: 2010-08-11
 Author: Cory Quammen <cquammen@cs.unc.edu>
 
 This document gives instructions on how to build the MicroscopeSimulator2
@@ -68,10 +68,15 @@ the git repository
 
 git://vtk.org/VTK.git
 
+You may optionally checkout a stable version of VTK from the git repository
+using
 
-Configure VTK with CMake and build it. You'll need to enable GUI support 
-(enable option VTK_USE_GUI_SUPPORT), Qt (option VTK_USE_QT), VTK_USE_VIEWS, 
-and VTK_USE_SYSTEM_LIBXML2. Set the following variables to the given values:
+git checkout v5.6.0
+
+Configure VTK with CMake and build it. Turn on the option BUILD_SHARED_LIBS.
+You'll need to enable GUI support (enable option VTK_USE_GUI_SUPPORT),
+Qt (option VTK_USE_QT), VTK_USE_VIEWS, and VTK_USE_SYSTEM_LIBXML2. Set the following
+variables to the given values:
 
 LIBXML2_INCLUDE_DIR         <LIBXML2_BUILD_DIRECTORY>/include
 LIBXML2_LIBRARIES           <LIBXML2_BUILD_DIRECTORY>/lib/libxml2.lib
@@ -83,17 +88,12 @@ On Windows, set QT_QMAKE_EXECUTABLE to QT_BUILD_DIRECTORY/bin/qmake.exe.
 
 http://www.itk.org/ITK/resources/software.html.
 
-Version 3.18 is known to work.
+Version 3.20 is known to work.
 Choose either InsightToolkit*.tar.gz or InsightToolkit*.zip 
 depending on what extraction applications you have available on your development
-system. Configure ITK with CMake and build it. No non-default options are 
-required for this application example to work.
+system. Configure ITK with CMake and build it. Turn off BUILD_TESTING and BUILD_EXAMPLES
+and turn on BUILD_SHARED_LIBS.
 
-6. Configure the VTKMS project using CMake. Set VTK_DIR to the VTK build directory
-from step 4. Set ITK_DIR to the ITK build directory from step 5.
-
-
-7. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to
+6. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to
 the VTK build directory from step 4. Set ITK_DIR to the ITK build directory from step 5.
-Set the VTKMS directory to the build directory from step 6.
 
