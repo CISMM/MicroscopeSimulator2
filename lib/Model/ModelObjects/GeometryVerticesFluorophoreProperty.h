@@ -12,6 +12,8 @@ class GeometryVerticesFluorophoreProperty : public FluorophoreModelObjectPropert
                                     bool optimizable = true);
   virtual ~GeometryVerticesFluorophoreProperty();
 
+  int GetNumberOfFluorophores();
+
  protected:
   GeometryVerticesFluorophoreProperty() {};
 

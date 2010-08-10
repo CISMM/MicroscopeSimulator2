@@ -33,6 +33,8 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
 
   vtkPolyDataAlgorithm* GetGeometry();
 
+  virtual int GetNumberOfFluorophores() = 0;
+
   vtkAlgorithm* GetFluorophoreOutput();
 
   virtual void GetXMLConfiguration(xmlNodePtr root);

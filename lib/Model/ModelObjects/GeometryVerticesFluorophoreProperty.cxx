@@ -17,3 +17,11 @@ GeometryVerticesFluorophoreProperty
 ::~GeometryVerticesFluorophoreProperty() {
 
 }
+
+
+int
+GeometryVerticesFluorophoreProperty
+::GetNumberOfFluorophores() {
+  m_GeometrySource->GetOutput()->Update();
+  return m_GeometrySource->GetOutput()->GetNumberOfPoints();
+}

@@ -457,5 +457,32 @@ ModelObject
 void
 ModelObject
 ::ApplySampleForces(int fluorophorePropertyIndex, float* forces) {
-  // Default is to not do anything.
+  // Default is to optimize position and rotation.
+
+  // Quick hack to do translation
+  int numPoints = GetFluorophoreProperty(fluorophorePropertyIndex)->GetNumberOfFluorophores();
+  double translation[3];
+  translation[0] = translation[1] = translation[2] = 0.0;
+  for (int i = 0; i < numPoints; i++) {
+    for (int dim = 0; dim < 3; dim++) {
+      translation[dim] += static_cast<double>(forces[i*3+dim]);
+    }
+  }
+
+  std::cout << "Translation: " << translation[0] << ", " << translation[1]
+            << ", " << translation[2] << std::endl;
+
+  ModelObjectProperty* positionProperties[3];
+  positionProperties[0] = GetProperty(X_POSITION_PROP);
+  positionProperties[1] = GetProperty(Y_POSITION_PROP);
+  positionProperties[2] = GetProperty(Z_POSITION_PROP);
+  
+  for (int i = 0; i < 3; i++) {
+    if (positionProperties[i] && positionProperties[i]->GetOptimize()) {
+      double value = positionProperties[i]->GetDoubleValue();
+      positionProperties[i]->SetDoubleValue(value + translation[i]);
+    }
+  }
+
+  Update();
 }
