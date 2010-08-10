@@ -1,6 +1,7 @@
 #include <PointsGradientFluorescenceOptimizer.h>
 
 #include <FluorescenceSimulation.h>
+#include <FluorophoreModelObjectProperty.h>
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
 #include <VisualizationFluorescenceImageSource.h>
@@ -69,7 +70,10 @@ PointsGradientFluorescenceOptimizer
       for (int fluorophorePropertyIndex = 0;
            fluorophorePropertyIndex < modelObject->GetNumberOfFluorophoreProperties();
            fluorophorePropertyIndex++) {
-           
+        if (!modelObject->GetFluorophoreProperty(fluorophorePropertyIndex)->GetEnabled()) {
+          continue;
+        }
+
         int numPoints;
         float* gradientSrc = imageSource->
           GetPointsGradientForFluorophoreProperty
