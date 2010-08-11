@@ -66,9 +66,6 @@ public:
 
   void FocusOnObject(ModelObject* object);
 
-  float* GetPointsGradientForFluorophoreProperty(int objectIndex,
-                                                 int fluorophorePropertyIndex,
-                                                 int& numPoints);
   vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex);
 
 protected:

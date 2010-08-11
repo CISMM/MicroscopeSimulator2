@@ -102,11 +102,6 @@ vtkActor* vtkModelObjectFluorescenceRepresentation::GetGradientActor() {
 }
 
 
-float* vtkModelObjectFluorescenceRepresentation::GetPointsGradient(int& numPoints) {
-  return this->GradientMapper->GetPointsGradient(numPoints);
-}
-
-
 vtkPolyData* vtkModelObjectFluorescenceRepresentation::GetPointsGradient() {
   return this->GradientMapper->GetPointsGradient();
 }

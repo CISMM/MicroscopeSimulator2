@@ -25,10 +25,9 @@ class FluorescenceImageSource {
   // model objects.
   virtual void ComputePointsGradient() = 0;
 
-  // Get point gradient for a model object.
-  virtual float* GetPointsGradientForFluorophoreProperty(int objectIndex, 
-                                                         int fluorophorePropertyIndex,
-                                                         int& numPoints) = 0;
+  // Get point gradient for a model object. Each model object can have
+  // one or more fluorophore models; the vtkPolyDataCollection returned by
+  // this function holds gradients from all the fluorophore models.
   virtual vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex) = 0;
 
   virtual int GetNumberOfParameters() = 0;

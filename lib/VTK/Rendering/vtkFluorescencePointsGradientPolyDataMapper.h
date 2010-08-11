@@ -49,7 +49,6 @@ public:
 
   // Description:
   // Gets the points gradient calculated by this mapper
-  float* GetPointsGradient(int& numPoints);
   vtkPolyData* GetPointsGradient();
 
   // Description:

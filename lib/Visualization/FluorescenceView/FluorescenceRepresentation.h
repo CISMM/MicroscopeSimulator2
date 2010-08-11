@@ -29,9 +29,6 @@ class FluorescenceRepresentation {
 
   void Update();
 
-  float* GetPointsGradientForFluorophoreProperty(int objectIndex,
-                                                 int fluorophorePropertyIndex,
-                                                 int& numPoints);
   vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex);
 
  protected:

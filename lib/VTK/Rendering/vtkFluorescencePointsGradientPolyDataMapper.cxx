@@ -68,26 +68,6 @@ vtkFluorescencePointsGradientPolyDataMapper::~vtkFluorescencePointsGradientPolyD
 }
 
 
-float* vtkFluorescencePointsGradientPolyDataMapper::GetPointsGradient(int& numPoints) {
-  numPoints = this->GetInput()->GetPoints()->GetNumberOfPoints();
-  this->TextureTarget->Update();
-  this->TextureTarget->GetOutput()->Update();
-  vtkFloatArray* gradientArray = vtkFloatArray::SafeDownCast
-    (this->TextureTarget->GetOutput()->GetPointData()->GetScalars());
-
-  float* gradient = gradientArray->GetPointer(0);
-
- 
-  vtkPointData* pd = this->GetInput()->GetPointData();
-  std::cout << "Number of arrays: " << pd->GetNumberOfArrays() << std::endl;
-  for (int i = 0; i < pd->GetNumberOfArrays(); i++) {
-    std::cout << pd->GetArrayName(i) << std::endl;
-  }
-
-  return gradient;
-}
-
-
 vtkPolyData* vtkFluorescencePointsGradientPolyDataMapper::GetPointsGradient() {
   // Get the gradient data from the texture target
   this->TextureTarget->Update();

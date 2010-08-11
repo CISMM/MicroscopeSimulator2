@@ -57,18 +57,6 @@ VisualizationFluorescenceImageSource
 }
 
 
-float*
-VisualizationFluorescenceImageSource
-::GetPointsGradientForFluorophoreProperty(int objectIndex,
-                                          int fluorophorePropertyIndex,
-                                          int& numPoints) {
-  if (!m_Visualization) return 0;
-
-  return m_Visualization->GetPointsGradientForFluorophoreProperty
-    (objectIndex, fluorophorePropertyIndex, numPoints);
-}
-
-
 vtkPolyDataCollection*
 VisualizationFluorescenceImageSource
 ::GetPointGradientsForModelObject(int objectIndex) {
