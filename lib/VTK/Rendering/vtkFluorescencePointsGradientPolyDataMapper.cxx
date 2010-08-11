@@ -14,6 +14,7 @@
 =========================================================================*/
 #include "vtkFluorescencePointsGradientPolyDataMapper.h"
 
+#include "vtkFloatArray.h"
 #include "vtkFluorescencePointsGradientRenderer.h"
 #include "vtkFramebufferObjectTexture.h"
 #include "vtkImageData.h"
@@ -22,6 +23,7 @@
 #include "vtkOpenGL3DTexture.h"
 #include "vtkOpenGLExtensionManager.h"
 #include "vtkOpenGLTexture.h"
+#include "vtkPointData.h"
 
 #include <float.h>
 #include <vector>
@@ -70,9 +72,40 @@ float* vtkFluorescencePointsGradientPolyDataMapper::GetPointsGradient(int& numPo
   numPoints = this->GetInput()->GetPoints()->GetNumberOfPoints();
   this->TextureTarget->Update();
   this->TextureTarget->GetOutput()->Update();
-  float* gradient = static_cast<float*>(this->TextureTarget->GetOutput()->GetScalarPointer());
+  vtkFloatArray* gradientArray = vtkFloatArray::SafeDownCast
+    (this->TextureTarget->GetOutput()->GetPointData()->GetScalars());
+
+  float* gradient = gradientArray->GetPointer(0);
+
+ 
+  vtkPointData* pd = this->GetInput()->GetPointData();
+  std::cout << "Number of arrays: " << pd->GetNumberOfArrays() << std::endl;
+  for (int i = 0; i < pd->GetNumberOfArrays(); i++) {
+    std::cout << pd->GetArrayName(i) << std::endl;
+  }
 
   return gradient;
+}
+
+
+vtkPolyData* vtkFluorescencePointsGradientPolyDataMapper::GetPointsGradient() {
+  // Get the gradient data from the texture target
+  this->TextureTarget->Update();
+  this->TextureTarget->GetOutput()->Update();
+  vtkSmartPointer<vtkFloatArray> gradientArray = 
+    vtkSmartPointer<vtkFloatArray>::New();
+  gradientArray->DeepCopy(this->TextureTarget->GetOutput()->GetPointData()->GetScalars());
+  gradientArray->SetName("Gradient");
+
+  // The variable gradientData holds the sample points used for the gradient
+  // computation as well as the gradient values themselves. The gradient
+  // values are stored as an array named "Gradient".
+  vtkPolyData* gradientData = vtkPolyData::New();
+  gradientData->DeepCopy(this->GetInput());
+  vtkPointData* pointData = gradientData->GetPointData();
+  pointData->AddArray(gradientArray);
+
+  return gradientData;
 }
 
 

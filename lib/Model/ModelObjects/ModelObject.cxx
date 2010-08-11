@@ -6,7 +6,9 @@
 
 #include <vtkAppendPolyData.h>
 #include <vtkPoints.h>
+#include <vtkPointData.h>
 #include <vtkPolyDataAlgorithm.h>
+#include <vtkPolyDataCollection.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 
@@ -485,4 +487,57 @@ ModelObject
   }
 
   Update();
+}
+
+
+void
+ModelObject
+::ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize) {
+  vtkCollectionSimpleIterator iter;
+  pointGradients->InitTraversal(iter);
+
+  int numFluorophoreProperties = GetNumberOfFluorophoreProperties();
+  for (int fluorIndex = 0; fluorIndex < numFluorophoreProperties; fluorIndex++) {
+    vtkPolyData* gradientData = pointGradients->GetNextPolyData(iter);
+    if (!GetFluorophoreProperty(fluorIndex)->GetEnabled()) {
+      continue;
+    }
+
+    int numPoints = gradientData->GetNumberOfPoints();
+    std::cout << "Num points: " << numPoints << std::endl;
+
+    // Scale the gradient
+    float* gradientPtr = reinterpret_cast<float*>
+      (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
+
+    // Quick hack to do translation
+    double translation[3];
+    translation[0] = translation[1] = translation[2] = 0.0;
+    for (int i = 0; i < numPoints; i++) {
+      for (int dim = 0; dim < 3; dim++) {
+        translation[dim] += stepSize * static_cast<double>(gradientPtr[i*3+dim]);
+      }
+    }
+    for (int dim = 0; dim < 3; dim++) {
+      translation[dim] /= static_cast<double>(numPoints);
+    }
+
+    std::cout << "Translation: " << translation[0] << ", " << translation[1]
+              << ", " << translation[2] << std::endl;
+
+    ModelObjectProperty* positionProperties[3];
+    positionProperties[0] = GetProperty(X_POSITION_PROP);
+    positionProperties[1] = GetProperty(Y_POSITION_PROP);
+    positionProperties[2] = GetProperty(Z_POSITION_PROP);
+  
+    for (int dim = 0; dim < 3; dim++) {
+      if (positionProperties[dim] && positionProperties[dim]->GetOptimize()) {
+        double value = positionProperties[dim]->GetDoubleValue();
+        positionProperties[dim]->SetDoubleValue(value + translation[dim]);
+      }
+    }
+
+    Update();
+
+  }
 }

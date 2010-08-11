@@ -6,6 +6,8 @@
 #include <ModelObjectList.h>
 #include <VisualizationFluorescenceImageSource.h>
 
+#include <vtkPolyDataCollection.h>
+
 
 const char* PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM = "PointsGradientFluorescenceOptimizer";
 
@@ -65,31 +67,10 @@ PointsGradientFluorescenceOptimizer
     for (size_t objectIndex = 0; objectIndex < m_ModelObjectList->GetSize(); objectIndex++) {
       ModelObjectPtr modelObject = m_ModelObjectList->GetModelObjectAtIndex(objectIndex);
 
-      for (int fluorophorePropertyIndex = 0;
-           fluorophorePropertyIndex < modelObject->GetNumberOfFluorophoreProperties();
-           fluorophorePropertyIndex++) {
-        if (!modelObject->GetFluorophoreProperty(fluorophorePropertyIndex)->GetEnabled()) {
-          continue;
-        }
-
-        int numPoints;
-        float* gradientSrc = imageSource->
-          GetPointsGradientForFluorophoreProperty
-          (objectIndex, fluorophorePropertyIndex, numPoints);
-        float* gradient = new float[3*numPoints];
-        memcpy(gradient, gradientSrc, sizeof(float)*3*numPoints);
-        
-        // Scale the gradient
-        for (int i = 0; i < numPoints; i++) {
-          gradient[3*i + 0] *= stepSize;
-          gradient[3*i + 1] *= stepSize;
-          gradient[3*i + 2] *= stepSize;
-        }
-        
-        modelObject->ApplySampleForces(fluorophorePropertyIndex, gradient);
-
-        delete[] gradient;
-      }
+      vtkPolyDataCollection* pointGradients = 
+        imageSource->GetPointGradientsForModelObject(objectIndex);
+      modelObject->ApplyPointGradients(pointGradients, stepSize);
+      pointGradients->Delete();
     }
   }
 }

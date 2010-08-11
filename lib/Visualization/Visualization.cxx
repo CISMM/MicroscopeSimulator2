@@ -321,3 +321,11 @@ Visualization
     GetPointsGradientForFluorophoreProperty
     (objectIndex, fluorophorePropertyIndex, numPoints);
 }
+
+
+vtkPolyDataCollection*
+Visualization
+::GetPointGradientsForModelObject(int objectIndex) {
+  return m_FluorescenceRepresentation->
+    GetPointGradientsForModelObject(objectIndex);
+}

@@ -6,6 +6,7 @@
 
 // Forward declarations
 class vtkImageData;
+class vtkPolyDataCollection;
 
 
 class FluorescenceImageSource {
@@ -28,6 +29,7 @@ class FluorescenceImageSource {
   virtual float* GetPointsGradientForFluorophoreProperty(int objectIndex, 
                                                          int fluorophorePropertyIndex,
                                                          int& numPoints) = 0;
+  virtual vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex) = 0;
 
   virtual int GetNumberOfParameters() = 0;
 

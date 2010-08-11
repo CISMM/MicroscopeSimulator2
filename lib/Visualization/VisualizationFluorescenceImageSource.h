@@ -6,6 +6,8 @@
 class Simulation;
 class Visualization;
 
+class vtkPolyDataCollection;
+
 
 class VisualizationFluorescenceImageSource : public FluorescenceImageSource {
 
@@ -26,6 +28,7 @@ class VisualizationFluorescenceImageSource : public FluorescenceImageSource {
   virtual float* GetPointsGradientForFluorophoreProperty(int objectIndex, 
                                                          int fluorophorePropertyIndex,
                                                          int& numPoints);
+  virtual vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex);
 
   virtual int GetNumberOfParameters();
 

@@ -14,6 +14,7 @@ class vtkImageData;
 class vtkImagePlaneWidgetRepresentation;
 class vtkInteractorStyleTrackballCamera;
 class vtkInteractorStyleTrackballActor;
+class vtkPolyDataCollection;
 class vtkRenderer;
 class vtkRenderView;
 class vtkRenderWindow;
@@ -68,6 +69,7 @@ public:
   float* GetPointsGradientForFluorophoreProperty(int objectIndex,
                                                  int fluorophorePropertyIndex,
                                                  int& numPoints);
+  vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex);
 
 protected:
   Simulation* m_Simulation;

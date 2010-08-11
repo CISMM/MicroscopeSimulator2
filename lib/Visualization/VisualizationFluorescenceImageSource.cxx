@@ -8,6 +8,8 @@
 #include <Simulation.h>
 #include <Visualization.h>
 
+#include <vtkPolyDataCollection.h>
+
 
 VisualizationFluorescenceImageSource
 ::VisualizationFluorescenceImageSource() {
@@ -64,6 +66,15 @@ VisualizationFluorescenceImageSource
 
   return m_Visualization->GetPointsGradientForFluorophoreProperty
     (objectIndex, fluorophorePropertyIndex, numPoints);
+}
+
+
+vtkPolyDataCollection*
+VisualizationFluorescenceImageSource
+::GetPointGradientsForModelObject(int objectIndex) {
+  if (!m_Visualization) return 0;
+
+  return m_Visualization->GetPointGradientsForModelObject(objectIndex);
 }
 
 

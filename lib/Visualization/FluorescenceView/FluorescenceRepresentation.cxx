@@ -8,6 +8,7 @@
 
 #include <vtkAlgorithmOutput.h>
 #include <vtkModelObjectFluorescenceRepresentation.h>
+#include <vtkPolyDataCollection.h>
 #include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSurfaceUniformPointSampler.h>
 #include <vtkTriangleFilter.h>
@@ -94,6 +95,26 @@ FluorescenceRepresentation
 #if 0
   return m_FluorescenceReps[repIndex]->GetPointsGradient(numPoints);
 #endif
+}
+
+
+vtkPolyDataCollection*
+FluorescenceRepresentation
+::GetPointGradientsForModelObject(int objectIndex) {
+  vtkPolyDataCollection* collection = vtkPolyDataCollection::New();
+
+  ModelObjectPtr desiredObject = 
+    m_ModelObjectList->GetModelObjectAtIndex(objectIndex);
+  for (size_t i = 0; i < m_FluorescenceReps.size(); i++) {
+    ModelObjectPtr repObject = m_FluorescenceReps[i]->GetModelObject();
+    if (repObject == desiredObject) {
+      vtkPolyData* pointGradient = m_FluorescenceReps[i]->GetPointsGradient();
+      collection->AddItem(pointGradient);
+      pointGradient->Delete();
+    }
+  }
+
+  return collection;
 }
 
 

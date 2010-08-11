@@ -19,6 +19,7 @@ typedef ModelObjectProperty* ModelObjectPropertyPtr;
 class vtkActor;
 class vtkPoints;
 class vtkPolyDataAlgorithm;
+class vtkPolyDataCollection;
 
 
 class ModelObject : public DirtyListener, public XMLStorable {
@@ -107,6 +108,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
 
       TODO: make this a pure virtual method once all existing model objects have implementations. */
   virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
+  virtual void ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize);
 
   virtual void Update() = 0;
 

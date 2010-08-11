@@ -3,6 +3,7 @@
 
 #include <ModelObject.h>
 
+#include <vtkPolyDataCollection.h>
 #include <vtkSmartPointer.h>
 
 class DirtyListener;
@@ -34,6 +35,7 @@ class PointSetModelObject : public ModelObject {
   virtual void Sully();
 
   virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
+  virtual void ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize);
 
  protected:
   PointSetModelObject() {};

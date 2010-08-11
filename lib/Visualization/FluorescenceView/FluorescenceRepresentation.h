@@ -8,6 +8,7 @@ class FluorescenceSimulation;
 class ModelObject;
 class ModelObjectList;
 class vtkCommand;
+class vtkPolyDataCollection;
 class vtkPolyDataAlgorithm;
 class vtkModelObjectFluorescenceRepresentation;
 class vtkView;
@@ -31,6 +32,7 @@ class FluorescenceRepresentation {
   float* GetPointsGradientForFluorophoreProperty(int objectIndex,
                                                  int fluorophorePropertyIndex,
                                                  int& numPoints);
+  vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex);
 
  protected:
   ModelObjectList* m_ModelObjectList;
