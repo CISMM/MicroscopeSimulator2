@@ -85,6 +85,6 @@ void main() {
          done = row >= endRow;
       }
    }
-   gl_FragColor.rgb = 1e-5*sum;
+   gl_FragColor.rgb = sum;
    gl_FragColor.a = 1.0;
 }
