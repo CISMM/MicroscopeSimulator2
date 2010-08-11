@@ -5,6 +5,7 @@
 #include <XMLHelper.h>
 
 #include <vtkAppendPolyData.h>
+#include <vtkMath.h>
 #include <vtkPoints.h>
 #include <vtkPointData.h>
 #include <vtkPolyDataAlgorithm.h>
@@ -458,35 +459,81 @@ ModelObject
 
 void
 ModelObject
-::ApplySampleForces(int fluorophorePropertyIndex, float* forces) {
-  // Default is to optimize position and rotation.
-
-  // Quick hack to do translation
-  int numPoints = GetFluorophoreProperty(fluorophorePropertyIndex)->GetNumberOfFluorophores();
-  double translation[3];
-  translation[0] = translation[1] = translation[2] = 0.0;
-  for (int i = 0; i < numPoints; i++) {
-    for (int dim = 0; dim < 3; dim++) {
-      translation[dim] += static_cast<double>(forces[i*3+dim]);
-    }
-  }
-
-  std::cout << "Translation: " << translation[0] << ", " << translation[1]
-            << ", " << translation[2] << std::endl;
-
-  ModelObjectProperty* positionProperties[3];
-  positionProperties[0] = GetProperty(X_POSITION_PROP);
-  positionProperties[1] = GetProperty(Y_POSITION_PROP);
-  positionProperties[2] = GetProperty(Z_POSITION_PROP);
+::GetRotationJacobianMatrixColumn(vtkPolyData* points, const char* component, int column, double* matrix) {
   
-  for (int i = 0; i < 3; i++) {
-    if (positionProperties[i] && positionProperties[i]->GetOptimize()) {
-      double value = positionProperties[i]->GetDoubleValue();
-      positionProperties[i]->SetDoubleValue(value + translation[i]);
-    }
+  if (!GetProperty(ROTATION_ANGLE_PROP)) {
+    std::cout << "No rotation properties appear to be available in model "
+      << "object '" << GetProperty(NAME_PROP)->GetStringValue() << "'"
+      << std::endl;
+    return;
   }
 
-  Update();
+  // Iterate over the points and compute the partial derivatives for 
+  // the column.
+  int numPoints = points->GetNumberOfPoints();
+
+  // TODO - make sure I have row,column correct in the matrix indexing.
+
+  double thetaDegrees = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+  double theta = vtkMath::RadiansFromDegrees(thetaDegrees);
+  double vx    = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+  double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+  double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+
+  double t = 1.0 - cos(theta);
+  double tPrime = sin(theta);
+  double c = cos(theta);
+  double cPrime = -sin(theta);
+  double s = sin(theta);
+  double sPrime = cos(theta);
+
+  // Switch based on the requested component.
+  if (strcmp(component, ROTATION_ANGLE_PROP) == 0) {
+    for (int ptId = 0; ptId < numPoints; ptId++) {
+      double* pt = points->GetPoint(ptId);
+      double x = pt[0], y = pt[1], z = pt[2];
+      //matrix[column][ptId*3 + 0] =
+      //  (tPrime*vx*vx + cPrime   )*x + 
+      //  (tPrime*vx*vy + sPrime*vz)*y + 
+      //  (tPrime*vx*vz - sPrime*vy)*z;
+      // matrix[column][ptId*3 + 1] =
+      //  (tPrime*vx*vy - SPrime*vz)*x +
+      //  (tPrime*vy*vy + cPrime   )*y +
+      //  (tPrime*vy*vz + sPrime*vx)*z;
+      // matrix[column][ptId*3 + 2] =
+      //  (tPrime*vx*vz + sPrime*vy)*x +
+      //  (tPrime*vy*vz - sPrime*vx)*y +
+      //  (tPrime*vz*vz + cPrime   )*z;
+    }
+  } else if (strcmp(component, ROTATION_VECTOR_X_PROP) == 0) {
+    for (int ptId = 0; ptId < numPoints; ptId++) {
+      double* pt = points->GetPoint(ptId);
+      double x = pt[0], y = pt[1], z = pt[2];
+      //matrix[column][ptId*3 + 0] = 2*t*vx*x + t*vy*y + t*vz*z;
+      //matrix[column][ptId*3 + 1] = t*vy*x + s*z;
+      //matrix[column][ptId*3 + 2] = t*vz*x - s*y;
+    }
+  } else if (strcmp(component, ROTATION_VECTOR_Y_PROP) == 0) {
+    for (int ptId = 0; ptId < numPoints; ptId++) {
+      double* pt = points->GetPoint(ptId);
+      double x = pt[0], y = pt[1], z = pt[2];
+      //matrix[column][ptId*3 + 0] = t*vx*y - s*z;
+      //matrix[column][ptId*3 + 1] = t*vx*x + 2*t*vy*y + t*vz*z;
+      //matrix[column][ptId*3 + 2] = s*vy*x + t*vz*y;
+    }
+  } else if (strcmp(component, ROTATION_VECTOR_Z_PROP) == 0) {
+    for (int ptId = 0; ptId < numPoints; ptId++) {
+      double* pt = points->GetPoint(ptId);
+      double x = pt[0], y = pt[1], z = pt[2];
+      //matrix[column][ptId*3 + 0] = s*vz*y + t*vx*z;
+      //matrix[column][ptId*3 + 1] = -s*x + t*vy*z;
+      //matrix[column][ptId*3 + 2] = t*vx*x + t*vy*y + 2*t*vz;
+    }
+  } else {
+    std::cout 
+      << "Error in ModelObject::GetRotationJacobianMatrixColumn. "
+      << "Requested component '" << component << "' unknown." << std::endl;
+  }
 }
 
 
@@ -503,9 +550,6 @@ ModelObject
       continue;
     }
 
-    int numPoints = gradientData->GetNumberOfPoints();
-    std::cout << "Num points: " << numPoints << std::endl;
-
     // Scale the gradient
     float* gradientPtr = reinterpret_cast<float*>
       (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
@@ -513,6 +557,7 @@ ModelObject
     // Quick hack to do translation
     double translation[3];
     translation[0] = translation[1] = translation[2] = 0.0;
+    int numPoints = gradientData->GetNumberOfPoints();
     for (int i = 0; i < numPoints; i++) {
       for (int dim = 0; dim < 3; dim++) {
         translation[dim] += stepSize * static_cast<double>(gradientPtr[i*3+dim]);
@@ -521,9 +566,6 @@ ModelObject
     for (int dim = 0; dim < 3; dim++) {
       translation[dim] /= static_cast<double>(numPoints);
     }
-
-    std::cout << "Translation: " << translation[0] << ", " << translation[1]
-              << ", " << translation[2] << std::endl;
 
     ModelObjectProperty* positionProperties[3];
     positionProperties[0] = GetProperty(X_POSITION_PROP);

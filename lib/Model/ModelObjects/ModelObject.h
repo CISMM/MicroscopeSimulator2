@@ -18,6 +18,7 @@ typedef ModelObjectProperty* ModelObjectPropertyPtr;
 
 class vtkActor;
 class vtkPoints;
+class vtkPolyData;
 class vtkPolyDataAlgorithm;
 class vtkPolyDataCollection;
 
@@ -100,14 +101,11 @@ class ModelObject : public DirtyListener, public XMLStorable {
   vtkPolyDataAlgorithm* GetAllGeometryTransformed();
   vtkPolyDataAlgorithm* GetGeometrySubAssembly(const std::string& name);
 
-  /** Applies forces at fluorophore sample points to geometry and/or 
-      sample points themselves. The size of the forces array should be 
+  /** Applies point gradient at fluorophore sample points to geometry and/or 
+      the sample points themselves. The size of the gradient array should be 
       three times the number of fluorophores samples in the given
       fluorophore model. It is up to subclasses to decide how to use
-      these forces.
-
-      TODO: make this a pure virtual method once all existing model objects have implementations. */
-  virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
+      this gradient. */
   virtual void ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize);
 
   virtual void Update() = 0;
@@ -129,6 +127,16 @@ class ModelObject : public DirtyListener, public XMLStorable {
   ModelObjectPropertyList* CreateDefaultProperties();
 
   void SetGeometrySubAssembly(const std::string& name, vtkPolyDataAlgorithm* assembly);
+
+  /** Get Jacobian matrix column entries for rotation components.
+    Valid values for the component argument are:
+      ROTATION_ANGLE_PROP
+      ROTATION_VECTOR_X_PROP
+      ROTATION_VECTOR_Y_PROP
+      ROTATION_VECTOR_Z_PROP
+  */
+  void GetRotationJacobianMatrixColumn(vtkPolyData* points,
+    const char* component, int column, double* matrix);
 
  private:
   void Initialize();
