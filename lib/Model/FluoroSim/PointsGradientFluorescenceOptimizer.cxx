@@ -55,9 +55,7 @@ PointsGradientFluorescenceOptimizer
     
     // Compute the gradient. We don't need to read or process image data 
     // here because it is all done on the GPU.
-    VisualizationFluorescenceImageSource* imageSource =
-      dynamic_cast<VisualizationFluorescenceImageSource*>
-      (m_FluoroSim->GetFluorescenceImageSource());
+    FluorescenceImageSource* imageSource = m_FluoroSim->GetFluorescenceImageSource();
     imageSource->ComputePointsGradient();
     
     // Loop over the model objects. For each model object, get the
@@ -88,8 +86,7 @@ PointsGradientFluorescenceOptimizer
           gradient[3*i + 2] *= stepSize;
         }
         
-        m_ModelObjectList->GetModelObjectAtIndex(objectIndex)->
-          ApplySampleForces(fluorophorePropertyIndex, gradient);
+        modelObject->ApplySampleForces(fluorophorePropertyIndex, gradient);
 
         delete[] gradient;
       }

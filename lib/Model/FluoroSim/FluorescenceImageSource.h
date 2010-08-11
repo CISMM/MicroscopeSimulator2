@@ -20,6 +20,15 @@ class FluorescenceImageSource {
   // Exports a stack of 2D fluorescence images (i.e. a 3D stack)
   virtual vtkImageData* GenerateFluorescenceStackImage() = 0;
 
+  // Computes gradients for the point samples from all the
+  // model objects.
+  virtual void ComputePointsGradient() = 0;
+
+  // Get point gradient for a model object.
+  virtual float* GetPointsGradientForFluorophoreProperty(int objectIndex, 
+                                                         int fluorophorePropertyIndex,
+                                                         int& numPoints) = 0;
+
   virtual int GetNumberOfParameters() = 0;
 
   virtual void SetParameters(double* params) = 0;
