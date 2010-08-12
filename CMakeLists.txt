@@ -40,16 +40,26 @@ ELSE(VTK_FOUND)
 ENDIF (VTK_FOUND)
 
 #######################################
-# Include VTKMS
+# Include CLAPACK
 #######################################
+FIND_PACKAGE(CLAPACK)
+if (CLAPACK_FOUND)
+  #INCLUDE( "${CLAPACK_CONFIG}" )
+  #MESSAGE(${CLAPACK_SOURCE_DIR})
 
-#FIND_PACKAGE(VTKMS)
-#IF (VTKMS_FOUND)
-#  INCLUDE(${VTKMS_USE_FILE})
-#ELSE(VTKMS_FOUND)
-#  MESSAGE(FATAL_ERROR
-#    "Cannot build without VTKMS. Please set VTKMS_DIR.")
-#ENDIF (VTKMS_FOUND)
+  # Find the source directory for CLapack
+  FILE( READ "${CLAPACK_DIR}/CMakeCache.txt" CLAPACK_CMAKE_CACHE )
+  STRING( REGEX REPLACE ".*CLAPACK_SOURCE_DIR:STATIC=([^\n]+).*" "\\1" CLAPACK_SOURCE_DIR ${CLAPACK_CMAKE_CACHE} )
+  MESSAGE( ${CLAPACK_SOURCE_DIR} )
+
+  INCLUDE_DIRECTORIES( ${CLAPACK_SOURCE_DIR}/INCLUDE )
+  LINK_DIRECTORIES( ${CLAPACK_DIR}/SRC )
+
+ELSE(CLAPACK_FOUND)
+  MESSAGE(FATAL_ERROR
+  "Cannot build without CLAPACK. Please set CLAPACK_DIR.")
+ENDIF(CLAPACK_FOUND)
+
 
 #######################################
 # Personal filter library and support classes.

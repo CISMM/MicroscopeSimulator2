@@ -12,6 +12,7 @@
 // Forward declarations
 class GeometrySource;
 class FluorophoreModelObjectProperty;
+class Matrix;
 class ModelObjectProperty;
 class ModelObjectPropertyList;
 typedef ModelObjectProperty* ModelObjectPropertyPtr;
@@ -136,7 +137,12 @@ class ModelObject : public DirtyListener, public XMLStorable {
       ROTATION_VECTOR_Z_PROP
   */
   void GetRotationJacobianMatrixColumn(vtkPolyData* points,
-    const char* component, int column, double* matrix);
+    const char* component, int column, Matrix* matrix);
+
+  /** Get Jacobian matrix column entries for translation components.
+      Values of the parameter axis mean: 0 - x axis; 1 - y axis; 2 - z axis. */
+  void GetTranslationJacobianMatrixColumn(vtkPolyData* points, int axis,
+                                          int column, Matrix* matrix);
 
  private:
   void Initialize();

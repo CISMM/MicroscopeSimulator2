@@ -1,5 +1,6 @@
 #include <ModelObject.h>
 #include <FluorophoreModelObjectProperty.h>
+#include <Matrix.h>
 #include <ModelObjectProperty.h>
 #include <ModelObjectPropertyList.h>
 #include <XMLHelper.h>
@@ -459,7 +460,7 @@ ModelObject
 
 void
 ModelObject
-::GetRotationJacobianMatrixColumn(vtkPolyData* points, const char* component, int column, double* matrix) {
+::GetRotationJacobianMatrixColumn(vtkPolyData* points, const char* component, int column, Matrix* matrix) {
   
   if (!GetProperty(ROTATION_ANGLE_PROP)) {
     std::cout << "No rotation properties appear to be available in model "
@@ -480,11 +481,10 @@ ModelObject
   double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
   double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
 
-  double t = 1.0 - cos(theta);
+  double t      = 1.0 - cos(theta);
   double tPrime = sin(theta);
-  double c = cos(theta);
   double cPrime = -sin(theta);
-  double s = sin(theta);
+  double s      = sin(theta);
   double sPrime = cos(theta);
 
   // Switch based on the requested component.
@@ -492,47 +492,88 @@ ModelObject
     for (int ptId = 0; ptId < numPoints; ptId++) {
       double* pt = points->GetPoint(ptId);
       double x = pt[0], y = pt[1], z = pt[2];
-      //matrix[column][ptId*3 + 0] =
-      //  (tPrime*vx*vx + cPrime   )*x + 
-      //  (tPrime*vx*vy + sPrime*vz)*y + 
-      //  (tPrime*vx*vz - sPrime*vy)*z;
-      // matrix[column][ptId*3 + 1] =
-      //  (tPrime*vx*vy - SPrime*vz)*x +
-      //  (tPrime*vy*vy + cPrime   )*y +
-      //  (tPrime*vy*vz + sPrime*vx)*z;
-      // matrix[column][ptId*3 + 2] =
-      //  (tPrime*vx*vz + sPrime*vy)*x +
-      //  (tPrime*vy*vz - sPrime*vx)*y +
-      //  (tPrime*vz*vz + cPrime   )*z;
+      matrix->SetElement(ptId*3 + 0, column,
+                         (tPrime*vx*vx + cPrime   )*x + 
+                         (tPrime*vx*vy + sPrime*vz)*y + 
+                         (tPrime*vx*vz - sPrime*vy)*z);
+      matrix->SetElement(ptId*3 + 1, column,
+                         (tPrime*vx*vy - sPrime*vz)*x +
+                         (tPrime*vy*vy + cPrime   )*y +
+                         (tPrime*vy*vz + sPrime*vx)*z);
+      matrix->SetElement(ptId*3 + 2, column,
+                         (tPrime*vx*vz + sPrime*vy)*x +
+                         (tPrime*vy*vz - sPrime*vx)*y +
+                         (tPrime*vz*vz + cPrime   )*z);
     }
   } else if (strcmp(component, ROTATION_VECTOR_X_PROP) == 0) {
     for (int ptId = 0; ptId < numPoints; ptId++) {
       double* pt = points->GetPoint(ptId);
       double x = pt[0], y = pt[1], z = pt[2];
-      //matrix[column][ptId*3 + 0] = 2*t*vx*x + t*vy*y + t*vz*z;
-      //matrix[column][ptId*3 + 1] = t*vy*x + s*z;
-      //matrix[column][ptId*3 + 2] = t*vz*x - s*y;
+      matrix->SetElement(ptId*3 + 0, column, 2*t*vx*x + t*vy*y + t*vz*z);
+      matrix->SetElement(ptId*3 + 1, column, t*vy*x + s*z);
+      matrix->SetElement(ptId*3 + 2, column, t*vz*x - s*y);
     }
   } else if (strcmp(component, ROTATION_VECTOR_Y_PROP) == 0) {
     for (int ptId = 0; ptId < numPoints; ptId++) {
       double* pt = points->GetPoint(ptId);
       double x = pt[0], y = pt[1], z = pt[2];
-      //matrix[column][ptId*3 + 0] = t*vx*y - s*z;
-      //matrix[column][ptId*3 + 1] = t*vx*x + 2*t*vy*y + t*vz*z;
-      //matrix[column][ptId*3 + 2] = s*vy*x + t*vz*y;
+      matrix->SetElement(ptId*3 + 0, column, t*vx*y - s*z);
+      matrix->SetElement(ptId*3 + 1, column, t*vx*x + 2*t*vy*y + t*vz*z);
+      matrix->SetElement(ptId*3 + 2, column, s*x + t*vz*y);
     }
   } else if (strcmp(component, ROTATION_VECTOR_Z_PROP) == 0) {
     for (int ptId = 0; ptId < numPoints; ptId++) {
       double* pt = points->GetPoint(ptId);
       double x = pt[0], y = pt[1], z = pt[2];
-      //matrix[column][ptId*3 + 0] = s*vz*y + t*vx*z;
-      //matrix[column][ptId*3 + 1] = -s*x + t*vy*z;
-      //matrix[column][ptId*3 + 2] = t*vx*x + t*vy*y + 2*t*vz;
+      matrix->SetElement(ptId*3 + 0, column, s*y + t*vx*z);
+      matrix->SetElement(ptId*3 + 1, column, -s*x + t*vy*z);
+      matrix->SetElement(ptId*3 + 2, column, t*vx*x + t*vy*y + 2*t*vz);
     }
   } else {
     std::cout 
       << "Error in ModelObject::GetRotationJacobianMatrixColumn. "
       << "Requested component '" << component << "' unknown." << std::endl;
+  }
+}
+
+
+void
+ModelObject
+::GetTranslationJacobianMatrixColumn(vtkPolyData* points, int axis, 
+                                     int column, Matrix* matrix) {
+  double pattern[3];
+  switch (axis) {
+  case 0:
+    pattern[0] = 1.0; // dx / dt_x
+    pattern[1] = 0.0; // dy / dt_x
+    pattern[2] = 0.0; // dz / dt_x
+    break;
+
+  case 1:
+    pattern[0] = 0.0; // dx / dt_y
+    pattern[1] = 1.0; // dy / dt_y
+    pattern[2] = 0.0; // dz / dt_y
+    break;
+
+  case 2:
+    pattern[0] = 0.0; // dx / dt_z
+    pattern[1] = 0.0; // dy / dt_z
+    pattern[2] = 1.0; // dz / dt_z
+    break;
+
+  default:
+    std::cout
+      << "Error in ModelObject::GetTranslationJacobianMatrixColumn. "
+      << "Requested axis " << axis << "." << std::endl;
+    return;
+    break;
+  }
+
+  int numPoints = points->GetNumberOfPoints();
+  for (int ptId = 0; ptId < numPoints; ptId++) {
+    for (int j = 0; j < 3; j++) {
+      matrix->SetElement(3*ptId + j, column, pattern[j]);
+    }
   }
 }
 
@@ -554,10 +595,17 @@ ModelObject
     float* gradientPtr = reinterpret_cast<float*>
       (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
 
+    int numPoints = gradientData->GetNumberOfPoints();
+    Matrix* m = new Matrix(3*numPoints, 3); // Jacobian for just translation
+    
+    GetTranslationJacobianMatrixColumn(gradientData, 0, 0, m);
+    GetTranslationJacobianMatrixColumn(gradientData, 1, 1, m);
+    GetTranslationJacobianMatrixColumn(gradientData, 2, 2, m);
+
+#if 0
     // Quick hack to do translation
     double translation[3];
     translation[0] = translation[1] = translation[2] = 0.0;
-    int numPoints = gradientData->GetNumberOfPoints();
     for (int i = 0; i < numPoints; i++) {
       for (int dim = 0; dim < 3; dim++) {
         translation[dim] += stepSize * static_cast<double>(gradientPtr[i*3+dim]);
@@ -578,6 +626,7 @@ ModelObject
         positionProperties[dim]->SetDoubleValue(value + translation[dim]);
       }
     }
+#endif
 
     Update();
 
