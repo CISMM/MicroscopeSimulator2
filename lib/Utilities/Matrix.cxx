@@ -87,7 +87,7 @@ Matrix
 ::PrintSelf() {
   for (unsigned int i = 0; i < m_Rows; i++) {
     for (unsigned int j = 0; j < m_Columns; j++) {
-      printf("%04.4f ", GetElement(i, j));
+      printf("%9.04f ", GetElement(i, j));
     }
     printf("\n");
   }
