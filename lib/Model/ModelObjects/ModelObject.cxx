@@ -676,11 +676,15 @@ ModelObject
     double* gradient = new double[3*numPoints];
 
     for (int i = 0; i < 3*numPoints; i++) {
-      gradient[i] = stepSize * static_cast<double>(gradientPtr[i]);
+      gradient[i] = static_cast<double>(gradientPtr[i]);
     }
 
     m->LinearLeastSquaresSolve(theta, gradient);
     
+    for (int i = 0; i < 7; i++) {
+      theta[i] *= stepSize;
+    }
+
     std::cout << "Theta: " 
               << theta[0] << ", " 
               << theta[1] << ", " 
@@ -689,6 +693,9 @@ ModelObject
               << theta[4] << ", "
               << theta[5] << ", "
               << theta[6] << std::endl;
+
+    // Convert radians back to degrees for the rotation
+    theta[3] = vtkMath::DegreesFromRadians(theta[3]);
 
     ModelObjectProperty* transformProperties[7];
     transformProperties[0] = GetProperty(X_POSITION_PROP);
