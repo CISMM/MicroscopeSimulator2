@@ -469,11 +469,49 @@ ModelObject
     return;
   }
 
+#if 0
+  // We need the rotated point positions
+  vtkSmartPointer<vtkTransform> transform = 
+    vtkSmartPointer<vtkTransform>::New();
+  double rotation[4];
+  GetRotation(rotation);
+  transform->RotateWXYZ(rotation[0], rotation[1], rotation[2], rotation[3]);
+
+  // QUICK TEST TO CHECK IF ROTATION MATRIX IN VTK IS THE SAME AS THIS ONE
+  double px = 100.0, py = 200.0, pz = 0;
+  double* vtkAnswer = transform->TransformDoublePoint(px, py , pz);
+  std::cout << "VTK says: " << vtkAnswer[0] << ", " << vtkAnswer[1] << ","
+    << vtkAnswer[2] << std::endl;
+
+  {
+    double thetaDegrees = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+    double theta = -vtkMath::RadiansFromDegrees(thetaDegrees);
+    double vx    = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+    double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+    double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+
+    double t      = 1.0 - cos(theta);
+    double c      = cos(theta);
+    double s      = sin(theta);
+
+    double mx, my, mz;
+    mx = (t*vx*vx +    c)*px + (t*vx*vy + s*vz)*py + (t*vx*vz - s*vy)*pz;
+    my = (t*vx*vy - s*vz)*px + (t*vy*vy +    c)*py + (t*vy*vz + s*vx)*pz;
+    mz = (t*vx*vz + s*vy)*px + (t*vy*vz - s*vx)*py + (t*vz*vz +    c)*pz;
+    std::cout << "My  says: " << mx << ", " << my << ", " << mz << std::endl;
+  }
+
+  vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter = 
+    vtkTransformPolyDataFilter::New();
+  transformFilter->SetTransform(transform);
+  transformFilter->SetInput(points);
+  transformFilter->Update();
+  vtkPolyData* rotatedPoints = transformFilter->GetOutput();
+#endif
+
   // Iterate over the points and compute the partial derivatives for 
   // the column.
   int numPoints = points->GetNumberOfPoints();
-
-  // TODO - make sure I have row,column correct in the matrix indexing.
 
   double thetaDegrees = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
   double theta = vtkMath::RadiansFromDegrees(thetaDegrees);
@@ -481,29 +519,34 @@ ModelObject
   double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
   double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
 
-  double t      = 1.0 - cos(theta);
-  double tPrime = sin(theta);
+  // In this representation, theta is the negative of the 
+  // theta in VTK's representation.
+  theta = -theta;
+  double t      =  1.0 - cos(theta);
+  double tPrime =  sin(theta);
   double cPrime = -sin(theta);
-  double s      = sin(theta);
-  double sPrime = cos(theta);
+  double s      =  sin(theta);
+  double sPrime =  cos(theta);
 
   // Switch based on the requested component.
   if (strcmp(component, ROTATION_ANGLE_PROP) == 0) {
     for (int ptId = 0; ptId < numPoints; ptId++) {
       double* pt = points->GetPoint(ptId);
       double x = pt[0], y = pt[1], z = pt[2];
-      matrix->SetElement(ptId*3 + 0, column,
-                         (tPrime*vx*vx + cPrime   )*x + 
-                         (tPrime*vx*vy + sPrime*vz)*y + 
-                         (tPrime*vx*vz - sPrime*vy)*z);
-      matrix->SetElement(ptId*3 + 1, column,
-                         (tPrime*vx*vy - sPrime*vz)*x +
-                         (tPrime*vy*vy + cPrime   )*y +
-                         (tPrime*vy*vz + sPrime*vx)*z);
-      matrix->SetElement(ptId*3 + 2, column,
-                         (tPrime*vx*vz + sPrime*vy)*x +
-                         (tPrime*vy*vz - sPrime*vx)*y +
-                         (tPrime*vz*vz + cPrime   )*z);
+      double jx[3];
+      jx[0] = (tPrime*vx*vx + cPrime   )*x + 
+              (tPrime*vx*vy + sPrime*vz)*y + 
+              (tPrime*vx*vz - sPrime*vy)*z;
+      jx[1] = (tPrime*vx*vy - sPrime*vz)*x +
+              (tPrime*vy*vy + cPrime   )*y +
+              (tPrime*vy*vz + sPrime*vx)*z;
+      jx[2] = (tPrime*vx*vz + sPrime*vy)*x +
+              (tPrime*vy*vz - sPrime*vx)*y +
+              (tPrime*vz*vz + cPrime   )*z;
+
+      matrix->SetElement(ptId*3 + 0, column, jx[0]);
+      matrix->SetElement(ptId*3 + 1, column, jx[1]);
+      matrix->SetElement(ptId*3 + 2, column, jx[2]);
     }
   } else if (strcmp(component, ROTATION_VECTOR_X_PROP) == 0) {
     for (int ptId = 0; ptId < numPoints; ptId++) {
@@ -580,6 +623,25 @@ ModelObject
 
 void
 ModelObject
+::NormalizeRotationVector() {
+  double x = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+  double y = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+  double z = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+  double norm = sqrt(x*x + y*y + z*z);
+  if (norm != 0.0) {
+    x /= norm;
+    y /= norm;
+    z /= norm;
+  }
+
+  GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(x);
+  GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(y);
+  GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(z);
+}
+
+
+void
+ModelObject
 ::ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize) {
   vtkCollectionSimpleIterator iter;
   pointGradients->InitTraversal(iter);
@@ -606,6 +668,9 @@ ModelObject
     GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_X_PROP, 4, m);
     GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_Y_PROP, 5, m);
     GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_Z_PROP, 6, m);
+
+    std::cout << "Matrix m: " << std::endl;
+    m->PrintSelf();
 
     double* theta    = new double[7]; // TODO - change this to the real number of parameters
     double* gradient = new double[3*numPoints];
@@ -643,6 +708,8 @@ ModelObject
 
     delete[] theta;
     delete[] gradient;
+
+    NormalizeRotationVector();
 
     Update();
 

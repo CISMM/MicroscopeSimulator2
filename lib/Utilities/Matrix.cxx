@@ -29,7 +29,9 @@ void
 Matrix
 ::SetElement(unsigned int row, unsigned int column, double value) {
   if (row < m_Rows && column < m_Columns) {
-    m_Elements[column*m_Rows + row] = value; // This is probably wrong
+    // Data is stored in column-major order to make it easy to pass to
+    // CLAPACK routines.
+    m_Elements[column*m_Rows + row] = value;
   }
 }
 
@@ -56,7 +58,7 @@ void
 Matrix
 ::LinearLeastSquaresSolve(double* x, double* b) {
 
-  char trans = 'n';
+  char trans = 'N';
   integer m = static_cast<integer>(m_Rows);
   integer n = static_cast<integer>(m_Columns);
   integer nrhs = 1;
@@ -77,4 +79,16 @@ Matrix
   }
 
   delete[] work;
+}
+
+
+void
+Matrix
+::PrintSelf() {
+  for (unsigned int i = 0; i < m_Rows; i++) {
+    for (unsigned int j = 0; j < m_Columns; j++) {
+      printf("%04.4f ", GetElement(i, j));
+    }
+    printf("\n");
+  }
 }

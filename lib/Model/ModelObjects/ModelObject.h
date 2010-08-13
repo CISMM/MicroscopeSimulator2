@@ -144,6 +144,8 @@ class ModelObject : public DirtyListener, public XMLStorable {
   void GetTranslationJacobianMatrixColumn(vtkPolyData* points, int axis,
                                           int column, Matrix* matrix);
 
+  void NormalizeRotationVector();
+
  private:
   void Initialize();
 

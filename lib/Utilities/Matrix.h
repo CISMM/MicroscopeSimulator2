@@ -17,6 +17,8 @@ public:
   // and x and b are the function parameters.
   void LinearLeastSquaresSolve(double* x, double* b);
 
+  void PrintSelf();
+
 protected:
   // Not allowed to call without setting the matrix size.
   Matrix() {};
