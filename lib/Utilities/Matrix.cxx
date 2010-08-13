@@ -1,5 +1,7 @@
 #include <Matrix.h>
 
+#include <algorithm>
+#include <iostream>
 
 extern "C" {
   #include <f2c.h>
@@ -60,7 +62,19 @@ Matrix
   integer nrhs = 1;
   integer lda = m;
   integer ldb = static_cast<int>(m_Rows > m_Columns ? m_Rows : m_Columns);
-  integer lwork = 0;
   integer info = 0;
-  dgels_(&trans, &m, &n, &nrhs, m_Elements, &lda, b, &ldb, 0, &lwork, &info);
+
+  // lwork must be greater than or equal to max(1, mn + max(mn, nrhs)) where
+  // mn = min(m, n)
+  integer mn = min(m, n);
+  integer lwork = max(1, mn + max(mn, nrhs));
+  double* work = new double[lwork];
+
+  dgels_(&trans, &m, &n, &nrhs, m_Elements, &lda, b, &ldb, work, &lwork, &info);
+
+  for (unsigned int i = 0; i < m_Columns; i++) {
+    x[i] = b[i];
+  }
+
+  delete[] work;
 }

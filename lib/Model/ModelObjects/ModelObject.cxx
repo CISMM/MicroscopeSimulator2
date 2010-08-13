@@ -596,37 +596,53 @@ ModelObject
       (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
 
     int numPoints = gradientData->GetNumberOfPoints();
-    Matrix* m = new Matrix(3*numPoints, 3); // Jacobian for just translation
+    Matrix* m = new Matrix(3*numPoints, 7); // Jacobian for just translation
     
     GetTranslationJacobianMatrixColumn(gradientData, 0, 0, m);
     GetTranslationJacobianMatrixColumn(gradientData, 1, 1, m);
     GetTranslationJacobianMatrixColumn(gradientData, 2, 2, m);
+    
+    GetRotationJacobianMatrixColumn(gradientData, ROTATION_ANGLE_PROP,    3, m);
+    GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_X_PROP, 4, m);
+    GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_Y_PROP, 5, m);
+    GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_Z_PROP, 6, m);
 
-#if 0
-    // Quick hack to do translation
-    double translation[3];
-    translation[0] = translation[1] = translation[2] = 0.0;
-    for (int i = 0; i < numPoints; i++) {
-      for (int dim = 0; dim < 3; dim++) {
-        translation[dim] += stepSize * static_cast<double>(gradientPtr[i*3+dim]);
-      }
-    }
-    for (int dim = 0; dim < 3; dim++) {
-      translation[dim] /= static_cast<double>(numPoints);
+    double* theta    = new double[7]; // TODO - change this to the real number of parameters
+    double* gradient = new double[3*numPoints];
+
+    for (int i = 0; i < 3*numPoints; i++) {
+      gradient[i] = stepSize * static_cast<double>(gradientPtr[i]);
     }
 
-    ModelObjectProperty* positionProperties[3];
-    positionProperties[0] = GetProperty(X_POSITION_PROP);
-    positionProperties[1] = GetProperty(Y_POSITION_PROP);
-    positionProperties[2] = GetProperty(Z_POSITION_PROP);
+    m->LinearLeastSquaresSolve(theta, gradient);
+    
+    std::cout << "Theta: " 
+              << theta[0] << ", " 
+              << theta[1] << ", " 
+              << theta[2] << ", "
+              << theta[3] << ", "
+              << theta[4] << ", "
+              << theta[5] << ", "
+              << theta[6] << std::endl;
+
+    ModelObjectProperty* transformProperties[7];
+    transformProperties[0] = GetProperty(X_POSITION_PROP);
+    transformProperties[1] = GetProperty(Y_POSITION_PROP);
+    transformProperties[2] = GetProperty(Z_POSITION_PROP);
+    transformProperties[3] = GetProperty(ROTATION_ANGLE_PROP);
+    transformProperties[4] = GetProperty(ROTATION_VECTOR_X_PROP);
+    transformProperties[5] = GetProperty(ROTATION_VECTOR_Y_PROP);
+    transformProperties[6] = GetProperty(ROTATION_VECTOR_Z_PROP);
   
-    for (int dim = 0; dim < 3; dim++) {
-      if (positionProperties[dim] && positionProperties[dim]->GetOptimize()) {
-        double value = positionProperties[dim]->GetDoubleValue();
-        positionProperties[dim]->SetDoubleValue(value + translation[dim]);
+    for (int paramId = 0; paramId < 7; paramId++) {
+      if (transformProperties[paramId] && transformProperties[paramId]->GetOptimize()) {
+        double value = transformProperties[paramId]->GetDoubleValue() + theta[paramId];
+        transformProperties[paramId]->SetDoubleValue(value);
       }
     }
-#endif
+
+    delete[] theta;
+    delete[] gradient;
 
     Update();
 
