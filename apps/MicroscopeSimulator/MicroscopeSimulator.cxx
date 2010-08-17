@@ -115,6 +115,9 @@ MicroscopeSimulator
     SetInteractor(gui->modelObjectQvtkWidget->GetInteractor());
   gui->modelObjectQvtkWidget->SetRenderWindow(m_Visualization->GetModelObjectRenderWindow());
 
+  // Set line smoothing on
+  m_Visualization->GetModelObjectRenderWindow()->LineSmoothingOn();
+
   gui->fluorescenceQvtkWidget->SetRenderWindow(m_Visualization->GetFluorescenceRenderWindow());
   gui->fluorescenceQvtkWidget->setMaximumSize(200, 200);
   gui->fluorescenceQvtkWidget->setMinimumSize(200, 200);
