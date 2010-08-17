@@ -685,6 +685,9 @@ ModelObject
       theta[i] *= stepSize;
     }
 
+    // Convert radians back to degrees for the rotation
+    theta[3] = vtkMath::DegreesFromRadians(theta[3]);
+
     std::cout << "Theta: " 
               << theta[0] << ", " 
               << theta[1] << ", " 
@@ -693,9 +696,6 @@ ModelObject
               << theta[4] << ", "
               << theta[5] << ", "
               << theta[6] << std::endl;
-
-    // Convert radians back to degrees for the rotation
-    theta[3] = vtkMath::DegreesFromRadians(theta[3]);
 
     ModelObjectProperty* transformProperties[7];
     transformProperties[0] = GetProperty(X_POSITION_PROP);
