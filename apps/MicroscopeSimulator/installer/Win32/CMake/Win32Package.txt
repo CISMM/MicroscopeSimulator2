@@ -1,12 +1,19 @@
 # Qt DLLs
-SET( QTDLLS
+SET( QT_DLLS
   "${QT_LIBRARY_DIR}/QtCore4.dll"
   "${QT_LIBRARY_DIR}/QtGui4.dll"
   "${QT_LIBRARY_DIR}/QtNetwork4.dll"
   "${QT_LIBRARY_DIR}/QtSql4.dll"
+  "${QT_LIBRARY_DIR}/QtWebKit4.dll"
+  "${QT_LIBRARY_DIR}/QtXmlPatterns4.dll"
+  "${QT_LIBRARY_DIR}/phonon4.dll"
   "${VTK_LIBRARY_DIRS}/release/QVTK.dll"
   )
-INSTALL( FILES ${QTDLLS} DESTINATION bin )
+FOREACH ( QT_LIB ${QT_DLLS} )
+  IF ( EXISTS ${QT_LIB} )
+    INSTALL( FILES ${QT_LIB} DESTINATION bin )
+  ENDIF ( EXISTS ${QT_LIB} )
+ENDFOREACH ( QT_LIB )
 
 # This should work, but seems to prevent other files from being written 
 # into the bin directory in the installation tree.
