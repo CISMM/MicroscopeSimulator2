@@ -92,6 +92,7 @@ vtkFluorescenceWidgetsRepresentation
   // Set up the reference grid
   vtkSmartPointer<vtkProperty> focalPlaneProperty = vtkSmartPointer<vtkProperty>::New();
   focalPlaneProperty->SetRepresentationToWireframe();
+  focalPlaneProperty->SetLineWidth(2.0);
   focalPlaneProperty->SetColor(1.0, 1.0, 1.0);
   focalPlaneProperty->LightingOff();
 
