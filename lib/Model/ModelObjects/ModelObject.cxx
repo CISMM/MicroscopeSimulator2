@@ -469,46 +469,6 @@ ModelObject
     return;
   }
 
-#if 0
-  // We need the rotated point positions
-  vtkSmartPointer<vtkTransform> transform = 
-    vtkSmartPointer<vtkTransform>::New();
-  double rotation[4];
-  GetRotation(rotation);
-  transform->RotateWXYZ(rotation[0], rotation[1], rotation[2], rotation[3]);
-
-  // QUICK TEST TO CHECK IF ROTATION MATRIX IN VTK IS THE SAME AS THIS ONE
-  double px = 100.0, py = 200.0, pz = 0;
-  double* vtkAnswer = transform->TransformDoublePoint(px, py , pz);
-  std::cout << "VTK says: " << vtkAnswer[0] << ", " << vtkAnswer[1] << ","
-    << vtkAnswer[2] << std::endl;
-
-  {
-    double thetaDegrees = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
-    double theta = -vtkMath::RadiansFromDegrees(thetaDegrees);
-    double vx    = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
-    double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
-    double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
-
-    double t      = 1.0 - cos(theta);
-    double c      = cos(theta);
-    double s      = sin(theta);
-
-    double mx, my, mz;
-    mx = (t*vx*vx +    c)*px + (t*vx*vy + s*vz)*py + (t*vx*vz - s*vy)*pz;
-    my = (t*vx*vy - s*vz)*px + (t*vy*vy +    c)*py + (t*vy*vz + s*vx)*pz;
-    mz = (t*vx*vz + s*vy)*px + (t*vy*vz - s*vx)*py + (t*vz*vz +    c)*pz;
-    std::cout << "My  says: " << mx << ", " << my << ", " << mz << std::endl;
-  }
-
-  vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter = 
-    vtkTransformPolyDataFilter::New();
-  transformFilter->SetTransform(transform);
-  transformFilter->SetInput(points);
-  transformFilter->Update();
-  vtkPolyData* rotatedPoints = transformFilter->GetOutput();
-#endif
-
   // Iterate over the points and compute the partial derivatives for 
   // the column.
   int numPoints = points->GetNumberOfPoints();
@@ -658,25 +618,24 @@ ModelObject
       (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
     
     // Decide how big the Jacobian matrix is going to be
-    ModelObjectProperty** transformProps = new ModelObjectProperty*[7];
+    ModelObjectProperty** transformProps = new ModelObjectProperty*[4];
     transformProps[0] = GetProperty(X_POSITION_PROP);
     transformProps[1] = GetProperty(Y_POSITION_PROP);
     transformProps[2] = GetProperty(Z_POSITION_PROP);
     transformProps[3] = GetProperty(ROTATION_ANGLE_PROP);
-    transformProps[4] = GetProperty(ROTATION_VECTOR_X_PROP);
-    transformProps[5] = GetProperty(ROTATION_VECTOR_Y_PROP);
-    transformProps[6] = GetProperty(ROTATION_VECTOR_Z_PROP);
     
     int numColumns = 0;
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 4; i++) {
       if (transformProps[i] && transformProps[i]->GetOptimize()) {
         numColumns++;
       }
     }
 
-    if (numColumns == 0) {
-      return;
-    }
+    // Check if we also want to optimize the rotation axis
+    ModelObjectProperty* rotationVector = GetProperty(ROTATION_VECTOR_X_PROP);
+    bool optimizeAxis = (rotationVector != NULL && rotationVector->GetOptimize());
+
+    if (numColumns == 0) return;
     
     int numPoints = gradientData->GetNumberOfPoints();
     Matrix* m = new Matrix(3*numPoints, numColumns); // Jacobian for just translation
@@ -688,10 +647,9 @@ ModelObject
       }
     }
 
-    for (int paramId = 3; paramId < 7; paramId++) {
-      if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
-        GetRotationJacobianMatrixColumn(gradientData, transformProps[paramId]->GetName().c_str(), whichColumn++, m);
-      }
+    int paramId = 3;
+    if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
+      GetRotationJacobianMatrixColumn(gradientData, transformProps[paramId]->GetName().c_str(), whichColumn++, m);
     }
 
     std::cout << "Matrix m: " << std::endl;
@@ -714,7 +672,7 @@ ModelObject
     std::cout << std::endl;
 
     int whichRow = 0;
-    for (int paramId = 0; paramId < 7; paramId++) {
+    for (int paramId = 0; paramId < 4; paramId++) {
       if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
         // Scale radians back to degrees for the rotation angle and negate
         if (strcmp(transformProps[paramId]->GetName().c_str(), ROTATION_ANGLE_PROP) == 0) {
