@@ -542,6 +542,76 @@ ModelObject
 
 void
 ModelObject
+::GetRotationAngleJacobianMatrixColumn(vtkPolyData* points, const char* component,
+                                       int column, Matrix* matrix) {
+  if (!GetProperty(ROTATION_ANGLE_PROP)) {
+    std::cout << "No rotation properties appear to be available in model "
+      << "object '" << GetProperty(NAME_PROP)->GetStringValue() << "'"
+      << std::endl;
+    return;
+  }
+
+  // Iterate over the points and compute the partial derivatives for 
+  // the column.
+  int numPoints = points->GetNumberOfPoints();
+
+  double thetaDegrees = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+  double vx    = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+  double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+  double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+
+  // Initialize the matrix with the current rotation.
+  vtkSmartPointer<vtkTransform> partials =
+    vtkSmartPointer<vtkTransform>::New();
+  partials->Identity();
+  partials->RotateWXYZ(thetaDegrees, vx, vy, vz);
+  partials->PostMultiply();
+
+  // Create the partial derivative matrix with respect to
+  // theta.
+  double tPrime = 0.0;
+  double cPrime = 0.0;
+  double sPrime = 1.0;
+
+  vtkSmartPointer<vtkMatrix4x4> dTheta = vtkSmartPointer<vtkMatrix4x4>::New();
+  
+  // SetElement(row,column)
+  dTheta->SetElement(0, 0, tPrime*vx*vx + cPrime);    //  0
+  dTheta->SetElement(0, 1, tPrime*vx*vy + sPrime*vz); // vz
+  dTheta->SetElement(0, 2, tPrime*vx*vz - sPrime*vy); //-vy
+  dTheta->SetElement(0, 3, 0.0);
+
+  dTheta->SetElement(1, 0, tPrime*vx*vy - sPrime*vz); //-vz
+  dTheta->SetElement(1, 1, tPrime*vy*vy + cPrime);    //  0
+  dTheta->SetElement(1, 2, tPrime*vy*vz + sPrime*vx); // vx
+  dTheta->SetElement(1, 3, 0.0);
+
+  dTheta->SetElement(2, 0, tPrime*vx*vz + sPrime*vy); // vy
+  dTheta->SetElement(2, 1, tPrime*vy*vz - sPrime*vx); //-vx
+  dTheta->SetElement(2, 2, tPrime*vz*vz + cPrime);    //  0
+  dTheta->SetElement(2, 3, 0.0);
+
+  dTheta->SetElement(3, 0, 0.0);
+  dTheta->SetElement(3, 1, 0.0);
+  dTheta->SetElement(3, 2, 0.0);
+  dTheta->SetElement(3, 3, 1.0);
+
+  // Create the full transform for computing the Jacobian
+  partials->Concatenate(dTheta);
+
+  // Now we can form the column for the Jacobian matrix.
+  for (int ptId = 0; ptId < numPoints; ptId++) {
+    double* pt = points->GetPoint(ptId);
+    double* jacobianVector = partials->TransformDoublePoint(pt);
+    for (int dim = 0; dim < 3; dim++) {
+      matrix->SetElement(ptId*3 + dim, column, dim);
+    }
+  }
+}
+
+
+void
+ModelObject
 ::GetTranslationJacobianMatrixColumn(vtkPolyData* points, int axis, 
                                      int column, Matrix* matrix) {
   double pattern[3];
@@ -617,12 +687,19 @@ ModelObject
     float* gradientPtr = reinterpret_cast<float*>
       (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
     
+    int numPoints = gradientData->GetNumberOfPoints();
+    double* gradient = new double[3*numPoints];
+    for (int ptId = 0; ptId < 3*numPoints; ptId++) {
+      gradient[ptId] = static_cast<double>(gradientPtr[ptId]);
+    }
+
     // Decide how big the Jacobian matrix is going to be
     ModelObjectProperty** transformProps = new ModelObjectProperty*[4];
     transformProps[0] = GetProperty(X_POSITION_PROP);
     transformProps[1] = GetProperty(Y_POSITION_PROP);
     transformProps[2] = GetProperty(Z_POSITION_PROP);
     transformProps[3] = GetProperty(ROTATION_ANGLE_PROP);
+    bool hasRotation = (transformProps[3] != NULL);
     
     int numColumns = 0;
     for (int i = 0; i < 4; i++) {
@@ -631,13 +708,8 @@ ModelObject
       }
     }
 
-    // Check if we also want to optimize the rotation axis
-    ModelObjectProperty* rotationVector = GetProperty(ROTATION_VECTOR_X_PROP);
-    bool optimizeAxis = (rotationVector != NULL && rotationVector->GetOptimize());
-
     if (numColumns == 0) return;
     
-    int numPoints = gradientData->GetNumberOfPoints();
     Matrix* m = new Matrix(3*numPoints, numColumns); // Jacobian for just translation
     
     int whichColumn = 0;
@@ -647,20 +719,45 @@ ModelObject
       }
     }
 
-    int paramId = 3;
-    if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
-      GetRotationJacobianMatrixColumn(gradientData, transformProps[paramId]->GetName().c_str(), whichColumn++, m);
+    if (hasRotation) {
+      // Check if we also want to optimize the rotation axis
+      ModelObjectProperty* rotationVector = GetProperty(ROTATION_VECTOR_X_PROP);
+      bool optimizeAxis = (rotationVector != NULL && rotationVector->GetOptimize());
+
+      double rotationAxis[3];
+      if (optimizeAxis) {
+        // Calculate the rotation axis as the sum of each cross-product
+        // between the vector from the object-relative origin to a point
+        // on the geometry and the gradient vector.
+        for (int i = 0; i < 3; i++) rotationAxis[i] = 0.0;
+
+        double pointVector[3], cross[3];
+
+        for (int ptId = 0; ptId < numPoints; ptId++) {
+          
+          // TODO - figure out composition of rotation
+
+          vtkMath::Cross(pointVector, gradient + (3*ptId), cross);
+          for (int i = 0; i < 3; i++) rotationAxis[i] += cross[i];
+        }
+
+      } else {
+        // Use the user-defined rotation axis
+        rotationAxis[0] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+        rotationAxis[1] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+        rotationAxis[2] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+      }
+
+      int paramId = 3;
+      if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
+        GetRotationJacobianMatrixColumn(gradientData, transformProps[paramId]->GetName().c_str(), whichColumn++, m);
+      }
     }
 
     std::cout << "Matrix m: " << std::endl;
     m->PrintSelf();
 
     double* theta    = new double[numColumns];
-    double* gradient = new double[3*numPoints];
-
-    for (int ptId = 0; ptId < 3*numPoints; ptId++) {
-      gradient[ptId] = static_cast<double>(gradientPtr[ptId]);
-    }
 
     m->LinearLeastSquaresSolve(theta, gradient);
 
