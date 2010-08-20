@@ -653,66 +653,81 @@ ModelObject
       continue;
     }
 
-    // Scale the gradient
+    // Get the gradient data.
     float* gradientPtr = reinterpret_cast<float*>
       (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
+    
+    // Decide how big the Jacobian matrix is going to be
+    ModelObjectProperty** transformProps = new ModelObjectProperty*[7];
+    transformProps[0] = GetProperty(X_POSITION_PROP);
+    transformProps[1] = GetProperty(Y_POSITION_PROP);
+    transformProps[2] = GetProperty(Z_POSITION_PROP);
+    transformProps[3] = GetProperty(ROTATION_ANGLE_PROP);
+    transformProps[4] = GetProperty(ROTATION_VECTOR_X_PROP);
+    transformProps[5] = GetProperty(ROTATION_VECTOR_Y_PROP);
+    transformProps[6] = GetProperty(ROTATION_VECTOR_Z_PROP);
+    
+    int numColumns = 0;
+    for (int i = 0; i < 7; i++) {
+      if (transformProps[i] && transformProps[i]->GetOptimize()) {
+        numColumns++;
+      }
+    }
 
+    if (numColumns == 0) {
+      return;
+    }
+    
     int numPoints = gradientData->GetNumberOfPoints();
-    Matrix* m = new Matrix(3*numPoints, 7); // Jacobian for just translation
+    Matrix* m = new Matrix(3*numPoints, numColumns); // Jacobian for just translation
     
-    GetTranslationJacobianMatrixColumn(gradientData, 0, 0, m);
-    GetTranslationJacobianMatrixColumn(gradientData, 1, 1, m);
-    GetTranslationJacobianMatrixColumn(gradientData, 2, 2, m);
-    
-    GetRotationJacobianMatrixColumn(gradientData, ROTATION_ANGLE_PROP,    3, m);
-    GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_X_PROP, 4, m);
-    GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_Y_PROP, 5, m);
-    GetRotationJacobianMatrixColumn(gradientData, ROTATION_VECTOR_Z_PROP, 6, m);
+    int whichColumn = 0;
+    for (int paramId = 0; paramId < 3; paramId++) {
+      if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
+        GetTranslationJacobianMatrixColumn(gradientData, paramId, whichColumn++, m);
+      }
+    }
+
+    for (int paramId = 3; paramId < 7; paramId++) {
+      if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
+        GetRotationJacobianMatrixColumn(gradientData, transformProps[paramId]->GetName().c_str(), whichColumn++, m);
+      }
+    }
 
     std::cout << "Matrix m: " << std::endl;
     m->PrintSelf();
 
-    double* theta    = new double[7]; // TODO - change this to the real number of parameters
+    double* theta    = new double[numColumns];
     double* gradient = new double[3*numPoints];
 
-    for (int i = 0; i < 3*numPoints; i++) {
-      gradient[i] = static_cast<double>(gradientPtr[i]);
+    for (int ptId = 0; ptId < 3*numPoints; ptId++) {
+      gradient[ptId] = static_cast<double>(gradientPtr[ptId]);
     }
 
     m->LinearLeastSquaresSolve(theta, gradient);
-    
-    for (int i = 0; i < 7; i++) {
-      theta[i] *= stepSize;
+
+    std::cout << "Theta: ";    
+    for (int paramId = 0; paramId < numColumns; paramId++) {
+      theta[paramId] *= stepSize;
+      std::cout << theta[paramId] << ", ";
     }
+    std::cout << std::endl;
 
-    // Convert radians back to degrees for the rotation
-    theta[3] = vtkMath::DegreesFromRadians(theta[3]);
-
-    std::cout << "Theta: " 
-              << theta[0] << ", " 
-              << theta[1] << ", " 
-              << theta[2] << ", "
-              << theta[3] << ", "
-              << theta[4] << ", "
-              << theta[5] << ", "
-              << theta[6] << std::endl;
-
-    ModelObjectProperty* transformProperties[7];
-    transformProperties[0] = GetProperty(X_POSITION_PROP);
-    transformProperties[1] = GetProperty(Y_POSITION_PROP);
-    transformProperties[2] = GetProperty(Z_POSITION_PROP);
-    transformProperties[3] = GetProperty(ROTATION_ANGLE_PROP);
-    transformProperties[4] = GetProperty(ROTATION_VECTOR_X_PROP);
-    transformProperties[5] = GetProperty(ROTATION_VECTOR_Y_PROP);
-    transformProperties[6] = GetProperty(ROTATION_VECTOR_Z_PROP);
-  
+    int whichRow = 0;
     for (int paramId = 0; paramId < 7; paramId++) {
-      if (transformProperties[paramId] && transformProperties[paramId]->GetOptimize()) {
-        double value = transformProperties[paramId]->GetDoubleValue() + theta[paramId];
-        transformProperties[paramId]->SetDoubleValue(value);
+      if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
+        // Scale radians back to degrees for the rotation angle and negate
+        if (strcmp(transformProps[paramId]->GetName().c_str(), ROTATION_ANGLE_PROP) == 0) {
+          std::cout << "Adjusting rotation" << std::endl;
+          theta[whichRow] = -vtkMath::DegreesFromRadians(theta[whichRow]);
+        }
+
+        double value = transformProps[paramId]->GetDoubleValue() + theta[whichRow++];
+        transformProps[paramId]->SetDoubleValue(value);
       }
     }
 
+    delete[] transformProps;
     delete[] theta;
     delete[] gradient;
 
