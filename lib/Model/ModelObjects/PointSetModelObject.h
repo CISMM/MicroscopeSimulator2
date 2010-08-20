@@ -34,8 +34,9 @@ class PointSetModelObject : public ModelObject {
   virtual void Update();
   virtual void Sully();
 
-  virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
+#if 0
   virtual void ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize);
+#endif
 
  protected:
   PointSetModelObject() {};
