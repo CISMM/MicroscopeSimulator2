@@ -542,53 +542,53 @@ ModelObject
 
 void
 ModelObject
-::GetRotationAngleJacobianMatrixColumn(vtkPolyData* points, const char* component,
-                                       int column, Matrix* matrix) {
-  if (!GetProperty(ROTATION_ANGLE_PROP)) {
-    std::cout << "No rotation properties appear to be available in model "
-      << "object '" << GetProperty(NAME_PROP)->GetStringValue() << "'"
-      << std::endl;
-    return;
-  }
+::GetRotationAngleJacobianMatrixColumn(vtkPolyData* points, int column,
+                                       Matrix* matrix, double* currentRotation,
+                                       double* newRotation) {
 
   // Iterate over the points and compute the partial derivatives for 
   // the column.
   int numPoints = points->GetNumberOfPoints();
 
-  double thetaDegrees = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
-  double vx    = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
-  double vy    = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
-  double vz    = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+  double cTheta = currentRotation[0];
+  double cx     = currentRotation[1];
+  double cy     = currentRotation[2];
+  double cz     = currentRotation[3];
 
   // Initialize the matrix with the current rotation.
-  vtkSmartPointer<vtkTransform> partials =
-    vtkSmartPointer<vtkTransform>::New();
+  vtkSmartPointer<vtkTransform> partials = vtkSmartPointer<vtkTransform>::New();
   partials->Identity();
-  partials->RotateWXYZ(thetaDegrees, vx, vy, vz);
+  partials->RotateWXYZ(cTheta, cx, cy, cz);
   partials->PostMultiply();
 
-  // Create the partial derivative matrix with respect to
-  // theta.
-  double tPrime = 0.0;
-  double cPrime = 0.0;
-  double sPrime = 1.0;
+  double nTheta = newRotation[0];
+  double nx     = newRotation[1];
+  double ny     = newRotation[2];
+  double nz     = newRotation[3];
+  double nThetaRadians = -vtkMath::RadiansFromDegrees(nTheta);
 
+  // Create the partial derivative matrix with respect to nTheta and the new
+  // rotation axis.
   vtkSmartPointer<vtkMatrix4x4> dTheta = vtkSmartPointer<vtkMatrix4x4>::New();
   
-  // SetElement(row,column)
-  dTheta->SetElement(0, 0, tPrime*vx*vx + cPrime);    //  0
-  dTheta->SetElement(0, 1, tPrime*vx*vy + sPrime*vz); // vz
-  dTheta->SetElement(0, 2, tPrime*vx*vz - sPrime*vy); //-vy
+  double tPrime =  sin(nThetaRadians);
+  double cPrime = -sin(nThetaRadians);
+  double sPrime =  cos(nThetaRadians);
+
+  // SetElement(row, column)
+  dTheta->SetElement(0, 0, tPrime*nx*nx + cPrime);
+  dTheta->SetElement(0, 1, tPrime*nx*ny + sPrime*nz);
+  dTheta->SetElement(0, 2, tPrime*nx*nz - sPrime*ny);
   dTheta->SetElement(0, 3, 0.0);
 
-  dTheta->SetElement(1, 0, tPrime*vx*vy - sPrime*vz); //-vz
-  dTheta->SetElement(1, 1, tPrime*vy*vy + cPrime);    //  0
-  dTheta->SetElement(1, 2, tPrime*vy*vz + sPrime*vx); // vx
+  dTheta->SetElement(1, 0, tPrime*nx*ny - sPrime*nz);
+  dTheta->SetElement(1, 1, tPrime*ny*ny + cPrime);
+  dTheta->SetElement(1, 2, tPrime*ny*nz + sPrime*nx);
   dTheta->SetElement(1, 3, 0.0);
 
-  dTheta->SetElement(2, 0, tPrime*vx*vz + sPrime*vy); // vy
-  dTheta->SetElement(2, 1, tPrime*vy*vz - sPrime*vx); //-vx
-  dTheta->SetElement(2, 2, tPrime*vz*vz + cPrime);    //  0
+  dTheta->SetElement(2, 0, tPrime*nx*nz + sPrime*ny);
+  dTheta->SetElement(2, 1, tPrime*ny*nz - sPrime*nx);
+  dTheta->SetElement(2, 2, tPrime*nz*nz + cPrime);
   dTheta->SetElement(2, 3, 0.0);
 
   dTheta->SetElement(3, 0, 0.0);
@@ -604,7 +604,7 @@ ModelObject
     double* pt = points->GetPoint(ptId);
     double* jacobianVector = partials->TransformDoublePoint(pt);
     for (int dim = 0; dim < 3; dim++) {
-      matrix->SetElement(ptId*3 + dim, column, dim);
+      matrix->SetElement(ptId*3 + dim, column, jacobianVector[dim]);
     }
   }
 }
@@ -699,13 +699,11 @@ ModelObject
     transformProps[1] = GetProperty(Y_POSITION_PROP);
     transformProps[2] = GetProperty(Z_POSITION_PROP);
     transformProps[3] = GetProperty(ROTATION_ANGLE_PROP);
-    bool hasRotation = (transformProps[3] != NULL);
+    bool optimizeRotation = (transformProps[3] != NULL && transformProps[3]->GetOptimize());
     
     int numColumns = 0;
     for (int i = 0; i < 4; i++) {
-      if (transformProps[i] && transformProps[i]->GetOptimize()) {
-        numColumns++;
-      }
+      if (transformProps[i] && transformProps[i]->GetOptimize()) numColumns++;
     }
 
     if (numColumns == 0) return;
@@ -719,72 +717,116 @@ ModelObject
       }
     }
 
-    if (hasRotation) {
+    double currentRotation[4], newRotation[4];
+    if (optimizeRotation) {
       // Check if we also want to optimize the rotation axis
       ModelObjectProperty* rotationVector = GetProperty(ROTATION_VECTOR_X_PROP);
       bool optimizeAxis = (rotationVector != NULL && rotationVector->GetOptimize());
 
-      double rotationAxis[3];
       if (optimizeAxis) {
+        currentRotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+        currentRotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+        currentRotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+        currentRotation[3] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+
+        vtkTransform* tform = vtkTransform::New();
+        tform->Identity();
+        tform->RotateWXYZ(currentRotation[0], currentRotation + 1);
+
         // Calculate the rotation axis as the sum of each cross-product
         // between the vector from the object-relative origin to a point
         // on the geometry and the gradient vector.
-        for (int i = 0; i < 3; i++) rotationAxis[i] = 0.0;
+        for (int i = 0; i < 4; i++) newRotation[i] = 0.0;
 
-        double pointVector[3], cross[3];
-
-        for (int ptId = 0; ptId < numPoints; ptId++) {
-          
-          // TODO - figure out composition of rotation
-
+        for (int ptId = 0; ptId < numPoints; ptId++) {    
+          double pointVector[3], cross[3];
+          gradientData->GetPoint(ptId, pointVector);
+          tform->TransformPoint(pointVector, pointVector);
           vtkMath::Cross(pointVector, gradient + (3*ptId), cross);
-          for (int i = 0; i < 3; i++) rotationAxis[i] += cross[i];
+          for (int i = 0; i < 3; i++) newRotation[i+1] += cross[i];
         }
 
-      } else {
-        // Use the user-defined rotation axis
-        rotationAxis[0] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
-        rotationAxis[1] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
-        rotationAxis[2] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
+        tform->Delete();
+
+        // Normalize the axis vector
+        vtkMath::Normalize(newRotation + 1);
+
+        std::cout << "New axis: " << newRotation[1] << ", " << newRotation[2] <<
+          ", " << newRotation[3] << std::endl;
+
+      } else { // user has chosen not to optimize the rotation axis
+
+        // Consider the object to be not rotated.
+        currentRotation[0] = 0.0;
+        currentRotation[1] = 1.0;
+        currentRotation[2] = 0.0;
+        currentRotation[3] = 0.0;
+
+        // Use the user-defined rotation axis as the "new" rotation.
+        newRotation[0] = GetProperty(ROTATION_ANGLE_PROP)->GetDoubleValue();
+        newRotation[1] = GetProperty(ROTATION_VECTOR_X_PROP)->GetDoubleValue();
+        newRotation[2] = GetProperty(ROTATION_VECTOR_Y_PROP)->GetDoubleValue();
+        newRotation[3] = GetProperty(ROTATION_VECTOR_Z_PROP)->GetDoubleValue();
       }
 
-      int paramId = 3;
+      int paramId = 3; // The rotation angle
       if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
-        GetRotationJacobianMatrixColumn(gradientData, transformProps[paramId]->GetName().c_str(), whichColumn++, m);
+        GetRotationAngleJacobianMatrixColumn(gradientData, whichColumn++, m,
+                                             currentRotation, newRotation);
       }
     }
 
     std::cout << "Matrix m: " << std::endl;
     m->PrintSelf();
 
-    double* theta    = new double[numColumns];
+    double* dParams = new double[numColumns];
+    m->LinearLeastSquaresSolve(dParams, gradient);
 
-    m->LinearLeastSquaresSolve(theta, gradient);
-
-    std::cout << "Theta: ";    
+    printf("Rescaled gradient: ");
     for (int paramId = 0; paramId < numColumns; paramId++) {
-      theta[paramId] *= stepSize;
-      std::cout << theta[paramId] << ", ";
+      dParams[paramId] *= stepSize;
+      printf("%8.4f, ", dParams[paramId]);
     }
-    std::cout << std::endl;
+    printf("\n");
 
+    // Handle the translation here
     int whichRow = 0;
-    for (int paramId = 0; paramId < 4; paramId++) {
+    for (int paramId = 0; paramId < 3; paramId++) {
       if (transformProps[paramId] && transformProps[paramId]->GetOptimize()) {
-        // Scale radians back to degrees for the rotation angle and negate
-        if (strcmp(transformProps[paramId]->GetName().c_str(), ROTATION_ANGLE_PROP) == 0) {
-          std::cout << "Adjusting rotation" << std::endl;
-          theta[whichRow] = -vtkMath::DegreesFromRadians(theta[whichRow]);
-        }
-
-        double value = transformProps[paramId]->GetDoubleValue() + theta[whichRow++];
+        double value = transformProps[paramId]->GetDoubleValue() + dParams[whichRow++];
         transformProps[paramId]->SetDoubleValue(value);
       }
     }
 
+    if (optimizeRotation) {
+      // Now handle the rotation
+      vtkTransform* currentTransform = vtkTransform::New();
+      currentTransform->PostMultiply();
+      currentTransform->Identity();
+      currentTransform->RotateWXYZ(currentRotation[0], currentRotation + 1);
+      
+      // Set the angle on the new rotation axis as determined by the least-squares
+      // solution above.
+      newRotation[0] += -vtkMath::DegreesFromRadians(dParams[whichRow++]);
+
+      currentTransform->RotateWXYZ(newRotation[0], newRotation + 1);
+
+      // Get the final orientation
+      double finalOrientation[4];
+      currentTransform->GetOrientationWXYZ(finalOrientation);
+      
+      GetProperty(ROTATION_ANGLE_PROP)->SetDoubleValue(finalOrientation[0]);
+      GetProperty(ROTATION_VECTOR_X_PROP)->SetDoubleValue(finalOrientation[1]);
+      GetProperty(ROTATION_VECTOR_Y_PROP)->SetDoubleValue(finalOrientation[2]);
+      GetProperty(ROTATION_VECTOR_Z_PROP)->SetDoubleValue(finalOrientation[3]);
+
+      currentTransform->Delete();
+    }
+
     delete[] transformProps;
-    delete[] theta;
+    delete[] dParams;
     delete[] gradient;
+    delete m;
 
     NormalizeRotationVector();
 

@@ -139,8 +139,9 @@ class ModelObject : public DirtyListener, public XMLStorable {
   void GetRotationJacobianMatrixColumn(vtkPolyData* points,
     const char* component, int column, Matrix* matrix);
 
-  void GetRotationAngleJacobianMatrixColumn(vtkPolyData* points,
-    const char* component, int column, Matrix* matrix);
+  void GetRotationAngleJacobianMatrixColumn
+  (vtkPolyData* points, int column, Matrix* matrix,
+   double *currentRotation, double* newRotation);
 
   /** Get Jacobian matrix column entries for translation components.
       Values of the parameter axis mean: 0 - x axis; 1 - y axis; 2 - z axis. */
