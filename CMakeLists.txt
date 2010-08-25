@@ -82,6 +82,7 @@ INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/FluorescenceView
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Common
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Filtering
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Graphics
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Imaging
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Rendering
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Utilities
