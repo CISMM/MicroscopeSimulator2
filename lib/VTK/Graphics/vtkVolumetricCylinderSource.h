@@ -15,15 +15,6 @@
 // "theta" - angle parameter about the axis (range [0, 2Pi))
 // "r"     - radial distance from the axis parameter (range [0, Radius])
 
-// "DxDt"     - partial derivative of x-coordinate w.r.t. parameter t
-// "DyDt"     - partial derivative of y-coordinate w.r.t. parameter t
-// "DzDt"     - partial derivative of z-coordinate w.r.t. parameter t
-// "DxDtheta" - partial derivative of x-coordinate w.r.t parameter theta
-// "DyDtheta" - partial derivative of y-coordinate w.r.t parameter theta
-// "DzDtheta" - partial derivative of z-coordinate w.r.t parameter theta
-// "DxDr"     - partial derivative of x-coordinate w.r.t. parameter r
-// "DyDr"     - partial derivative of y-coordinate w.r.t. parameter r
-// "DzDr"     - partial derivative of z-coordinate w.r.t. parameter r
 
 #ifndef __vtkVolumetricCylinderSource_h
 #define __vtkVolumetricCylinderSource_h
