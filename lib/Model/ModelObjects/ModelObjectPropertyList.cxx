@@ -73,8 +73,5 @@ ModelObjectPropertyList
     }
   }
 
-  std::cout << "ModelObjectPropertyList could not find property '"
-            << name << "'" << std::endl;
-
   return NULL;
 }
