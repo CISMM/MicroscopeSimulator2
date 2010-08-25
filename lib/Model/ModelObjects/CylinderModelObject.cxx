@@ -2,7 +2,9 @@
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
 
-#include <vtkCylinderSource.h>
+#include <vtkDataSetSurfaceFilter.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVolumetricCylinderSource.h>
 #include <vtkTriangleFilter.h>
 
 const char* CylinderModelObject::OBJECT_TYPE_NAME = "CylinderModel";
@@ -20,12 +22,19 @@ CylinderModelObject
   SetName("Cylinder");
 
   // Set up geometry
-  m_CylinderSource = vtkSmartPointer<vtkCylinderSource>::New();
-  m_CylinderSource->CappingOn();
+  m_CylinderSource = vtkSmartPointer<vtkVolumetricCylinderSource>::New();
   m_CylinderSource->SetResolution(32);
 
+  vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+    vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+  surfaceFilter->SetInputConnection(m_CylinderSource->GetOutputPort());
+
+  vtkSmartPointer<vtkPolyDataNormals> normalsFilter =
+    vtkSmartPointer<vtkPolyDataNormals>::New();
+  normalsFilter->SetInputConnection(surfaceFilter->GetOutputPort());
+
   m_GeometrySource = vtkSmartPointer<vtkTriangleFilter>::New();
-  m_GeometrySource->SetInputConnection(m_CylinderSource->GetOutputPort());
+  m_GeometrySource->SetInputConnection(normalsFilter->GetOutputPort());
 
   SetGeometrySubAssembly("All", m_GeometrySource);
 

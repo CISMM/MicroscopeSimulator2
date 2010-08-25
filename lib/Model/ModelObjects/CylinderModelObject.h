@@ -5,7 +5,8 @@
 
 #include <vtkSmartPointer.h>
 
-class vtkCylinderSource;
+//class vtkCylinderSource;
+class vtkVolumetricCylinderSource;
 class vtkTriangleFilter;
 
 
@@ -27,7 +28,8 @@ class CylinderModelObject : public ModelObject {
  protected:
   CylinderModelObject() {};
 
-  vtkSmartPointer<vtkCylinderSource> m_CylinderSource;
+  //vtkSmartPointer<vtkCylinderSource> m_CylinderSource;
+  vtkSmartPointer<vtkVolumetricCylinderSource> m_CylinderSource;
   vtkSmartPointer<vtkTriangleFilter> m_GeometrySource;
 
 };
