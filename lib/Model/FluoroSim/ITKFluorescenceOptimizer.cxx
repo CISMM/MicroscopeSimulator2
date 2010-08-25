@@ -14,6 +14,8 @@
 #include <FluorescenceSimulation.h>
 #include <ImageModelObject.h>
 
+#include <cfloat>
+
 
 const char* ITKFluorescenceOptimizer::GAUSSIAN_NOISE_OBJECTIVE_FUNCTION =
   "Gaussian Noise Maximum Likelihood";

@@ -1,5 +1,7 @@
 #include "Visualization.h"
 
+#include <cfloat>
+
 #include <ModelObjectList.h>
 #include <CylinderModelObject.h>
 #include <DiskModelObject.h>

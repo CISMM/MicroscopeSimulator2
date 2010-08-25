@@ -1,5 +1,7 @@
 #include <vtkImageData.h>
 
+#include <cfloat>
+
 #include <FluorescenceImageSource.h>
 #include <FluorescenceSimulation.h>
 #include <ImageModelObject.h>
