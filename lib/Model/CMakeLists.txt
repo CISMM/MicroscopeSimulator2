@@ -95,6 +95,7 @@ TARGET_LINK_LIBRARIES( msimModel
   vtkRendering
   vtkViews
   vtkVolumeRendering
+  msvtkGraphics
   itksys
   ITKCommon
   ITKBasicFilters
