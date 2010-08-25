@@ -203,6 +203,13 @@ FluorescenceOptimizer
 }
 
 
+double
+FluorescenceOptimizer
+::GetObjectiveFunctionValue() {
+  return DBL_MAX; // default implementation, should be overridden.
+}
+
+
 void
 FluorescenceOptimizer
 ::SetModelObjectList(ModelObjectList* list) {

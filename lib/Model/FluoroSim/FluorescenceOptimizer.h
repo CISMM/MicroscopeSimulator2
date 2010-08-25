@@ -75,6 +75,8 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
   Parameter    GetOptimizerParameter(int index);
   Parameter    GetOptimizerParameter(const std::string& name);
 
+  virtual double GetObjectiveFunctionValue();
+
  protected:
   FluorescenceOptimizer() {};
 

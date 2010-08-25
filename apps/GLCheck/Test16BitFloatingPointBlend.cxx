@@ -60,7 +60,7 @@ GLCheck
   // Read back the pixel value
   double range[2];
   vis->FluorescenceViewRender();
-  vis->GetFluorescenceScalarRange(range);
+  vis->Get2DFluorescenceImageScalarRange(range);
 
   // Set the contrast levels
   fluoroSim->SetMinimumIntensityLevel(range[0]);
@@ -82,7 +82,7 @@ GLCheck
   vis->RefreshModelObjectView();
 
   vis->FluorescenceViewRender();
-  vis->GetFluorescenceScalarRange(range);
+  vis->Get2DFluorescenceImageScalarRange(range);
   if (m_Verbose) {
     std::cout << "Image intensity range: " << range[0] << ", " << range[1] << std::endl;
   }

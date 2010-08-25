@@ -1280,6 +1280,38 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimMaximumVoxelIntensityEdit_editingFinished() {
+  double maxIntensity = gui->fluoroSimMaximumVoxelIntensityEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetMaximumVoxelIntensity(maxIntensity);
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimUpdateIntensitySettingsButton_clicked() {
+
+  // Get the scalar range of the 3D image
+  double scalarRange[2];
+  m_Visualization->Get3DFluorescenceImageScalarRange(scalarRange);
+  double currentMaxIntensity = scalarRange[1];
+
+  // Subtract off the offset from the current and desired maximum intensity value
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+  double desiredMaxIntensity = fluoroSim->GetMaximumVoxelIntensity();
+  desiredMaxIntensity -= fluoroSim->GetOffset();
+  currentMaxIntensity -= fluoroSim->GetOffset();
+
+  // Figure out the gain scaling factor and apply it
+  double scale = desiredMaxIntensity / currentMaxIntensity;
+
+  fluoroSim->SetGain(scale*fluoroSim->GetGain());
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimPixelSizeEdit_editingFinished() {
   double pixelSize = gui->fluoroSimPixelSizeEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetPixelSize(pixelSize);
@@ -1442,7 +1474,7 @@ MicroscopeSimulator
 ::on_fluoroSimSetToFullIntensityRange_clicked() {
   m_Visualization->FluorescenceViewRender();
   double scalarRange[2];
-  m_Visualization->GetFluorescenceScalarRange(scalarRange);
+  m_Visualization->Get2DFluorescenceImageScalarRange(scalarRange);
 
   m_Simulation->GetFluorescenceSimulation()->
     SetMinimumIntensityLevel(scalarRange[0]);
@@ -1723,6 +1755,16 @@ MicroscopeSimulator
 }
 
 
+void
+MicroscopeSimulator
+::on_fluoroSimUpdateObjectiveFunctionValueButton_clicked() {
+  double value = m_Simulation->GetFluorescenceOptimizer()->GetObjectiveFunctionValue();
+
+  QString valueStr; valueStr.sprintf("%e", value);
+  gui->fluoroSimObjectiveFunctionValueEdit->setText(valueStr);
+}
+
+
 int
 MicroscopeSimulator
 ::PromptToSaveChanges() {
@@ -1831,6 +1873,7 @@ MicroscopeSimulator
   // Simulator Settings group box
   gui->fluoroSimGainEdit->setText(QVariant(fluoroSim->GetGain()).toString());
   gui->fluoroSimOffsetEdit->setText(QVariant(fluoroSim->GetOffset()).toString());
+  gui->fluoroSimMaximumVoxelIntensityEdit->setText(QVariant(fluoroSim->GetMaximumVoxelIntensity()).toString());
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
   gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
   gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());

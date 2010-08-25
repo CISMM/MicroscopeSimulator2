@@ -62,7 +62,8 @@ public:
   void SetInteractionModeToActor();
 
   // Fluorescence-related stuff
-  void GetFluorescenceScalarRange(double scalarRange[2]);
+  void Get2DFluorescenceImageScalarRange(double scalarRange[2]);
+  void Get3DFluorescenceImageScalarRange(double scalarRange[2]);
 
   void FocusOnObject(ModelObject* object);
 

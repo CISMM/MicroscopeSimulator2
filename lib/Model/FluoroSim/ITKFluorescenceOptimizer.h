@@ -44,6 +44,7 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
   ITKFluorescenceOptimizer(DirtyListener* listener);
   virtual ~ITKFluorescenceOptimizer();
 
+  virtual double GetObjectiveFunctionValue();
 
  protected:
   

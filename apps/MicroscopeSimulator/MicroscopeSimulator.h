@@ -151,6 +151,8 @@ public slots:
   virtual void on_fluoroSimShowImageVolumeOutlineCheckBox_toggled(bool);
   virtual void on_fluoroSimGainEdit_textChanged(QString text);
   virtual void on_fluoroSimOffsetEdit_textChanged(QString text);
+  virtual void on_fluoroSimMaximumVoxelIntensityEdit_editingFinished();
+  virtual void on_fluoroSimUpdateIntensitySettingsButton_clicked();
   virtual void on_fluoroSimPixelSizeEdit_editingFinished();
   virtual void on_fluoroSimImageWidthEdit_editingFinished();
   virtual void on_fluoroSimImageHeightEdit_editingFinished();
@@ -178,6 +180,8 @@ public slots:
   virtual void on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected);
   
   virtual void on_fluoroSimOptimizeButton_clicked();
+
+  virtual void on_fluoroSimUpdateObjectiveFunctionValueButton_clicked();
 
 protected:
   Simulation* m_Simulation;

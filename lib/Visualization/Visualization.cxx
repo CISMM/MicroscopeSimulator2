@@ -276,13 +276,13 @@ Visualization
 
 void
 Visualization
-::GetFluorescenceScalarRange(double scalarRange[2]) {
+::Get2DFluorescenceImageScalarRange(double scalarRange[2]) {
   vtkImageData* image = m_FluorescenceRenderView->GetImage();
   image->Update();
 
   int components = image->GetNumberOfScalarComponents();
-  double min = 1e9;
-  double max = -1e9;
+  double min = DBL_MAX;
+  double max = DBL_MIN;
   float* scalars = static_cast<float*>(image->GetScalarPointer());
   for (int i = 0; i < image->GetNumberOfPoints(); i++) {
     for (int j = 0; j < components; j++) {
@@ -294,6 +294,34 @@ Visualization
   
   scalarRange[0] = static_cast<double>(min);
   scalarRange[1] = static_cast<double>(max);
+}
+
+
+void
+Visualization
+::Get3DFluorescenceImageScalarRange(double scalarRange[2]) {
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+  if (!fluoroSim)
+    return;
+
+  int originalFocalPlaneIndex = fluoroSim->GetFocalPlaneIndex();
+
+  double minMax[2] = {DBL_MAX, DBL_MIN};
+  for (unsigned int i = 0; i < fluoroSim->GetNumberOfFocalPlanes(); i++) {
+    fluoroSim->SetFocalPlaneIndex(i);
+
+    double sliceRange[2];
+    Get2DFluorescenceImageScalarRange(sliceRange);
+    if (sliceRange[0] < minMax[0])
+      minMax[0] = sliceRange[0];
+    if (sliceRange[1] > minMax[1])
+      minMax[1] = sliceRange[1];
+  }
+  
+  scalarRange[0] = minMax[0];
+  scalarRange[1] = minMax[1];
+
+  fluoroSim->SetFocalPlaneIndex(originalFocalPlaneIndex);
 }
 
 

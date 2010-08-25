@@ -11,6 +11,9 @@
 // errors.
 #include <ITKFluorescenceOptimizer.h>
 
+#include <FluorescenceSimulation.h>
+#include <ImageModelObject.h>
+
 
 const char* ITKFluorescenceOptimizer::GAUSSIAN_NOISE_OBJECTIVE_FUNCTION =
   "Gaussian Noise Maximum Likelihood";
@@ -59,4 +62,40 @@ ITKFluorescenceOptimizer
     m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
     std::cout << "Using normalized correlation cost function, ";
   }
+}
+
+
+double
+ITKFluorescenceOptimizer
+::GetObjectiveFunctionValue() {
+  SetUpObjectiveFunction();
+
+  // Make sure to set the fluorescence image source and moving image.
+  m_FluorescenceImageSource->
+    SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
+
+  if (!m_ComparisonImageModelObject)
+    return DBL_MAX;
+
+  m_FluorescenceImageSource->GetOutput()->Update();
+  m_ImageToImageCostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage());
+  m_ImageToImageCostFunction->SetMovingImage
+    (m_FluorescenceImageSource->GetOutput());
+
+  ImageToImageCostFunctionType::FixedImageRegionType region =
+    m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion();
+  m_ImageToImageCostFunction->SetFixedImageRegion
+    (m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
+
+  ParameterizedCostFunctionType::TransformTypePointer identity =
+    ParameterizedCostFunctionType::TransformType::New();
+  m_ImageToImageCostFunction->SetTransform(identity);
+
+  ParameterizedCostFunctionType::InterpolatorTypePointer interpolator =
+    ParameterizedCostFunctionType::InterpolatorType::New();
+  interpolator->SetInputImage(m_FluorescenceImageSource->GetOutput());
+  m_ImageToImageCostFunction->SetInterpolator(interpolator);
+
+  ImageToImageCostFunctionType::ParametersType parameters(1);
+  return m_ImageToImageCostFunction->GetValue(parameters);
 }

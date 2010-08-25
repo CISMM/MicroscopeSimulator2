@@ -25,6 +25,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   static const char* POSITION_ATT;
   static const char* GAIN_ATT;
   static const char* OFFSET_ATT;
+  static const char* MAXIMUM_VOXEL_INTENSITY_ATT;
   static const char* PIXEL_SIZE_ATT;
   static const char* PSF_NAME_ATT;
   static const char* IMAGE_WIDTH_ATT;
@@ -68,6 +69,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(ActivePSFIndex, int);
   SetGetMacro(Gain, double);
   SetGetMacro(Offset, double);
+  SetGetMacro(MaximumVoxelIntensity, double);
   SetGetMacro(PixelSize, double);
   SetGetMacro(ImageWidth, unsigned int);
   SetGetMacro(ImageHeight, unsigned int);
@@ -116,6 +118,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   int          m_ActivePSFIndex;
   double       m_Gain;
   double       m_Offset;
+  double       m_MaximumVoxelIntensity;
   double       m_PixelSize;
   unsigned int m_ImageWidth;
   unsigned int m_ImageHeight;
