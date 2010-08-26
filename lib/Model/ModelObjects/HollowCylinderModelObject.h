@@ -5,12 +5,8 @@
 
 #include <vtkSmartPointer.h>
 
-class vtkDiskSource;
-class vtkLinearExtrusionFilter;
 class vtkPolyDataNormals;
-class vtkTransform;
-class vtkTransformPolyDataFilter;
-class vtkTriangleFilter;
+class vtkVolumetricHollowCylinderSource;
 
 
 class HollowCylinderModelObject : public ModelObject {
@@ -32,12 +28,8 @@ class HollowCylinderModelObject : public ModelObject {
  protected:
   HollowCylinderModelObject() {};
 
-  vtkSmartPointer<vtkDiskSource>              m_DiskSource;
-  vtkSmartPointer<vtkTransform>               m_Transform;
-  vtkSmartPointer<vtkTransformPolyDataFilter> m_TransformFilter;
-  vtkSmartPointer<vtkLinearExtrusionFilter>   m_ExtrusionSource;
-  vtkSmartPointer<vtkTriangleFilter>          m_TriangleFilter;
-  vtkSmartPointer<vtkPolyDataNormals>         m_GeometrySource;
+  vtkSmartPointer<vtkVolumetricHollowCylinderSource> m_HollowCylinderSource;
+  vtkSmartPointer<vtkPolyDataNormals>                m_GeometrySource;
 
 };
 
