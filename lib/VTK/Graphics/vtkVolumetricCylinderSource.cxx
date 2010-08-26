@@ -74,8 +74,8 @@ int vtkVolumetricCylinderSource::RequestData(
     xtop[2] = xbot[2] = this->Radius * sin(i*angle) + this->Center[2];
 
     idx = 2*i;
-    newPoints->InsertPoint(idx,xbot);
-    newPoints->InsertPoint(idx+1,xtop);
+    newPoints->InsertPoint(idx,xtop);
+    newPoints->InsertPoint(idx+1,xbot);
     }
 
   //
@@ -84,8 +84,8 @@ int vtkVolumetricCylinderSource::RequestData(
   xtop[1] =  0.5 * this->Height + this->Center[1];
   xbot[1] = -0.5 * this->Height + this->Center[1];
   xtop[2] = xbot[2] = this->Center[2];
-  newPoints->InsertPoint(numPts-2,xbot);
-  newPoints->InsertPoint(numPts-1,xtop);
+  newPoints->InsertPoint(numPts-2,xtop);
+  newPoints->InsertPoint(numPts-1,xbot);
   
   //
   // Generate tetrahedral cells for volume. We (conceptually) loop over

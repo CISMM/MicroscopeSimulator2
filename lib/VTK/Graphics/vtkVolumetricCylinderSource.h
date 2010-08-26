@@ -1,5 +1,5 @@
 // .NAME vtkVolumetricCylinderSource - generate a cylinder centered at
-// origin.
+// a given location.
 // .SECTION Description
 // vtkVolumetricCylinderSource creates an unstructured grid in the
 // shape of a cylinder centered at Center. The unstructured grid
