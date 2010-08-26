@@ -2,8 +2,9 @@
 // the origin
 // .SECTION Description
 // vtkVolumetricEllipsoidSource creates an unstructured grid in the
-// shape of an ellipsoid centered at the origin. The ellipsoid may principal axes
-// with different lengths. The unstructured grid consists of tetrahedral cells.
+// shape of an ellipsoid centered at the origin. The ellipsoid may have
+// principal axes with different lengths. The unstructured grid consists
+// of tetrahedral cells.
 //
 // The radius of each dimension of the ellipsoid can be specified, as well as the 
 // resolution of the tesselation in theta (longitude) and phi (latitude).
@@ -11,9 +12,9 @@
 // The output unstructured grid can optionally generate scalar data
 // consisting of the fields:
 // "theta" - longitude parameter (range [0, 2Pi))
-// "phi"   - latitude parameter (range [-pi/2, pi/2])
+// "phi"   - latitude parameter (range [0, pi])
 // "r"     - normalized radial distance from the ellipsoid center to the ellipsoid
-//           voundary (range [0, 1.0])
+//           boundary (range [0, 1.0])
 
 
 #ifndef __vtkVolumetricEllipsoidSource_h
@@ -36,12 +37,12 @@ public:
   vtkGetVector3Macro(Radius,double);
 
   // Description:
-  // Set the longitudinal resolution of the sphere. Initial value is 8.
+  // Set the longitudinal resolution of the ellipsoid. Initial value is 8.
   vtkSetClampMacro(ThetaResolution,int,2,VTK_INT_MAX)
   vtkGetMacro(ThetaResolution,int);
 
   // Description:
-  // Set the latitudinal resolution of the sphere. Initial value is 8.
+  // Set the latitudinal resolution of the ellipsoid. Initial value is 8.
   vtkSetClampMacro(PhiResolution,int,2,VTK_INT_MAX)
   vtkGetMacro(PhiResolution,int);
 
@@ -53,7 +54,7 @@ public:
 
 
 protected:
-  vtkVolumetricEllipsoidSource(int res=32);
+  vtkVolumetricEllipsoidSource(int res=8);
   ~vtkVolumetricEllipsoidSource() {};
 
   int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
