@@ -4,8 +4,10 @@
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
 
-#include <vtkSphereSource.h>
-#include <vtkTriangleFilter.h>
+//#include <vtkSphereSource.h>
+#include <vtkDataSetSurfaceFilter.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVolumetricEllipsoidSource.h>
 
 
 const char* SphereModelObject::OBJECT_TYPE_NAME = "SphereModel";
@@ -23,12 +25,16 @@ SphereModelObject
   SetName("Sphere");
 
   // Set up geometry
-  m_SphereSource = vtkSmartPointer<vtkSphereSource>::New();
+  m_SphereSource = vtkSmartPointer<vtkVolumetricEllipsoidSource>::New();
   m_SphereSource->SetThetaResolution(32);
   m_SphereSource->SetPhiResolution(16);
 
-  m_GeometrySource = vtkSmartPointer<vtkTriangleFilter>::New();
-  m_GeometrySource->SetInputConnection(m_SphereSource->GetOutputPort());
+  vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+    vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+  surfaceFilter->SetInputConnection(m_SphereSource->GetOutputPort());
+
+  m_GeometrySource = vtkSmartPointer<vtkPolyDataNormals>::New();
+  m_GeometrySource->SetInputConnection(surfaceFilter->GetOutputPort());
 
   SetGeometrySubAssembly("All", m_GeometrySource);
 
@@ -54,7 +60,8 @@ SphereModelObject
 void
 SphereModelObject
 ::Update() {
-  m_SphereSource->SetRadius(GetProperty("Radius")->GetDoubleValue());
+  double radius = GetProperty("Radius")->GetDoubleValue();
+  m_SphereSource->SetRadius(radius, radius, radius);
 }
 
 

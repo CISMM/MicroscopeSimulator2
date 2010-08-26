@@ -7,6 +7,7 @@
 SET (Graphics_SRCS
   vtkVolumetricCylinderSource.cxx
   vtkVolumetricHollowCylinderSource.cxx
+  vtkVolumetricEllipsoidSource.cxx
 )
 
 # Create the msvtkGraphics C++ library

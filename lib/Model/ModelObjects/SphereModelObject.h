@@ -10,8 +10,8 @@
 
 #include <vtkSmartPointer.h>
 
-class vtkSphereSource;
-class vtkTriangleFilter;
+class vtkPolyDataNormals;
+class vtkVolumetricEllipsoidSource;
 
 
 class SphereModelObject : public ModelObject {
@@ -39,8 +39,8 @@ class SphereModelObject : public ModelObject {
 
   ModelObjectPropertyList* CreateProperties();
 
-  vtkSmartPointer<vtkSphereSource>   m_SphereSource;
-  vtkSmartPointer<vtkTriangleFilter> m_GeometrySource;
+  vtkSmartPointer<vtkVolumetricEllipsoidSource> m_SphereSource;
+  vtkSmartPointer<vtkPolyDataNormals>           m_GeometrySource;
 
 };
 
