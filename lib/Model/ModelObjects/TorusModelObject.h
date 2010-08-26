@@ -4,9 +4,8 @@
 #include <ModelObject.h>
 #include <vtkSmartPointer.h>
 
-class vtkParametricTorus;
-class vtkParametricFunctionSource;
-class vtkTriangleFilter;
+class vtkPolyDataNormals;
+class vtkVolumetricTorusSource;
 
 
 class TorusModelObject : public ModelObject {
@@ -28,9 +27,8 @@ class TorusModelObject : public ModelObject {
  protected:
   TorusModelObject() {};
 
-  vtkSmartPointer<vtkParametricTorus>          m_Torus;
-  vtkSmartPointer<vtkParametricFunctionSource> m_TorusSource;
-  vtkSmartPointer<vtkTriangleFilter>           m_GeometrySource;
+  vtkSmartPointer<vtkVolumetricTorusSource> m_TorusSource;
+  vtkSmartPointer<vtkPolyDataNormals>       m_GeometrySource;
 
 };
 
