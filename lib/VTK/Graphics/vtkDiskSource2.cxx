@@ -8,7 +8,6 @@
 #include "vtkMath.h"
 #include "vtkPointData.h"
 #include "vtkPoints.h"
-#include "vtkUnstructuredGrid.h"
 
 #include <math.h>
 
@@ -53,7 +52,7 @@ int vtkDiskSource2::RequestData(
   double thetaAngle = vtkMath::DoubleTwoPi()/this->CircumferentialResolution;
   int numCells, numPts;
   double x[3];
-  int i, idx;
+  int i;
   vtkIdType pts[VTK_CELL_SIZE];
   vtkPoints *newPoints; 
   vtkCellArray *newCells;
