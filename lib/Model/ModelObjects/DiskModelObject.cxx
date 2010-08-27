@@ -19,7 +19,6 @@ DiskModelObject
 
   // Set up geometry
   m_GeometrySource = vtkSmartPointer<vtkDiskSource2>::New();
-  m_GeometrySource->SetRadius(0.0);
   m_GeometrySource->SetCircumferentialResolution(32);
 
   SetGeometrySubAssembly("All", m_GeometrySource);
