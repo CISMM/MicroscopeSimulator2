@@ -6,6 +6,7 @@
 
 SET (Graphics_SRCS
   vtkDiskSource2.cxx
+  vtkRectangleSource.cxx
   vtkVolumetricCylinderSource.cxx
   vtkVolumetricHollowCylinderSource.cxx
   vtkVolumetricEllipsoidSource.cxx
