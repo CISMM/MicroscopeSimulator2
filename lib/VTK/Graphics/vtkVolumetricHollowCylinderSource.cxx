@@ -26,6 +26,19 @@ vtkVolumetricHollowCylinderSource::vtkVolumetricHollowCylinderSource (int res)
   this->SetNumberOfInputPorts(0);
 }
 
+void vtkVolumetricHollowCylinderSource::ComputePoint(double t, double theta, double r, double result[3])
+{
+  double thickness = this->OuterRadius - this->InnerRadius;
+  result[0] = (thickness*r + this->InnerRadius)*cos(theta) ;
+  result[1] = (t-0.5)*this->Height;
+  result[2] = (thickness*r + this->InnerRadius)*sin(theta);
+
+  for (int i = 0; i < 3; i++)
+    {
+    result[i]+= this->Center[i];
+    }
+}
+
 int vtkVolumetricHollowCylinderSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
@@ -63,17 +76,10 @@ int vtkVolumetricHollowCylinderSource::RequestData(
   //
   for (i=0; i<this->Resolution; i++)
     {
-    // x coordinate
-    xtopout[0] = xbotout[0] = this->OuterRadius * cos(i*angle) + this->Center[0];
-    xtopin [0] = xbotin [0] = this->InnerRadius * cos(i*angle) + this->Center[0];
-
-    // y coordinate
-    xtopout[1] = xtopin[1] =  0.5 * this->Height + this->Center[1];
-    xbotout[1] = xbotin[1] = -0.5 * this->Height + this->Center[1];
-
-    // z coordinate
-    xtopout[2] = xbotout[2] = this->OuterRadius * sin(i*angle) + this->Center[2];
-    xtopin [2] = xbotin [2] = this->InnerRadius * sin(i*angle) + this->Center[2];
+    this->ComputePoint(1.0, i*angle, 1.0, xtopout);
+    this->ComputePoint(1.0, i*angle, 0.0, xtopin);
+    this->ComputePoint(0.0, i*angle, 1.0, xbotout);
+    this->ComputePoint(0.0, i*angle, 0.0, xbotin);
 
     idx = 4*i;
     newPoints->InsertPoint(idx,   xtopout);

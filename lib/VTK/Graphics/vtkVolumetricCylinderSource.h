@@ -11,9 +11,9 @@
 //
 // The output unstructured grid can optionally generate scalar data
 // consisting of the fields:
-// "t"     - parameter along the axis of the cylinder (range [0, Height])
+// "t"     - normalized length along the axis of the cylinder (range [0, 1.0])
 // "theta" - angle parameter about the axis (range [0, 2Pi))
-// "r"     - radial distance from the axis parameter (range [0, Radius])
+// "r"     - normalized radial distance from the axis parameter (range [0, 1.0])
 
 
 #ifndef __vtkVolumetricCylinderSource_h
@@ -56,6 +56,9 @@ public:
   vtkGetMacro(GenerateScalars,int);
   vtkBooleanMacro(GenerateScalars,int);
 
+  // Description:
+  // Calculate the location of a point given shape parameters.
+  void ComputePoint(double t, double theta, double r, double result[3]);
 
 protected:
   vtkVolumetricCylinderSource(int res=6);

@@ -4,6 +4,7 @@
 #include "vtkFloatArray.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
+#include "vtkMath.h"
 #include "vtkObjectFactory.h"
 #include "vtkPointData.h"
 #include "vtkPoints.h"
@@ -25,6 +26,13 @@ vtkVolumetricCylinderSource::vtkVolumetricCylinderSource (int res)
   this->SetNumberOfInputPorts(0);
 }
 
+void vtkVolumetricCylinderSource::ComputePoint(double t, double theta, double r, double result[3])
+{
+  result[0] = r*this->Radius*cos(theta) + this->Center[0];
+  result[1] = (t-0.5)*this->Height      + this->Center[1];
+  result[2] = r*this->Radius*sin(theta) + this->Center[2];
+}
+
 int vtkVolumetricCylinderSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
@@ -37,7 +45,7 @@ int vtkVolumetricCylinderSource::RequestData(
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  double angle= 2.0*3.141592654/this->Resolution;
+  double angle= vtkMath::DoubleTwoPi()/this->Resolution;
   int numCells, numPts;
   double xtop[3], xbot[3];
   double *center = this->Center;
@@ -63,16 +71,9 @@ int vtkVolumetricCylinderSource::RequestData(
   //
   for (i=0; i<this->Resolution; i++)
     {
-    // x coordinate
-    xtop[0] = xbot[0] = this->Radius * cos(i*angle) + this->Center[0];
-
-    // y coordinate
-    xtop[1] =  0.5 * this->Height + this->Center[1];
-    xbot[1] = -0.5 * this->Height + this->Center[1];
-
-    // z coordinate
-    xtop[2] = xbot[2] = this->Radius * sin(i*angle) + this->Center[2];
-
+    this->ComputePoint(0.0, i*angle, 1.0, xtop);
+    this->ComputePoint(1.0, i*angle, 1.0, xbot);
+                         
     idx = 2*i;
     newPoints->InsertPoint(idx,xtop);
     newPoints->InsertPoint(idx+1,xbot);
@@ -80,10 +81,9 @@ int vtkVolumetricCylinderSource::RequestData(
 
   //
   // Add two points at either end of the axis
-  xtop[0] = xbot[0] = this->Center[0];
-  xtop[1] =  0.5 * this->Height + this->Center[1];
-  xbot[1] = -0.5 * this->Height + this->Center[1];
-  xtop[2] = xbot[2] = this->Center[2];
+  //
+  this->ComputePoint(0.0, 0.0, 0.0, xtop);
+  this->ComputePoint(1.0, 0.0, 0.0, xbot);
   newPoints->InsertPoint(numPts-2,xtop);
   newPoints->InsertPoint(numPts-1,xbot);
   

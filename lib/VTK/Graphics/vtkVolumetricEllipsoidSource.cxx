@@ -25,6 +25,13 @@ vtkVolumetricEllipsoidSource::vtkVolumetricEllipsoidSource (int res)
   this->SetNumberOfInputPorts(0);
 }
 
+void vtkVolumetricEllipsoidSource::ComputePoint(double theta, double phi, double r, double result[3])
+{
+  result[0] = r*this->Radius[0]*cos(theta)*sin(phi);
+  result[1] = r*this->Radius[1]*sin(theta)*sin(phi);
+  result[2] = r*this->Radius[2]*cos(phi);
+}
+
 int vtkVolumetricEllipsoidSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
@@ -41,7 +48,7 @@ int vtkVolumetricEllipsoidSource::RequestData(
   double phiAngle   = vtkMath::DoublePi()/(this->PhiResolution-1);
   int numCells, numPts;
   double x[3];
-  int i, j, idx;
+  int i, j;
   vtkIdType pts[VTK_CELL_SIZE];
   vtkPoints *newPoints; 
   vtkCellArray *newCells;
@@ -74,11 +81,7 @@ int vtkVolumetricEllipsoidSource::RequestData(
       {
       // x coordinate
       double theta = j*thetaAngle;
-
-      x[0] = this->Radius[0]*cos(theta)*sin(phi);
-      x[1] = this->Radius[1]*sin(theta)*sin(phi);
-      x[2] = this->Radius[2]*cos(phi);
-
+      this->ComputePoint(theta, phi, 1.0, x);
       newPoints->InsertPoint((i-1)*skip+j, x);
       }
 
@@ -91,13 +94,11 @@ int vtkVolumetricEllipsoidSource::RequestData(
   //
   // South and north poles
   //
-  x[0] = x[1] = 0.0;
-  x[2] = -this->Radius[2];
+  this->ComputePoint(0.0, vtkMath::DoublePi(), 1.0, x);
   newPoints->InsertPoint(numPts-2,x);
-  x[2] =  this->Radius[2];
-  newPoints->InsertPoint(numPts-1,x);
 
-  vtkIdType tetPtIds[VTK_CELL_SIZE];
+  this->ComputePoint(0.0, 0.0, 1.0, x);
+  newPoints->InsertPoint(numPts-1,x);
 
   //
   // Start by creating the tetrahedra at the north and south polls.
@@ -105,18 +106,18 @@ int vtkVolumetricEllipsoidSource::RequestData(
   for (i=0; i<this->ThetaResolution;i++)
     {
     // South pole
-    tetPtIds[0] = numPts-2;
-    tetPtIds[1] = (this->PhiResolution-3)*skip + i;
-    tetPtIds[2] = (this->PhiResolution-3)*skip + ((i+1) % this->ThetaResolution);
-    tetPtIds[3] = (this->PhiResolution-3)*skip + this->ThetaResolution;
-    newCells->InsertNextCell(4, tetPtIds);
+    pts[0] = numPts-2;
+    pts[1] = (this->PhiResolution-3)*skip + i;
+    pts[2] = (this->PhiResolution-3)*skip + ((i+1) % this->ThetaResolution);
+    pts[3] = (this->PhiResolution-3)*skip + this->ThetaResolution;
+    newCells->InsertNextCell(4, pts);
 
     // North pole
-    tetPtIds[0] = numPts-1;
-    tetPtIds[1] = i;
-    tetPtIds[2] = (i+1) % this->ThetaResolution;
-    tetPtIds[3] = this->ThetaResolution;
-    newCells->InsertNextCell(4, tetPtIds);
+    pts[0] = numPts-1;
+    pts[1] = i;
+    pts[2] = (i+1) % this->ThetaResolution;
+    pts[3] = this->ThetaResolution;
+    newCells->InsertNextCell(4, pts);
     }
 
   //
@@ -135,25 +136,25 @@ int vtkVolumetricEllipsoidSource::RequestData(
       int n5 = (i  )*skip + ((j+1) % this->ThetaResolution);
 
       // Tet 0
-      tetPtIds[0] = n0;
-      tetPtIds[1] = n3;
-      tetPtIds[2] = n5;
-      tetPtIds[3] = n1;
-      newCells->InsertNextCell(4, tetPtIds);
+      pts[0] = n0;
+      pts[1] = n3;
+      pts[2] = n5;
+      pts[3] = n1;
+      newCells->InsertNextCell(4, pts);
 
       // Tet 1
-      tetPtIds[0] = n5;
-      tetPtIds[1] = n3;
-      tetPtIds[2] = n4;
-      tetPtIds[3] = n1;
-      newCells->InsertNextCell(4, tetPtIds);
+      pts[0] = n5;
+      pts[1] = n3;
+      pts[2] = n4;
+      pts[3] = n1;
+      newCells->InsertNextCell(4, pts);
       
       // Tet 2
-      tetPtIds[0] = n1;
-      tetPtIds[1] = n4;
-      tetPtIds[2] = n2;
-      tetPtIds[3] = n3;
-      newCells->InsertNextCell(4, tetPtIds);
+      pts[0] = n1;
+      pts[1] = n4;
+      pts[2] = n2;
+      pts[3] = n3;
+      newCells->InsertNextCell(4, pts);
 
       }
     }

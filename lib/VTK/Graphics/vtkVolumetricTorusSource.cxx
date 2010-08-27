@@ -26,6 +26,14 @@ vtkVolumetricTorusSource::vtkVolumetricTorusSource (int res)
   this->SetNumberOfInputPorts(0);
 }
 
+void vtkVolumetricTorusSource::ComputePoint(double theta, double phi, double r, double result[3])
+{
+  double a = this->RingRadius + r*this->CrossSectionRadius*cos(phi);
+  result[0] = a*cos(theta);
+  result[1] = a*sin(theta);
+  result[2] = r*this->CrossSectionRadius*sin(phi);  
+}
+
 int vtkVolumetricTorusSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
@@ -73,19 +81,12 @@ int vtkVolumetricTorusSource::RequestData(
     for (i=0; i<this->PhiResolution; i++)
       {
       double phi   = i*phiAngle;
-
-      double r = this->RingRadius + this->CrossSectionRadius*cos(phi);
-      x[0] = r*cos(theta);
-      x[1] = r*sin(theta);
-      x[2] = this->CrossSectionRadius*sin(phi);
-
+      this->ComputePoint(theta, phi, 1.0, x);
       newPoints->InsertPoint(j*skip+i, x);
       }
 
     // Point on the medial axis
-    x[0] = this->RingRadius*cos(theta);
-    x[1] = this->RingRadius*sin(theta);
-    x[2] = 0.0;
+    this->ComputePoint(0.0, 0.0, 0.0, x);
     newPoints->InsertPoint(j*skip + this->PhiResolution,x);
     }
 

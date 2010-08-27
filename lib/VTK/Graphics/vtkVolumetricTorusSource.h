@@ -56,6 +56,9 @@ public:
   vtkGetMacro(GenerateScalars,int);
   vtkBooleanMacro(GenerateScalars,int);
 
+  // Description:
+  // Calculate the location of a point given shape parameters.
+  void ComputePoint(double theta, double phi, double r, double result[3]);
 
 protected:
   vtkVolumetricTorusSource(int res=8);
