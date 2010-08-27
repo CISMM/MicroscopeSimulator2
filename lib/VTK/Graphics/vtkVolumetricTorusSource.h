@@ -60,6 +60,13 @@ public:
   // Calculate the location of a point given shape parameters.
   void ComputePoint(double theta, double phi, double r, double result[3]);
 
+  // Description:
+  // Calculate partial derivatives of a point location (a velocity)
+  // with respect to changes in shape parameters
+  // CrossSectionRadius and RingRadius.
+  void ComputeVelocityWRTCrossSectionRadius(double theta, double phi, double r, double result[3]);
+  void ComputeVelocityWRTRingRadius(double theta, double phi, double r, double result[3]);
+
 protected:
   vtkVolumetricTorusSource(int res=8);
   ~vtkVolumetricTorusSource() {};

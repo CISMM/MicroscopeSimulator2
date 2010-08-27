@@ -39,6 +39,27 @@ void vtkVolumetricHollowCylinderSource::ComputePoint(double t, double theta, dou
     }
 }
 
+void vtkVolumetricHollowCylinderSource::ComputeVelocityWRTHeight(double t, double theta, double r, double result[3])
+{
+  result[0] = 0.0;
+  result[1] = t-0.5;
+  result[2] = 0.0;
+}
+
+void vtkVolumetricHollowCylinderSource::ComputeVelocityWRTInnerRadius(double t, double theta, double r, double result[3])
+{
+  result[0] = (-r + 1)*cos(theta);
+  result[1] = 0.0;
+  result[2] = (-r + 1)*sin(theta);
+}
+
+void vtkVolumetricHollowCylinderSource::ComputeVelocityWRTOuterRadius(double t, double theta, double r, double result[3])
+{
+  result[0] = r*cos(theta);
+  result[1] = 0.0;
+  result[2] = r*sin(theta);
+}
+
 int vtkVolumetricHollowCylinderSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),

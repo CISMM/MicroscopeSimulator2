@@ -47,9 +47,10 @@ public:
   void ComputePoint(double theta, double r, double result[3]);
 
   // Description:
-  // Calculate Jacobian of a given point with respect to the shape parameter
-  // Radius
-  void ComputeJacobianOfRadius(double theta, double r, double result[3]);
+  // Calculate partial derivatives of a point location (a velocity)
+  // with respect to changes in shape parameters
+  // Radius.
+  void ComputeVelocityWRTRadius(double theta, double r, double result[3]);
 
 protected:
   vtkDiskSource2(int res=8);

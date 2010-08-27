@@ -31,7 +31,7 @@ void vtkDiskSource2::ComputePoint(double theta, double r, double result[3])
   result[2] = 0.0;
 }
 
-void vtkDiskSource2::ComputeJacobianOfRadius(double theta, double r, double result[3])
+void vtkDiskSource2::ComputeVelocityWRTRadius(double theta, double r, double result[3])
 {
   result[0] = r*cos(theta);
   result[1] = r*sin(theta);

@@ -34,6 +34,20 @@ void vtkVolumetricTorusSource::ComputePoint(double theta, double phi, double r, 
   result[2] = r*this->CrossSectionRadius*sin(phi);  
 }
 
+void vtkVolumetricTorusSource::ComputeVelocityWRTCrossSectionRadius(double theta, double phi, double r, double result[3])
+{
+  result[0] = r*cos(phi)*cos(theta);
+  result[1] = r*cos(phi)*sin(theta);
+  result[2] = r*sin(phi);
+}
+
+void vtkVolumetricTorusSource::ComputeVelocityWRTRingRadius(double theta, double phi, double r, double result[3])
+{
+  result[0] = cos(theta);
+  result[1] = sin(theta);
+  result[2] = 0.0;
+}
+
 int vtkVolumetricTorusSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),

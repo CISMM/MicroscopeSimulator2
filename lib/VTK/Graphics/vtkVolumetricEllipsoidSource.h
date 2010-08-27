@@ -56,6 +56,14 @@ public:
   // Calculate the location of a point given shape parameters.
   void ComputePoint(double theta, double phi, double r, double result[3]);
 
+  // Description:
+  // Calculate partial derivatives of a point location (a velocity)
+  // with respect to changes in shape parameters
+  // Radius[0] (Radius X), Radius[1] (Radius Y), Radius[2] (Radius Z).
+  void ComputeVelocityWRTRadiusX(double theta, double phi, double r, double result[3]);
+  void ComputeVelocityWRTRadiusY(double theta, double phi, double r, double result[3]);
+  void ComputeVelocityWRTRadiusZ(double theta, double phi, double r, double result[3]);
+
 protected:
   vtkVolumetricEllipsoidSource(int res=8);
   ~vtkVolumetricEllipsoidSource() {};

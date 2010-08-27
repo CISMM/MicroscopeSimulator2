@@ -33,6 +33,20 @@ void vtkVolumetricCylinderSource::ComputePoint(double t, double theta, double r,
   result[2] = r*this->Radius*sin(theta) + this->Center[2];
 }
 
+void vtkVolumetricCylinderSource::ComputeVelocityWRTHeight(double t, double theta, double r, double result[3])
+{
+  result[0] = 0.0;
+  result[1] = t-0.5;
+  result[2] = 0.0;
+}
+
+void vtkVolumetricCylinderSource::ComputeVelocityWRTRadius(double t, double theta, double r, double result[3])
+{
+  result[0] = r*cos(theta);
+  result[1] = 0.0;
+  result[2] = r*sin(theta);
+}
+
 int vtkVolumetricCylinderSource::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),

@@ -66,6 +66,14 @@ public:
   // Calculate the location of a point given shape parameters.
   void ComputePoint(double t, double theta, double r, double result[3]);
 
+  // Description:
+  // Calculate partial derivatives of a point location (a velocity)
+  // with respect to changes in shape parameters
+  // Height, InnerRadius, and OuterRadius.
+  void ComputeVelocityWRTHeight(double t, double theta, double r, double result[3]);
+  void ComputeVelocityWRTInnerRadius(double t, double theta, double r, double result[3]);
+  void ComputeVelocityWRTOuterRadius(double t, double theta, double r, double result[3]);
+
 protected:
   vtkVolumetricHollowCylinderSource(int res=6);
   ~vtkVolumetricHollowCylinderSource() {};
