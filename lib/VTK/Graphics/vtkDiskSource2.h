@@ -47,6 +47,12 @@ public:
   void ComputePoint(double theta, double r, double result[3]);
 
   // Description:
+  // Calculate the object-relative coordinates of a point in Cartesian coordinates.
+  // NOTE: points are projected onto the disk plane
+  // Elements of result are: theta, r.
+  void ComputeObjectCoordinates(double x[3], double result[2]);
+
+  // Description:
   // Calculate partial derivatives of a point location (a velocity)
   // with respect to changes in shape parameters
   // Radius.

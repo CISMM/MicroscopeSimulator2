@@ -34,6 +34,30 @@ void vtkVolumetricTorusSource::ComputePoint(double theta, double phi, double r, 
   result[2] = r*this->CrossSectionRadius*sin(phi);  
 }
 
+void vtkVolumetricTorusSource::ComputeObjectCoordinates(double x[3], double result[3])
+{
+  double theta = atan2(x[1], x[0]);
+  if (theta < 0.0)
+    theta += vtkMath::DoubleTwoPi();
+  
+  double axisPt[3];
+  this->ComputePoint(theta, 0.0, 0.0, axisPt);
+  double dx = x[0] - axisPt[0];
+  double dy = x[1] - axisPt[1];
+  double rPlane = sqrt(x[0]*x[0] + x[1]*x[1]);
+
+  double phi = atan2(x[2], rPlane - this->RingRadius);
+  if (phi < 0.0)
+    phi += vtkMath::DoubleTwoPi();
+
+  double rFull  = sqrt(dx*dx + dy*dy + x[2]*x[2]); // This is the full hypotenuse length
+  double r = rFull / this->CrossSectionRadius;
+
+  result[0] = theta;
+  result[1] = phi;
+  result[2] = r;
+}
+
 void vtkVolumetricTorusSource::ComputeVelocityWRTCrossSectionRadius(double theta, double phi, double r, double result[3])
 {
   result[0] = r*cos(phi)*cos(theta);
@@ -64,7 +88,7 @@ int vtkVolumetricTorusSource::RequestData(
   double phiAngle   = vtkMath::DoubleTwoPi()/this->PhiResolution;
   int numCells, numPts;
   double x[3];
-  int i, j, idx;
+  int i, j;
   vtkIdType pts[VTK_CELL_SIZE];
   vtkPoints *newPoints; 
   vtkCellArray *newCells;
@@ -104,8 +128,6 @@ int vtkVolumetricTorusSource::RequestData(
     newPoints->InsertPoint(j*skip + this->PhiResolution,x);
     }
 
-  vtkIdType tetPtIds[VTK_CELL_SIZE];
-
   //
   // Generate tetrahedral cells for volume.
   //
@@ -127,25 +149,25 @@ int vtkVolumetricTorusSource::RequestData(
       int n5 = j1Idx*skip + i2Idx;
 
       // Tet 0
-      tetPtIds[0] = n0;
-      tetPtIds[1] = n3;
-      tetPtIds[2] = n5;
-      tetPtIds[3] = n1;
-      newCells->InsertNextCell(4, tetPtIds);
+      pts[0] = n0;
+      pts[1] = n3;
+      pts[2] = n5;
+      pts[3] = n1;
+      newCells->InsertNextCell(4, pts);
 
       // Tet 1
-      tetPtIds[0] = n5;
-      tetPtIds[1] = n3;
-      tetPtIds[2] = n4;
-      tetPtIds[3] = n1;
-      newCells->InsertNextCell(4, tetPtIds);
+      pts[0] = n5;
+      pts[1] = n3;
+      pts[2] = n4;
+      pts[3] = n1;
+      newCells->InsertNextCell(4, pts);
       
       // Tet 2
-      tetPtIds[0] = n1;
-      tetPtIds[1] = n4;
-      tetPtIds[2] = n2;
-      tetPtIds[3] = n3;
-      newCells->InsertNextCell(4, tetPtIds);
+      pts[0] = n1;
+      pts[1] = n4;
+      pts[2] = n2;
+      pts[3] = n3;
+      newCells->InsertNextCell(4, pts);
 
       }
     }

@@ -21,16 +21,26 @@ vtkVolumetricCylinderSource::vtkVolumetricCylinderSource (int res)
   this->Height = 1.0;
   this->Radius = 0.5;
   this->GenerateScalars = 1;
-  this->Center[0] = this->Center[1] = this->Center[2] = 0.0;
 
   this->SetNumberOfInputPorts(0);
 }
 
 void vtkVolumetricCylinderSource::ComputePoint(double t, double theta, double r, double result[3])
 {
-  result[0] = r*this->Radius*cos(theta) + this->Center[0];
-  result[1] = (t-0.5)*this->Height      + this->Center[1];
-  result[2] = r*this->Radius*sin(theta) + this->Center[2];
+  result[0] = r*this->Radius*cos(theta);
+  result[1] = (t-0.5)*this->Height;
+  result[2] = r*this->Radius*sin(theta);
+}
+
+void vtkVolumetricCylinderSource::ComputeObjectCoordinates(double x[3], double result[3])
+{
+  result[0] = x[1] / this->Height + 0.5;
+  result[1] = atan2(x[2],x[0]);
+  if (result[1] < 0.0)
+    result[1] += vtkMath::DoubleTwoPi();
+
+  double r = sqrt(x[0]*x[0] + x[2]*x[2]);
+  result[2] = r / this->Radius;
 }
 
 void vtkVolumetricCylinderSource::ComputeVelocityWRTHeight(double t, double theta, double r, double result[3])
@@ -62,7 +72,6 @@ int vtkVolumetricCylinderSource::RequestData(
   double angle= vtkMath::DoubleTwoPi()/this->Resolution;
   int numCells, numPts;
   double xtop[3], xbot[3];
-  double *center = this->Center;
   int i, idx;
   vtkIdType pts[VTK_CELL_SIZE];
   vtkPoints *newPoints; 
@@ -87,7 +96,7 @@ int vtkVolumetricCylinderSource::RequestData(
     {
     this->ComputePoint(0.0, i*angle, 1.0, xtop);
     this->ComputePoint(1.0, i*angle, 1.0, xbot);
-                         
+
     idx = 2*i;
     newPoints->InsertPoint(idx,xtop);
     newPoints->InsertPoint(idx+1,xbot);
@@ -149,7 +158,5 @@ void vtkVolumetricCylinderSource::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "Resolution: " << this->Resolution << "\n";
   os << indent << "Height: " << this->Height << "\n";
   os << indent << "Radius: " << this->Radius << "\n";
-  os << indent << "Center: (" << this->Center[0] << ", "
-     << this->Center[1] << ", " << this->Center[2] << " )\n";
   os << indent << "GenerateScalars: " << (this->GenerateScalars ? "On\n" : "Off\n");
 }

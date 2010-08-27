@@ -32,6 +32,15 @@ void vtkRectangleSource::ComputePoint(double u, double v, double result[3])
   result[2] = 0.0;
 }
 
+void vtkRectangleSource::ComputeObjectCoordinates(double x[3], double result[2])
+{
+  double u = x[0] / this->Width  + 0.5;
+  double v = x[1] / this->Height + 0.5;
+
+  result[0] = u;
+  result[1] = v;
+}
+
 void vtkRectangleSource::ComputeVelocityWRTWidth(double u, double v, double result[3])
 {
   result[0] = u-0.5;

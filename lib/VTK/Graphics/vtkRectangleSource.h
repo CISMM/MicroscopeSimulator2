@@ -54,7 +54,13 @@ public:
 
   // Description:
   // Calculate the location of a point given shape parameters.
-  void ComputePoint(double u, double v, double result[3]);
+  void ComputePoint(double u, double v, double results[3]);
+
+  // Description:
+  // Calculate the object-relative coordinates of a point in Cartesian coordinates.
+  // NOTE: points are projected onto the disk plane
+  // Elements of result are: u and v
+  void ComputeObjectCoordinates(double x[3], double result[2]);
 
   // Description:
   // Calculate partial derivatives of a point location (a velocity)

@@ -32,6 +32,24 @@ void vtkVolumetricEllipsoidSource::ComputePoint(double theta, double phi, double
   result[2] = r*this->Radius[2]*cos(phi);
 }
 
+void vtkVolumetricEllipsoidSource::ComputeObjectCoordinates(double x[3], double result[3])
+{
+  double theta = atan2(x[1], x[0]);
+  if (theta < 0.0)
+    theta += vtkMath::DoubleTwoPi();
+  double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
+  double phi = acos(x[2] / r);
+
+  double bdryPt[3];
+  ComputePoint(result[0], result[1], 1.0, bdryPt);
+  double bdryRadius = sqrt(bdryPt[0]*bdryPt[0] + bdryPt[1]*bdryPt[1] + bdryPt[2]*bdryPt[2]);
+  double t = r / bdryRadius;
+
+  result[0] = theta;
+  result[1] = phi;
+  result[2] = t;
+}
+
 void vtkVolumetricEllipsoidSource::ComputeVelocityWRTRadiusX(double theta, double phi, double r, double result[3])
 {
   result[0] = r*cos(theta)*sin(phi);

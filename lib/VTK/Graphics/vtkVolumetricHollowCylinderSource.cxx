@@ -4,6 +4,7 @@
 #include "vtkFloatArray.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
+#include "vtkMath.h"
 #include "vtkObjectFactory.h"
 #include "vtkPointData.h"
 #include "vtkPoints.h"
@@ -39,6 +40,17 @@ void vtkVolumetricHollowCylinderSource::ComputePoint(double t, double theta, dou
     }
 }
 
+void vtkVolumetricHollowCylinderSource::ComputeObjectCoordinates(double x[3], double result[3])
+{
+  result[0] = x[1] / this->Height + 0.5;
+  result[1] = atan2(x[2],x[0]);
+  if (result[1] < 0.0)
+    result[1] += vtkMath::DoubleTwoPi();
+
+  double r = sqrt(x[0]*x[0] + x[2]*x[2]);
+  result[2] = (r - this->InnerRadius) / (this->OuterRadius - this->InnerRadius);
+}
+
 void vtkVolumetricHollowCylinderSource::ComputeVelocityWRTHeight(double t, double theta, double r, double result[3])
 {
   result[0] = 0.0;
@@ -72,7 +84,7 @@ int vtkVolumetricHollowCylinderSource::RequestData(
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  double angle= 2.0*3.141592654/this->Resolution;
+  double angle= vtkMath::DoubleTwoPi()/this->Resolution;
   int numCells, numPts;
   double xtopin[3], xbotin[3], xtopout[3], xbotout[3];
   int i, idx;

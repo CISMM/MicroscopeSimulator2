@@ -30,6 +30,18 @@ void vtkDiskSource2::ComputePoint(double theta, double r, double result[3])
   result[2] = 0.0;
 }
 
+void vtkDiskSource2::ComputeObjectCoordinates(double x[3], double result[2])
+{
+  double theta = atan2(x[1], x[0]);
+  if (theta < 0.0)
+    theta += vtkMath::DoubleTwoPi();
+
+  double r = sqrt(x[0]*x[0] + x[1]*x[1]) / this->Radius;;
+
+  result[0] = theta;
+  result[1] = r;
+}
+
 void vtkDiskSource2::ComputeVelocityWRTRadius(double theta, double r, double result[3])
 {
   result[0] = r*cos(theta);
