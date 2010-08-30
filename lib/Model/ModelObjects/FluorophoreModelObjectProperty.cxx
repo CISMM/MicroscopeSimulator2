@@ -1,21 +1,15 @@
 #include <FluorophoreModelObjectProperty.h>
 #include <StringUtils.h>
 
-#include <vtkAlgorithm.h>
-#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSmartPointer.h>
-#include <vtkSurfaceUniformPointSampler.h>
 #include <vtkTriangleFilter.h>
-#include <vtkVolumeUniformPointSampler.h>
 
 
 FluorophoreModelObjectProperty
 ::FluorophoreModelObjectProperty(const std::string& name,
-                                 vtkPolyDataAlgorithm* geometry,
                                  bool editable, bool optimizable)
   : ModelObjectProperty(name, ModelObjectProperty::FLUOROPHORE_MODEL_TYPE,
                         "-", editable, optimizable) {
-  m_GeometrySource = geometry;
   m_FluorophoreOutput = NULL;
   SetEnabled(true);
   SetFluorophoreChannelToAll();
@@ -81,13 +75,6 @@ FluorophoreChannelType
 FluorophoreModelObjectProperty
 ::GetFluorophoreChannel() {
   return m_Channel;
-}
-
-
-vtkPolyDataAlgorithm*
-FluorophoreModelObjectProperty
-::GetGeometry() {
-  return m_GeometrySource;
 }
 
 

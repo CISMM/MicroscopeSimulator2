@@ -45,7 +45,7 @@ CylinderModelObject
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_GeometrySource));
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP,  m_GeometrySource));
+              (VOLUME_FLUOR_PROP,  m_CylinderSource));
 
   // Must call this after setting up properties
   Update();

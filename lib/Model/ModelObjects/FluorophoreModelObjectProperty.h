@@ -7,7 +7,6 @@
 #include <vtkSmartPointer.h>
 
 class vtkAlgorithm;
-class vtkPolyDataAlgorithm;
 
 
 class FluorophoreModelObjectProperty : public ModelObjectProperty {
@@ -15,7 +14,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
  public:
 
   FluorophoreModelObjectProperty(const std::string& name,
-                                 vtkPolyDataAlgorithm* geometry,
                                  bool editable = false,
                                  bool optimizable = true);
 
@@ -31,8 +29,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   void SetFluorophoreChannelToAll();
   FluorophoreChannelType GetFluorophoreChannel();
 
-  vtkPolyDataAlgorithm* GetGeometry();
-
   virtual int GetNumberOfFluorophores() = 0;
 
   vtkAlgorithm* GetFluorophoreOutput();
@@ -43,7 +39,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
  protected:
   FluorophoreModelObjectProperty();
 
-  vtkPolyDataAlgorithm*  m_GeometrySource;
   bool                   m_Enabled;
   FluorophoreChannelType m_Channel;
 

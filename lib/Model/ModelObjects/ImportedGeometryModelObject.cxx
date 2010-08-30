@@ -4,6 +4,7 @@
 #include <vtkPLYReader.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataReader.h>
+#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkTriangleFilter.h>
@@ -50,13 +51,18 @@ ImportedGeometryModelObject
   m_CleanPolyData->PointMergingOn();
   m_CleanPolyData->SetInputConnection(m_TriangleFilter->GetOutputPort());
 
+  // Perform the tetrahedralization here
+  vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
+    vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
+  tetrahedralizer->SetInputConnection(m_CleanPolyData->GetOutputPort());
+  
   // Set up properties
   AddProperty(new ModelObjectProperty(SCALE_PROP, 1.0, "-", true, true));
   AddProperty(new ModelObjectProperty(FILE_NAME_PROP, ModelObjectProperty::STRING_TYPE, "-", false, false));
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_CleanPolyData));
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP, m_CleanPolyData));
+              (VOLUME_FLUOR_PROP, tetrahedralizer));
 
   // Must call this after setting up properties
   Update();

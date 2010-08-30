@@ -10,6 +10,7 @@
 #include <vtkParametricSpline.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkPoints.h>
+#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSpline.h>
 #include <vtkTubeFilter.h>
 #include <vtkTriangleFilter.h>
@@ -57,8 +58,14 @@ FlexibleTubeModelObject
 
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_TubeSource));
+
+  // Perform the tetrahedralization here
+  vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
+    vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
+  tetrahedralizer->SetInputConnection(m_TubeSource->GetOutputPort());
+
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP, m_TubeSource));
+              (VOLUME_FLUOR_PROP, tetrahedralizer));
 
 
   m_PointPropertyStartingIndex = GetPropertyList()->GetSize();

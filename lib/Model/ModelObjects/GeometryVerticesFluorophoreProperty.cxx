@@ -1,15 +1,17 @@
 #include <GeometryVerticesFluorophoreProperty.h>
 
+#include <vtkPolyData.h>
 #include <vtkPolyDataAlgorithm.h>
 
 
 GeometryVerticesFluorophoreProperty
 ::GeometryVerticesFluorophoreProperty(const std::string& name,
-                                      vtkPolyDataAlgorithm* geometry,
+                                      vtkPolyDataAlgorithm* geometrySource,
                                       bool editable, bool optimizable) 
-  : FluorophoreModelObjectProperty(name, geometry, editable, optimizable) {
-
-  m_FluorophoreOutput = m_GeometrySource;
+  : FluorophoreModelObjectProperty(name, editable, optimizable) {
+  
+  m_GeometrySource    = geometrySource;
+  m_FluorophoreOutput = geometrySource;
 }
 
 

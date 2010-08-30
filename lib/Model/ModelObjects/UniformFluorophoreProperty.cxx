@@ -26,9 +26,8 @@ const char* UniformFluorophoreProperty::RANDOMIZE_PATTERN_ORIENTATIONS_ATT = "ra
 
 UniformFluorophoreProperty::
 UniformFluorophoreProperty(const std::string& name,
-                           vtkPolyDataAlgorithm* geometry,
                            bool editable, bool optimizable) 
-  : FluorophoreModelObjectProperty(name, geometry, editable, optimizable) {
+  : FluorophoreModelObjectProperty(name, editable, optimizable) {
 
   // Subclasses need to set up specific samplers and connect them to
   // the point ring glypher and the set it as the fluorophore output.

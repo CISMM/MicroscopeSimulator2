@@ -39,7 +39,6 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   } SamplePattern_t;
 
   UniformFluorophoreProperty(const std::string& name,
-                             vtkPolyDataAlgorithm* geometry,
                              bool editable = false,
                              bool optimizable = true);
   virtual ~UniformFluorophoreProperty();

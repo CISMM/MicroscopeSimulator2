@@ -9,14 +9,16 @@
 
 SurfaceUniformFluorophoreProperty::
 SurfaceUniformFluorophoreProperty(const std::string& name,
-                                  vtkPolyDataAlgorithm* geometry,
+                                  vtkPolyDataAlgorithm* surfaceSource,
                                   bool editable, bool optimizable) 
-  : UniformFluorophoreProperty(name, geometry, editable, optimizable) {
+  : UniformFluorophoreProperty(name, editable, optimizable) {
+
+  m_SurfaceSource = surfaceSource;
 
   vtkSmartPointer<vtkTriangleFilter> triangulizer = vtkSmartPointer<vtkTriangleFilter>::New();
   triangulizer->PassLinesOff();
   triangulizer->PassVertsOff();
-  triangulizer->SetInputConnection(geometry->GetOutputPort());
+  triangulizer->SetInputConnection(m_SurfaceSource->GetOutputPort());
   
   m_SurfaceSampler = vtkSmartPointer<vtkSurfaceUniformPointSampler>::New();
   m_SurfaceSampler->SetInputConnection(triangulizer->GetOutputPort());
