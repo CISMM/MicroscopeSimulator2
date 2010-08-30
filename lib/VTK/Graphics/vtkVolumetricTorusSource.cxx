@@ -124,7 +124,7 @@ int vtkVolumetricTorusSource::RequestData(
       }
 
     // Point on the medial axis
-    this->ComputePoint(0.0, 0.0, 0.0, x);
+    this->ComputePoint(theta, 0.0, 0.0, x);
     newPoints->InsertPoint(j*skip + this->PhiResolution,x);
     }
 
@@ -154,7 +154,7 @@ int vtkVolumetricTorusSource::RequestData(
       pts[2] = n5;
       pts[3] = n1;
       newCells->InsertNextCell(4, pts);
-
+      
       // Tet 1
       pts[0] = n5;
       pts[1] = n3;
@@ -168,7 +168,6 @@ int vtkVolumetricTorusSource::RequestData(
       pts[2] = n2;
       pts[3] = n3;
       newCells->InsertNextCell(4, pts);
-
       }
     }
 
