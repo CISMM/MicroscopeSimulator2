@@ -135,43 +135,43 @@ int vtkVolumetricHollowCylinderSource::RequestData(
 
     // Tet 0
     tetPtIds[0] = n0;
-    tetPtIds[1] = n3;
-    tetPtIds[2] = n5;
+    tetPtIds[1] = n5;
+    tetPtIds[2] = n3;
     tetPtIds[3] = n1;
     newCells->InsertNextCell(4, tetPtIds);
 
     // Tet 1
     tetPtIds[0] = n3;
-    tetPtIds[1] = n0;
-    tetPtIds[2] = n5;
+    tetPtIds[1] = n5;
+    tetPtIds[2] = n0;
     tetPtIds[3] = n4;
     newCells->InsertNextCell(4, tetPtIds);
 
     // Tet 2
     tetPtIds[0] = n4;
-    tetPtIds[1] = n7;
-    tetPtIds[2] = n5;
+    tetPtIds[1] = n5;
+    tetPtIds[2] = n7;
     tetPtIds[3] = n3;
     newCells->InsertNextCell(4, tetPtIds);
 
     // Tet 3
     tetPtIds[0] = n5;
-    tetPtIds[1] = n3;
-    tetPtIds[2] = n7;
+    tetPtIds[1] = n7;
+    tetPtIds[2] = n3;
     tetPtIds[3] = n6;
     newCells->InsertNextCell(4, tetPtIds);
 
     // Tet 4
     tetPtIds[0] = n2;
-    tetPtIds[1] = n5;
-    tetPtIds[2] = n6;
+    tetPtIds[1] = n6;
+    tetPtIds[2] = n5;
     tetPtIds[3] = n3;
     newCells->InsertNextCell(4, tetPtIds);
 
     // Tet 5
     tetPtIds[0] = n1;
-    tetPtIds[1] = n2;
-    tetPtIds[2] = n3;
+    tetPtIds[1] = n3;
+    tetPtIds[2] = n2;
     tetPtIds[3] = n5;
     newCells->InsertNextCell(4, tetPtIds);
     }

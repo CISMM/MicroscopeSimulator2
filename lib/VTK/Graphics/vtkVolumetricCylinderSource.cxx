@@ -125,8 +125,8 @@ int vtkVolumetricCylinderSource::RequestData(
 
     // Tetra 2
     pts[0] = 2*i+1;
-    pts[1] = numPts-2;
-    pts[2] = numPts-1;
+    pts[1] = numPts-1;
+    pts[2] = numPts-2;
     pts[3] = (2*(i+1)+1) % (2*this->Resolution);
     newCells->InsertNextCell(4,pts);
 

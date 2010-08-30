@@ -153,8 +153,8 @@ int vtkVolumetricEllipsoidSource::RequestData(
 
     // North pole
     pts[0] = numPts-1;
-    pts[1] = i;
-    pts[2] = (i+1) % this->ThetaResolution;
+    pts[1] = (i+1) % this->ThetaResolution;
+    pts[2] = i;
     pts[3] = this->ThetaResolution;
     newCells->InsertNextCell(4, pts);
     }
