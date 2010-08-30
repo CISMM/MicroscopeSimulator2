@@ -68,6 +68,9 @@ PSFEditorDialog
   m_RenderWindow->SetInteractor(gui_PSFDisplayQvtkWidget->GetInteractor());
   gui_PSFDisplayQvtkWidget->SetRenderWindow(m_RenderWindow);
 
+  // TODO - remove temporarily disabled PSF fitting widgets
+  gui_FittingGroupBox->setVisible(false);
+
   m_FirstRender = true;
 }
 
@@ -524,10 +527,6 @@ PSFEditorDialog
     return;
 
   psf->GetOutput()->Update();
-  double* range = psf->GetOutput()->GetScalarRange();
-
-  //gui_MinLevelEdit->setText(QString().sprintf("%f", range[0]));
-  //gui_MaxLevelEdit->setText(QString().sprintf("%f", range[1]));
 
   double minTextValue = SliderValueToIntensity(gui_MinLevelSlider->value(),
                                                *gui_MinLevelSlider);
