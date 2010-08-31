@@ -26,6 +26,8 @@ SET(modelModelObjectsSrc
   ModelObjects/SurfaceUniformFluorophoreProperty.cxx
   ModelObjects/VolumeUniformFluorophoreProperty.h
   ModelObjects/VolumeUniformFluorophoreProperty.cxx
+  ModelObjects/GridBasedFluorophoreProperty.h
+  ModelObjects/GridBasedFluorophoreProperty.cxx
   ModelObjects/ModelObjectPropertyList.h
   ModelObjects/ModelObjectPropertyList.cxx
   ModelObjects/CylinderModelObject.h
