@@ -86,6 +86,7 @@ void vtkModelObjectGeometryRepresentation::SetModelObject(ModelObject* modelObje
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(glypher->GetOutputPort());
+    mapper->ScalarVisibilityOff();
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->PickableOff();
