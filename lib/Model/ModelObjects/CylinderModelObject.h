@@ -19,6 +19,7 @@ class CylinderModelObject : public ModelObject {
   static const char* LENGTH_PROP;
   static const char* SURFACE_FLUOR_PROP;
   static const char* VOLUME_FLUOR_PROP;
+  static const char* GRID_FLUOR_PROP;
 
   CylinderModelObject(DirtyListener* dirtyListener);
   virtual ~CylinderModelObject();
