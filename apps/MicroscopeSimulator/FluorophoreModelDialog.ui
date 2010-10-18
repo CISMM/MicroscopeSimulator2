@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>552</height>
+    <width>297</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,52 +32,73 @@
      <property name="title">
       <string>Channel</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <property name="horizontalSpacing">
-       <number>-1</number>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="verticalSpacing">
+      <property name="topMargin">
        <number>3</number>
       </property>
-      <property name="margin">
-       <number>6</number>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-      <item row="1" column="0">
-       <widget class="QLabel" name="gui_ColorChannelLabel">
-        <property name="text">
-         <string>Color channel:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="gui_ColorChannelComboBox">
-        <item>
-         <property name="text">
-          <string>Red</string>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="gui_ColorChannelWidget" native="true">
+        <layout class="QGridLayout" name="gridLayout_5">
+         <property name="margin">
+          <number>3</number>
          </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Green</string>
+         <property name="spacing">
+          <number>3</number>
          </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Blue</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>All</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="gui_EnabledCheckBox">
-        <property name="text">
-         <string>Enabled</string>
-        </property>
+         <item row="2" column="0">
+          <widget class="QLabel" name="gui_ColorChannelLabel">
+           <property name="text">
+            <string>Color channel:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="gui_ColorChannelComboBox">
+           <item>
+            <property name="text">
+             <string>Red</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Blue</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>All</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="gui_EnabledCheckBox">
+           <property name="text">
+            <string>Enabled</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -88,28 +109,55 @@
      <property name="title">
       <string>Sampling Mode</string>
      </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
        <number>3</number>
       </property>
-      <property name="margin">
-       <number>6</number>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
       </property>
       <item>
-       <widget class="QRadioButton" name="gui_useFixedDensity">
-        <property name="text">
-         <string>Use fixed density</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="gui_useFixedNumberOfFluorophores">
-        <property name="text">
-         <string>Use fixed number of fluorophores</string>
-        </property>
+       <widget class="QWidget" name="gui_SamplingModeWidget" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="margin">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QRadioButton" name="gui_useFixedNumberOfFluorophores">
+           <property name="text">
+            <string>Use fixed number of fluorophores</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="gui_useFixedDensity">
+           <property name="text">
+            <string>Use fixed density</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -120,78 +168,108 @@
      <property name="title">
       <string>Sampling Density</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="horizontalSpacing">
-       <number>-1</number>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="verticalSpacing">
-       <number>-1</number>
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="margin">
-       <number>6</number>
+      <property name="topMargin">
+       <number>3</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="gui_AreaLabel">
-        <property name="text">
-         <string>Surface Area:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="gui_AreaEdit">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="gui_DensityLabel">
-        <property name="text">
-         <string>Density:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="gui_DensityEdit">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="gui_NumberOfFluorophoresLabel">
-        <property name="text">
-         <string>Number of fluorophores:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="gui_NumberOfFluorophoresEdit">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QSlider" name="gui_NumberOfFluorophoresSlider">
-        <property name="maximum">
-         <number>100000</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="gui_SamplingDensityWidget" native="true">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="margin">
+          <number>3</number>
+         </property>
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="gui_AreaLabel">
+           <property name="text">
+            <string>Surface area:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="gui_AreaEdit">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="gui_DensityLabel">
+           <property name="text">
+            <string>Density:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="gui_DensityEdit">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="gui_NumberOfFluorophoresLabel">
+           <property name="text">
+            <string>Number of fluorophores:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="gui_NumberOfFluorophoresEdit">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QSlider" name="gui_NumberOfFluorophoresSlider">
+           <property name="maximum">
+            <number>100000</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -203,63 +281,84 @@
       <string>Fluorophore Patterns</string>
      </property>
      <property name="checkable">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="horizontalSpacing">
-       <number>-1</number>
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="verticalSpacing">
-       <number>-1</number>
+      <property name="topMargin">
+       <number>3</number>
       </property>
-      <property name="margin">
-       <number>6</number>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-      <item row="0" column="0" colspan="2">
-       <widget class="QRadioButton" name="gui_UseSingleFluorophorePerSampleRadioButton">
-        <property name="text">
-         <string>Use one fluorophore per sample</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="gui_FluorophoresAroundRingLabel">
-        <property name="text">
-         <string>Fluorophores around ring:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="gui_FluorophoresAroundRingEdit"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="gui_RingRadiusLabel">
-        <property name="text">
-         <string>Ring radius:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="gui_RingRadiusEdit"/>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="gui_RandomizePatternOrientationsCheckBox">
-        <property name="text">
-         <string>Randomize pattern orientations</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QRadioButton" name="gui_UsePointRingClusterRadioButton">
-        <property name="text">
-         <string>Use point ring cluster per sample</string>
-        </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="gui_FluorophorePatternsWidget" native="true">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="margin">
+          <number>3</number>
+         </property>
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item row="0" column="0" colspan="2">
+          <widget class="QRadioButton" name="gui_UseSingleFluorophorePerSampleRadioButton">
+           <property name="text">
+            <string>Use one fluorophore per sample</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QRadioButton" name="gui_UsePointRingClusterRadioButton">
+           <property name="text">
+            <string>Use point ring cluster per sample</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="gui_FluorophoresAroundRingLabel">
+           <property name="text">
+            <string>Fluorophores around ring:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="gui_FluorophoresAroundRingEdit"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="gui_RingRadiusLabel">
+           <property name="text">
+            <string>Ring radius:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="gui_RingRadiusEdit"/>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QCheckBox" name="gui_RandomizePatternOrientationsCheckBox">
+           <property name="text">
+            <string>Randomize pattern orientations</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -287,7 +386,7 @@
       <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeType">
-      <enum>QSizePolicy::Minimum</enum>
+      <enum>QSizePolicy::MinimumExpanding</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>

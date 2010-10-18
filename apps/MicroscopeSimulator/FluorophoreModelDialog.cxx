@@ -25,6 +25,9 @@ FluorophoreModelDialog
 ::SetProperty(FluorophoreModelObjectProperty* property) {
   m_FluorophoreProperty = property;
 
+  // Collapse the fluorophore patterns group box
+  gui_FluorophorePatternsGroupBox->setChecked(false);
+
   // Setup the UI to reflect the property values.
   gui_EnabledCheckBox->
     setCheckState(property->GetEnabled() ? Qt::Checked : Qt::Unchecked);
@@ -273,6 +276,34 @@ FluorophoreModelDialog
   gui_FluorophoresAroundRingEdit->setEnabled(true);
   gui_RingRadiusLabel->setEnabled(true);
   gui_RingRadiusEdit->setEnabled(true);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_ColorChannelGroupBox_toggled(bool checked) {
+  gui_ColorChannelWidget->setHidden(!checked);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_SamplingModeGroupBox_toggled(bool checked) {
+  gui_SamplingModeWidget->setHidden(!checked);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_SamplingDensityGroupBox_toggled(bool checked) {
+  gui_SamplingDensityWidget->setHidden(!checked);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_FluorophorePatternsGroupBox_toggled(bool checked) {
+  gui_FluorophorePatternsWidget->setHidden(!checked);
 }
 
 

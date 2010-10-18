@@ -42,6 +42,11 @@ Q_OBJECT
   virtual void on_gui_NumberOfFluorophoresSlider_sliderMoved(int value);
   virtual void on_gui_UseSingleFluorophorePerSampleRadioButton_clicked(bool checked);
   virtual void on_gui_UsePointRingClusterRadioButton_clicked(bool checked);
+  
+  virtual void on_gui_ColorChannelGroupBox_toggled(bool checked);
+  virtual void on_gui_SamplingModeGroupBox_toggled(bool checked);
+  virtual void on_gui_SamplingDensityGroupBox_toggled(bool checked);
+  virtual void on_gui_FluorophorePatternsGroupBox_toggled(bool checked);
 
  protected:
   int DensityToNumberOfFluorophores(double density);
