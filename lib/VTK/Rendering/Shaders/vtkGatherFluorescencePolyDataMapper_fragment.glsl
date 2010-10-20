@@ -34,9 +34,11 @@ void main() {
          float div = float(index) / float(pointTexDim);
          vec2 ptTexCoord = vec2(fract(div) * float(pointTexDim), floor(div));
          vec4 texPt = texture2DRect(ptsSampler, ptTexCoord);
+         vec4 fluorophorePt = vec4(texPt.xyz, 1.0);
+         float intensity = texPt.w;
 
          // Get PSF origin
-         vec3 origin = (gl_TextureMatrix[1] * texPt).xyz + psfOrigin;
+         vec3 origin = (gl_TextureMatrix[1] * fluorophorePt).xyz + psfOrigin;
 
          // Get texture coordinate in PSF. If we are outside
          // the texture, we should get black.
@@ -45,7 +47,7 @@ void main() {
          // Lookup PSF value in texture
          if (all(greaterThanEqual(texCoord, zero)) && all(lessThanEqual(texCoord, psfMaxTexCoords))) {
             vec3 sampleValue = texture3D(psfSampler, texCoord).rgb;
-            sum += sampleValue;
+            sum += sampleValue * intensity;
          }
 
          index = index + 1;

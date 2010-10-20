@@ -273,17 +273,22 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
 
     // Copy and cast point locations to texture memory.
     int pointDataLength = this->PointTextureDimension * this->PointTextureDimension;
-    GLfloat *pointsData = new GLfloat[pointDataLength * 3];
+    int tupleSize = 4;
+    GLfloat *pointsData = new GLfloat[pointDataLength * tupleSize];
     for (int i = 0; i < numPoints; i++) {
       double *tmp = points->GetPoint(i);
-      pointsData[i*3 + 0] = (GLfloat) tmp[0];
-      pointsData[i*3 + 1] = (GLfloat) tmp[1];
-      pointsData[i*3 + 2] = (GLfloat) tmp[2];
+      pointsData[i*tupleSize + 0] = (GLfloat) tmp[0];
+      pointsData[i*tupleSize + 1] = (GLfloat) tmp[1];
+      pointsData[i*tupleSize + 2] = (GLfloat) tmp[2];
+      pointsData[i*tupleSize + 3] = 1.0;
     }
+
+    // Fill the rest of the array (these points will not be used).
     for (int i = numPoints; i < pointDataLength; i++) {
-      pointsData[i*3 + 0] = 1.0f;
-      pointsData[i*3 + 1] = 0.0f;
-      pointsData[i*3 + 2] = 0.0f;
+      pointsData[i*tupleSize + 0] = 0.0f;
+      pointsData[i*tupleSize + 1] = 0.0f;
+      pointsData[i*tupleSize + 2] = 0.0f;
+      pointsData[i*tupleSize + 3] = 0.0f;
     }
 
     this->PtsLastTimePointsModified = ptsModifiedTime;
@@ -299,8 +304,8 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
     glTexParameteri(this->PointTextureTarget, GL_TEXTURE_WRAP_S, vtkgl::CLAMP_TO_EDGE);
     glTexParameteri(this->PointTextureTarget, GL_TEXTURE_WRAP_T, vtkgl::CLAMP_TO_EDGE);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexImage2D(this->PointTextureTarget, 0, vtkgl::RGB_FLOAT32_ATI, this->PointTextureDimension, 
-      this->PointTextureDimension, 0, GL_RGB, GL_FLOAT, pointsData);
+    glTexImage2D(this->PointTextureTarget, 0, vtkgl::RGBA_FLOAT32_ATI, this->PointTextureDimension, 
+      this->PointTextureDimension, 0, GL_RGBA, GL_FLOAT, pointsData);
 
     delete[] pointsData;
 
