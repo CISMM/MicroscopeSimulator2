@@ -1,7 +1,10 @@
 #include <GridBasedFluorophoreProperty.h>
 
 #include <vtkAppendPolyData.h>
+#include <vtkArrayCalculator.h>
+#include <vtkImageData.h>
 #include <vtkImplicitModeller.h>
+#include <vtkPointData.h>
 #include <vtkUnstructuredGridAlgorithm.h>
 #include <vtkThresholdPoints.h>
 
@@ -18,7 +21,6 @@ GridBasedFluorophoreProperty
   for (int i = 0; i < 3; i++) {
     dims[i] = ceil(boxSize / sampleSpacing);
   }
-  std::cout << "Dims: " << dims[0] << ", " << dims[1] << ", " << dims[2] << std::endl;
 
   // Set up the class that performs the distance computation
   // on a structured grid
@@ -29,6 +31,8 @@ GridBasedFluorophoreProperty
   vox1->SetModelBounds(-0.5*boxSize, 0.5*boxSize, -0.5*boxSize, 0.5*boxSize,
                        -0.5*boxSize, 0.5*boxSize);
   vox1->SetSampleDimensions(dims);
+  vox1->Update();
+  vox1->GetOutput()->GetPointData()->GetArray(0)->SetName("Distance");
 
   vtkSmartPointer<vtkThresholdPoints> thold1 =
     vtkSmartPointer<vtkThresholdPoints>::New();
@@ -43,6 +47,9 @@ GridBasedFluorophoreProperty
                        -0.5*(boxSize+sampleSpacing), 0.5*(boxSize-sampleSpacing),
                        -0.5*(boxSize+sampleSpacing), 0.5*(boxSize-sampleSpacing));
   vox2->SetSampleDimensions(dims);
+  vox2->Update();
+  vox2->GetOutput()->GetPointData()->GetArray(0)->SetName("Distance");
+
 
   vtkSmartPointer<vtkThresholdPoints> thold2 =
     vtkSmartPointer<vtkThresholdPoints>::New();
@@ -54,7 +61,18 @@ GridBasedFluorophoreProperty
   appender->AddInputConnection(thold1->GetOutputPort());
   appender->AddInputConnection(thold2->GetOutputPort());
 
-  m_FluorophoreOutput = appender;
+  // Calculate an intensity dropoff as a function of distance
+  vtkSmartPointer<vtkArrayCalculator> calculator =
+    vtkSmartPointer<vtkArrayCalculator>::New();
+  calculator->SetInputConnection(appender->GetOutputPort());
+  calculator->CoordinateResultsOff();
+  calculator->SetAttributeModeToUsePointData();
+  calculator->AddScalarArrayName("Distance", 0);
+  calculator->SetFunction("exp(-Distance)");
+  calculator->SetResultArrayName("Intensity");
+  calculator->SetResultArrayType(VTK_FLOAT);
+
+  m_FluorophoreOutput = calculator;
 }
 
 
