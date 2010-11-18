@@ -288,7 +288,6 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
       textureData[i*tupleSize + 2] = (GLfloat) tmp[2];
       if (intensities) {
         textureData[i*tupleSize + 3] = intensities->GetValue(i);
-        std::cout << textureData[i*tupleSize + 3] << std::endl;
       } else {
         textureData[i*tupleSize + 3] = 1.0;
       }
