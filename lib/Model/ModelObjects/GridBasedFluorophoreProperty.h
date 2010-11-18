@@ -4,6 +4,7 @@
 #include <FluorophoreModelObjectProperty.h>
 
 class vtkAppendPoints;
+class vtkProgrammableFilter;
 class vtkUnstructuredGridAlgorithm;
 
 
@@ -18,6 +19,11 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
 
   virtual int GetNumberOfFluorophores();
 
+  typedef struct _vtkProgrammableFilterUserData {
+    vtkProgrammableFilter* filter;
+    double spacing;
+  } vtkProgrammableFilterUserData;
+
  protected:
   GridBasedFluorophoreProperty() {};
 
@@ -25,6 +31,7 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
 
   vtkSmartPointer<vtkUnstructuredGridAlgorithm> m_GridSource;
   vtkSmartPointer<vtkAppendPoints>              m_PointSource;
+  vtkProgrammableFilterUserData                 m_UserData;
 };
 
 

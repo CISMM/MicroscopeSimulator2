@@ -2,11 +2,45 @@
 
 #include <vtkAppendPolyData.h>
 #include <vtkArrayCalculator.h>
+#include <vtkFloatArray.h>
 #include <vtkImageData.h>
 #include <vtkImplicitModeller.h>
 #include <vtkPointData.h>
+#include <vtkProgrammableFilter.h>
 #include <vtkUnstructuredGridAlgorithm.h>
 #include <vtkThresholdPoints.h>
+
+void GridBasedFluorophorePropertyIntensityFallOffFunction(void* arg)
+{
+  GridBasedFluorophoreProperty::vtkProgrammableFilterUserData* userData = 
+    reinterpret_cast<
+      GridBasedFluorophoreProperty::vtkProgrammableFilterUserData*>(arg);
+
+  vtkProgrammableFilter* filter = userData->filter;
+  double spacing = userData->spacing;
+  vtkPolyData* input  = filter->GetPolyDataInput();
+  vtkPolyData* output = filter->GetPolyDataOutput();
+  output->CopyStructure(input);
+
+  vtkDataArray* inputArray = input->GetPointData()->GetArray(0);
+
+  // Create a new data array to hold the output intensities
+  vtkFloatArray* outputArray = vtkFloatArray::New();
+  outputArray->SetName("Intensity");
+  outputArray->SetNumberOfComponents(1);
+  outputArray->SetNumberOfTuples(inputArray->GetNumberOfTuples());
+  outputArray->Allocate(inputArray->GetNumberOfTuples());
+
+  // Iterate over the data values and apply the intensity falloff calculation
+  double alpha = -log(0.5) / (0.25 * spacing);
+  for (int i = 0; i < inputArray->GetNumberOfTuples(); i++) {
+    double inValue  = inputArray->GetComponent(i, 0);
+    double outValue = exp(-alpha * inValue);
+    outputArray->SetComponent(i, 0, outValue);
+  }
+
+  output->GetPointData()->AddArray(outputArray);
+}
 
 
 GridBasedFluorophoreProperty
@@ -61,18 +95,15 @@ GridBasedFluorophoreProperty
   appender->AddInputConnection(thold1->GetOutputPort());
   appender->AddInputConnection(thold2->GetOutputPort());
 
-  // Calculate an intensity dropoff as a function of distance
-  vtkSmartPointer<vtkArrayCalculator> calculator =
-    vtkSmartPointer<vtkArrayCalculator>::New();
-  calculator->SetInputConnection(appender->GetOutputPort());
-  calculator->CoordinateResultsOff();
-  calculator->SetAttributeModeToUsePointData();
-  calculator->AddScalarArrayName("Distance", 0);
-  calculator->SetFunction("exp(-Distance)");
-  calculator->SetResultArrayName("Intensity");
-  calculator->SetResultArrayType(VTK_FLOAT);
+  vtkSmartPointer<vtkProgrammableFilter> intensityCalculator =
+    vtkSmartPointer<vtkProgrammableFilter>::New();
+  intensityCalculator->SetInputConnection(appender->GetOutputPort());
+  m_UserData.filter = intensityCalculator;
+  m_UserData.spacing = sampleSpacing;
+  intensityCalculator->
+    SetExecuteMethod(GridBasedFluorophorePropertyIntensityFallOffFunction, &m_UserData);
 
-  m_FluorophoreOutput = calculator;
+  m_FluorophoreOutput = intensityCalculator;
 }
 
 
