@@ -17,6 +17,9 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
                                bool optimizable = true);
   virtual ~GridBasedFluorophoreProperty();
 
+  virtual void   SetSampleSpacing(double spacing);
+  virtual double GetSampleSpacing();
+
   virtual int GetNumberOfFluorophores();
 
   typedef struct _vtkProgrammableFilterUserData {
@@ -28,6 +31,8 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
   GridBasedFluorophoreProperty() {};
 
   virtual double GetDensityScale();
+
+  double m_SampleSpacing;
 
   vtkSmartPointer<vtkUnstructuredGridAlgorithm> m_GridSource;
   vtkSmartPointer<vtkAppendPoints>              m_PointSource;

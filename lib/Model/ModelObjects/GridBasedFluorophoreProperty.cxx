@@ -2,6 +2,7 @@
 
 #include <vtkAppendPolyData.h>
 #include <vtkArrayCalculator.h>
+#include <vtkDataObject.h>
 #include <vtkFloatArray.h>
 #include <vtkImageData.h>
 #include <vtkImplicitModeller.h>
@@ -49,11 +50,11 @@ GridBasedFluorophoreProperty
                                bool editable, bool optimizable) 
   : FluorophoreModelObjectProperty(name, editable, optimizable) {
   
-  double sampleSpacing = 50.0;
+  m_SampleSpacing = 50.0;
   double boxSize = 2000.0;
   int dims[3];
   for (int i = 0; i < 3; i++) {
-    dims[i] = ceil(boxSize / sampleSpacing);
+    dims[i] = ceil(boxSize / m_SampleSpacing);
   }
 
   // Set up the class that performs the distance computation
@@ -70,16 +71,16 @@ GridBasedFluorophoreProperty
 
   vtkSmartPointer<vtkThresholdPoints> thold1 =
     vtkSmartPointer<vtkThresholdPoints>::New();
-  thold1->ThresholdByLower(sqrt(3*sampleSpacing*sampleSpacing));
+  thold1->ThresholdByLower(sqrt(3*m_SampleSpacing*m_SampleSpacing));
   thold1->SetInputConnection(vox1->GetOutputPort());
 
   vtkSmartPointer<vtkImplicitModeller> vox2 = 
     vtkSmartPointer<vtkImplicitModeller>::New();
   vox2->SetInputConnection(gridSource->GetOutputPort());
   vox2->SetOutputScalarTypeToFloat();
-  vox2->SetModelBounds(-0.5*(boxSize+sampleSpacing), 0.5*(boxSize-sampleSpacing), 
-                       -0.5*(boxSize+sampleSpacing), 0.5*(boxSize-sampleSpacing),
-                       -0.5*(boxSize+sampleSpacing), 0.5*(boxSize-sampleSpacing));
+  vox2->SetModelBounds(-0.5*(boxSize+m_SampleSpacing), 0.5*(boxSize-m_SampleSpacing), 
+                       -0.5*(boxSize+m_SampleSpacing), 0.5*(boxSize-m_SampleSpacing),
+                       -0.5*(boxSize+m_SampleSpacing), 0.5*(boxSize-m_SampleSpacing));
   vox2->SetSampleDimensions(dims);
   vox2->Update();
   vox2->GetOutput()->GetPointData()->GetArray(0)->SetName("Distance");
@@ -87,7 +88,7 @@ GridBasedFluorophoreProperty
 
   vtkSmartPointer<vtkThresholdPoints> thold2 =
     vtkSmartPointer<vtkThresholdPoints>::New();
-  thold2->ThresholdByLower(sqrt(3*sampleSpacing*sampleSpacing));
+  thold2->ThresholdByLower(sqrt(3*m_SampleSpacing*m_SampleSpacing));
   thold2->SetInputConnection(vox2->GetOutputPort());
 
   vtkSmartPointer<vtkAppendPolyData> appender =
@@ -99,7 +100,7 @@ GridBasedFluorophoreProperty
     vtkSmartPointer<vtkProgrammableFilter>::New();
   intensityCalculator->SetInputConnection(appender->GetOutputPort());
   m_UserData.filter = intensityCalculator;
-  m_UserData.spacing = sampleSpacing;
+  m_UserData.spacing = m_SampleSpacing;
   intensityCalculator->
     SetExecuteMethod(GridBasedFluorophorePropertyIntensityFallOffFunction, &m_UserData);
 
@@ -113,10 +114,31 @@ GridBasedFluorophoreProperty
 }
 
 
+void
+GridBasedFluorophoreProperty
+::SetSampleSpacing(double spacing) {
+  m_SampleSpacing = spacing;
+}
+
+
+double
+GridBasedFluorophoreProperty
+::GetSampleSpacing() {
+  return m_SampleSpacing;
+}
+
+
 int
 GridBasedFluorophoreProperty
 ::GetNumberOfFluorophores() {
-  return 20*20*20+(19*19*19);
+  vtkPolyData* output = vtkPolyData::SafeDownCast(m_FluorophoreOutput->GetOutputDataObject(0));
+  int numPoints = 0;
+  if (output) {
+    output->Update();
+    numPoints = output->GetNumberOfPoints();
+  }
+
+  return numPoints;
 }
 
 
@@ -125,3 +147,4 @@ GridBasedFluorophoreProperty
 ::GetDensityScale() {
   return 1.0e-9;
 }
+
