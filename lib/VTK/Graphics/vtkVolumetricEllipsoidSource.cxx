@@ -96,7 +96,7 @@ int vtkVolumetricEllipsoidSource::RequestData(
   // Set things up; allocate memory
   //
 
-  numPts   = (this->ThetaResolution+1)*(this->PhiResolution-1) + 2;
+  numPts   = (this->ThetaResolution+1)*(this->PhiResolution-2) + 2;
   numCells = 3*this->ThetaResolution*(this->PhiResolution-2) + 2*this->ThetaResolution;
 
   newPoints = vtkPoints::New();
@@ -111,7 +111,6 @@ int vtkVolumetricEllipsoidSource::RequestData(
   // Generate points and point data for all parts of the ellipsoid except for the
   // north and south poles.
   //
-
   for (i=1; i<this->PhiResolution-1; i++)
     {
     double phi   = i*phiAngle;
