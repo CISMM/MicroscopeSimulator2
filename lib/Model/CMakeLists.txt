@@ -34,6 +34,8 @@ SET(modelModelObjectsSrc
   ModelObjects/CylinderModelObject.cxx
   ModelObjects/DiskModelObject.h
   ModelObjects/DiskModelObject.cxx
+  ModelObjects/EllipsoidModelObject.h
+  ModelObjects/EllipsoidModelObject.cxx
   ModelObjects/FlexibleTubeModelObject.h
   ModelObjects/FlexibleTubeModelObject.cxx
   ModelObjects/HollowCylinderModelObject.h

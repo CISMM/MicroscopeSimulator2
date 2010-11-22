@@ -622,6 +622,13 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_actionAddEllipsoid_triggered() {
+  AddNewModelObject("EllipsoidModel");
+}
+
+
+void
+MicroscopeSimulator
 ::on_actionAddTorus_triggered() {
   AddNewModelObject("TorusModel");
 }
@@ -1523,6 +1530,8 @@ MicroscopeSimulator
   if (!selectedFileName.endsWith(extension))
     selectedFileName.append(extension);
 
+  for (int i = 0; i < 10; i++)
+{
   vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
 
   vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
@@ -1555,9 +1564,13 @@ MicroscopeSimulator
   
   if (writer) {
     writer->SetInputConnection(scaler->GetOutputPort());
-    writer->SetFileName(selectedFileName.toStdString().c_str());
+    QString tmpFileName;
+    tmpFileName.sprintf("%s%04d.tif", selectedFileName.toStdString().c_str(), i);
+    std::cout << "saving file " << tmpFileName.toStdString() << std::endl;
+    writer->SetFileName(tmpFileName.toStdString().c_str());
     writer->Write();
   }
+}
 }
 
 

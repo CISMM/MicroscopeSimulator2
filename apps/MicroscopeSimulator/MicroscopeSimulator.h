@@ -83,6 +83,7 @@ public slots:
   virtual void on_actionAddPointRing_triggered();
   virtual void on_actionAddPointSet_triggered();
   virtual void on_actionAddSphere_triggered();
+  virtual void on_actionAddEllipsoid_triggered();
   virtual void on_actionAddTorus_triggered();
 
   // Import
