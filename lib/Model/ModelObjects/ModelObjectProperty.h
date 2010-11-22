@@ -59,6 +59,8 @@ class ModelObjectProperty : public XMLStorable {
 
   std::string& GetUnits();
 
+  virtual void Update() {}; // Default implementation is a noop.
+
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);
 

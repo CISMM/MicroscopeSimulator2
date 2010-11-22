@@ -109,7 +109,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
       this gradient. */
   virtual void ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize);
 
-  virtual void Update() = 0;
+  virtual void Update();
 
 
  protected:

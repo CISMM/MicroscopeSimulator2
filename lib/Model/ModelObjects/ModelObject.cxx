@@ -834,3 +834,14 @@ ModelObject
 
   }
 }
+
+
+void
+ModelObject
+::Update() {
+  // Call update on all fluorophore properties
+  int numFluorophoreProps = m_FluorophoreProperties->GetSize();
+  for (int i = 0; i < numFluorophoreProps; i++) {
+    m_FluorophoreProperties->GetProperty(i)->Update();
+  }
+}
