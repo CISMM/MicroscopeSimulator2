@@ -1,6 +1,7 @@
 #include <TorusModelObject.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 
 #include <vtkDataSetSurfaceFilter.h>
 #include <vtkPolyDataNormals.h>
@@ -13,6 +14,7 @@ const char* TorusModelObject::CROSS_SECTION_RADIUS_PROP = "Cross Section Radius"
 const char* TorusModelObject::RING_RADIUS_PROP          = "Ring Radius";
 const char* TorusModelObject::SURFACE_FLUOR_PROP        = "Surface Fluorophore Model";
 const char* TorusModelObject::VOLUME_FLUOR_PROP         = "Volume Fluorophore Model";
+const char* TorusModelObject::GRID_FLUOR_PROP           = "Grid Fluorophore Model";
 
 
 TorusModelObject
@@ -44,6 +46,8 @@ TorusModelObject
               (SURFACE_FLUOR_PROP, surfaceFilter));
   AddProperty(new VolumeUniformFluorophoreProperty
               (VOLUME_FLUOR_PROP, m_TorusSource));
+  AddProperty(new GridBasedFluorophoreProperty
+              (GRID_FLUOR_PROP, m_TorusSource));
 
   // Must call this after setting up properties
   Update();
@@ -61,6 +65,9 @@ TorusModelObject
 ::Update() {
   m_TorusSource->SetCrossSectionRadius(GetProperty(CROSS_SECTION_RADIUS_PROP)->GetDoubleValue());
   m_TorusSource->SetRingRadius(GetProperty(RING_RADIUS_PROP)->GetDoubleValue());
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 
 

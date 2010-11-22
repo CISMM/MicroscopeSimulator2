@@ -13,6 +13,7 @@
 #include <ImportedGeometryModelObject.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 #include <ModelObjectPropertyList.h>
 
 
@@ -22,6 +23,7 @@ const char* ImportedGeometryModelObject::FILE_NAME_PROP     = "File Name";
 const char* ImportedGeometryModelObject::SCALE_PROP         = "Scale";
 const char* ImportedGeometryModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
 const char* ImportedGeometryModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
+const char* ImportedGeometryModelObject::GRID_FLUOR_PROP    = "Grid Fluorophore Model";
 
 
 ImportedGeometryModelObject
@@ -63,6 +65,8 @@ ImportedGeometryModelObject
               (SURFACE_FLUOR_PROP, m_CleanPolyData));
   AddProperty(new VolumeUniformFluorophoreProperty
               (VOLUME_FLUOR_PROP, tetrahedralizer));
+  AddProperty(new GridBasedFluorophoreProperty
+              (GRID_FLUOR_PROP, tetrahedralizer));
 
   // Must call this after setting up properties
   Update();
@@ -140,4 +144,7 @@ ImportedGeometryModelObject
   }
 
   m_TransformFilter->Update();
+
+  // Call superclass update method
+  ModelObject::Update();
 }

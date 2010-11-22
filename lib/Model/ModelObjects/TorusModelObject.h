@@ -17,6 +17,7 @@ class TorusModelObject : public ModelObject {
   static const char* RING_RADIUS_PROP;
   static const char* SURFACE_FLUOR_PROP;
   static const char* VOLUME_FLUOR_PROP;
+  static const char* GRID_FLUOR_PROP;
 
 
   TorusModelObject(DirtyListener* dirtyListener);

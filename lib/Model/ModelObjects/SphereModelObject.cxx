@@ -3,6 +3,7 @@
 #include <ModelObjectPropertyList.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 
 #include <vtkDataSetSurfaceFilter.h>
 #include <vtkPolyDataNormals.h>
@@ -14,6 +15,7 @@ const char* SphereModelObject::OBJECT_TYPE_NAME = "SphereModel";
 const char* SphereModelObject::RADIUS_PROP        = "Radius";
 const char* SphereModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
 const char* SphereModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
+const char* SphereModelObject::GRID_FLUOR_PROP    = "Grid Fluorophore Model";
 
 
 SphereModelObject
@@ -44,6 +46,8 @@ SphereModelObject
               (SURFACE_FLUOR_PROP, m_GeometrySource));
   AddProperty(new VolumeUniformFluorophoreProperty
               (VOLUME_FLUOR_PROP, m_SphereSource));
+  AddProperty(new GridBasedFluorophoreProperty
+              (GRID_FLUOR_PROP, m_SphereSource));
 
   // Must call this after setting up properties
   Update();
@@ -61,6 +65,9 @@ SphereModelObject
 ::Update() {
   double radius = GetProperty("Radius")->GetDoubleValue();
   m_SphereSource->SetRadius(radius, radius, radius);
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 
 
