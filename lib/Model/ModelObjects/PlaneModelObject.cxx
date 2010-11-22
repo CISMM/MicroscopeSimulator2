@@ -48,5 +48,8 @@ PlaneModelObject
   double height = GetProperty(PlaneModelObject::HEIGHT_PROP)->GetDoubleValue();
   m_GeometrySource->SetWidth(width);
   m_GeometrySource->SetHeight(height);
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 

@@ -69,5 +69,8 @@ HollowCylinderModelObject
   m_HollowCylinderSource->SetOuterRadius(GetProperty(OUTER_RADIUS_PROP)->GetDoubleValue());
   m_HollowCylinderSource->SetInnerRadius(outerRadius - thickness);
   m_HollowCylinderSource->SetHeight(GetProperty(LENGTH_PROP)->GetDoubleValue());
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 

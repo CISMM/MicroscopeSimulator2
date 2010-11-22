@@ -67,4 +67,7 @@ CylinderModelObject
 ::Update() {
   m_CylinderSource->SetRadius(GetProperty(RADIUS_PROP)->GetDoubleValue());
   m_CylinderSource->SetHeight(GetProperty(LENGTH_PROP)->GetDoubleValue());
+
+  // Call superclass update method
+  ModelObject::Update();
 }

@@ -122,6 +122,9 @@ PointSetModelObject
   }
 
   GetGeometrySubAssembly("Points")->GetInput()->Modified();
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 
 
