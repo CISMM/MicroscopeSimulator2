@@ -33,7 +33,8 @@ Q_OBJECT
 
  public slots:
   virtual void on_gui_AddCalculatedGaussianPSFButton_clicked();
-  virtual void on_gui_AddCalculatedWidefieldPSFButton_clicked();
+  virtual void on_gui_AddCalculatedGibsonLanniWidefieldPSFButton_clicked();
+  virtual void on_gui_AddCalculatedHaeberleWidefieldPSFButton_clicked();
   virtual void on_gui_ImportPSFButton_clicked();
   virtual void on_gui_DeletePSFButton_clicked();
   virtual void on_gui_ApplyButton_clicked();

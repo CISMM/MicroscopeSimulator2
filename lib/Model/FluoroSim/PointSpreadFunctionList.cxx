@@ -1,6 +1,6 @@
 #include <GaussianPointSpreadFunction.h>
 #include <ImportedPointSpreadFunction.h>
-#include <WidefieldPointSpreadFunction.h>
+#include <GibsonLanniWidefieldPointSpreadFunction.h>
 #include <PointSpreadFunctionList.h>
 
 #include <libxml/tree.h>
@@ -26,15 +26,16 @@ PointSpreadFunctionList
   GaussianPointSpreadFunction* psf = new GaussianPointSpreadFunction();
   psf->SetName(GetUniqueName(-1, name));
   m_PSFList.push_back(psf);
-  
+
   return psf;
 }
 
 
 PointSpreadFunction*
 PointSpreadFunctionList
-::AddWidefieldPointSpreadFunction(const std::string& name) {
-  WidefieldPointSpreadFunction* psf = new WidefieldPointSpreadFunction();
+::AddGibsonLanniWidefieldPointSpreadFunction(const std::string& name) {
+  GibsonLanniWidefieldPointSpreadFunction* psf =
+    new GibsonLanniWidefieldPointSpreadFunction();
   psf->SetName(GetUniqueName(-1, name));
   m_PSFList.push_back(psf);
 
@@ -89,7 +90,7 @@ PointSpreadFunctionList
   for (iter = m_PSFList.begin(); iter != m_PSFList.end(); iter++, i++) {
     if (i == index) {
       return *iter;
-    } 
+    }
   }
 
 
@@ -133,8 +134,8 @@ PointSpreadFunctionList
         if (psf->IsFileValid()) {
           m_PSFList.push_back(psf);
         }
-      } else if (nodeName == "WidefieldPointSpreadFunction") {
-        PointSpreadFunction* psf = new WidefieldPointSpreadFunction();
+      } else if (nodeName == "WidefieldPointSpreadFunction" || nodeName == "GibsonLanniWidefieldPointSpreadFunction") {
+        PointSpreadFunction* psf = new GibsonLanniWidefieldPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
         m_PSFList.push_back(psf);
       }

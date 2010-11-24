@@ -80,8 +80,8 @@ SET(modelFluoroSimSrc
   FluoroSim/GaussianPointSpreadFunction.cxx
   FluoroSim/ImportedPointSpreadFunction.h
   FluoroSim/ImportedPointSpreadFunction.cxx
-  FluoroSim/WidefieldPointSpreadFunction.h
-  FluoroSim/WidefieldPointSpreadFunction.cxx
+  FluoroSim/GibsonLanniWidefieldPointSpreadFunction.h
+  FluoroSim/GibsonLanniWidefieldPointSpreadFunction.cxx
   FluoroSim/PointSpreadFunctionList.h
   FluoroSim/PointSpreadFunctionList.cxx
 )

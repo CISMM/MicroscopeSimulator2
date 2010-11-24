@@ -5,31 +5,31 @@
 // including the ITK headers. Otherwise, the ITK headers will be included
 // without including the implementation files, and you will have many linker
 // errors.
-#include <WidefieldPointSpreadFunction.h>
+#include <GibsonLanniWidefieldPointSpreadFunction.h>
 
 #include <XMLHelper.h>
 
-const std::string WidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
-const std::string WidefieldPointSpreadFunction::CCD_BORDER_WIDTH_ELEMENT = "CCDBorderWidth";;
-const std::string WidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
-const std::string WidefieldPointSpreadFunction::NUMERICAL_APERTURE_ATTRIBUTE = "NumericalAperture";
-const std::string WidefieldPointSpreadFunction::MAGNIFICATION_ATTRIBUTE = "Magnification";
-const std::string WidefieldPointSpreadFunction::DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "DesignCoverSlipRefractiveIndex";
-const std::string WidefieldPointSpreadFunction::ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "ActualCoverSlipRefractiveIndex";
-const std::string WidefieldPointSpreadFunction::DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE = "DesignCoverSlipThickness";
-const std::string WidefieldPointSpreadFunction::ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE = "ActualCoverSlipThickness";
-const std::string WidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "DesignImmersionOilRefractiveIndex";
-const std::string WidefieldPointSpreadFunction::ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "ActualImmersionOilRefractiveIndex";
-const std::string WidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
-const std::string WidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
-const std::string WidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
-const std::string WidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
-const std::string WidefieldPointSpreadFunction::DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "DesignDistanceFromBackFocalPlaneToDetector";
-const std::string WidefieldPointSpreadFunction::ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "ActualDistanceFromBackFocalPlaneToDetector";
+const std::string GibsonLanniWidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
+const std::string GibsonLanniWidefieldPointSpreadFunction::CCD_BORDER_WIDTH_ELEMENT = "CCDBorderWidth";;
+const std::string GibsonLanniWidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
+const std::string GibsonLanniWidefieldPointSpreadFunction::NUMERICAL_APERTURE_ATTRIBUTE = "NumericalAperture";
+const std::string GibsonLanniWidefieldPointSpreadFunction::MAGNIFICATION_ATTRIBUTE = "Magnification";
+const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "DesignCoverSlipRefractiveIndex";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "ActualCoverSlipRefractiveIndex";
+const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE = "DesignCoverSlipThickness";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE = "ActualCoverSlipThickness";
+const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "DesignImmersionOilRefractiveIndex";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "ActualImmersionOilRefractiveIndex";
+const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
+const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
+const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "DesignDistanceFromBackFocalPlaneToDetector";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "ActualDistanceFromBackFocalPlaneToDetector";
 
 
-WidefieldPointSpreadFunction
-::WidefieldPointSpreadFunction() {
+GibsonLanniWidefieldPointSpreadFunction
+::GibsonLanniWidefieldPointSpreadFunction() {
   // Set up parameter names and default parameters
   m_ParameterNames.push_back("Summed Intensity");
   m_ParameterNames.push_back("X Size (voxels)");
@@ -76,35 +76,35 @@ WidefieldPointSpreadFunction
 }
 
 
-WidefieldPointSpreadFunction
-::~WidefieldPointSpreadFunction() {
+GibsonLanniWidefieldPointSpreadFunction
+::~GibsonLanniWidefieldPointSpreadFunction() {
   delete m_ITKToVTKFilter;
 }
 
 
 vtkImageData*
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::GetOutput() {
   return m_ITKToVTKFilter->GetOutput();
 }
 
 
 vtkAlgorithmOutput*
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::GetOutputPort() {
   return m_ITKToVTKFilter->GetOutputPort();
 }
 
 
 int
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::GetNumberOfProperties() {
   return static_cast<int>(m_ParameterNames.size());
 }
 
 
 std::string
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::GetParameterName(int index) {
   try {
     return m_ParameterNames.at(index);
@@ -116,7 +116,7 @@ WidefieldPointSpreadFunction
 
 
 double
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::GetParameterValue(int index) {
   switch (index) {
   case  0: return m_SummedIntensity;
@@ -145,7 +145,7 @@ WidefieldPointSpreadFunction
   case 23: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
   case 24: return m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer(); break;
   case 25: return m_GibsonLanniSource->GetDesignDistanceFromBackFocalPlaneToDetector(); break;
-  case 26: return m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector(); break;  
+  case 26: return m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector(); break;
 
   default: return 0.0;
   }
@@ -155,14 +155,14 @@ WidefieldPointSpreadFunction
 
 
 void
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::SetParameterValue(int index, double value) {
   const unsigned long* constSize = m_GibsonLanniSource->GetSize();
   unsigned long size[3];
   const float* constSpacing = m_GibsonLanniSource->GetSpacing();
   float spacing[3];
   const float* constPointCenter = m_GibsonLanniSource->GetPointCenter();
-  float pointCenter[3];  
+  float pointCenter[3];
   const float* constCCDBorderWidth = m_GibsonLanniSource->GetCCDBorderWidth();
   float ccdBorderWidth[2];
 
@@ -224,15 +224,15 @@ WidefieldPointSpreadFunction
   case 15:
     m_GibsonLanniSource->SetDesignCoverSlipRefractiveIndex(value);
     break;
-    
+
   case 16:
     m_GibsonLanniSource->SetActualCoverSlipRefractiveIndex(value);
     break;
-    
+
   case 17:
     m_GibsonLanniSource->SetDesignCoverSlipThickness(value);
     break;
-    
+
   case 18:
     m_GibsonLanniSource->SetActualCoverSlipThickness(value);
     break;
@@ -252,7 +252,7 @@ WidefieldPointSpreadFunction
   case 22:
     m_GibsonLanniSource->SetDesignSpecimenLayerRefractiveIndex(value);
     break;
-    
+
   case 23:
     m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(value);
     break;
@@ -279,7 +279,7 @@ WidefieldPointSpreadFunction
 
 
 void
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::RecenterImage() {
   const float*         constSpacing = m_GibsonLanniSource->GetSpacing();
   const unsigned long* constSize    = m_GibsonLanniSource->GetSize();
@@ -294,7 +294,7 @@ WidefieldPointSpreadFunction
 
 
 void
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::GetXMLConfiguration(xmlNodePtr node) {
   xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST "WidefieldPointSpreadFunction", NULL);
 
@@ -304,7 +304,7 @@ WidefieldPointSpreadFunction
 
   xmlNewProp(root, BAD_CAST NAME_ATTRIBUTE.c_str(), BAD_CAST m_Name.c_str());
   sprintf(buf, "%f", GetSummedIntensity());
-  xmlNewProp(root, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str(), BAD_CAST buf);  
+  xmlNewProp(root, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   xmlNodePtr sizeNode = xmlNewChild(root, NULL, BAD_CAST SIZE_ELEMENT.c_str(), NULL);
   sprintf(buf, intFormat, m_GibsonLanniSource->GetSize()[0]);
@@ -380,12 +380,12 @@ WidefieldPointSpreadFunction
 
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector());
   xmlNewProp(root, BAD_CAST ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE.c_str(), BAD_CAST buf);
-  
+
 }
 
 
 void
-WidefieldPointSpreadFunction
+GibsonLanniWidefieldPointSpreadFunction
 ::RestoreFromXML(xmlNodePtr node) {
   const char* name =
     (const char*) xmlGetProp(node, BAD_CAST NAME_ATTRIBUTE.c_str());
@@ -469,7 +469,7 @@ WidefieldPointSpreadFunction
   m_GibsonLanniSource->SetActualDistanceFromBackFocalPlaneToDetector(tmp);
 
   RecenterImage();
-  
+
   m_GibsonLanniSource->Update();
 
   // It is critical to call this to ensure that the PSF is normalized after loading

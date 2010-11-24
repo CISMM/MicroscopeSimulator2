@@ -1,5 +1,5 @@
-#ifndef _WIDEFIELD_POINT_SPREAD_FUNCTION_H_
-#define _WIDEFIELD_POINT_SPREAD_FUNCTION_H_
+#ifndef _GIBSON_LANNI_WIDEFIELD_POINT_SPREAD_FUNCTION_H_
+#define _GIBSON_LANNI_WIDEFIELD_POINT_SPREAD_FUNCTION_H_
 
 #include <vector>
 
@@ -12,7 +12,7 @@
 #include <PointSpreadFunction.h>
 
 
-class WidefieldPointSpreadFunction : public PointSpreadFunction {
+class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
 
  public:
   static const std::string POINT_CENTER_ELEMENT;
@@ -34,8 +34,8 @@ class WidefieldPointSpreadFunction : public PointSpreadFunction {
   static const std::string ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
 
 
-  WidefieldPointSpreadFunction();
-  virtual ~WidefieldPointSpreadFunction();
+  GibsonLanniWidefieldPointSpreadFunction();
+  virtual ~GibsonLanniWidefieldPointSpreadFunction();
 
   virtual vtkImageData* GetOutput();
   virtual vtkAlgorithmOutput* GetOutputPort();
@@ -62,4 +62,4 @@ class WidefieldPointSpreadFunction : public PointSpreadFunction {
   void RecenterImage();
 };
 
-#endif // _WIDEFIELD_POINT_SPREAD_FUNCTION_H_
+#endif // _GIBSON_LANNI_WIDEFIELD_POINT_SPREAD_FUNCTION_H_

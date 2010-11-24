@@ -131,9 +131,16 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
-::on_gui_AddCalculatedWidefieldPSFButton_clicked() {
-  m_PSFListModel->GetPSFList()->AddWidefieldPointSpreadFunction("Widefield");
+::on_gui_AddCalculatedGibsonLanniWidefieldPSFButton_clicked() {
+  m_PSFListModel->GetPSFList()->AddGibsonLanniWidefieldPointSpreadFunction("Gibson-Lanni Widefield");
   m_PSFListModel->Refresh();
+}
+
+
+void
+PSFEditorDialog
+::on_gui_AddCalculatedHaeberleWidefieldPSFButton_clicked() {
+
 }
 
 
@@ -141,7 +148,7 @@ void
 PSFEditorDialog
 ::on_gui_ImportPSFButton_clicked() {
   QString fileName = QFileDialog::
-    getOpenFileName(this, tr("Import PSF Image"), QString(), 
+    getOpenFileName(this, tr("Import PSF Image"), QString(),
                     tr("TIF Files (*.tif *.tiff);;LSM Files (*.lsm)"));
   if (fileName == "")
     return;
@@ -160,7 +167,7 @@ PSFEditorDialog
 
   int selected = selectionList->currentIndex().row();
 
-  std::string psfName = 
+  std::string psfName =
     m_PSFListModel->GetPSFList()->GetPointSpreadFunctionAt(selected)->GetName();
 
   QMessageBox::StandardButton reply;
@@ -304,7 +311,7 @@ void
 PSFEditorDialog
 ::on_gui_ResetButton_clicked() {
   RescaleToFullDynamicRange();
-  
+
   m_RenderWindow->Render();
 }
 
@@ -416,7 +423,7 @@ PSFEditorDialog
     double* range = psf->GetOutput()->GetScalarRange();
     double minImageValue = range[0];
     double maxImageValue = range[1];
-  
+
     return (normed * (maxImageValue - minImageValue)) + minImageValue;
   } else {
     return 0.0;
@@ -496,7 +503,7 @@ PSFEditorDialog
   m_YImagePlaneVisualization->AddToRenderer(m_Renderer);
   m_ZImagePlaneVisualization->AddToRenderer(m_Renderer);
   m_OutlineVisualization->AddToRenderer(m_Renderer);
-  
+
   if (m_FirstRender) {
     m_Renderer->ResetCamera();
     m_FirstRender = false;
@@ -552,7 +559,7 @@ PSFEditorDialog
 }
 
 
-void 
+void
 PSFEditorDialog
 ::SetViewToXPlus() {
   ResetView();

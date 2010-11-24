@@ -108,9 +108,9 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="gui_AddCalculatedWidefieldPSFButton">
+                   <widget class="QPushButton" name="gui_AddCalculatedGibsonLanniWidefieldPSFButton">
                     <property name="text">
-                     <string>Add Calculated Widefield PSF</string>
+                     <string>Add Calculated Gibson-Lanni Widefield PSF</string>
                     </property>
                    </widget>
                   </item>
