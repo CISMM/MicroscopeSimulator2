@@ -124,7 +124,7 @@ PointSpreadFunctionList
       if (!name)
         name = errName;
 
-      if (nodeName == "GaussianPointSpreadFunction") {
+      if (nodeName == GaussianPointSpreadFunction::PSF_ELEMENT) {
         PointSpreadFunction* psf = new GaussianPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
         m_PSFList.push_back(psf);
@@ -134,7 +134,7 @@ PointSpreadFunctionList
         if (psf->IsFileValid()) {
           m_PSFList.push_back(psf);
         }
-      } else if (nodeName == "WidefieldPointSpreadFunction" || nodeName == "GibsonLanniWidefieldPointSpreadFunction") {
+      } else if (nodeName == "WidefieldPointSpreadFunction" || nodeName == GibsonLanniWidefieldPointSpreadFunction::PSF_ELEMENT) {
         PointSpreadFunction* psf = new GibsonLanniWidefieldPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
         m_PSFList.push_back(psf);

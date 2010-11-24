@@ -16,7 +16,8 @@
 // errors.
 #include <GaussianPointSpreadFunction.h>
 
-const std::string GaussianPointSpreadFunction::SIGMA_ELEMENT   = "Sigma";
+const std::string GaussianPointSpreadFunction::PSF_ELEMENT = "GaussianPointSpreadFunction";
+const std::string GaussianPointSpreadFunction::SIGMA_ELEMENT = "Sigma";
 
 
 GaussianPointSpreadFunction
@@ -194,7 +195,7 @@ GaussianPointSpreadFunction
 void
 GaussianPointSpreadFunction
 ::GetXMLConfiguration(xmlNodePtr node) {
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST "GaussianPointSpreadFunction", NULL);
+  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST GaussianPointSpreadFunction::PSF_ELEMENT.c_str(), NULL);
 
   char intFormat[] = "%d";
   char doubleFormat[] = "%f";

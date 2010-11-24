@@ -9,6 +9,7 @@
 
 #include <XMLHelper.h>
 
+const std::string GibsonLanniWidefieldPointSpreadFunction::PSF_ELEMENT = "GibsonLanniWidefieldPointSpreadFunction";
 const std::string GibsonLanniWidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
 const std::string GibsonLanniWidefieldPointSpreadFunction::CCD_BORDER_WIDTH_ELEMENT = "CCDBorderWidth";;
 const std::string GibsonLanniWidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
@@ -296,7 +297,7 @@ GibsonLanniWidefieldPointSpreadFunction
 void
 GibsonLanniWidefieldPointSpreadFunction
 ::GetXMLConfiguration(xmlNodePtr node) {
-  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST "WidefieldPointSpreadFunction", NULL);
+  xmlNodePtr root = xmlNewChild(node, NULL, BAD_CAST PSF_ELEMENT.c_str(), NULL);
 
   char intFormat[] = "%d";
   char doubleFormat[] = "%f";
