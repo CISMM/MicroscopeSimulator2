@@ -140,7 +140,8 @@ PSFEditorDialog
 void
 PSFEditorDialog
 ::on_gui_AddCalculatedHaeberleWidefieldPSFButton_clicked() {
-
+  m_PSFListModel->GetPSFList()->AddHaeberlieWidefieldPointSpreadFunction("Haeberle Widefield");
+  m_PSFListModel->Refresh();
 }
 
 
