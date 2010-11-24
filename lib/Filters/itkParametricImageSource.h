@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkParameterizedImageSource.h,v $
+  Module:    $RCSfile: itkParametricImageSource.h,v $
   Language:  C++
   Date:      $Date: 2009/07/17 16:10:19 $
   Version:   $Revision: 1.1 $
@@ -12,13 +12,13 @@
   Portions of this code are covered under the VTK copyright.
   See VTKCopyright.txt or http://www.kitware.com/VTKCopyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __itkParameterizedImageSource_h
-#define __itkParameterizedImageSource_h
+#ifndef __itkParametricImageSource_h
+#define __itkParametricImageSource_h
 
 #include "itkArray.h"
 #include "itkImageSource.h"
@@ -26,8 +26,8 @@
 namespace itk
 {
 
-/** \class ParameterizedImageSource
- *  \brief Extends ParameterizedImageSource so that parameters can be passed 
+/** \class ParametricImageSource
+ *  \brief Extends ParametricImageSource so that parameters can be passed
  *  to it as a vector of values using the SetParameters() method. This method
  *  enables parameterized image sources to be used within ITK's optimization/
  *  registration framework.
@@ -35,20 +35,20 @@ namespace itk
  * \ingroup DataSources
  */
 template <class TOutputImage>
-class ITK_EXPORT ParameterizedImageSource : public ImageSource< TOutputImage >
+class ITK_EXPORT ParametricImageSource : public ImageSource< TOutputImage >
 {
 public:
   /** Standard class typedefs. */
-  typedef ParameterizedImageSource               Self;
+  typedef ParametricImageSource               Self;
   typedef ProcessObject             Superclass;
   typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
-  
+
   /** Smart Pointer type to a DataObject. */
   typedef DataObject::Pointer DataObjectPointer;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ParameterizedImageSource,ImageSource);
+  itkTypeMacro(ParametricImageSource,ImageSource);
 
   /** Some convenient typedefs. */
   typedef TOutputImage                         OutputImageType;
@@ -67,13 +67,13 @@ public:
   virtual void SetParameters(const ParametersType& parameters) = 0;
   virtual ParametersType GetParameters() const = 0;
   virtual unsigned int GetNumberOfParameters() const = 0;
-  
+
 protected:
-  ParameterizedImageSource();
-  virtual ~ParameterizedImageSource() {}
-    
+  ParametricImageSource();
+  virtual ~ParametricImageSource() {}
+
 private:
-  ParameterizedImageSource(const Self&); //purposely not implemented
+  ParametricImageSource(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
 };
@@ -81,17 +81,17 @@ private:
 } // end namespace itk
 
 // Define instantiation macro for this template.
-#define ITK_TEMPLATE_ParameterizedImageSource(_, EXPORT, x, y) namespace itk { \
-  _(1(class EXPORT ParameterizedImageSource< ITK_TEMPLATE_1 x >)) \
-  namespace Templates { typedef ParameterizedImageSource< ITK_TEMPLATE_1 x > ParameterizedImageSource##y; } \
+#define ITK_TEMPLATE_ParametricImageSource(_, EXPORT, x, y) namespace itk { \
+  _(1(class EXPORT ParametricImageSource< ITK_TEMPLATE_1 x >)) \
+  namespace Templates { typedef ParametricImageSource< ITK_TEMPLATE_1 x > ParametricImageSource##y; } \
   }
 
 #if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkParameterizedImageSource+-.h"
+# include "Templates/itkParametricImageSource+-.h"
 #endif
 
 #if ITK_TEMPLATE_TXX
-# include "itkParameterizedImageSource.cxx"
+# include "itkParametricImageSource.txx"
 #endif
 
 #endif

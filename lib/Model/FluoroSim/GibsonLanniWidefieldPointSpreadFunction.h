@@ -38,13 +38,13 @@ class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
   GibsonLanniWidefieldPointSpreadFunction();
   virtual ~GibsonLanniWidefieldPointSpreadFunction();
 
-  virtual vtkImageData* GetOutput();
+  virtual vtkImageData*       GetOutput();
   virtual vtkAlgorithmOutput* GetOutputPort();
 
-  virtual int GetNumberOfProperties();
+  virtual int         GetNumberOfProperties();
   virtual std::string GetParameterName(int index);
   virtual double      GetParameterValue(int index);
-  virtual void SetParameterValue(int index, double value);
+  virtual void        SetParameterValue(int index, double value);
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
   virtual void RestoreFromXML(xmlNodePtr node);

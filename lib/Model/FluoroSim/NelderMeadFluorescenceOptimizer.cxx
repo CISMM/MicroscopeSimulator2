@@ -7,10 +7,10 @@
 #include <ImageModelObject.h>
 
 
-const char* NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM = 
+const char* NelderMeadFluorescenceOptimizer::OPTIMIZER_ELEM =
   "NelderMeadFluorescenceOptimizer";
 
-const char* NelderMeadFluorescenceOptimizer::MAXIMUM_ITERATIONS_PARAM = 
+const char* NelderMeadFluorescenceOptimizer::MAXIMUM_ITERATIONS_PARAM =
   "Maximum Iterations";
 
 const char* NelderMeadFluorescenceOptimizer::PARAMETERS_CONVERGENCE_TOLERANCE_PARAM =
@@ -18,7 +18,7 @@ const char* NelderMeadFluorescenceOptimizer::PARAMETERS_CONVERGENCE_TOLERANCE_PA
 
 
 NelderMeadFluorescenceOptimizer
-::NelderMeadFluorescenceOptimizer(DirtyListener* listener) 
+::NelderMeadFluorescenceOptimizer(DirtyListener* listener)
   : ITKFluorescenceOptimizer(listener) {
   Variant maxIterations;
   maxIterations.iValue = 100;
@@ -44,7 +44,7 @@ NelderMeadFluorescenceOptimizer
     std::cout << "ERROR: No image to image cost function set." << std::endl;
     return;
   }
-  
+
   NelderMeadOptimizerType::Pointer optimizer = NelderMeadOptimizerType::New();
 
   // Set the optimizer parameters
@@ -61,13 +61,13 @@ NelderMeadFluorescenceOptimizer
   if (m_ComparisonImageModelObject)
     m_CostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage());
   m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
-  
-  typedef ParameterizedCostFunctionType::ParametersMaskType
+
+  typedef ParametricCostFunctionType::ParametersMaskType
     ParametersMaskType;
   ParametersMaskType* mask = m_CostFunction->GetParametersMask();
-  
+
   // Pluck out the active parameters
-  typedef ParameterizedCostFunctionType::ParametersType ParametersType;
+  typedef ParametricCostFunctionType::ParametersType ParametersType;
   ParametersType activeParameters
     = ParametersType(m_CostFunction->GetNumberOfParameters());
   int activeIndex = 0;
@@ -77,17 +77,17 @@ NelderMeadFluorescenceOptimizer
       activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
     }
   }
-  
+
   std::cout << "Starting parameters: " << activeParameters << std::endl;
-  
+
   // Connect to the cost function, set the initial parameters, and optimize.
   m_ImageToImageCostFunction->SetFixedImageRegion
     (m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
-  
-  m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
+
+  m_CostFunction->SetDelegateMetric(m_ImageToImageCostFunction);
   optimizer->SetCostFunction(m_CostFunction);
   optimizer->SetInitialPosition(activeParameters);
-  
+
   try {
     optimizer->StartOptimization();
   } catch (itk::ExceptionObject exception) {

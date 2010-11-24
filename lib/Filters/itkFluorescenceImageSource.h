@@ -12,8 +12,8 @@
   Portions of this code are covered under the VTK copyright.
   See VTKCopyright.txt or http://www.kitware.com/VTKCopyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
@@ -21,7 +21,7 @@
 #define __itkFluorescenceImageSource_h
 
 #include "itkNumericTraits.h"
-#include "itkParameterizedImageSource.h"
+#include "itkParametricImageSource.h"
 #include "itkVTKImageImport.h"
 
 #include <vtkSmartPointer.h>
@@ -42,19 +42,19 @@ namespace itk
  * \ingroup DataSources
  */
 template <class TOutputImage>
-class FluorescenceImageSource : public ParameterizedImageSource<TOutputImage>
+class FluorescenceImageSource : public ParametricImageSource<TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef FluorescenceImageSource                Self;
-  typedef ParameterizedImageSource<TOutputImage> Superclass;
-  typedef SmartPointer<Self>                     Pointer;
-  typedef SmartPointer<const Self>               ConstPointer;
+  typedef FluorescenceImageSource              Self;
+  typedef ParametricImageSource<TOutputImage>  Superclass;
+  typedef SmartPointer<Self>                   Pointer;
+  typedef SmartPointer<const Self>             ConstPointer;
 
   /** Typedef for the output image PixelType. */
-  typedef TOutputImage                           OutputImageType;
-  typedef typename OutputImageType::PixelType    PixelType;
-  typedef typename OutputImageType::RegionType   OutputImageRegionType;
+  typedef TOutputImage                         OutputImageType;
+  typedef typename OutputImageType::PixelType  PixelType;
+  typedef typename OutputImageType::RegionType OutputImageRegionType;
 
   /** Typedef for ITK image importer */
   typedef VTKImageImport<TOutputImage> VTKImageImportType;
@@ -64,7 +64,7 @@ public:
 		      TOutputImage::ImageDimension);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(FluorescenceImageSource,ParameterizedImageSource);
+  itkTypeMacro(FluorescenceImageSource,ParametricImageSource);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -108,7 +108,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkFluorescenceImageSource.cxx"
+#include "itkFluorescenceImageSource.txx"
 #endif
 
 #endif

@@ -1,9 +1,9 @@
-#include <itkFluorescenceImageSource.cxx>
+#include <itkFluorescenceImageSource.txx>
 #include <itkImage.txx>
-#include <itkImageToParameterizedImageSourceMetric.cxx>
+#include <itkImageToParametricImageSourceMetric.txx>
 #include <itkMeanSquaresImageToImageMetric.txx>
 #include <itkNormalizedCorrelationImageToImageMetric.txx>
-#include <itkPoissonNoiseImageToImageMetric.cxx>
+#include <itkPoissonNoiseImageToImageMetric.txx>
 
 // WARNING: Always include the header file for this class AFTER
 // including the ITK headers. Otherwise, the ITK headers will be included
@@ -28,11 +28,11 @@ const char* ITKFluorescenceOptimizer::NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION 
 
 
 ITKFluorescenceOptimizer
-::ITKFluorescenceOptimizer(DirtyListener* listener) 
+::ITKFluorescenceOptimizer(DirtyListener* listener)
   : FluorescenceOptimizer(listener) {
   m_FluorescenceImageSource = SyntheticImageSourceType::New();
 
-  m_CostFunction = ParameterizedCostFunctionType::New();
+  m_CostFunction = ParametricCostFunctionType::New();
 
   m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
 
@@ -40,7 +40,7 @@ ITKFluorescenceOptimizer
   AddObjectiveFunctionName(std::string(POISSON_NOISE_OBJECTIVE_FUNCTION));
   AddObjectiveFunctionName(std::string(NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION));
 
-  m_ActiveObjectiveFunctionName = GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;  
+  m_ActiveObjectiveFunctionName = GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;
 }
 
 
@@ -89,12 +89,11 @@ ITKFluorescenceOptimizer
   m_ImageToImageCostFunction->SetFixedImageRegion
     (m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
 
-  ParameterizedCostFunctionType::TransformTypePointer identity =
-    ParameterizedCostFunctionType::TransformType::New();
+  ParametricCostFunctionType::TransformTypePointer identity =
+    ParametricCostFunctionType::TransformType::New();
   m_ImageToImageCostFunction->SetTransform(identity);
 
-  ParameterizedCostFunctionType::InterpolatorTypePointer interpolator =
-    ParameterizedCostFunctionType::InterpolatorType::New();
+  InterpolatorType::Pointer interpolator = InterpolatorType::New();
   interpolator->SetInputImage(m_FluorescenceImageSource->GetOutput());
   m_ImageToImageCostFunction->SetInterpolator(interpolator);
 
