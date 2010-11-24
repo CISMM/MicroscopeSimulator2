@@ -1,6 +1,7 @@
 #include <GaussianPointSpreadFunction.h>
 #include <ImportedPointSpreadFunction.h>
 #include <GibsonLanniWidefieldPointSpreadFunction.h>
+#include <HaeberleWidefieldPointSpreadFunction.h>
 #include <PointSpreadFunctionList.h>
 
 #include <libxml/tree.h>
@@ -36,6 +37,18 @@ PointSpreadFunctionList
 ::AddGibsonLanniWidefieldPointSpreadFunction(const std::string& name) {
   GibsonLanniWidefieldPointSpreadFunction* psf =
     new GibsonLanniWidefieldPointSpreadFunction();
+  psf->SetName(GetUniqueName(-1, name));
+  m_PSFList.push_back(psf);
+
+  return psf;
+}
+
+
+PointSpreadFunction*
+PointSpreadFunctionList
+::AddHaeberlieWidefieldPointSpreadFunction(const std::string& name) {
+  HaeberleWidefieldPointSpreadFunction* psf =
+    new HaeberleWidefieldPointSpreadFunction();
   psf->SetName(GetUniqueName(-1, name));
   m_PSFList.push_back(psf);
 
@@ -136,6 +149,10 @@ PointSpreadFunctionList
         }
       } else if (nodeName == "WidefieldPointSpreadFunction" || nodeName == GibsonLanniWidefieldPointSpreadFunction::PSF_ELEMENT) {
         PointSpreadFunction* psf = new GibsonLanniWidefieldPointSpreadFunction();
+        psf->RestoreFromXML(psfNode);
+        m_PSFList.push_back(psf);
+      } else if (nodeName == HaeberleWidefieldPointSpreadFunction::PSF_ELEMENT) {
+        PointSpreadFunction* psf = new HaeberleWidefieldPointSpreadFunction();
         psf->RestoreFromXML(psfNode);
         m_PSFList.push_back(psf);
       }

@@ -15,6 +15,7 @@ class PointSpreadFunctionList : public XMLStorable {
 
   PointSpreadFunction* AddGaussianPointSpreadFunction(const std::string& name);
   PointSpreadFunction* AddGibsonLanniWidefieldPointSpreadFunction(const std::string& name);
+  PointSpreadFunction* AddHaeberlieWidefieldPointSpreadFunction(const std::string& name);
   PointSpreadFunction* ImportPointSpreadFunction(const std::string& fileName);
   void DeletePointSpreadFunction(int index);
 
