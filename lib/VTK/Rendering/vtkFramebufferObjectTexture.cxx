@@ -42,7 +42,7 @@ vtkStandardNewMacro(vtkFramebufferObjectTexture);
 vtkFramebufferObjectTexture::vtkFramebufferObjectTexture()
 {
   this->Index = 0;
-  
+
   // See if we need this
   this->RenderWindow = 0;
   this->AutomaticDimensions = 1;
@@ -94,13 +94,13 @@ void vtkFramebufferObjectTexture::SetTextureFormatToRGBA() {
 }
 
 
-// Release the graphics resources used by this texture.  
+// Release the graphics resources used by this texture.
 void vtkFramebufferObjectTexture::ReleaseGraphicsResources(vtkWindow *renWin)
 {
   if (this->Index && renWin)
     {
     ((vtkRenderWindow *) renWin)->MakeCurrent();
-    
+
 #ifdef GL_VERSION_1_1
     // free any textures
     if (glIsTexture(this->Index))
@@ -124,8 +124,13 @@ void vtkFramebufferObjectTexture::ReleaseGraphicsResources(vtkWindow *renWin)
 }
 
 //----------------------------------------------------------------------------
-int vtkFramebufferObjectTexture::LoadExtensions(void) {
-  vtkOpenGLExtensionManager *manager = vtkOpenGLExtensionManager::New();
+int vtkFramebufferObjectTexture::LoadExtensions(vtkRenderWindow *renWin) {
+  vtkOpenGLRenderWindow *oglRenWin =
+    vtkOpenGLRenderWindow::SafeDownCast(renWin);
+  if (oglRenWin == NULL)
+    return 0;
+
+  vtkOpenGLExtensionManager *manager = oglRenWin->GetExtensionManager();
 
   std::vector<std::string> extensions;
   extensions.push_back(std::string("GL_EXT_framebuffer_object"));
@@ -144,7 +149,6 @@ int vtkFramebufferObjectTexture::LoadExtensions(void) {
       break;
     }
   }
-  manager->Delete();
 
   return supported;
 }
@@ -153,18 +157,18 @@ int vtkFramebufferObjectTexture::LoadExtensions(void) {
 void vtkFramebufferObjectTexture::EnableTarget(vtkRenderer *renderer)
 {
   int *size = renderer->GetSize();
-  int needsUpdate = this->AutomaticDimensions ? 
+  int needsUpdate = this->AutomaticDimensions ?
     (size[0] != this->TextureWidth || size[1] != this->TextureHeight) :
     (this->DimensionTime.GetMTime() > this->LoadTime.GetMTime());
 
   if (needsUpdate) {
-  
+
     // Make sure all the required extensions are loaded.
-    this->LoadExtensions();
-    
+    this->LoadExtensions(renderer->GetRenderWindow());
+
     // Clean up the previous frame buffer object.
     this->Clean();
-    
+
     if (this->AutomaticDimensions) {
       this->TextureWidth  = size[0];
       this->TextureHeight = size[1];
@@ -188,12 +192,12 @@ void vtkFramebufferObjectTexture::EnableTarget(vtkRenderer *renderer)
       else
         vtkErrorMacro(<< "Unknown TextureFormat value");
     }
-    
+
     vtkgl::GenFramebuffersEXT(1, &this->FrameBufferHandle);
     glGenTextures(1, &this->Index);
     vtkgl::BindFramebufferEXT(vtkgl::FRAMEBUFFER_EXT, this->FrameBufferHandle);
     glBindTexture(this->TextureTarget, this->Index);
-    glTexImage2D(this->TextureTarget, 0, this->TextureInternalFormat, 
+    glTexImage2D(this->TextureTarget, 0, this->TextureInternalFormat,
       this->TextureWidth, this->TextureHeight, 0, this->TextureFormat, GL_FLOAT, NULL);
 
     glTexParameterf(this->TextureTarget, GL_TEXTURE_MIN_FILTER, this->FilterMode);
@@ -201,15 +205,15 @@ void vtkFramebufferObjectTexture::EnableTarget(vtkRenderer *renderer)
     glTexParameterf(this->TextureTarget, GL_TEXTURE_WRAP_S, vtkgl::CLAMP_TO_EDGE);
     glTexParameterf(this->TextureTarget, GL_TEXTURE_WRAP_T, vtkgl::CLAMP_TO_EDGE);
 
-    vtkgl::FramebufferTexture2DEXT(vtkgl::FRAMEBUFFER_EXT, vtkgl::COLOR_ATTACHMENT0_EXT, 
+    vtkgl::FramebufferTexture2DEXT(vtkgl::FRAMEBUFFER_EXT, vtkgl::COLOR_ATTACHMENT0_EXT,
                                    this->TextureTarget, this->Index, 0);
 
     vtkgl::GenRenderbuffersEXT(1, &this->RenderBufferHandle);
     vtkgl::BindRenderbufferEXT(vtkgl::RENDERBUFFER_EXT, this->RenderBufferHandle);
-    vtkgl::RenderbufferStorageEXT(vtkgl::RENDERBUFFER_EXT, vtkgl::DEPTH_COMPONENT24, 
+    vtkgl::RenderbufferStorageEXT(vtkgl::RENDERBUFFER_EXT, vtkgl::DEPTH_COMPONENT24,
                                   this->TextureWidth, this->TextureHeight);
 
-    vtkgl::FramebufferRenderbufferEXT(vtkgl::FRAMEBUFFER_EXT, vtkgl::DEPTH_ATTACHMENT_EXT, 
+    vtkgl::FramebufferRenderbufferEXT(vtkgl::FRAMEBUFFER_EXT, vtkgl::DEPTH_ATTACHMENT_EXT,
                                       vtkgl::RENDERBUFFER_EXT, this->RenderBufferHandle);
 
     // Probably should check for errors here
@@ -217,7 +221,7 @@ void vtkFramebufferObjectTexture::EnableTarget(vtkRenderer *renderer)
 
     this->LoadTime.Modified();
   }
-  
+
   // Bind this frame buffer in preparation for rendering.
   vtkgl::BindFramebufferEXT(vtkgl::FRAMEBUFFER_EXT, this->FrameBufferHandle);
 }
@@ -262,7 +266,7 @@ int vtkFramebufferObjectTexture::RequestInformation (
 {
   // get the info objects
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
-  
+
   // set the whole extent
   int wholeExtent[6];
   wholeExtent[0] = 0; wholeExtent[1] = this->TextureWidth - 1;
@@ -274,7 +278,7 @@ int vtkFramebufferObjectTexture::RequestInformation (
   // set data type
   int components = this->TextureFormat == GL_RGBA ? 3 : 1;
   vtkDataObject::SetPointDataActiveScalarInfo(outInfo, VTK_FLOAT, components);
-  
+
   return 1;
 }
 
@@ -314,7 +318,7 @@ int vtkFramebufferObjectTexture::RequestData(vtkInformation* vtkNotUsed(request)
 
   return 1;
 }
-                                             
+
 
 //----------------------------------------------------------------------------
 void vtkFramebufferObjectTexture::CheckFrameBufferStatus() {

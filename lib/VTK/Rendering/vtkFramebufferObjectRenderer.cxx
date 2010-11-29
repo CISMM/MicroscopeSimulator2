@@ -14,7 +14,7 @@
 =========================================================================*/
 
 // This software was funded by NIH grant P41 EB002025 and was created by
-// Cory Quammen (cquammen@cs.unc.edu) at the University of North Carolina at 
+// Cory Quammen (cquammen@cs.unc.edu) at the University of North Carolina at
 // Chapel Hill Center for Computer Integrated Systems for Microscopy and Manipulation
 // (http://www.cismm.org).
 
@@ -26,6 +26,7 @@
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkOpenGLExtensionManager.h"
+#include "vtkOpenGLRenderWindow.h"
 
 
 #include <math.h>
@@ -72,7 +73,13 @@ void vtkFramebufferObjectRenderer::LoadFragmentProgram() {
   // Load GLSL shader extensions
   char glVersion2_0[] = "GL_VERSION_2_0";
   char textureRect[]  = "GL_ARB_texture_rectangle";
-  vtkOpenGLExtensionManager *manager = vtkOpenGLExtensionManager::New();
+
+  vtkOpenGLRenderWindow* oglRenWin =
+    vtkOpenGLRenderWindow::SafeDownCast(this->GetRenderWindow());
+  if (oglRenWin == NULL)
+    return;
+
+  vtkOpenGLExtensionManager *manager = oglRenWin->GetExtensionManager();
   if (manager->ExtensionSupported(glVersion2_0))
     manager->LoadExtension(glVersion2_0);
   else
@@ -87,7 +94,7 @@ void vtkFramebufferObjectRenderer::LoadFragmentProgram() {
 
   vtkgl::GLchar** programList = new vtkgl::GLchar*[1];
   programList[0] = new vtkgl::GLchar[1024];
-  strncpy(programList[0], 
+  strncpy(programList[0],
     "#extension GL_ARB_texture_rectangle : enable\n"
     "#pragma optimize(on)\n"
     "\n"
@@ -259,7 +266,7 @@ void vtkFramebufferObjectRenderer::SetActiveFramebufferTexture(int index) {
 // Concrete open gl render method.
 void vtkFramebufferObjectRenderer::DeviceRender(void) {
   // Do not remove this MakeCurrent! Due to Start / End methods on
-  // some objects which get executed during a pipeline update, 
+  // some objects which get executed during a pipeline update,
   // other windows might get rendered since the last time
   // a MakeCurrent was called.
   this->RenderWindow->MakeCurrent();
@@ -310,7 +317,7 @@ void vtkFramebufferObjectRenderer::TextureRender(int index) {
 
   // Make sure to disable any 3D textures
   glDisable(vtkgl::TEXTURE_3D);
-  
+
   int s = this->GetFramebufferTexture(index)->GetMaxCoordS();
   int t = this->GetFramebufferTexture(index)->GetMaxCoordT();
   int w = this->GetFramebufferTexture(index)->GetTextureWidth();
