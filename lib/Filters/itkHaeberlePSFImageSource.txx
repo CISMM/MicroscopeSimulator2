@@ -269,8 +269,7 @@ HaeberlePSFImageSource<TOutputImage>
       zSlice = index[2];
       }
 
-    //it.Set( ComputeSampleValue(point) );
-    it.Set( static_cast<PixelType>(threadId) );
+    it.Set( ComputeSampleValue(point) );
     progress.CompletedPixel();
     }
 }
@@ -299,33 +298,80 @@ HaeberlePSFImageSource<TOutputImage>
   // Compute common terms in all steps of the integration
   double r_o = sqrt((x_o*x_o) + (y_o*y_o));
 
-  // Compute integration of the formula
+  double alpha_d = 1.4; // ???
+
+  // Compute step size for integration
   double h = 1.0 / static_cast<double>(INTEGRATE_N-1);
 
-  // Accumulator for integration.
-  ComplexType sum(0.0, 0.0);
+  // Accumulators for integration.
+  ComplexType I0det(0.0, 0.0), I1det(0.0, 0.0), I2det(0.0, 0.0);
 
-#if 0
-  // Compute initial terms in Simpson quadrature method.
-  sum += IntegralTerm(opdCache, K, a, z_d, 0, h, r_o, z_o);
+  double theta_d = 0.0; // variable of integration
+  double theta_1 = 0.0;
+  double theta_3 = 0.0;
+  double k_d = 0.0;
+  double k_0 = 0.0;
+  double k_1 = 0.0;
+  double rho_prime = 0.0;
+  double T_s_prime = 0.0;
+  double T_p_prime = 0.0;
+  double z_prime = 0.0;
+  double Psi_det = 0.0;
+  ComplexType C = 0.0; // Common terms in the three integrals
+  const ComplexType I(0.0, 1.0);
 
-  sum += IntegralTerm(opdCache, K, a, z_d, INTEGRATE_N-1, h, r_o, z_o);
+  // Compute initial terms in Simpson quadrature method (f(a) + f(b)).
+  C = pow(cos(theta_1),-0.5) * sin(2.0*theta_d) *
+    exp(-I * k_0 * Psi_det) * exp(-I * k_1 * z_prime * cos(theta_1));
+
+  I0det += j0(k_d * rho_prime * sin(theta_d)) *
+    (T_s_prime + T_p_prime * cos(theta_3)) * C;
+
+  I1det += j1(k_d * rho_prime * sin(theta_d)) *
+    (T_p_prime * sin(theta_3));
+
+  I2det += jn(2, k_d * rho_prime * sin(theta_d)) *
+    (T_s_prime - T_p_prime * cos(theta_3));
 
   for (int k = 1; k <= INTEGRATE_M-1; k++)
     {
-    sum += 2.0*IntegralTerm(opdCache, K, a, z_d, 2*k, h, r_o, z_o);
+    C = pow(cos(theta_1),-0.5) * sin(2.0*theta_d) *
+      exp(-I * k_0 * Psi_det) * exp(-I * k_1 * z_prime * cos(theta_1));
+
+    I0det += 2.0 * j0(k_d * rho_prime * sin(theta_d)) *
+      (T_s_prime + T_p_prime * cos(theta_3)) * C;
+
+    I1det += 2.0 * j1(k_d * rho_prime * sin(theta_d)) *
+      (T_p_prime * sin(theta_3));
+
+    I2det += 2.0 * jn(2, k_d * rho_prime * sin(theta_d)) *
+      (T_s_prime - T_p_prime * cos(theta_3));
+
     }
 
   for (int k = 1; k <= INTEGRATE_M; k++)
     {
-    sum += 4.0*IntegralTerm(opdCache, K, a, z_d, 2*k-1, h, r_o, z_o);
+    C = pow(cos(theta_1),-0.5) * sin(2.0*theta_d) *
+      exp(-I * k_0 * Psi_det) * exp(-I * k_1 * z_prime * cos(theta_1));
+
+    I0det += 4.0 * j0(k_d * rho_prime * sin(theta_d)) *
+      (T_s_prime + T_p_prime * cos(theta_3)) * C;
+
+    I1det += 4.0 * j1(k_d * rho_prime * sin(theta_d)) *
+      (T_p_prime * sin(theta_3));
+
+    I2det += 4.0 * jn(2, k_d * rho_prime * sin(theta_d)) *
+      (T_s_prime - T_p_prime * cos(theta_3));
+
     }
 
-  sum *= (h/3.0f);
-#endif
+  I0det *= (h/3.0f);
+  I1det *= (h/3.0f);
+  I2det *= (h/3.0f);
 
-  // Return squared magnitude of the integrated value
-  return static_cast<PixelType>( norm(sum) );
+  // Return a weighted sum of the squared magnitudes of the three
+  // integral values.
+  return static_cast<PixelType>( norm(I0det) + 2.0*norm(I1det) + norm(I2det) );
 }
 
 
