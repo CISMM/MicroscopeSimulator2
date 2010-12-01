@@ -1542,8 +1542,7 @@ MicroscopeSimulator
   // TODO - remove this loop, make number of output images adjustable.
   for (int i = 0; i < 20; i++)
 {
-  //RefreshModelObjectViews();
-  //RenderViews(); // These two calls do not regenerate the fluorophore sampling
+  m_Simulation->RegenerateFluorophores();
 
   vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
 
