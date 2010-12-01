@@ -54,7 +54,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   virtual void Sully();
   virtual void SetStatusMessage(const std::string& status);
 
-  void SetFluorescenceImageSource(FluorescenceImageSource* source);
+  void                     SetFluorescenceImageSource(FluorescenceImageSource* source);
   FluorescenceImageSource* GetFluorescenceImageSource();
 
   PointSpreadFunction* GetActivePointSpreadFunction();
@@ -62,7 +62,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
   SetGetMacro(FocalPlaneIndex, unsigned int);
   SetGetMacro(FocalPlaneSpacing, double);
 
-  void SetNumberOfFocalPlanes(unsigned int n);
+  void          SetNumberOfFocalPlanes(unsigned int n);
   unsigned int  GetNumberOfFocalPlanes();
 
   SetGetMacro(UseCustomFocalPlanePositions, bool);
@@ -105,7 +105,7 @@ class FluorescenceSimulation : public DirtyListener, public XMLStorable {
 
   void SetActivePSFByName(const std::string& psfName);
 
-  void SetComparisonImageModelObject(ImageModelObject* object);
+  void              SetComparisonImageModelObject(ImageModelObject* object);
   ImageModelObject* GetComparisonImageModelObject();
 
  protected:

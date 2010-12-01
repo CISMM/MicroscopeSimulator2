@@ -106,7 +106,7 @@ FluorophoreModelDialog
     gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
 
     if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::SINGLE_POINT) {
-      gui_UseSingleFluorophorePerSampleRadioButton->click();  
+      gui_UseSingleFluorophorePerSampleRadioButton->click();
     } else if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::POINT_RING) {
       gui_UsePointRingClusterRadioButton->click();
     }
@@ -147,7 +147,7 @@ FluorophoreModelDialog
 
     uniformProperty->SetNumberOfRingFluorophores(GetNumberOfFluorophoresAroundRing());
     uniformProperty->SetRingRadius(GetRingRadius());
-    
+
     uniformProperty->SetRandomizePatternOrientations(GetRandomizePatternOrientations());
   }
 

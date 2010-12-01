@@ -55,16 +55,16 @@ public:
   virtual void Sully();
   virtual void SetStatusMessage(const std::string& status);
 
-  void SetSimulationDescription(const std::string& description);
+  void         SetSimulationDescription(const std::string& description);
   std::string& GetSimulationDescription();
 
-  void SetSimulationFileName(const std::string& name);
+  void         SetSimulationFileName(const std::string& name);
   std::string& GetSimulationFileName();
 
   void SetSimulationAlreadySaved(bool saved);
   bool GetSimulationAlreadySaved();
 
-  void SetSimulationCreationDate(const std::string& date);
+  void         SetSimulationCreationDate(const std::string& date);
   std::string& GetSimulationCreationDate();
 
   AFMSimulation*          GetAFMSimulation();
@@ -96,7 +96,7 @@ protected:
   std::string m_SimulationDescription;
 
   std::string m_SimulationFileName;
-  
+
   bool m_SimulationAlreadySaved;
 
   std::string m_SimulationCreationDate;
