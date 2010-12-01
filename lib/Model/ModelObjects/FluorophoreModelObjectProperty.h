@@ -33,6 +33,8 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
 
   vtkAlgorithm* GetFluorophoreOutput();
 
+  void RegenerateFluorophores() {};
+
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);
 

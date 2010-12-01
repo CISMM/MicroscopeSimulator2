@@ -102,8 +102,7 @@ void
 UniformFluorophoreProperty
 ::SetDensity(double density) {
   m_Sampler->SetDensity(density * GetDensityScale());
-  m_Sampler->Modified(); // Ensure resampling is performed no matter what
-  m_Sampler->Update();
+  RegenerateFluorophores(); // Ensure resampling is performed no matter what
 }
 
 
@@ -282,6 +281,14 @@ void UniformFluorophoreProperty::GlyphFunction(void* arg) {
 
     transform->RotateWXYZ(theta, v1, v2, v3);
   }
+}
+
+
+void
+UniformFluorophoreProperty
+::RegenerateFluorophores() {
+  m_Sampler->Modified();
+  m_Sampler->Update();
 }
 
 

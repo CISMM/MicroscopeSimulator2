@@ -69,6 +69,8 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   void RandomizePatternOrientationsOn();
   void RandomizePatternOrientationsOff();
   bool GetRandomizePatternOrientations();
+
+  void RegenerateFluorophores();
  
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);
