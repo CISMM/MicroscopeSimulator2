@@ -81,6 +81,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
   ModelObjectProperty* GetProperty(int index);
 
   FluorophoreModelObjectProperty* GetFluorophoreProperty(int index);
+  void RegenerateFluorophores();
 
   ModelObjectPropertyList* GetPropertyList();
   int GetNumberOfProperties();

@@ -523,4 +523,15 @@ Simulation
 }
 
 
+void
+Simulation
+::RegenerateFluorophores() {
+  // Loop over model objects
+  for (int i = 0; i < static_cast<int>(m_ModelObjectList->GetSize()); i++) {
+    ModelObject* mo = m_ModelObjectList->GetModelObjectAtIndex(i);
+    mo->RegenerateFluorophores();
+  }
+}
+
+
 #endif // _SIMULATION_CXX_

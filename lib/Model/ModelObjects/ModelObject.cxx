@@ -262,6 +262,21 @@ ModelObject
 }
 
 
+void
+ModelObject
+::RegenerateFluorophores() {
+  // Loop over fluorophore properties and regenerate them
+  for (int i = 0; i < m_FluorophoreProperties->GetSize(); i++) {
+    FluorophoreModelObjectProperty* fmop = 
+      dynamic_cast<FluorophoreModelObjectProperty*>
+        (m_FluorophoreProperties->GetProperty(i));
+    if (fmop) {
+      fmop->RegenerateFluorophores();
+    }
+  }
+}
+
+
 ModelObjectPropertyList*
 ModelObject
 ::GetPropertyList() {

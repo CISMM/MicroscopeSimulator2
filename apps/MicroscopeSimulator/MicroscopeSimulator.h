@@ -170,6 +170,7 @@ public slots:
   virtual void on_fluoroSimMaxLevelEdit_editingFinished();
   virtual void on_fluoroSimMaxLevelSlider_sliderMoved(int value);
   virtual void on_fluoroSimSetToFullIntensityRange_clicked();
+  virtual void on_fluoroSimRegenerateFluorophores_clicked();
   virtual void on_fluoroSimExportImageButton_clicked();
   virtual void on_fluoroSimExportStackButton_clicked();
   virtual void on_fluoroSimComparisonImageComboBox_currentIndexChanged(int selected);

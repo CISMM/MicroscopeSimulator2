@@ -1494,6 +1494,15 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimRegenerateFluorophores_clicked() {
+  m_Simulation->RegenerateFluorophores();
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimExportImageButton_clicked() {
   QSettings prefs;
   prefs.beginGroup("FileDialogs");
@@ -1533,8 +1542,8 @@ MicroscopeSimulator
   // TODO - remove this loop, make number of output images adjustable.
   for (int i = 0; i < 20; i++)
 {
-  RefreshModelObjectViews();
-  RenderViews(); // These two calls do not regenerate the fluorophore sampling
+  //RefreshModelObjectViews();
+  //RenderViews(); // These two calls do not regenerate the fluorophore sampling
 
   vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
 

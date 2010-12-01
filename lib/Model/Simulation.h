@@ -90,6 +90,8 @@ public:
 
   vtkPolyDataAlgorithm* GetModelObjectGeometry(ModelObject* object);
 
+  void RegenerateFluorophores();
+
 protected:
   static const std::string DATE_FORMAT_STRING;
 
