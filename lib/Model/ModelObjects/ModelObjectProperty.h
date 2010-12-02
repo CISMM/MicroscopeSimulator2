@@ -45,14 +45,14 @@ class ModelObjectProperty : public XMLStorable {
   void SetOptimize(bool optimize);
   bool GetOptimize();
 
-  void SetBoolValue(bool value);
-  bool GetBoolValue();
+  virtual void SetBoolValue(bool value);
+  virtual bool GetBoolValue();
 
-  void SetIntValue(int value);
-  int GetIntValue();
+  virtual void SetIntValue(int value);
+  virtual int  GetIntValue();
 
-  void SetDoubleValue(double value);
-  double GetDoubleValue();
+  virtual void   SetDoubleValue(double value);
+  virtual double GetDoubleValue();
 
   void SetStringValue(const std::string& value);
   std::string& GetStringValue();
