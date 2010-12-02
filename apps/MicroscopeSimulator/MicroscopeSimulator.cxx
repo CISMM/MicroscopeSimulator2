@@ -959,19 +959,42 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionDeleteModelObject_triggered() {
-  // See which object is selected in the list.
+  // Get the model object to delete.
   int row = gui->fluoroSimModelObjectList->currentIndex().row();
-
   ModelObjectListPtr mol = m_Simulation->GetModelObjectList();
+  ModelObject* mo = NULL;
   if (row >= 0 && row < static_cast<int>(mol->GetSize())) {
-    mol->Delete(mol->GetModelObjectAtIndex(row));
-
-    RefreshModelObjectViews();
-    m_ModelObjectListModel->Refresh();
+    mo = mol->GetModelObjectAtIndex(row);
   }
+
+  if (mo == NULL)
+    return;
+
+  QString objectName(mo->GetName().c_str());
+
+  // Get confirmation first.
+  QString message = QString("Really delete model object '").
+    append(objectName).append("'?");
+  QMessageBox messageBox;
+  messageBox.setText(message);
+  messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  messageBox.setDefaultButton(QMessageBox::No);
+
+  int selected = messageBox.exec();
+  if (selected == QMessageBox::No)
+    return;
+
+  mol->Delete(mo);
+
+  RefreshModelObjectViews();
+  m_ModelObjectListModel->Refresh();
   m_ModelObjectPropertyListTableModel->SetModelObject(NULL);
   m_ModelObjectPropertyListTableModel->Refresh();
   m_ImageListModel->Refresh();
+
+  QString statusMessage = QString().append(tr("Deleted model object '")).
+    append(objectName).append(tr("'."));
+  SetStatusMessage(statusMessage.toStdString());
 }
 
 
