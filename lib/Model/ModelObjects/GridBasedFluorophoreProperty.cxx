@@ -136,7 +136,6 @@ GridBasedFluorophoreProperty
   // Get bounding box size of the grid source
   double bounds[6];
   m_GridSource->GetOutput()->Update();
-  std::cout << "Grid source: " << m_GridSource->GetOutput() << std::endl;
   m_GridSource->GetOutput()->GetBounds(bounds);
 
   double padding = sqrt(3*m_SampleSpacing*m_SampleSpacing);
@@ -145,6 +144,12 @@ GridBasedFluorophoreProperty
     // Pad the boundaries
     bounds[2*i + 0] -= padding;
     bounds[2*i + 1] += padding;
+
+    // Snap the bounds to the nearest multiple of the grid spacing
+    // just outside the unsnapped bounds. This makes objective functions
+    // better behaved.
+    bounds[2*i + 0] = floor(bounds[2*i + 0] / m_SampleSpacing) * m_SampleSpacing;
+    bounds[2*i + 1] = ceil (bounds[2*i + 1] / m_SampleSpacing) * m_SampleSpacing;
 
     dims[i] = ceil((bounds[2*i+1] - bounds[2*i]) / m_SampleSpacing);
     if (dims[i] < 2) dims[i] = 2;
