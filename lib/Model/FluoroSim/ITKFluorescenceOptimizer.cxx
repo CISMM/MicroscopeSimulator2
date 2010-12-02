@@ -56,13 +56,10 @@ ITKFluorescenceOptimizer
   // Set up the cost function
   if (m_ActiveObjectiveFunctionName == GAUSSIAN_NOISE_OBJECTIVE_FUNCTION) {
     m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
-    std::cout << "Using Gaussian noise cost function, ";
   } else if (m_ActiveObjectiveFunctionName == POISSON_NOISE_OBJECTIVE_FUNCTION) {
     m_ImageToImageCostFunction = PoissonNoiseCostFunctionType::New();
-    std::cout << "Using Poisson noise cost function, ";
   } else if (m_ActiveObjectiveFunctionName == NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION) {
     m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
-    std::cout << "Using normalized correlation cost function, ";
   }
   m_ImageToImageCostFunction->ComputeGradientOff();
 }
