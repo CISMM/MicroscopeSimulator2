@@ -64,6 +64,7 @@ ITKFluorescenceOptimizer
     m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
     std::cout << "Using normalized correlation cost function, ";
   }
+  m_ImageToImageCostFunction->ComputeGradientOff();
 }
 
 
