@@ -22,6 +22,10 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   void SetEnabled(bool enabled);
   bool GetEnabled();
 
+  // Overridden to make the IntensityScale parameter optimizable.
+  void   SetDoubleValue(double value);
+  double GetDoubleValue();
+
   void SetFluorophoreChannel(FluorophoreChannelType type);
   void SetFluorophoreChannelToRed();
   void SetFluorophoreChannelToGreen();

@@ -39,6 +39,20 @@ FluorophoreModelObjectProperty
 
 void
 FluorophoreModelObjectProperty
+::SetDoubleValue(double value) {
+  SetIntensityScale(value);
+}
+
+
+double
+FluorophoreModelObjectProperty
+::GetDoubleValue() {
+  return GetIntensityScale();
+}
+
+
+void
+FluorophoreModelObjectProperty
 ::SetFluorophoreChannel(FluorophoreChannelType channel) {
   m_Channel = channel;
 }
