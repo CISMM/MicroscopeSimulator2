@@ -71,24 +71,16 @@ GradientDescentFluorescenceOptimizer
   if (m_ComparisonImageModelObject)
     m_CostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage());
   m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
+  InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  interpolator->SetInputImage(m_FluorescenceImageSource->GetOutput());
+  m_CostFunction->SetInterpolator(interpolator);
 
-  typedef ParametricCostFunctionType::ParametersMaskType
-    ParametersMaskType;
-  ParametersMaskType* mask = m_CostFunction->GetParametersMask();
+  // Mark all parameters as active
+  m_CostFunction->GetParametersMask()->Fill(1);
 
-  // Pluck out the active parameters
   typedef ParametricCostFunctionType::ParametersType ParametersType;
-  ParametersType activeParameters
-    = ParametersType(m_CostFunction->GetNumberOfParameters());
-  int activeIndex = 0;
-  for (unsigned int i = 0; i < mask->Size(); i++) {
-    if (mask->GetElement(i)) {
-      // TODO - The right hand side is slower than it has to be. Make it faster
-      activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
-    }
-  }
-
-  std::cout << "Starting parameters: " << activeParameters << std::endl;
+  ParametersType params = m_FluorescenceImageSource->GetParameters();
+  std::cout << "Starting parameters: " << params << std::endl;
 
   // Connect to the cost function, set the initial parameters, and optimize.
   m_ImageToImageCostFunction->SetFixedImageRegion
@@ -96,7 +88,7 @@ GradientDescentFluorescenceOptimizer
 
   m_CostFunction->SetDelegateMetric(m_ImageToImageCostFunction);
   optimizer->SetCostFunction(m_CostFunction);
-  optimizer->SetInitialPosition(activeParameters);
+  optimizer->SetInitialPosition(params);
 
   try {
     optimizer->StartOptimization();
