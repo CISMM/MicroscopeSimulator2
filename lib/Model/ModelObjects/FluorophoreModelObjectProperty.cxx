@@ -13,6 +13,7 @@ FluorophoreModelObjectProperty
   m_FluorophoreOutput = NULL;
   SetEnabled(true);
   SetFluorophoreChannelToAll();
+  SetIntensityScale(1.0);
 }
 
 
@@ -78,6 +79,20 @@ FluorophoreModelObjectProperty
 }
 
 
+void
+FluorophoreModelObjectProperty
+::SetIntensityScale(double scale) {
+  m_IntensityScale = scale;
+}
+
+
+double
+FluorophoreModelObjectProperty
+::GetIntensityScale() {
+  return m_IntensityScale;
+}
+
+
 vtkAlgorithm*
 FluorophoreModelObjectProperty
 ::GetFluorophoreOutput() {
@@ -115,6 +130,9 @@ FluorophoreModelObjectProperty
   }
   xmlNewProp(root, BAD_CAST "channel", BAD_CAST value);
 
+  sprintf(value, "%f", GetIntensityScale());
+  xmlNewProp(root, BAD_CAST "intensityScale", BAD_CAST value);
+
 }
 
 
@@ -139,5 +157,10 @@ FluorophoreModelObjectProperty
     } else if (valueStr == "all") {
       SetFluorophoreChannelToAll();
     }
+  }
+
+  value = (char *) xmlGetProp(root, BAD_CAST "intensityScale");
+  if (value) {
+    SetIntensityScale(atof(value));
   }
 }

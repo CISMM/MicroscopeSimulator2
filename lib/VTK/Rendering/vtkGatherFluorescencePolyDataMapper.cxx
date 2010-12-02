@@ -50,6 +50,9 @@ vtkGatherFluorescencePolyDataMapper::vtkGatherFluorescencePolyDataMapper() {
 
   // Set default number of points to render per pass.
   this->PointsPerPass = 3000;
+
+  // Set the default intensity scale factor.
+  this->IntensityScale = 1.0;
 }
 
 
@@ -287,9 +290,10 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
       textureData[i*tupleSize + 1] = (GLfloat) tmp[1];
       textureData[i*tupleSize + 2] = (GLfloat) tmp[2];
       if (intensities) {
-        textureData[i*tupleSize + 3] = intensities->GetValue(i);
+        textureData[i*tupleSize + 3] = 
+          this->IntensityScale * intensities->GetValue(i);
       } else {
-        textureData[i*tupleSize + 3] = 1.0;
+        textureData[i*tupleSize + 3] = this->IntensityScale;
       }
     }
 

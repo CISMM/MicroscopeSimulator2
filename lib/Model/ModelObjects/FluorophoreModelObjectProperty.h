@@ -29,6 +29,9 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   void SetFluorophoreChannelToAll();
   FluorophoreChannelType GetFluorophoreChannel();
 
+  void   SetIntensityScale(double scale);
+  double GetIntensityScale();
+
   virtual int GetNumberOfFluorophores() = 0;
 
   vtkAlgorithm* GetFluorophoreOutput();
@@ -43,6 +46,7 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
 
   bool                   m_Enabled;
   FluorophoreChannelType m_Channel;
+  double                 m_IntensityScale;
 
   vtkSmartPointer<vtkAlgorithm> m_FluorophoreOutput;
 

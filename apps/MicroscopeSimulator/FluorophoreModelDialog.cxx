@@ -52,6 +52,8 @@ FluorophoreModelDialog
   }
   gui_ColorChannelComboBox->setCurrentIndex(colorChannelIndex);
 
+  gui_IntensityScaleEdit->setText(QVariant(property->GetIntensityScale()).toString());
+
   GeometryVerticesFluorophoreProperty* geometryProperty
     = dynamic_cast<GeometryVerticesFluorophoreProperty*>(property);
   SurfaceUniformFluorophoreProperty* surfaceProperty
@@ -154,6 +156,7 @@ FluorophoreModelDialog
   // These options apply to any kind of fluorophore property
   m_FluorophoreProperty->SetEnabled(GetEnabled());
   m_FluorophoreProperty->SetFluorophoreChannel(GetFluorophoreChannel());
+  m_FluorophoreProperty->SetIntensityScale(GetIntensityScale());
 }
 
 
@@ -174,6 +177,13 @@ FluorophoreModelDialog
   case 3: return ALL_CHANNELS; break;
   default: return ALL_CHANNELS; break;
   }
+}
+
+
+double
+FluorophoreModelDialog
+::GetIntensityScale() {
+  return gui_IntensityScaleEdit->text().toDouble();
 }
 
 
@@ -297,6 +307,13 @@ void
 FluorophoreModelDialog
 ::on_gui_SamplingDensityGroupBox_toggled(bool checked) {
   gui_SamplingDensityWidget->setHidden(!checked);
+}
+
+
+void
+FluorophoreModelDialog
+::on_gui_IntensityGroupBox_toggled(bool checked) {
+  gui_IntensityWidget->setHidden(!checked);
 }
 
 

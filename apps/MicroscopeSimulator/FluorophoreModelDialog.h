@@ -26,6 +26,7 @@ Q_OBJECT
   bool                   GetEnabled();
 
   FluorophoreChannelType GetFluorophoreChannel();
+  double                 GetIntensityScale();
   bool                   GetUseFixedNumberOfFluorophores();
 
   double                 GetDensity();
@@ -44,6 +45,7 @@ Q_OBJECT
   virtual void on_gui_UsePointRingClusterRadioButton_clicked(bool checked);
   
   virtual void on_gui_ColorChannelGroupBox_toggled(bool checked);
+  virtual void on_gui_IntensityGroupBox_toggled(bool checked);
   virtual void on_gui_SamplingModeGroupBox_toggled(bool checked);
   virtual void on_gui_SamplingDensityGroupBox_toggled(bool checked);
   virtual void on_gui_FluorophorePatternsGroupBox_toggled(bool checked);
