@@ -147,6 +147,8 @@ FluorophoreModelObjectProperty
   sprintf(value, "%f", GetIntensityScale());
   xmlNewProp(root, BAD_CAST "intensityScale", BAD_CAST value);
 
+  if (IsOptimizable())
+    xmlNewProp(root, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
 }
 
 
@@ -177,4 +179,10 @@ FluorophoreModelObjectProperty
   if (value) {
     SetIntensityScale(atof(value));
   }
+
+  char* optimize = (char *) xmlGetProp(root, BAD_CAST "optimize");
+  if (optimize)
+    SetOptimize(!strcmp(optimize,"true"));
+  else
+    SetOptimize(false);
 }
