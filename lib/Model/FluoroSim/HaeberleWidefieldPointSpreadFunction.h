@@ -4,7 +4,7 @@
 #include <vector>
 
 #define ITK_MANUAL_INSTANTIATION
-#include <itkHaeberlePSFImageSource.h>
+#include <itkHaeberlePointSpreadFunctionImageSource.h>
 #include <ITKImageToVTKImage.h>
 #undef ITK_MANUAL_INSTANTIATION
 
@@ -20,11 +20,16 @@ class HaeberleWidefieldPointSpreadFunction : public PointSpreadFunction {
   static const std::string EMISSION_WAVELENGTH_ATTRIBUTE;
   static const std::string NUMERICAL_APERTURE_ATTRIBUTE;
   static const std::string MAGNIFICATION_ATTRIBUTE;
-  static const std::string COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE;
-  static const std::string COVER_SLIP_THICKNESS_ATTRIBUTE;
-  static const std::string IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE;
-  static const std::string IMMERSION_OIL_THICKNESS_ATTRIBUTE;
-  static const std::string SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE;
+  static const std::string ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE;
+  static const std::string DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE;
+  static const std::string DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
+  static const std::string POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE;
 
 
   HaeberleWidefieldPointSpreadFunction();
@@ -41,10 +46,10 @@ class HaeberleWidefieldPointSpreadFunction : public PointSpreadFunction {
   virtual void GetXMLConfiguration(xmlNodePtr node);
   virtual void RestoreFromXML(xmlNodePtr node);
 
-  typedef float                                  PixelType;
-  typedef itk::Image<PixelType, 3>               ImageType;
-  typedef itk::HaeberlePSFImageSource<ImageType> ImageSourceType;
-  typedef ImageSourceType::Pointer               ImageSourceTypePointer;
+  typedef float                                                  PixelType;
+  typedef itk::Image<PixelType, 3>                               ImageType;
+  typedef itk::HaeberlePointSpreadFunctionImageSource<ImageType> ImageSourceType;
+  typedef ImageSourceType::Pointer                               ImageSourceTypePointer;
 
  protected:
   ImageSourceTypePointer    m_HaeberleSource;

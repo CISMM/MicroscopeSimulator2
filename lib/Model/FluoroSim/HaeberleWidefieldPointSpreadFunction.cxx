@@ -1,4 +1,4 @@
-#include <itkHaeberlePSFImageSource.txx>
+#include <itkHaeberlePointSpreadFunctionImageSource.txx>
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
@@ -14,11 +14,17 @@ const std::string HaeberleWidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "
 const std::string HaeberleWidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
 const std::string HaeberleWidefieldPointSpreadFunction::NUMERICAL_APERTURE_ATTRIBUTE = "NumericalAperture";
 const std::string HaeberleWidefieldPointSpreadFunction::MAGNIFICATION_ATTRIBUTE = "Magnification";
-const std::string HaeberleWidefieldPointSpreadFunction::COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "DesignCoverSlipRefractiveIndex";
-const std::string HaeberleWidefieldPointSpreadFunction::COVER_SLIP_THICKNESS_ATTRIBUTE = "DesignCoverSlipThickness";
-const std::string HaeberleWidefieldPointSpreadFunction::IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "DesignImmersionOilRefractiveIndex";
-const std::string HaeberleWidefieldPointSpreadFunction::IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
-const std::string HaeberleWidefieldPointSpreadFunction::SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "DesignCoverSlipRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE = "ActualCoverSlipRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE = "DesignCoverSlipThickness";
+const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE = "ActualCoverSlipThickness";
+const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "DesignImmersionOilRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE = "ActualImmersionOilRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
+const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
+const std::string HaeberleWidefieldPointSpreadFunction::POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
+
 
 
 HaeberleWidefieldPointSpreadFunction
@@ -37,11 +43,16 @@ HaeberleWidefieldPointSpreadFunction
   m_ParameterNames.push_back("Emission Wavelength (nm)");
   m_ParameterNames.push_back("Numerical Aperture");
   m_ParameterNames.push_back("Magnification");
-  m_ParameterNames.push_back("Cover Slip Refractive Index");
-  m_ParameterNames.push_back("Cover Slip Thickness (microns)");
-  m_ParameterNames.push_back("Immersion Oil Refractive Index");
-  m_ParameterNames.push_back("Immersion Oil Thickness (microns)");
-  m_ParameterNames.push_back("Specimen Layer Refractive Index");
+  m_ParameterNames.push_back("Design Cover Slip Refractive Index");
+  m_ParameterNames.push_back("Actual Cover Slip Refractive Index");
+  m_ParameterNames.push_back("Design Cover Slip Thickness (microns)");
+  m_ParameterNames.push_back("Actual Cover Slip Thickness (microns)");
+  m_ParameterNames.push_back("Design Immersion Oil Refractive Index");
+  m_ParameterNames.push_back("Actual Immersion Oil Refractive Index");
+  m_ParameterNames.push_back("Design Immersion Oil Thickness (microns)");
+  m_ParameterNames.push_back("Design Specimen Layer Refractive Index");
+  m_ParameterNames.push_back("Actual Specimen Layer Refractive Index");
+  m_ParameterNames.push_back("Point Source Depth in Specimen Layer (microns)");
 
   m_HaeberleSource = ImageSourceType::New();
 
@@ -116,11 +127,17 @@ HaeberleWidefieldPointSpreadFunction
   case 10: return m_HaeberleSource->GetEmissionWavelength(); break;
   case 11: return m_HaeberleSource->GetNumericalAperture(); break;
   case 12: return m_HaeberleSource->GetMagnification(); break;
-  case 13: return m_HaeberleSource->GetCoverSlipRefractiveIndex(); break;
-  case 14: return m_HaeberleSource->GetCoverSlipThickness(); break;
-  case 15: return m_HaeberleSource->GetImmersionOilRefractiveIndex(); break;
-  case 16: return m_HaeberleSource->GetImmersionOilThickness(); break;
-  case 17: return m_HaeberleSource->GetSpecimenLayerRefractiveIndex(); break;
+  case 13: return m_HaeberleSource->GetDesignCoverSlipRefractiveIndex(); break;
+  case 14: return m_HaeberleSource->GetActualCoverSlipRefractiveIndex(); break;
+  case 15: return m_HaeberleSource->GetDesignCoverSlipThickness(); break;
+  case 16: return m_HaeberleSource->GetActualCoverSlipThickness(); break;
+  case 17: return m_HaeberleSource->GetDesignImmersionOilRefractiveIndex(); break;
+  case 18: return m_HaeberleSource->GetActualImmersionOilRefractiveIndex(); break;
+  case 19: return m_HaeberleSource->GetDesignImmersionOilThickness(); break;
+  case 20: return m_HaeberleSource->GetDesignSpecimenLayerRefractiveIndex(); break;
+  case 21: return m_HaeberleSource->GetActualSpecimenLayerRefractiveIndex(); break;
+  case 22: return m_HaeberleSource->GetPointSourceDepthInSpecimenLayer(); break;
+
 
   default: return 0.0;
   }
@@ -177,23 +194,43 @@ HaeberleWidefieldPointSpreadFunction
     break;
 
   case 13:
-    m_HaeberleSource->SetCoverSlipRefractiveIndex(value);
+    m_HaeberleSource->SetDesignCoverSlipRefractiveIndex(value);
     break;
 
   case 14:
-    m_HaeberleSource->SetCoverSlipThickness(value);
+    m_HaeberleSource->SetActualCoverSlipRefractiveIndex(value);
     break;
 
   case 15:
-    m_HaeberleSource->SetImmersionOilRefractiveIndex(value);
+    m_HaeberleSource->SetDesignCoverSlipThickness(value);
     break;
 
   case 16:
-    m_HaeberleSource->SetImmersionOilThickness(value);
+    m_HaeberleSource->SetActualCoverSlipThickness(value);
     break;
 
   case 17:
-    m_HaeberleSource->SetSpecimenLayerRefractiveIndex(value);
+    m_HaeberleSource->SetDesignImmersionOilRefractiveIndex(value);
+    break;
+
+  case 18:
+    m_HaeberleSource->SetActualImmersionOilRefractiveIndex(value);
+    break;
+
+  case 19:
+    m_HaeberleSource->SetDesignImmersionOilThickness(value);
+    break;
+
+  case 20:
+    m_HaeberleSource->SetDesignSpecimenLayerRefractiveIndex(value);
+    break;
+
+  case 21:
+    m_HaeberleSource->SetActualSpecimenLayerRefractiveIndex(value);
+    break;
+
+  case 22:
+    m_HaeberleSource->SetPointSourceDepthInSpecimenLayer(value);
     break;
 
   default:
@@ -266,20 +303,36 @@ HaeberleWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_HaeberleSource->GetMagnification());
   xmlNewProp(root, BAD_CAST MAGNIFICATION_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetCoverSlipRefractiveIndex());
-  xmlNewProp(root, BAD_CAST COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetDesignCoverSlipRefractiveIndex());
+  xmlNewProp(root, BAD_CAST DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetCoverSlipThickness());
-  xmlNewProp(root, BAD_CAST COVER_SLIP_THICKNESS_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetActualCoverSlipRefractiveIndex());
+  xmlNewProp(root, BAD_CAST ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetImmersionOilRefractiveIndex());
-  xmlNewProp(root, BAD_CAST IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetDesignCoverSlipThickness());
+  xmlNewProp(root, BAD_CAST DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetImmersionOilThickness());
-  xmlNewProp(root, BAD_CAST IMMERSION_OIL_THICKNESS_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetActualCoverSlipThickness());
+  xmlNewProp(root, BAD_CAST ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetSpecimenLayerRefractiveIndex());
-  xmlNewProp(root, BAD_CAST SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetDesignImmersionOilRefractiveIndex());
+  xmlNewProp(root, BAD_CAST DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetActualImmersionOilRefractiveIndex());
+  xmlNewProp(root, BAD_CAST ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetDesignImmersionOilThickness());
+  xmlNewProp(root, BAD_CAST DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE.c_str(), BAD_CAST buf);
+
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetDesignSpecimenLayerRefractiveIndex());
+  xmlNewProp(root, BAD_CAST DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetActualSpecimenLayerRefractiveIndex());
+  xmlNewProp(root, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
+
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetPointSourceDepthInSpecimenLayer());
+  xmlNewProp(root, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
+
 }
 
 
@@ -316,29 +369,72 @@ HaeberleWidefieldPointSpreadFunction
   pointCenter[2] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_HaeberleSource->SetPointCenter(pointCenter);
 
-  double emissionWavelength = atof((const char*) xmlGetProp(node, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetEmissionWavelength(emissionWavelength);
+  const char* attribute;
 
-  double numericalAperture = atof((const char*) xmlGetProp(node, BAD_CAST NUMERICAL_APERTURE_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetNumericalAperture(numericalAperture);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetEmissionWavelength(atof(attribute));
+  }
 
-  double magnification = atof((const char*) xmlGetProp(node, BAD_CAST MAGNIFICATION_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetMagnification(magnification);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST NUMERICAL_APERTURE_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetNumericalAperture(atof(attribute));
+  }
 
-  double tmp = atof((const char*) xmlGetProp(node, BAD_CAST COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetCoverSlipRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST MAGNIFICATION_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetMagnification(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST COVER_SLIP_THICKNESS_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetCoverSlipThickness(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetDesignCoverSlipRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetImmersionOilRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetActualCoverSlipRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST IMMERSION_OIL_THICKNESS_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetImmersionOilThickness(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetDesignCoverSlipThickness(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetSpecimenLayerRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetActualCoverSlipThickness(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetDesignImmersionOilRefractiveIndex(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetActualImmersionOilRefractiveIndex(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetDesignImmersionOilThickness(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetDesignSpecimenLayerRefractiveIndex(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetActualSpecimenLayerRefractiveIndex(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_HaeberleSource->SetPointSourceDepthInSpecimenLayer(atof(attribute));
+  }
 
   RecenterImage();
 

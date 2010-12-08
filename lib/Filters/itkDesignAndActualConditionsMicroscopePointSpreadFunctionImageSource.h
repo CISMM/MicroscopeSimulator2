@@ -28,11 +28,8 @@ namespace itk
 namespace Functor
 {
 
-class DesignAndActualConditionsMicroscopePointSpreadFunction {
+class DesignAndActualConditionsMicroscopePointSpreadFunctionIntegrand {
 public:
-  DesignAndActualConditionsMicroscopePointSpreadFunction() {};
-  ~DesignAndActualConditionsMicroscopePointSpreadFunction() {};
-
   typedef std::complex<double> ComplexType;
 
 public:
@@ -193,9 +190,8 @@ public:
   typedef typename Superclass::ParametersValueType ParametersValueType;
 
   /** Type info for functor method. */
-  //typedef ComplexType (*FunctorType)(const Self* instance, double r,
-  //double z, double rho);
-  typedef Functor::DesignAndActualConditionsMicroscopePointSpreadFunction FunctorType;
+  typedef Functor::DesignAndActualConditionsMicroscopePointSpreadFunctionIntegrand
+    FunctorType;
 
   /** Set/get the size of the output image. */
   itkSetMacro(Size, SizeType);

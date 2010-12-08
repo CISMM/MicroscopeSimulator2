@@ -17,7 +17,6 @@ class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
  public:
   static const std::string PSF_ELEMENT;
   static const std::string POINT_CENTER_ELEMENT;
-  static const std::string CCD_BORDER_WIDTH_ELEMENT;
   static const std::string EMISSION_WAVELENGTH_ATTRIBUTE;
   static const std::string NUMERICAL_APERTURE_ATTRIBUTE;
   static const std::string MAGNIFICATION_ATTRIBUTE;

@@ -26,21 +26,17 @@ namespace itk
 
 namespace Functor {
 
-class GibsonLanniPointSpreadFunction : public DesignAndActualConditionsMicroscopePointSpreadFunction
+class GibsonLanniPointSpreadFunctionIntegrand :
+    public DesignAndActualConditionsMicroscopePointSpreadFunctionIntegrand
 {
 public:
-  GibsonLanniPointSpreadFunction() {};
-  ~GibsonLanniPointSpreadFunction() {};
-
-  typedef DesignAndActualConditionsMicroscopePointSpreadFunction::ComplexType ComplexType;
+  typedef DesignAndActualConditionsMicroscopePointSpreadFunctionIntegrand::ComplexType ComplexType;
 
   ComplexType operator()(double r, double z, double rho) const
   {
-    double K = m_K;
-    double A = m_A;
-    double bessel = j0(K * A * rho * r / (0.160 + z));
+    double bessel = j0(m_K * m_A * rho * r / (0.160 + z));
 
-    return bessel * exp(ComplexType(0.0, 1.0) * this->OPD(rho, z) * K) * rho;
+    return bessel * exp(ComplexType(0.0, 1.0) * this->OPD(rho, z) * m_K) * rho;
   }
 
 };
@@ -67,8 +63,9 @@ class ITK_EXPORT GibsonLanniPointSpreadFunctionImageSource :
 {
 public:
   /** Standard class typedefs. */
-  typedef GibsonLanniPointSpreadFunctionImageSource                                        Self;
-  typedef DesignAndActualConditionsMicroscopePointSpreadFunctionImageSource< TOutputImage > Superclass;
+  typedef GibsonLanniPointSpreadFunctionImageSource                        Self;
+  typedef DesignAndActualConditionsMicroscopePointSpreadFunctionImageSource< TOutputImage >
+    Superclass;
   typedef SmartPointer<Self>                                               Pointer;
   typedef SmartPointer<const Self>                                         ConstPointer;
 
@@ -90,7 +87,7 @@ public:
   typedef typename Superclass::ComplexType ComplexType;
 
   /** Typedef for functor. */
-  typedef Functor::GibsonLanniPointSpreadFunction FunctorType;
+  typedef Functor::GibsonLanniPointSpreadFunctionIntegrand FunctorType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(GibsonLanniPointSpreadFunctionImageSource, DesignAndActualConditionsMicroscopePointSpreadFunctionImageSource);
@@ -108,7 +105,7 @@ protected:
 
   void BeforeThreadedGenerateData();
   void ThreadedGenerateData(const RegionType& outputRegionForThread,
-                                    int threadId );
+                            int threadId );
 
   /** Computes the light intensity at a specified point. */
   double ComputeSampleValue(const PointType& point);

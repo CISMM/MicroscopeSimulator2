@@ -368,44 +368,72 @@ GibsonLanniWidefieldPointSpreadFunction
   pointCenter[2] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_GibsonLanniSource->SetPointCenter(pointCenter);
 
-  double emissionWavelength = atof((const char*) xmlGetProp(node, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetEmissionWavelength(emissionWavelength);
+  const char* attribute;
 
-  double numericalAperture = atof((const char*) xmlGetProp(node, BAD_CAST NUMERICAL_APERTURE_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetNumericalAperture(numericalAperture);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetEmissionWavelength(atof(attribute));
+  }
 
-  double magnification = atof((const char*) xmlGetProp(node, BAD_CAST MAGNIFICATION_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetMagnification(magnification);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST NUMERICAL_APERTURE_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetNumericalAperture(atof(attribute));
+  }
 
-  double tmp = atof((const char*) xmlGetProp(node, BAD_CAST DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetDesignCoverSlipRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST MAGNIFICATION_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetMagnification(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetActualCoverSlipRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetDesignCoverSlipRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetDesignCoverSlipThickness(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_COVER_SLIP_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetActualCoverSlipRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetActualCoverSlipThickness(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetDesignCoverSlipThickness(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetDesignImmersionOilRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_COVER_SLIP_THICKNESS_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetActualCoverSlipThickness(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetActualImmersionOilRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetDesignImmersionOilRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetDesignImmersionOilThickness(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_IMMERSION_OIL_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetActualImmersionOilRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetDesignSpecimenLayerRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetDesignImmersionOilThickness(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetDesignSpecimenLayerRefractiveIndex(atof(attribute));
+  }
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetPointSourceDepthInSpecimenLayer(tmp);
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetPointSourceDepthInSpecimenLayer(atof(attribute));
+  }
 
   RecenterImage();
 

@@ -1,22 +1,20 @@
 /*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkGibsonLanniPointSpreadFunctionImageSource.cxx,v $
-  Language:  C++
-  Date:      $Date: 2010/05/17 15:41:35 $
-  Version:   $Revision: 1.12 $
-
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
-
-  Portions of this code are covered under the VTK copyright.
-  See VTKCopyright.txt or http://www.kitware.com/VTKCopyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
+ *
+ *  Copyright Insight Software Consortium
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
 #ifndef __itkGibsonLanniPointSpreadFunctionImageSource_txx
 #define __itkGibsonLanniPointSpreadFunctionImageSource_txx
 
@@ -25,9 +23,6 @@
 #include "itkMath.h"
 #include "itkObjectFactory.h"
 #include "itkProgressReporter.h"
-
-#define INTEGRATE_M 20
-#define INTEGRATE_N (2*INTEGRATE_M+1)
 
 namespace itk
 {
@@ -66,10 +61,6 @@ GibsonLanniPointSpreadFunctionImageSource< TOutputImage >
 {
   // Set parameters in the functor
   this->m_IntegrandFunctor.CopySettings(this);
-
-  // TODO - Set up precomputed optical path difference terms that are
-  // independent of the sample point.
-
 }
 
 
@@ -93,51 +84,15 @@ GibsonLanniPointSpreadFunctionImageSource< TOutputImage >
     image->TransformIndexToPhysicalPoint(index, point);
 
     // Shift the center of the point
-    for ( int i = 0; i < 3; i++ ) point[i] -= this->m_PointCenter[i];
+    for ( unsigned int i = 0; i < point.Size(); i++ )
+      {
+      point[i] -= this->m_PointCenter[i];
+      }
 
     it.Set( ComputeSampleValue( point ) );
     progress.CompletedPixel();
     }
 }
-
-
-#if 0
-//----------------------------------------------------------------------------
-template< class TOutputImage >
-void
-GibsonLanniPointSpreadFunctionImageSource< TOutputImage >
-::PrecomputeOPDTerms(double z_o)
-{
-  double K = 2.0f*itk::Math::pi / (m_EmissionWavelength * 1e-9);
-  double h = 1.0f / static_cast<double>(INTEGRATE_N-1);
-  double NA = m_NumericalAperture;
-  double mag = m_Magnification;
-
-  for (int i = 0; i < INTEGRATE_N; i++) {
-    double rho = static_cast<double>(i)*h;
-    ComplexType W = OPD(rho, z_o) * K;
-    ComplexType I(0.0f, 1.0f);
-    opdCache[i] = exp(I*W);
-  }
-
-}
-#endif
-
-
-#if 0
-//----------------------------------------------------------------------------
-template< class TOutputImage >
-typename GibsonLanniPointSpreadFunctionImageSource< TOutputImage >::ComplexType
-GibsonLanniPointSpreadFunctionImageSource< TOutputImage >
-::IntegralTerm(const Self* instance, double r, double z, double rho)
-{
-  double K = instance->GetK();
-  double A = instance->GetA();
-  double bessel = j0(K * A * rho * r / 0.080);
-
-  return bessel * exp(ComplexType(0.0, 1.0) * instance->OPD(rho) * K) * rho;
-}
-#endif
 
 
 //----------------------------------------------------------------------------
