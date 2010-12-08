@@ -28,6 +28,9 @@
 namespace itk
 {
 
+/** NOTE: THIS IMPLEMENTATION IS DEPRECATED. PLEASE USE
+* itkGibsonLanniPointSpreadFunctionImageSource instead. */
+
 /** \class GibsonLanniPSFImageSource
  * \brief Generate a synthetic point-spread function according to the
  * Gibson-Lanni model.

@@ -1,4 +1,4 @@
-#include <itkGibsonLanniPSFImageSource.txx>
+#include <itkGibsonLanniPointSpreadFunctionImageSource.txx>
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
@@ -23,9 +23,7 @@ const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_IMMERSION_OIL_
 const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
 const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
 const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
-const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
-const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "DesignDistanceFromBackFocalPlaneToDetector";
-const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE = "ActualDistanceFromBackFocalPlaneToDetector";
+const std::string GibsonLanniWidefieldPointSpreadFunction::POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
 
 
 GibsonLanniWidefieldPointSpreadFunction
@@ -53,9 +51,7 @@ GibsonLanniWidefieldPointSpreadFunction
   m_ParameterNames.push_back("Design Immersion Oil Thickness (microns)");
   m_ParameterNames.push_back("Design Specimen Layer Refractive Index");
   m_ParameterNames.push_back("Actual Specimen Layer Refractive Index");
-  m_ParameterNames.push_back("Actual Point Source Depth in Specimen Layer (nm)");
-  m_ParameterNames.push_back("Design Distance From Back Focal Plane to Detector (mm)");
-  m_ParameterNames.push_back("Actual Distance From Back Focal Plane to Detector (mm)");
+  m_ParameterNames.push_back("Point Source Depth in Specimen Layer (microns)");
 
   m_GibsonLanniSource = ImageSourceType::New();
 
@@ -139,9 +135,7 @@ GibsonLanniWidefieldPointSpreadFunction
   case 19: return m_GibsonLanniSource->GetDesignImmersionOilThickness(); break;
   case 20: return m_GibsonLanniSource->GetDesignSpecimenLayerRefractiveIndex(); break;
   case 21: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
-  case 22: return m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer(); break;
-  case 23: return m_GibsonLanniSource->GetDesignDistanceFromBackFocalPlaneToDetector(); break;
-  case 24: return m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector(); break;
+  case 22: return m_GibsonLanniSource->GetPointSourceDepthInSpecimenLayer(); break;
 
   default: return 0.0;
   }
@@ -234,15 +228,7 @@ GibsonLanniWidefieldPointSpreadFunction
     break;
 
   case 22:
-    m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(value);
-    break;
-
-  case 23:
-    m_GibsonLanniSource->SetDesignDistanceFromBackFocalPlaneToDetector(value);
-    break;
-
-  case 24:
-    m_GibsonLanniSource->SetActualDistanceFromBackFocalPlaneToDetector(value);
+    m_GibsonLanniSource->SetPointSourceDepthInSpecimenLayer(value);
     break;
 
   default:
@@ -343,14 +329,8 @@ GibsonLanniWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex());
   xmlNewProp(root, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer());
-  xmlNewProp(root, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
-
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetDesignDistanceFromBackFocalPlaneToDetector());
-  xmlNewProp(root, BAD_CAST DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE.c_str(), BAD_CAST buf);
-
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualDistanceFromBackFocalPlaneToDetector());
-  xmlNewProp(root, BAD_CAST ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetPointSourceDepthInSpecimenLayer());
+  xmlNewProp(root, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
 
 }
 
@@ -424,14 +404,8 @@ GibsonLanniWidefieldPointSpreadFunction
   tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str()));
   m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(tmp);
 
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(tmp);
-
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetDesignDistanceFromBackFocalPlaneToDetector(tmp);
-
-  tmp = atof((const char*) xmlGetProp(node, BAD_CAST ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetActualDistanceFromBackFocalPlaneToDetector(tmp);
+  tmp = atof((const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str()));
+  m_GibsonLanniSource->SetPointSourceDepthInSpecimenLayer(tmp);
 
   RecenterImage();
 

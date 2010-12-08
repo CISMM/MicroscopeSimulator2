@@ -4,7 +4,7 @@
 #include <vector>
 
 #define ITK_MANUAL_INSTANTIATION
-#include <itkGibsonLanniPSFImageSource.h>
+#include <itkGibsonLanniPointSpreadFunctionImageSource.h>
 #include <ITKImageToVTKImage.h>
 #undef ITK_MANUAL_INSTANTIATION
 
@@ -30,9 +30,7 @@ class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
   static const std::string DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE;
   static const std::string DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
   static const std::string ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
-  static const std::string ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE;
-  static const std::string DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
-  static const std::string ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
+  static const std::string POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE;
 
 
   GibsonLanniWidefieldPointSpreadFunction();
@@ -51,7 +49,7 @@ class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
 
   typedef float                                     PixelType;
   typedef itk::Image<PixelType, 3>                  ImageType;
-  typedef itk::GibsonLanniPSFImageSource<ImageType> ImageSourceType;
+  typedef itk::GibsonLanniPointSpreadFunctionImageSource<ImageType> ImageSourceType;
   typedef ImageSourceType::Pointer                  ImageSourceTypePointer;
 
  protected:
