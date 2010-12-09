@@ -53,17 +53,17 @@ Simulation
   m_AFMSim    = new AFMSimulation(this);
   m_FluoroSim = new FluorescenceSimulation(this);
 
-  m_GradientDescentFluoroOptimizer = 
+  m_GradientDescentFluoroOptimizer =
     new GradientDescentFluorescenceOptimizer(dirtyListener);
   m_GradientDescentFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_GradientDescentFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 
-  m_NelderMeadFluoroOptimizer = 
+  m_NelderMeadFluoroOptimizer =
     new NelderMeadFluorescenceOptimizer(dirtyListener);
   m_NelderMeadFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_NelderMeadFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
 
-  m_PointsGradientFluoroOptimizer = 
+  m_PointsGradientFluoroOptimizer =
     new PointsGradientFluorescenceOptimizer(dirtyListener);
   m_PointsGradientFluoroOptimizer->SetFluorescenceSimulation(m_FluoroSim);
   m_PointsGradientFluoroOptimizer->SetModelObjectList(m_ModelObjectList);
@@ -120,7 +120,7 @@ Simulation
   int rc;
   xmlDocPtr doc;
   xmlNodePtr node;
-  
+
   /* Create a new XML DOM tree, to which the XML document will be written. */
   doc = xmlNewDoc(BAD_CAST XML_DEFAULT_VERSION);
   if (doc == NULL) {
@@ -159,12 +159,12 @@ Simulation
   if (!doc) {
     return -1;
   }
-  
+
   xmlNodePtr rootNode = xmlDocGetRootElement(doc);
-  
+
   // Restore the simulation from the XML tree.
   RestoreFromXML(rootNode);
-  
+
   xmlFreeDoc(doc);
 
   return 0;
@@ -189,7 +189,7 @@ Simulation
   }
 
   // Write the program version
-  xmlNodePtr versionNode = 
+  xmlNodePtr versionNode =
     xmlNewChild(node, NULL, BAD_CAST Simulation::VERSION_ELEM, NULL);
   char buf[128];
   sprintf(buf, "%d", MicroscopeSimulator_MAJOR_NUMBER);
@@ -216,7 +216,7 @@ Simulation
   xmlNodePtr fluoroSimNode = xmlNewChild(node, NULL, BAD_CAST FLUORO_SIM_ELEM, NULL);
   m_FluoroSim->GetXMLConfiguration(fluoroSimNode);
 
-  xmlNodePtr gradientDescentOptimizerNode = 
+  xmlNodePtr gradientDescentOptimizerNode =
     xmlNewChild(fluoroSimNode, NULL, BAD_CAST GradientDescentFluorescenceOptimizer::OPTIMIZER_ELEM, NULL);
   m_GradientDescentFluoroOptimizer->GetXMLConfiguration(gradientDescentOptimizerNode);
 
@@ -231,7 +231,7 @@ Simulation
   xmlNodePtr molNode = xmlNewChild(node, NULL, BAD_CAST MODEL_OBJECT_LIST_ELEM, NULL);
   m_ModelObjectList->GetXMLConfiguration(molNode);
 
-  ModelObject* comparisonImageModelObject = 
+  ModelObject* comparisonImageModelObject =
     m_FluoroOptimizer->GetComparisonImageModelObject();
   std::string comparisonImageName = "None";
   if (comparisonImageModelObject) {
@@ -297,7 +297,7 @@ Simulation
   }
 
   // Restore model object list
-  xmlNodePtr molNode = 
+  xmlNodePtr molNode =
     xmlGetFirstElementChildWithName(node, BAD_CAST MODEL_OBJECT_LIST_ELEM);
   if (molNode) {
     m_ModelObjectList->RestoreFromXML(molNode);
@@ -311,7 +311,7 @@ Simulation
     std::string modelObjectName((char*) xmlGetProp(fluorescenceComparisonImageNode, BAD_CAST "name"));
     ModelObject* comparisonModelObject = m_ModelObjectList->GetModelObjectByName(modelObjectName);
     m_FluoroOptimizer->SetComparisonImageModelObject(comparisonModelObject);
-  }                                 
+  }
 
 }
 
@@ -498,7 +498,7 @@ Simulation
     double xCenter = pixelSize * static_cast<double>(m_FluoroSim->GetImageWidth());
     double yCenter = pixelSize * static_cast<double>(m_FluoroSim->GetImageHeight());
     double zCenter = 0.0;
-    
+
     ModelObjectProperty* xProp =  mop->GetProperty(ModelObject::X_POSITION_PROP);
     if (xProp) xProp->SetDoubleValue(xCenter);
     ModelObjectProperty* yProp =  mop->GetProperty(ModelObject::Y_POSITION_PROP);
