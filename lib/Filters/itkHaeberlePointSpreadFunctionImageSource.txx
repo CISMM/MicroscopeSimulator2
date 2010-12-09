@@ -115,7 +115,7 @@ HaeberlePointSpreadFunctionImageSource<TOutputImage>
   double y_o = py * mag;
   double z_o = pz; // No conversion needed
 
-  double alpha = 1.0;
+  double alpha = asin(this->m_NumericalAperture / this->m_ActualImmersionOilRefractiveIndex);
   ComplexType I0ill = IntegrateFunctor(this->m_I0illFunctor, 0.0, alpha,
                                        20, x_o, y_o, z_o);
   ComplexType I1ill = IntegrateFunctor(this->m_I1illFunctor, 0.0, alpha,
@@ -125,7 +125,8 @@ HaeberlePointSpreadFunctionImageSource<TOutputImage>
 
   // Return a weighted sum of the squared magnitudes of the three
   // integral values.
-  return static_cast<PixelType>( norm(I0ill) + 2.0*norm(I1ill) + norm(I2ill) );
+  return static_cast<PixelType>( norm(I0ill) + 2.0*norm(I1ill) +
+                                 norm(I2ill) );
 }
 
 
