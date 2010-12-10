@@ -24,6 +24,8 @@
 #include "itkObjectFactory.h"
 #include "itkProgressReporter.h"
 
+#include <algorithm>
+
 namespace itk
 {
 
@@ -115,7 +117,15 @@ HaeberlePointSpreadFunctionImageSource<TOutputImage>
   double y_o = py * mag;
   double z_o = pz; // No conversion needed
 
-  double alpha = asin(this->m_NumericalAperture / this->m_ActualImmersionOilRefractiveIndex);
+
+  // Using the alpha suggested by the paper (asin(NA / actual
+  // immersion oil RI) yields an uncomputable angle of incidence in
+  // the specimen layer. Taking the minimum angle from this angle and
+  // the angle of incidence in the immersion oil layer that yields a
+  // 90 degrees angle of incidence in the specimen layer makes the
+  // integral computable.
+  double alpha = std::min(asin(this->m_NumericalAperture / this->m_ActualImmersionOilRefractiveIndex),
+                          asin(this->m_ActualSpecimenLayerRefractiveIndex / this->m_ActualImmersionOilRefractiveIndex));
   ComplexType I0ill = IntegrateFunctor(this->m_I0illFunctor, 0.0, alpha,
                                        20, x_o, y_o, z_o);
   ComplexType I1ill = IntegrateFunctor(this->m_I1illFunctor, 0.0, alpha,
@@ -125,8 +135,7 @@ HaeberlePointSpreadFunctionImageSource<TOutputImage>
 
   // Return a weighted sum of the squared magnitudes of the three
   // integral values.
-  return static_cast<PixelType>( norm(I0ill) + 2.0*norm(I1ill) +
-                                 norm(I2ill) );
+  return static_cast<PixelType>( norm(I0ill) + 2.0*norm(I1ill) + norm(I2ill) );
 }
 
 
