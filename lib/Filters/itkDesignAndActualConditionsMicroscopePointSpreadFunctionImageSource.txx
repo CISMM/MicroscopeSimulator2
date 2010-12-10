@@ -135,43 +135,6 @@ DesignAndActualConditionsMicroscopePointSpreadFunctionImageSource< TOutputImage 
 }
 
 
-#if 0
-//----------------------------------------------------------------------------
-template< class TOutputImage >
-typename DesignAndActualConditionsMicroscopePointSpreadFunctionImageSource< TOutputImage >::ComplexType
-DesignAndActualConditionsMicroscopePointSpreadFunctionImageSource< TOutputImage >
-::IntegrateFunctor(FunctorType functor, double a, double b, int m,
-                   double x, double y, double z)
-{
-  int n = 2*m + 1;
-  double h = 1.0 / static_cast<double>(n-1);
-
-  double r = sqrt(x*x + y*y);
-
-  // Initialize accumulator for integration.
-  ComplexType sum(0.0, 0.0);
-
-  // Compute initial terms in Simpson quadrature method.
-  sum += (*functor)(this, r, z, a);
-  sum += (*functor)(this, r, z, b);
-
-  for (int k = 1; k <= m-1; k++)
-    {
-    sum += 2.0 * (*functor)(this, r, z, (2*k)*h);
-    }
-
-  for (int k = 1; k <= m; k++)
-    {
-    sum += 4.0 * (*functor)(this, r, z, (2*k-1)*h);
-    }
-
-  sum *= h / 3.0;
-
-  return sum;
-}
-#endif
-
-
 //----------------------------------------------------------------------------
 template< class TOutputImage >
 void
