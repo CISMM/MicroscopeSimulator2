@@ -40,10 +40,9 @@ public:
 
     // k_0 is not defined in the paper. I'm assuming it is the
     // wavenumber of the emission wavelength in vacuum.
-    this->k_0 = 2.0 * itk::Math::pi / this->m_EmissionWavelength;
+    this->k_0 = 2.0 * itk::Math::pi / (this->m_EmissionWavelength * 1e-9);
 
     this->k_1 = this->k_0 * this->m_ActualCoverSlipRefractiveIndex;
-
   }
 
 protected:
