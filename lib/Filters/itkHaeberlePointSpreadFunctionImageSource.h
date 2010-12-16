@@ -42,7 +42,8 @@ public:
     // wavenumber of the emission wavelength in vacuum.
     this->k_0 = 2.0 * itk::Math::pi / (this->m_EmissionWavelength * 1e-9);
 
-    this->k_1 = this->k_0 * this->m_ActualCoverSlipRefractiveIndex;
+    //this->k_1 = this->k_0 * this->m_ActualCoverSlipRefractiveIndex;
+    this->k_1 = this->k_0;
   }
 
 protected:
@@ -66,14 +67,14 @@ protected:
 
   inline double tii1s(int i, double n[3], double theta[3]) const
   {
-    return (2*n[i]*cos(theta[i])) /
-      (n[i]*cos(theta[i]) + n[i+1]*cos(theta[i+1]));
+    return (2.0*n[i]*cos(theta[i])) /
+      ((n[i]*cos(theta[i])) + (n[i+1]*cos(theta[i+1])));
   }
 
   inline double tii1p(int i, double n[3], double theta[3]) const
   {
-    return (2*n[i]*cos(theta[i])) /
-      (n[i+1]*cos(theta[i]) + n[i] * cos(theta[i+1]));
+    return (2.0*n[i]*cos(theta[i])) /
+      ((n[i+1]*cos(theta[i])) + (n[i]*cos(theta[i+1])));
   }
 
   inline ComplexType CommonTerms(double theta_1, double z) const
@@ -81,10 +82,7 @@ protected:
     double rho = this->m_ActualImmersionOilRefractiveIndex * sin(theta_1)
       / this->m_NumericalAperture;
     ComplexType I(0.0, 1.0);
-    ComplexType c1 = sqrt(cos(theta_1)) * sin(theta_1);
-    ComplexType c2 = exp(I*k_0*OPD(rho, z));
-
-    return c1 * c2;
+    return sqrt(cos(theta_1)) * sin(theta_1) * exp(I*k_0*OPD(rho, z));
   }
 
   inline void AssembleIndicesOfRefraction(double n[3]) const
@@ -141,7 +139,7 @@ public:
     this->AssembleAnglesOfIncidence(theta_1, theta);
 
     ComplexType uniqueTerm = tii1p(0, n, theta) * tii1p(1, n, theta) *
-      cos(theta[2]) * j1(this->k_1*r*sin(theta_1));
+      sin(theta[2]) * j1(this->k_1*r*sin(theta_1));
 
     return this->CommonTerms(theta_1, z) * uniqueTerm;
   }
