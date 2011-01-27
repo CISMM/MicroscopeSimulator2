@@ -88,10 +88,9 @@ int vtkVolumetricHollowCylinderSource::RequestData(
   int numCells, numPts;
   double xtopin[3], xbotin[3], xtopout[3], xbotout[3];
   int i, idx;
-  vtkIdType pts[VTK_CELL_SIZE];
-  vtkPoints *newPoints; 
+  vtkPoints *newPoints;
   vtkCellArray *newCells;
-  
+
   //
   // Set things up; allocate memory
   //
@@ -186,14 +185,14 @@ int vtkVolumetricHollowCylinderSource::RequestData(
   newCells->Squeeze(); // since we've estimated size; reclaim some space
   output->SetCells(VTK_TETRA, newCells);
   newCells->Delete();
-  
+
   return 1;
 }
 
 void vtkVolumetricHollowCylinderSource::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
-  
+
   os << indent << "Resolution: " << this->Resolution << "\n";
   os << indent << "Height: " << this->Height << "\n";
   os << indent << "Inner Radius: " << this->InnerRadius << "\n";

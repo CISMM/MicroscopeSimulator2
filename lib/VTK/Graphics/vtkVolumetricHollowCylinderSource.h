@@ -6,7 +6,7 @@
 // consists of tetrahedral cells.
 //
 // The axis of the hollow cylinder is aligned along the global y-axis.
-// The height and radius of the cylinder can be specified, as well as 
+// The height and radius of the cylinder can be specified, as well as
 // the number of sides.
 //
 // The output unstructured grid can optionally generate scalar data
@@ -23,7 +23,7 @@
 
 #include "vtkCell.h" // Needed for VTK_CELL_SIZE
 
-class vtkVolumetricHollowCylinderSource : public vtkUnstructuredGridAlgorithm 
+class vtkVolumetricHollowCylinderSource : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkVolumetricHollowCylinderSource *New();

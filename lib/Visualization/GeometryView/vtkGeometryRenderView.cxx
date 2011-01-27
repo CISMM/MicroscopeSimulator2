@@ -51,13 +51,13 @@ vtkGeometryRenderView::vtkGeometryRenderView() {
   this->RenderWindow->AddRenderer(this->Renderer);
 
   this->AFMPlaneSource = vtkSmartPointer<vtkPlaneSource>::New();
-  
+
   this->AFMPlaneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   this->AFMPlaneMapper->SetInputConnection(this->AFMPlaneSource->GetOutputPort());
 
   this->AFMPlaneActor = vtkSmartPointer<vtkActor>::New();
   this->AFMPlaneActor->PickableOff();
-    
+
   this->AFMPlaneActor->GetProperty()->SetTexture(0, this->AFMTexture);
   this->AFMPlaneActor->SetMapper(this->AFMPlaneMapper);
 
@@ -158,14 +158,14 @@ void vtkGeometryRenderView::PrepareForRendering() {
   std::cout << "num comps: " << this->AFMTexture->GetOutput()->GetNumberOfScalarComponents() << std::endl;
   if (this->AFMTexture->GetOutput()->GetNumberOfPoints() >= 10) {
     for (int i = 0; i < 10; i++) {
-      std::cout << AFMTexture->GetOutput()->GetScalarComponentAsFloat(i, 0, 0, 0) << 
-        ", " << AFMTexture->GetOutput()->GetScalarComponentAsFloat(i, 0, 0, 1) << 
+      std::cout << AFMTexture->GetOutput()->GetScalarComponentAsFloat(i, 0, 0, 0) <<
+        ", " << AFMTexture->GetOutput()->GetScalarComponentAsFloat(i, 0, 0, 1) <<
         ", " << AFMTexture->GetOutput()->GetScalarComponentAsFloat(i, 0, 0, 2) << std::endl;
     }
   }
 #endif
 
-  
+
 
   this->AFMPlaneSource->SetXResolution(imageWidth);
   this->AFMPlaneSource->SetYResolution(imageHeight);
@@ -183,7 +183,7 @@ void vtkGeometryRenderView::PrepareForRendering() {
   vtkFloatArray* newTCoords = vtkFloatArray::New();
   newTCoords->SetNumberOfComponents(2);
   newTCoords->Allocate(2*newSurface->GetPoints()->GetNumberOfPoints());
-  
+
   double tc[2];
   for (int numPts = 0, i = 0; i < (this->AFMPlaneSource->GetYResolution()+1); i++) {
     tc[1] = static_cast<double>(i);
