@@ -34,6 +34,7 @@ Q_OBJECT
  public slots:
   virtual void on_gui_AddCalculatedGaussianPSFButton_clicked();
   virtual void on_gui_AddCalculatedGibsonLanniWidefieldPSFButton_clicked();
+  virtual void on_gui_AddModifiedGibsonLanniWidefieldPSFButton_clicked();
   virtual void on_gui_AddCalculatedHaeberleWidefieldPSFButton_clicked();
   virtual void on_gui_ImportPSFButton_clicked();
   virtual void on_gui_DeletePSFButton_clicked();
@@ -63,7 +64,7 @@ Q_OBJECT
   virtual void on_gui_YMinusButton_clicked();
   virtual void on_gui_ZPlusButton_clicked();
   virtual void on_gui_ZMinusButton_clicked();
-  
+
   virtual void handle_PSFListModel_selectionChanged(const QItemSelection&, const QItemSelection&);
   virtual void handle_PSFListModel_dataChanged(const QModelIndex&, const QModelIndex&);
 
@@ -94,7 +95,7 @@ Q_OBJECT
   void UpdateSliders();
   void UpdatePSFVisualization();
   void SetWidgetsEnabled(bool enabled);
-  
+
   void RescaleToFullDynamicRange();
 
   void ResetView();

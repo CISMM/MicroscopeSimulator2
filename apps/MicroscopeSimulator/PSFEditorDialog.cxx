@@ -139,6 +139,14 @@ PSFEditorDialog
 
 void
 PSFEditorDialog
+::on_gui_AddModifiedGibsonLanniWidefieldPSFButton_clicked() {
+  m_PSFListModel->GetPSFList()->AddModifiedGibsonLanniWidefieldPointSpreadFunction("Modified Gibson-Lanni Widefield");
+  m_PSFListModel->Refresh();
+}
+
+
+void
+PSFEditorDialog
 ::on_gui_AddCalculatedHaeberleWidefieldPSFButton_clicked() {
   m_PSFListModel->GetPSFList()->AddHaeberlieWidefieldPointSpreadFunction("Haeberle Widefield");
   m_PSFListModel->Refresh();

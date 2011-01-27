@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>396</width>
-            <height>749</height>
+            <width>398</width>
+            <height>751</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -114,6 +114,13 @@
                    <widget class="QPushButton" name="gui_AddCalculatedGibsonLanniWidefieldPSFButton">
                     <property name="text">
                      <string>Add Calculated Gibson-Lanni Widefield PSF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="gui_AddModifiedGibsonLanniWidefieldPSFButton">
+                    <property name="text">
+                     <string>Add Modified Gibson-Lanni Widefield PSF</string>
                     </property>
                    </widget>
                   </item>
