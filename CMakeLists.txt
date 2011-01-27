@@ -68,9 +68,11 @@ ENDIF(CLAPACK_FOUND)
 # apps      - a place for various applications related to the main application
 #######################################
 INCLUDE_DIRECTORIES (
+    ${MicroscopeSimulator_SOURCE_DIR}/NanoITK/Code/Algorithms
+    ${MicroscopeSimulator_SOURCE_DIR}/NanoITK/Code/BasicFilters
+    ${MicroscopeSimulator_SOURCE_DIR}/NanoITK/Code/Common
     ${MicroscopeSimulator_SOURCE_DIR}/lib
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters/itk
     ${MicroscopeSimulator_SOURCE_DIR}/lib/IO
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/AFMSim
