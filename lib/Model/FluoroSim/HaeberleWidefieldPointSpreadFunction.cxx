@@ -10,7 +10,6 @@
 #include <XMLHelper.h>
 
 const std::string HaeberleWidefieldPointSpreadFunction::PSF_ELEMENT = "HaeberleWidefieldPointSpreadFunction";
-const std::string HaeberleWidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
 const std::string HaeberleWidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
 const std::string HaeberleWidefieldPointSpreadFunction::NUMERICAL_APERTURE_ATTRIBUTE = "NumericalAperture";
 const std::string HaeberleWidefieldPointSpreadFunction::MAGNIFICATION_ATTRIBUTE = "Magnification";
@@ -23,7 +22,7 @@ const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_IMMERSION_OIL_REF
 const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
 const std::string HaeberleWidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
 const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
-const std::string HaeberleWidefieldPointSpreadFunction::POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
+const std::string HaeberleWidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
 
 
 
@@ -37,9 +36,6 @@ HaeberleWidefieldPointSpreadFunction
   m_ParameterNames.push_back("X Voxel Spacing (nm)");
   m_ParameterNames.push_back("Y Voxel Spacing (nm)");
   m_ParameterNames.push_back("Z Voxel Spacing (nm)");
-  m_ParameterNames.push_back("X Point Center (nm)");
-  m_ParameterNames.push_back("Y Point Center (nm)");
-  m_ParameterNames.push_back("Z Point Center (nm)");
   m_ParameterNames.push_back("Emission Wavelength (nm)");
   m_ParameterNames.push_back("Numerical Aperture");
   m_ParameterNames.push_back("Magnification");
@@ -52,7 +48,7 @@ HaeberleWidefieldPointSpreadFunction
   m_ParameterNames.push_back("Design Immersion Oil Thickness (microns)");
   m_ParameterNames.push_back("Design Specimen Layer Refractive Index");
   m_ParameterNames.push_back("Actual Specimen Layer Refractive Index");
-  m_ParameterNames.push_back("Point Source Depth in Specimen Layer (microns)");
+  m_ParameterNames.push_back("Actual Point Source Depth in Specimen Layer (microns)");
 
   m_HaeberleSource = ImageSourceType::New();
 
@@ -121,22 +117,19 @@ HaeberleWidefieldPointSpreadFunction
   case  4: return m_HaeberleSource->GetSpacing()[0]; break;
   case  5: return m_HaeberleSource->GetSpacing()[1]; break;
   case  6: return m_HaeberleSource->GetSpacing()[2]; break;
-  case  7: return m_HaeberleSource->GetPointCenter()[0]; break;
-  case  8: return m_HaeberleSource->GetPointCenter()[1]; break;
-  case  9: return m_HaeberleSource->GetPointCenter()[2]; break;
-  case 10: return m_HaeberleSource->GetEmissionWavelength(); break;
-  case 11: return m_HaeberleSource->GetNumericalAperture(); break;
-  case 12: return m_HaeberleSource->GetMagnification(); break;
-  case 13: return m_HaeberleSource->GetDesignCoverSlipRefractiveIndex(); break;
-  case 14: return m_HaeberleSource->GetActualCoverSlipRefractiveIndex(); break;
-  case 15: return m_HaeberleSource->GetDesignCoverSlipThickness(); break;
-  case 16: return m_HaeberleSource->GetActualCoverSlipThickness(); break;
-  case 17: return m_HaeberleSource->GetDesignImmersionOilRefractiveIndex(); break;
-  case 18: return m_HaeberleSource->GetActualImmersionOilRefractiveIndex(); break;
-  case 19: return m_HaeberleSource->GetDesignImmersionOilThickness(); break;
-  case 20: return m_HaeberleSource->GetDesignSpecimenLayerRefractiveIndex(); break;
-  case 21: return m_HaeberleSource->GetActualSpecimenLayerRefractiveIndex(); break;
-  case 22: return m_HaeberleSource->GetPointSourceDepthInSpecimenLayer(); break;
+  case  7: return m_HaeberleSource->GetEmissionWavelength(); break;
+  case  8: return m_HaeberleSource->GetNumericalAperture(); break;
+  case  9: return m_HaeberleSource->GetMagnification(); break;
+  case 10: return m_HaeberleSource->GetDesignCoverSlipRefractiveIndex(); break;
+  case 11: return m_HaeberleSource->GetActualCoverSlipRefractiveIndex(); break;
+  case 12: return m_HaeberleSource->GetDesignCoverSlipThickness(); break;
+  case 13: return m_HaeberleSource->GetActualCoverSlipThickness(); break;
+  case 14: return m_HaeberleSource->GetDesignImmersionOilRefractiveIndex(); break;
+  case 15: return m_HaeberleSource->GetActualImmersionOilRefractiveIndex(); break;
+  case 16: return m_HaeberleSource->GetDesignImmersionOilThickness(); break;
+  case 17: return m_HaeberleSource->GetDesignSpecimenLayerRefractiveIndex(); break;
+  case 18: return m_HaeberleSource->GetActualSpecimenLayerRefractiveIndex(); break;
+  case 19: return m_HaeberleSource->GetActualPointSourceDepthInSpecimenLayer(); break;
 
 
   default: return 0.0;
@@ -151,87 +144,37 @@ HaeberleWidefieldPointSpreadFunction
 ::SetParameterValue(int index, double value) {
   ImageSourceType::SizeType size = m_HaeberleSource->GetSize();
   ImageSourceType::SpacingType spacing = m_HaeberleSource->GetSpacing();
-  ImageSourceType::PointType pointCenter = m_HaeberleSource->GetPointCenter();
 
   switch (index) {
   case 0:
     m_SummedIntensity = value;
     break;
 
-  case 1:
-  case 2:
-  case 3:
+  case 1: case 2: case 3:
     size[index-1] = static_cast<ImageSourceType::SizeValueType>(value);
     m_HaeberleSource->SetSize(size);
     RecenterImage();
     break;
 
-  case 4:
-  case 5:
-  case 6:
+  case 4: case 5: case 6:
     spacing[index-4] = static_cast<ImageSourceType::SpacingType::ValueType>(value);
     m_HaeberleSource->SetSpacing(spacing);
     RecenterImage();
     break;
 
-  case 7:
-  case 8:
-  case 9:
-    pointCenter[index-7] = value;
-    m_HaeberleSource->SetPointCenter(pointCenter);
-    break;
-
-  case 10:
-    m_HaeberleSource->SetEmissionWavelength(value);
-    break;
-
-  case 11:
-    m_HaeberleSource->SetNumericalAperture(value);
-    break;
-
-  case 12:
-    m_HaeberleSource->SetMagnification(value);
-    break;
-
-  case 13:
-    m_HaeberleSource->SetDesignCoverSlipRefractiveIndex(value);
-    break;
-
-  case 14:
-    m_HaeberleSource->SetActualCoverSlipRefractiveIndex(value);
-    break;
-
-  case 15:
-    m_HaeberleSource->SetDesignCoverSlipThickness(value);
-    break;
-
-  case 16:
-    m_HaeberleSource->SetActualCoverSlipThickness(value);
-    break;
-
-  case 17:
-    m_HaeberleSource->SetDesignImmersionOilRefractiveIndex(value);
-    break;
-
-  case 18:
-    m_HaeberleSource->SetActualImmersionOilRefractiveIndex(value);
-    break;
-
-  case 19:
-    m_HaeberleSource->SetDesignImmersionOilThickness(value);
-    break;
-
-  case 20:
-    m_HaeberleSource->SetDesignSpecimenLayerRefractiveIndex(value);
-    break;
-
-  case 21:
-    m_HaeberleSource->SetActualSpecimenLayerRefractiveIndex(value);
-    break;
-
-  case 22:
-    m_HaeberleSource->SetPointSourceDepthInSpecimenLayer(value);
-    break;
+  case 7: m_HaeberleSource->SetEmissionWavelength(value); break;
+  case 8: m_HaeberleSource->SetNumericalAperture(value); break;
+  case 9: m_HaeberleSource->SetMagnification(value); break;
+  case 10: m_HaeberleSource->SetDesignCoverSlipRefractiveIndex(value); break;
+  case 11: m_HaeberleSource->SetActualCoverSlipRefractiveIndex(value); break;
+  case 12: m_HaeberleSource->SetDesignCoverSlipThickness(value); break;
+  case 13: m_HaeberleSource->SetActualCoverSlipThickness(value); break;
+  case 14: m_HaeberleSource->SetDesignImmersionOilRefractiveIndex(value); break;
+  case 15: m_HaeberleSource->SetActualImmersionOilRefractiveIndex(value); break;
+  case 16: m_HaeberleSource->SetDesignImmersionOilThickness(value); break;
+  case 17: m_HaeberleSource->SetDesignSpecimenLayerRefractiveIndex(value); break;
+  case 18: m_HaeberleSource->SetActualSpecimenLayerRefractiveIndex(value); break;
+  case 19: m_HaeberleSource->SetActualPointSourceDepthInSpecimenLayer(value); break;
 
   default:
     break;
@@ -286,14 +229,6 @@ HaeberleWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_HaeberleSource->GetSpacing()[2]);
   xmlNewProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  xmlNodePtr pointCenterNode = xmlNewChild(root, NULL, BAD_CAST POINT_CENTER_ELEMENT.c_str(), NULL);
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetPointCenter()[0]);
-  xmlNewProp(pointCenterNode, BAD_CAST X_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetPointCenter()[1]);
-  xmlNewProp(pointCenterNode, BAD_CAST Y_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetPointCenter()[2]);
-  xmlNewProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
-
   sprintf(buf, doubleFormat, m_HaeberleSource->GetEmissionWavelength());
   xmlNewProp(root, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str(), BAD_CAST buf);
 
@@ -330,8 +265,8 @@ HaeberleWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_HaeberleSource->GetActualSpecimenLayerRefractiveIndex());
   xmlNewProp(root, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_HaeberleSource->GetPointSourceDepthInSpecimenLayer());
-  xmlNewProp(root, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, doubleFormat, m_HaeberleSource->GetActualPointSourceDepthInSpecimenLayer());
+  xmlNewProp(root, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
 
 }
 
@@ -361,13 +296,6 @@ HaeberleWidefieldPointSpreadFunction
   spacing[1] = atof((const char*) xmlGetProp(spacingNode, BAD_CAST Y_ATTRIBUTE.c_str()));
   spacing[2] = atof((const char*) xmlGetProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_HaeberleSource->SetSpacing(spacing);
-
-  ImageSourceType::PointType pointCenter;
-  xmlNodePtr pointCenterNode = xmlGetFirstElementChildWithName(node, BAD_CAST POINT_CENTER_ELEMENT.c_str());
-  pointCenter[0] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST X_ATTRIBUTE.c_str()));
-  pointCenter[1] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST Y_ATTRIBUTE.c_str()));
-  pointCenter[2] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str()));
-  m_HaeberleSource->SetPointCenter(pointCenter);
 
   const char* attribute;
 
@@ -431,9 +359,9 @@ HaeberleWidefieldPointSpreadFunction
     m_HaeberleSource->SetActualSpecimenLayerRefractiveIndex(atof(attribute));
   }
 
-  attribute = (const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
   if (attribute) {
-    m_HaeberleSource->SetPointSourceDepthInSpecimenLayer(atof(attribute));
+    m_HaeberleSource->SetActualPointSourceDepthInSpecimenLayer(atof(attribute));
   }
 
   RecenterImage();

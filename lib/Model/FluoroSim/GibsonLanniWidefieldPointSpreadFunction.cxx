@@ -10,7 +10,6 @@
 #include <XMLHelper.h>
 
 const std::string GibsonLanniWidefieldPointSpreadFunction::PSF_ELEMENT = "GibsonLanniWidefieldPointSpreadFunction";
-const std::string GibsonLanniWidefieldPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
 const std::string GibsonLanniWidefieldPointSpreadFunction::EMISSION_WAVELENGTH_ATTRIBUTE = "EmissionWavelength";
 const std::string GibsonLanniWidefieldPointSpreadFunction::NUMERICAL_APERTURE_ATTRIBUTE = "NumericalAperture";
 const std::string GibsonLanniWidefieldPointSpreadFunction::MAGNIFICATION_ATTRIBUTE = "Magnification";
@@ -23,7 +22,7 @@ const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_IMMERSION_OIL_
 const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_THICKNESS_ATTRIBUTE = "DesignImmersionOilThickness";
 const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
 const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
-const std::string GibsonLanniWidefieldPointSpreadFunction::POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
+const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
 
 
 GibsonLanniWidefieldPointSpreadFunction
@@ -48,7 +47,7 @@ GibsonLanniWidefieldPointSpreadFunction
   m_ParameterNames.push_back("Design Immersion Oil Thickness (microns)");
   m_ParameterNames.push_back("Design Specimen Layer Refractive Index");
   m_ParameterNames.push_back("Actual Specimen Layer Refractive Index");
-  m_ParameterNames.push_back("Point Source Depth in Specimen Layer (microns)");
+  m_ParameterNames.push_back("Actual Point Source Depth in Specimen Layer (microns)");
 
   m_GibsonLanniSource = ImageSourceType::New();
 
@@ -308,7 +307,7 @@ GibsonLanniWidefieldPointSpreadFunction
   xmlNewProp(root, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer());
-  xmlNewProp(root, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
+  xmlNewProp(root, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
 
 }
 
@@ -401,7 +400,7 @@ GibsonLanniWidefieldPointSpreadFunction
     m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(atof(attribute));
   }
 
-  attribute = (const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
+  attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
   if (attribute) {
     m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(atof(attribute));
   }

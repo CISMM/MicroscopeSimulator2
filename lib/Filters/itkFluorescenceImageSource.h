@@ -80,6 +80,12 @@ public:
   /** Gets the full parameters list. */
   virtual ParametersType GetParameters() const;
 
+  /** Set a single parameter value. */
+  virtual void SetParameter(unsigned int index, double value);
+
+  /** Get a single parameter value. */
+  virtual double GetParameter(unsigned int index) const;
+
   /** Gets the total number of parameters. */
   virtual unsigned int GetNumberOfParameters() const;
 
