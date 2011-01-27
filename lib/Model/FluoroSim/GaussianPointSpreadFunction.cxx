@@ -52,7 +52,7 @@ GaussianPointSpreadFunction
   m_Statistics->SetInput(m_GaussianSource->GetOutput());
 
   m_ScaleFilter->SetInput(m_GaussianSource->GetOutput());
-  
+
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_ScaleFilter->GetOutput());
 
@@ -128,8 +128,8 @@ GaussianPointSpreadFunction
 void
 GaussianPointSpreadFunction
 ::SetParameterValue(int index, double value) {
-  const unsigned long* constSize = m_GaussianSource->GetSize();
-  unsigned long size[3];
+  const ImageSourceType::SizeType constSize = m_GaussianSource->GetSize();
+  ImageSourceType::SizeType size;
   const ImageSourceType::SpacingType constSpacing = m_GaussianSource->GetSpacing();
   ImageSourceType::SpacingType spacing;
   const ImageSourceType::ArrayType constSigma = m_GaussianSource->GetSigma();
@@ -144,7 +144,6 @@ GaussianPointSpreadFunction
   case 1:
   case 2:
   case 3:
-    constSize = m_GaussianSource->GetSize();
     for (i = 0; i < 3; i++) {
       size[i] = constSize[i];
     }
@@ -181,7 +180,7 @@ void
 GaussianPointSpreadFunction
 ::RecenterImage() {
   const ImageSourceType::SpacingType constSpacing = m_GaussianSource->GetSpacing();
-  const unsigned long*               constSize    = m_GaussianSource->GetSize();
+  const ImageSourceType::SizeType    constSize    = m_GaussianSource->GetSize();
 
   double origin[3];
   for (int i = 0; i < 3; i++) {
