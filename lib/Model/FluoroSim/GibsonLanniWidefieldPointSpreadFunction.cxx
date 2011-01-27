@@ -36,9 +36,6 @@ GibsonLanniWidefieldPointSpreadFunction
   m_ParameterNames.push_back("X Voxel Spacing (nm)");
   m_ParameterNames.push_back("Y Voxel Spacing (nm)");
   m_ParameterNames.push_back("Z Voxel Spacing (nm)");
-  m_ParameterNames.push_back("X Point Center (nm)");
-  m_ParameterNames.push_back("Y Point Center (nm)");
-  m_ParameterNames.push_back("Z Point Center (nm)");
   m_ParameterNames.push_back("Emission Wavelength (nm)");
   m_ParameterNames.push_back("Numerical Aperture");
   m_ParameterNames.push_back("Magnification");
@@ -120,22 +117,19 @@ GibsonLanniWidefieldPointSpreadFunction
   case  4: return m_GibsonLanniSource->GetSpacing()[0]; break;
   case  5: return m_GibsonLanniSource->GetSpacing()[1]; break;
   case  6: return m_GibsonLanniSource->GetSpacing()[2]; break;
-  case  7: return m_GibsonLanniSource->GetPointCenter()[0]; break;
-  case  8: return m_GibsonLanniSource->GetPointCenter()[1]; break;
-  case  9: return m_GibsonLanniSource->GetPointCenter()[2]; break;
-  case 10: return m_GibsonLanniSource->GetEmissionWavelength(); break;
-  case 11: return m_GibsonLanniSource->GetNumericalAperture(); break;
-  case 12: return m_GibsonLanniSource->GetMagnification(); break;
-  case 13: return m_GibsonLanniSource->GetDesignCoverSlipRefractiveIndex(); break;
-  case 14: return m_GibsonLanniSource->GetActualCoverSlipRefractiveIndex(); break;
-  case 15: return m_GibsonLanniSource->GetDesignCoverSlipThickness(); break;
-  case 16: return m_GibsonLanniSource->GetActualCoverSlipThickness(); break;
-  case 17: return m_GibsonLanniSource->GetDesignImmersionOilRefractiveIndex(); break;
-  case 18: return m_GibsonLanniSource->GetActualImmersionOilRefractiveIndex(); break;
-  case 19: return m_GibsonLanniSource->GetDesignImmersionOilThickness(); break;
-  case 20: return m_GibsonLanniSource->GetDesignSpecimenLayerRefractiveIndex(); break;
-  case 21: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
-  case 22: return m_GibsonLanniSource->GetPointSourceDepthInSpecimenLayer(); break;
+  case  7: return m_GibsonLanniSource->GetEmissionWavelength(); break;
+  case  8: return m_GibsonLanniSource->GetNumericalAperture(); break;
+  case  9: return m_GibsonLanniSource->GetMagnification(); break;
+  case 10: return m_GibsonLanniSource->GetDesignCoverSlipRefractiveIndex(); break;
+  case 11: return m_GibsonLanniSource->GetActualCoverSlipRefractiveIndex(); break;
+  case 12: return m_GibsonLanniSource->GetDesignCoverSlipThickness(); break;
+  case 13: return m_GibsonLanniSource->GetActualCoverSlipThickness(); break;
+  case 14: return m_GibsonLanniSource->GetDesignImmersionOilRefractiveIndex(); break;
+  case 15: return m_GibsonLanniSource->GetActualImmersionOilRefractiveIndex(); break;
+  case 16: return m_GibsonLanniSource->GetDesignImmersionOilThickness(); break;
+  case 17: return m_GibsonLanniSource->GetDesignSpecimenLayerRefractiveIndex(); break;
+  case 18: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
+  case 19: return m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer(); break;
 
   default: return 0.0;
   }
@@ -149,7 +143,6 @@ GibsonLanniWidefieldPointSpreadFunction
 ::SetParameterValue(int index, double value) {
   ImageSourceType::SizeType size = m_GibsonLanniSource->GetSize();
   ImageSourceType::SpacingType spacing = m_GibsonLanniSource->GetSpacing();
-  ImageSourceType::PointType pointCenter = m_GibsonLanniSource->GetPointCenter();
 
   switch (index) {
   case 0:
@@ -173,62 +166,55 @@ GibsonLanniWidefieldPointSpreadFunction
     break;
 
   case 7:
-  case 8:
-  case 9:
-    pointCenter[index-7] = value;
-    m_GibsonLanniSource->SetPointCenter(pointCenter);
-    break;
-
-  case 10:
     m_GibsonLanniSource->SetEmissionWavelength(value);
     break;
 
-  case 11:
+  case 8:
     m_GibsonLanniSource->SetNumericalAperture(value);
     break;
 
-  case 12:
+  case 9:
     m_GibsonLanniSource->SetMagnification(value);
     break;
 
-  case 13:
+  case 10:
     m_GibsonLanniSource->SetDesignCoverSlipRefractiveIndex(value);
     break;
 
-  case 14:
+  case 11:
     m_GibsonLanniSource->SetActualCoverSlipRefractiveIndex(value);
     break;
 
-  case 15:
+  case 12:
     m_GibsonLanniSource->SetDesignCoverSlipThickness(value);
     break;
 
-  case 16:
+  case 13:
     m_GibsonLanniSource->SetActualCoverSlipThickness(value);
     break;
 
-  case 17:
+  case 14:
     m_GibsonLanniSource->SetDesignImmersionOilRefractiveIndex(value);
     break;
 
-  case 18:
+  case 15:
     m_GibsonLanniSource->SetActualImmersionOilRefractiveIndex(value);
     break;
 
-  case 19:
+  case 16:
     m_GibsonLanniSource->SetDesignImmersionOilThickness(value);
     break;
 
-  case 20:
+  case 17:
     m_GibsonLanniSource->SetDesignSpecimenLayerRefractiveIndex(value);
     break;
 
-  case 21:
+  case 18:
     m_GibsonLanniSource->SetActualSpecimenLayerRefractiveIndex(value);
     break;
 
-  case 22:
-    m_GibsonLanniSource->SetPointSourceDepthInSpecimenLayer(value);
+  case 19:
+    m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(value);
     break;
 
   default:
@@ -285,14 +271,6 @@ GibsonLanniWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetSpacing()[2]);
   xmlNewProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  xmlNodePtr pointCenterNode = xmlNewChild(root, NULL, BAD_CAST POINT_CENTER_ELEMENT.c_str(), NULL);
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetPointCenter()[0]);
-  xmlNewProp(pointCenterNode, BAD_CAST X_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetPointCenter()[1]);
-  xmlNewProp(pointCenterNode, BAD_CAST Y_ATTRIBUTE.c_str(), BAD_CAST buf);
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetPointCenter()[2]);
-  xmlNewProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
-
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetEmissionWavelength());
   xmlNewProp(root, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str(), BAD_CAST buf);
 
@@ -329,7 +307,7 @@ GibsonLanniWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex());
   xmlNewProp(root, BAD_CAST ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetPointSourceDepthInSpecimenLayer());
+  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer());
   xmlNewProp(root, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
 
 }
@@ -360,13 +338,6 @@ GibsonLanniWidefieldPointSpreadFunction
   spacing[1] = atof((const char*) xmlGetProp(spacingNode, BAD_CAST Y_ATTRIBUTE.c_str()));
   spacing[2] = atof((const char*) xmlGetProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_GibsonLanniSource->SetSpacing(spacing);
-
-  ImageSourceType::PointType pointCenter;
-  xmlNodePtr pointCenterNode = xmlGetFirstElementChildWithName(node, BAD_CAST POINT_CENTER_ELEMENT.c_str());
-  pointCenter[0] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST X_ATTRIBUTE.c_str()));
-  pointCenter[1] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST Y_ATTRIBUTE.c_str()));
-  pointCenter[2] = atof((const char*) xmlGetProp(pointCenterNode, BAD_CAST Z_ATTRIBUTE.c_str()));
-  m_GibsonLanniSource->SetPointCenter(pointCenter);
 
   const char* attribute;
 
@@ -432,7 +403,7 @@ GibsonLanniWidefieldPointSpreadFunction
 
   attribute = (const char*) xmlGetProp(node, BAD_CAST POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
   if (attribute) {
-    m_GibsonLanniSource->SetPointSourceDepthInSpecimenLayer(atof(attribute));
+    m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(atof(attribute));
   }
 
   RecenterImage();
