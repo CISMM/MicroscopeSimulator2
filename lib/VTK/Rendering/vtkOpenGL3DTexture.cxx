@@ -50,7 +50,7 @@ vtkOpenGL3DTexture::~vtkOpenGL3DTexture() {
   this->RenderWindow = NULL;
 }
 
-// Release the graphics resources used by this texture.  
+// Release the graphics resources used by this texture.
 void vtkOpenGL3DTexture::ReleaseGraphicsResources(vtkWindow *renWin) {
   if (this->Index && renWin) {
     ((vtkRenderWindow *) renWin)->MakeCurrent();
@@ -74,6 +74,7 @@ void vtkOpenGL3DTexture::LoadExtensions() {
     return;
 
   vtkOpenGLExtensionManager *manager = vtkOpenGLExtensionManager::New();
+  manager->SetRenderWindow(this->RenderWindow);
 
   int versionOK = 0;
   versionOK += manager->ExtensionSupported("GL_VERSION_1_2");
@@ -103,8 +104,8 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
   // need to reload the texture
   if (this->GetMTime() > this->LoadTime.GetMTime() ||
       input->GetMTime() > this->LoadTime.GetMTime() ||
-      (this->GetLookupTable() && this->GetLookupTable()->GetMTime () >  
-       this->LoadTime.GetMTime()) || 
+      (this->GetLookupTable() && this->GetLookupTable()->GetMTime () >
+       this->LoadTime.GetMTime()) ||
        ren->GetRenderWindow() != this->RenderWindow) {
 
     // free any old display lists (from the old context)
@@ -120,7 +121,7 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
 
     // get some info
     int *size = input->GetDimensions();
-    
+
     // It's safest to stick with power-of-two image dimensions in 3D textures,
     // so we check here and pad the PSF if necessary.
     int newSize[3];
@@ -155,7 +156,7 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
       vtkErrorMacro(<< "No scalar values found for texture input!");
       return;
     }
- 
+
     GLint maxDimGL;
     glGetIntegerv(vtkgl::MAX_3D_TEXTURE_SIZE, &maxDimGL);
 
@@ -169,10 +170,10 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
     glGenTextures(1, &tempIndex);
     this->Index = (long) tempIndex;
     glBindTexture(vtkgl::TEXTURE_3D, this->Index);
-    if (glGetError() != GL_NO_ERROR) {		
+    if (glGetError() != GL_NO_ERROR) {
       vtkDebugMacro("glGetError reports error right after binding the 3D texture");
     }
-    
+
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     if (glGetError() != GL_NO_ERROR) {
       vtkDebugMacro("glGetError reports error right calling glTexEnvf");
@@ -217,7 +218,7 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
       }
     }
 #endif
-    
+
     // Store the texture as 16-bit floating point luminance texture.
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -264,16 +265,16 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
     if (error != GL_NO_ERROR) {
       vtkDebugMacro(<< "glGetError reports an error after calling glTexImage3D");
     }
-    
+
     // Clean up the float array.
     floatArray->Delete();
     floatArray = NULL;
-    
+
     // modify the load time to the current time
     this->LoadTime.Modified();
   }
 
-  // now bind it 
+  // now bind it
   glBindTexture(vtkgl::TEXTURE_3D, this->Index);
   glEnable(vtkgl::TEXTURE_3D);
 }
