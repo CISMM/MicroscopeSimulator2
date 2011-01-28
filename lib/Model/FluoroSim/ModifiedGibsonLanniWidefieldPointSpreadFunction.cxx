@@ -180,8 +180,6 @@ ModifiedGibsonLanniWidefieldPointSpreadFunction
     break;
   }
 
-  UpdateGradientImage();
-
 }
 
 
@@ -230,7 +228,7 @@ ModifiedGibsonLanniWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_ModifiedGibsonLanniSource->GetSpacing()[2]);
   xmlNewProp(spacingNode, BAD_CAST Z_ATTRIBUTE.c_str(), BAD_CAST buf);
 
-  unsigned int index = 7;
+  unsigned int index = 0;
   sprintf(buf, doubleFormat, m_ModifiedGibsonLanniSource->GetParameter(index++));
   xmlNewProp(root, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str(), BAD_CAST buf);
 
@@ -307,9 +305,9 @@ ModifiedGibsonLanniWidefieldPointSpreadFunction
 
   ImageSourceType::SizeType size;
   xmlNodePtr sizeNode = xmlGetFirstElementChildWithName(node, BAD_CAST SIZE_ELEMENT.c_str());
-  size[0] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST X_ATTRIBUTE.c_str()));
-  size[1] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST Y_ATTRIBUTE.c_str()));
-  size[2] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST Z_ATTRIBUTE.c_str()));
+  size[0] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST X_ATTRIBUTE.c_str()));
+  size[1] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST Y_ATTRIBUTE.c_str()));
+  size[2] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_ModifiedGibsonLanniSource->SetSize(size);
 
   ImageSourceType::SpacingType spacing;
@@ -321,7 +319,7 @@ ModifiedGibsonLanniWidefieldPointSpreadFunction
 
   const char* attribute;
 
-  unsigned int index = 7;
+  unsigned int index = 0;
   attribute = (const char*) xmlGetProp(node, BAD_CAST EMISSION_WAVELENGTH_ATTRIBUTE.c_str());
   if (attribute) {
     m_ModifiedGibsonLanniSource->SetParameter(index++, atof(attribute));
