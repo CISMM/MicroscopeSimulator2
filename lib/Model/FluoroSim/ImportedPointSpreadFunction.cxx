@@ -184,7 +184,6 @@ ImportedPointSpreadFunction
   default: break;
   }
 
-  UpdateGradientImage();
 }
 
 

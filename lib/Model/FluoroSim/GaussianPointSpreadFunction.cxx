@@ -172,7 +172,6 @@ GaussianPointSpreadFunction
   default: break;
   }
 
-  UpdateGradientImage();
 }
 
 

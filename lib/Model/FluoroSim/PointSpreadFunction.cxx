@@ -83,6 +83,7 @@ PointSpreadFunction
 ::Update() {
   m_Statistics->Update();
   m_ScaleFilter->SetScale(m_SummedIntensity / m_Statistics->GetSum());
+  UpdateGradientImage();
 }
 
 

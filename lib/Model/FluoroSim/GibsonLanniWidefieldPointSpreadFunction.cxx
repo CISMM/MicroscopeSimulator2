@@ -220,8 +220,6 @@ GibsonLanniWidefieldPointSpreadFunction
     break;
   }
 
-  UpdateGradientImage();
-
 }
 
 
@@ -326,9 +324,9 @@ GibsonLanniWidefieldPointSpreadFunction
 
   ImageSourceType::SizeType size;
   xmlNodePtr sizeNode = xmlGetFirstElementChildWithName(node, BAD_CAST SIZE_ELEMENT.c_str());
-  size[0] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST X_ATTRIBUTE.c_str()));
-  size[1] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST Y_ATTRIBUTE.c_str()));
-  size[2] = atof((const char*) xmlGetProp(sizeNode, BAD_CAST Z_ATTRIBUTE.c_str()));
+  size[0] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST X_ATTRIBUTE.c_str()));
+  size[1] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST Y_ATTRIBUTE.c_str()));
+  size[2] = atoi((const char*) xmlGetProp(sizeNode, BAD_CAST Z_ATTRIBUTE.c_str()));
   m_GibsonLanniSource->SetSize(size);
 
   ImageSourceType::SpacingType spacing;
