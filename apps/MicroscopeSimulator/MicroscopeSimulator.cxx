@@ -36,6 +36,7 @@
 #include <FluorophoreModelDialog.h>
 #include <FocalPlanePositionsDialog.h>
 #include <ImageExportOptionsDialog.h>
+#include <ModelObjectList.h>
 #include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
 #include <Preferences.h>
@@ -52,6 +53,7 @@
 #include <vtkImageShiftScale.h>
 #include <vtkImageWriter.h>
 #include <vtkJPEGWriter.h>
+#include <vtkMath.h>
 #include <vtkOutputWindow.h>
 #include <vtkPLYWriter.h>
 #include <vtkPNGWriter.h>
@@ -1534,12 +1536,10 @@ MicroscopeSimulator
 
   int result;
 
-#if 0
   // Now get the options for the export
   result = m_ImageExportOptionsDialog->exec();
   if (result == QDialog::Rejected)
     return;
-#endif
 
   QFileDialog fileDialog(this, tr("Export Fluorescence Image"), directory,
                          "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
@@ -1557,55 +1557,121 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty())
     return;
 
-  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  QString extension = QString().append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
   std::cout << extension.toStdString() << std::endl;
-  if (!selectedFileName.endsWith(extension))
-    selectedFileName.append(extension);
+  if (selectedFileName.endsWith(QString('.').append(extension)))
+    selectedFileName.chop(extension.size() + 1);
 
-  // TODO - remove this loop, make number of output images adjustable.
-  for (int i = 0; i < 20; i++)
-{
-  m_Simulation->RegenerateFluorophores();
-
-  vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
-
-  vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
-  scaler->SetOutputScalarTypeToUnsignedChar();
-  scaler->ClampOverflowOn();
-  scaler->SetInput(image);
-  image->Delete();
-
-  double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
-  double maxIntensity = m_Simulation->GetFluorescenceSimulation()->GetMaximumIntensityLevel();
-  scaler->SetShift(-minIntensity);
-  scaler->SetScale(255.0 / (maxIntensity - minIntensity));
-
-  vtkSmartPointer<vtkImageWriter> writer;
-  if (extension == QString(".png")) {
-    writer = vtkSmartPointer<vtkPNGWriter>::New();
-  } else if (extension == QString(".bmp")) {
-    writer = vtkSmartPointer<vtkBMPWriter>::New();
-  } else if (extension == QString(".jpg")) {
-    writer = vtkSmartPointer<vtkJPEGWriter>::New();
-  } else if (extension == QString(".tif")) {
-    vtkSmartPointer<vtkTIFFWriter> tiffWriter = vtkSmartPointer<vtkTIFFWriter>::New();
-    tiffWriter->SetCompressionToNoCompression();
-    writer = tiffWriter;
-
-    scaler->SetShift(0.0);
-    scaler->SetScale(1.0);
-    scaler->SetOutputScalarTypeToUnsignedShort();
+  // Save the original object positions
+  std::vector< double > originalPositions;
+  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
+    originalPositions.push_back(mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue());
+    originalPositions.push_back(mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue());
+    originalPositions.push_back(mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue());
   }
 
-  if (writer) {
-    writer->SetInputConnection(scaler->GetOutputPort());
-    QString tmpFileName;
-    tmpFileName.sprintf("%s%04d.tif", selectedFileName.toStdString().c_str(), i);
-    std::cout << "saving file " << tmpFileName.toStdString() << std::endl;
-    writer->SetFileName(tmpFileName.toStdString().c_str());
-    writer->Write();
+  int numberOfImages = m_ImageExportOptionsDialog->GetNumberOfCopies();
+  if (numberOfImages <= 0) numberOfImages = 1;
+
+  for (int i = 0; i < numberOfImages; i++) {
+
+    if (m_ImageExportOptionsDialog->IsRegenerateFluorophoresEnabled()) {
+      m_Simulation->RegenerateFluorophores();
+    }
+
+    if (m_ImageExportOptionsDialog->IsRandomizeObjectPositionsEnabled()) {
+      // Randomize each object's position.
+      double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
+      double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
+      double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
+
+      unsigned int mIndex = 0;
+      for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
+        double newX = originalPositions[mIndex++] + xRange * (vtkMath::Random() - 0.5);
+        double newY = originalPositions[mIndex++] + yRange * (vtkMath::Random() - 0.5);
+        double newZ = originalPositions[mIndex++] + zRange * (vtkMath::Random() - 0.5);
+
+        ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
+      }
+    }
+
+    vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
+
+    vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
+    scaler->SetOutputScalarTypeToUnsignedChar();
+    scaler->ClampOverflowOn();
+    scaler->SetInput(image);
+    image->Delete();
+
+    double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
+    double maxIntensity = m_Simulation->GetFluorescenceSimulation()->GetMaximumIntensityLevel();
+    scaler->SetShift(-minIntensity);
+    scaler->SetScale(255.0 / (maxIntensity - minIntensity));
+
+    vtkSmartPointer<vtkImageWriter> writer;
+    if (extension == QString("png")) {
+      writer = vtkSmartPointer<vtkPNGWriter>::New();
+    } else if (extension == QString("bmp")) {
+      writer = vtkSmartPointer<vtkBMPWriter>::New();
+    } else if (extension == QString("jpg")) {
+      writer = vtkSmartPointer<vtkJPEGWriter>::New();
+    } else if (extension == QString("tif")) {
+      vtkSmartPointer<vtkTIFFWriter> tiffWriter = vtkSmartPointer<vtkTIFFWriter>::New();
+      tiffWriter->SetCompressionToNoCompression();
+      writer = tiffWriter;
+
+      scaler->SetShift(0.0);
+      scaler->SetScale(1.0);
+      scaler->SetOutputScalarTypeToUnsignedShort();
+    }
+
+
+    if (writer) {
+      QString fileName;
+      vtkSmartPointer<vtkImageExtractComponents> extractor =
+        vtkSmartPointer<vtkImageExtractComponents>::New();
+      extractor->SetInputConnection(scaler->GetOutputPort());
+      writer->SetInputConnection(extractor->GetOutputPort());
+
+      if (m_ImageExportOptionsDialog->IsExportRedEnabled()) {
+        fileName.sprintf("%s%04dR.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+        extractor->SetComponents(0);
+        writer->SetFileName(fileName.toStdString().c_str());
+        writer->Write();
+      }
+
+      if (m_ImageExportOptionsDialog->IsExportGreenEnabled()) {
+        fileName.sprintf("%s%04dG.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+        extractor->SetComponents(1);
+        writer->SetFileName(fileName.toStdString().c_str());
+        writer->Write();
+      }
+
+      if (m_ImageExportOptionsDialog->IsExportBlueEnabled()) {
+        fileName.sprintf("%s%04dB.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+        extractor->SetComponents(2);
+        writer->SetFileName(fileName.toStdString().c_str());
+        writer->Write();
+      }
+    }
   }
-}
+
+  // Restore the original object positions
+  unsigned int index = 0;
+  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
+    mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+    mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+    mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+  }
+
 }
 
 
