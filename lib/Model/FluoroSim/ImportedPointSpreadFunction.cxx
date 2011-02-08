@@ -284,12 +284,12 @@ void
 ImportedPointSpreadFunction
 ::RecenterImage() {
   // Change the origin here
-  ImageType::RegionType region = m_ChangeInformationFilter->GetOutput()->GetLargestPossibleRegion();
-  ImageType::SpacingType spacing = m_ChangeInformationFilter->GetOutputSpacing();
+  const ImageType::RegionType region = m_ChangeInformationFilter->GetOutput()->GetLargestPossibleRegion();
+  const ImageType::SpacingType spacing = m_ChangeInformationFilter->GetOutputSpacing();
 
   ImageType::PointType origin;
   for (unsigned int i = 0; i < ImageType::GetImageDimension(); i++) {
-    origin[i] = -0.5*(region.GetSize(static_cast<unsigned long>(i))-1)*spacing[i] - m_PointCenter[i];
+    origin[i] = -0.5 * static_cast<double>(region.GetSize(i)-1) * spacing[i] + m_PointCenter[i];
   }
   m_ChangeInformationFilter->SetOutputOrigin(origin);
 
