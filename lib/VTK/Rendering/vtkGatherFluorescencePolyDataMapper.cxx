@@ -134,9 +134,13 @@ void vtkGatherFluorescencePolyDataMapper::RenderPoints(vtkActor *actor, vtkRende
   glPushMatrix();
   glLoadIdentity();
 
+  double halfPixelX = 0.5*this->PixelSize[0];
+  double halfPixelY = 0.5*this->PixelSize[1];
   double worldWinW = this->PixelSize[0] * winW;
   double worldWinH = this->PixelSize[1] * winH;
-  glOrtho(0, worldWinW, 0, worldWinH, 0, 1);
+
+  // We want cell-centered pixels
+  glOrtho(-halfPixelX, worldWinW-halfPixelX, -halfPixelY, worldWinH-halfPixelY, 0, 1);
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
