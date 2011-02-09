@@ -5,6 +5,7 @@
 
 #include <itkChangeInformationImageFilter.txx>
 #include <itkImageFileReader.txx>
+#include <itkUnaryFunctorImageFilter.txx> // Needed by AddConstantFromImageFilter
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
@@ -14,18 +15,21 @@
 #include <ImportedPointSpreadFunction.h>
 
 
-const std::string ImportedPointSpreadFunction::FILE_NAME_ATTRIBUTE  = "FileName";
-const std::string ImportedPointSpreadFunction::POINT_CENTER_ELEMENT = "PointCenter";
+const std::string ImportedPointSpreadFunction::FILE_NAME_ATTRIBUTE        = "FileName";
+const std::string ImportedPointSpreadFunction::INTENSITY_OFFSET_ATTRIBUTE = "IntensityOffset";
+const std::string ImportedPointSpreadFunction::POINT_CENTER_ELEMENT       = "PointCenter";
 
 
 ImportedPointSpreadFunction
 ::ImportedPointSpreadFunction() : PointSpreadFunction() {
   m_ImageReader = ImageSourceType::New();
 
+  m_IntensityOffset = 0.0;
   m_PointCenter[0] = m_PointCenter[1] = m_PointCenter[2] = 0.0;
 
   // Set up parameter names
   m_ParameterNames.push_back("Summed Intensity");
+  m_ParameterNames.push_back("Intensity Offset");
   m_ParameterNames.push_back("X Size (voxels)");
   m_ParameterNames.push_back("Y Size (voxels)");
   m_ParameterNames.push_back("Z Size (voxels)");
@@ -55,9 +59,12 @@ ImportedPointSpreadFunction
   m_ChangeInformationFilter->SetOutputOrigin(origin);
   m_ChangeInformationFilter->SetInput(m_ImageReader->GetOutput());
 
-  m_Statistics->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_AddConstantFilter = AddConstantFilterType::New();
+  m_AddConstantFilter->SetInput(m_ChangeInformationFilter->GetOutput());
 
-  m_ScaleFilter->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_Statistics->SetInput(m_AddConstantFilter->GetOutput());
+
+  m_ScaleFilter->SetInput(m_AddConstantFilter->GetOutput());
 
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
   m_ITKToVTKFilter->SetInput(m_ScaleFilter->GetOutput());
@@ -88,6 +95,20 @@ std::string
 ImportedPointSpreadFunction
 ::GetFileName() {
   return m_FileName;
+}
+
+
+void
+ImportedPointSpreadFunction
+::SetIntensityOffset(double offset) {
+  m_IntensityOffset = offset;
+}
+
+
+double
+ImportedPointSpreadFunction
+::GetIntensityOffset() {
+  return m_IntensityOffset;
 }
 
 
@@ -132,16 +153,17 @@ double
 ImportedPointSpreadFunction
 ::GetParameterValue(int index) {
   switch (index) {
-  case 0: return m_SummedIntensity;
-  case 1: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[0]; break;
-  case 2: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[1]; break;
-  case 3: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[2]; break;
-  case 4: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
-  case 5: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
-  case 6: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
-  case 7: return m_PointCenter[0]; break;
-  case 8: return m_PointCenter[1]; break;
-  case 9: return m_PointCenter[2]; break;
+  case  0: return m_SummedIntensity;
+  case  1: return m_IntensityOffset;
+  case  2: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[0]; break;
+  case  3: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[1]; break;
+  case  4: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[2]; break;
+  case  5: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
+  case  6: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
+  case  7: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
+  case  8: return m_PointCenter[0]; break;
+  case  9: return m_PointCenter[1]; break;
+  case 10: return m_PointCenter[2]; break;
 
   default: return 0.0;
   }
@@ -159,27 +181,32 @@ ImportedPointSpreadFunction
     m_ChangeInformationFilter->GetOutputOrigin();
 
   switch(index) {
-  case 0:
+  case  0:
     m_SummedIntensity = value;
     break;
 
-  case 1:
-  case 2:
-  case 3:
+  case  1:
+    m_IntensityOffset = value;
+    m_AddConstantFilter->SetConstant(value);
+    break;
+
+  case  2:
+  case  3:
+  case  4:
     break; // Not editable
 
-  case 4: 
-  case 5: 
-  case 6:
-    outputSpacing[index-4] = value;
+  case  5:
+  case  6:
+  case  7:
+    outputSpacing[index-5] = value;
     m_ChangeInformationFilter->SetOutputSpacing(outputSpacing);
     RecenterImage();
     break;
     
-  case 7:
-  case 8:
-  case 9:
-    m_PointCenter[index-7] = value;
+  case  8:
+  case  9:
+  case 10:
+    m_PointCenter[index-8] = value;
     RecenterImage();
   default: break;
   }
@@ -206,6 +233,8 @@ ImportedPointSpreadFunction
   xmlNewProp(root, BAD_CAST FILE_NAME_ATTRIBUTE.c_str(), BAD_CAST m_FileName.c_str());
   sprintf(buf, "%f", GetSummedIntensity());
   xmlNewProp(root, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str(), BAD_CAST buf);
+  sprintf(buf, "%f", GetIntensityOffset());
+  xmlNewProp(root, BAD_CAST INTENSITY_OFFSET_ATTRIBUTE.c_str(), BAD_CAST buf);
 
   xmlNodePtr spacingNode = xmlNewChild(root, NULL, BAD_CAST SPACING_ELEMENT.c_str(), NULL);
   sprintf(buf, doubleFormat, m_ChangeInformationFilter->GetOutputSpacing()[0]);
@@ -245,6 +274,11 @@ ImportedPointSpreadFunction
   char* summedIntensityStr = (char*) xmlGetProp(node, BAD_CAST SUMMED_INTENSITY_ATTRIBUTE.c_str());
   if (summedIntensityStr) {
     SetSummedIntensity(atof(summedIntensityStr));
+  }
+
+  char* intensityOffsetStr = (char*) xmlGetProp(node, BAD_CAST INTENSITY_OFFSET_ATTRIBUTE.c_str());
+  if (intensityOffsetStr) {
+    SetIntensityOffset(atof(intensityOffsetStr));
   }
 
   xmlNodePtr spacingNode = xmlGetFirstElementChildWithName(node, BAD_CAST SPACING_ELEMENT.c_str());
