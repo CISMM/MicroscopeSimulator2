@@ -94,6 +94,7 @@ ITKFluorescenceOptimizer
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
   interpolator->SetInputImage(m_FluorescenceImageSource->GetOutput());
   m_ImageToImageCostFunction->SetInterpolator(interpolator);
+  m_ImageToImageCostFunction->Initialize();
 
   ImageToImageCostFunctionType::ParametersType parameters(1);
   return m_ImageToImageCostFunction->GetValue(parameters);
