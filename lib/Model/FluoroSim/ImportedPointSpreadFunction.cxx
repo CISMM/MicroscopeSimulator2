@@ -102,6 +102,7 @@ void
 ImportedPointSpreadFunction
 ::SetIntensityOffset(double offset) {
   m_IntensityOffset = offset;
+  m_AddConstantFilter->SetConstant(m_IntensityOffset);
 }
 
 
