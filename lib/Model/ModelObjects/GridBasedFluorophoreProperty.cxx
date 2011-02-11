@@ -54,7 +54,7 @@ GridBasedFluorophoreProperty
                                bool editable, bool optimizable) 
   : FluorophoreModelObjectProperty(name, editable, optimizable) {
 
-  m_SampleSpacing = 50.0;
+  m_SampleSpacing = 12.5;
   m_GridSource = gridSource;
 
   // Set up the class that performs the distance computation
@@ -62,15 +62,24 @@ GridBasedFluorophoreProperty
   m_Voxelizer1 = vtkSmartPointer<vtkImplicitModeller>::New();
   m_Voxelizer1->SetInputConnection(gridSource->GetOutputPort());
   m_Voxelizer1->SetOutputScalarTypeToFloat();
+  m_Voxelizer1->AdjustBoundsOff();
+  m_Voxelizer1->ScaleToMaximumDistanceOff();
+  m_Voxelizer1->CappingOff();
+  m_Voxelizer1->SetMaximumDistance(0.0);
 
   vtkSmartPointer<vtkThresholdPoints> thold1 =
     vtkSmartPointer<vtkThresholdPoints>::New();
-  thold1->ThresholdByLower(sqrt(3*m_SampleSpacing*m_SampleSpacing));
+  //thold1->ThresholdByLower(sqrt(3*m_SampleSpacing*m_SampleSpacing));
+  thold1->ThresholdByLower(0.0);
   thold1->SetInputConnection(m_Voxelizer1->GetOutputPort());
 
   m_Voxelizer2 = vtkSmartPointer<vtkImplicitModeller>::New();
   m_Voxelizer2->SetInputConnection(gridSource->GetOutputPort());
   m_Voxelizer2->SetOutputScalarTypeToFloat();
+  m_Voxelizer2->AdjustBoundsOff();
+  m_Voxelizer2->ScaleToMaximumDistanceOff();
+  m_Voxelizer2->CappingOff();
+  m_Voxelizer2->SetMaximumDistance(0.0);
 
   vtkSmartPointer<vtkThresholdPoints> thold2 =
     vtkSmartPointer<vtkThresholdPoints>::New();
@@ -80,7 +89,7 @@ GridBasedFluorophoreProperty
   vtkSmartPointer<vtkAppendPolyData> appender =
     vtkSmartPointer<vtkAppendPolyData>::New();
   appender->AddInputConnection(thold1->GetOutputPort());
-  appender->AddInputConnection(thold2->GetOutputPort());
+  //appender->AddInputConnection(thold2->GetOutputPort());
 
   vtkSmartPointer<vtkProgrammableFilter> intensityCalculator =
     vtkSmartPointer<vtkProgrammableFilter>::New();
@@ -133,13 +142,22 @@ GridBasedFluorophoreProperty
 void
 GridBasedFluorophoreProperty
 ::Update() {
+  int dims[3];
+  if (!this->GetEnabled()) {
+    // Set the sample dimensions to 2 in case the voxelizers get updated
+    dims[0] = dims[1] = dims[2] = 2;
+    m_Voxelizer1->SetSampleDimensions(dims);
+    m_Voxelizer2->SetSampleDimensions(dims);
+    return;
+  }
+
   // Get bounding box size of the grid source
   double bounds[6];
   m_GridSource->GetOutput()->Update();
   m_GridSource->GetOutput()->GetBounds(bounds);
 
   double padding = sqrt(3*m_SampleSpacing*m_SampleSpacing);
-  int dims[3];
+
   for (int i = 0; i < 3; i++) {
     // Pad the boundaries
     bounds[2*i + 0] -= padding;
@@ -152,7 +170,8 @@ GridBasedFluorophoreProperty
     bounds[2*i + 1] = ceil (bounds[2*i + 1] / m_SampleSpacing) * m_SampleSpacing;
 
     dims[i] = ceil((bounds[2*i+1] - bounds[2*i]) / m_SampleSpacing);
-    if (dims[i] < 2) dims[i] = 2;
+    if (dims[i] < 1) dims[i] = 1;
+    dims[i]++;
   }
 
   m_Voxelizer1->SetModelBounds(bounds);
