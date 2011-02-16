@@ -1556,7 +1556,6 @@ MicroscopeSimulator
     return;
 
   QString extension = QString().append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
-  std::cout << extension.toStdString() << std::endl;
   if (selectedFileName.endsWith(QString('.').append(extension)))
     selectedFileName.chop(extension.size() + 1);
 
@@ -1707,7 +1706,6 @@ MicroscopeSimulator
     return;
 
   QString extension = QString().append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
-  std::cout << extension.toStdString() << std::endl;
   if (selectedFileName.endsWith(QString('.').append(extension)))
     selectedFileName.chop(extension.size() + 1);
 
