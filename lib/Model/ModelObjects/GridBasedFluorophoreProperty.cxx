@@ -60,12 +60,12 @@ GridBasedFluorophoreProperty
   // Set up the class that performs the distance computation
   // on a structured grid
   m_Voxelizer1 = vtkSmartPointer<vtkImplicitModeller>::New();
+  m_Voxelizer1->SetProcessModeToPerVoxel();
   m_Voxelizer1->SetInputConnection(gridSource->GetOutputPort());
   m_Voxelizer1->SetOutputScalarTypeToFloat();
   m_Voxelizer1->AdjustBoundsOff();
   m_Voxelizer1->ScaleToMaximumDistanceOff();
   m_Voxelizer1->CappingOff();
-  m_Voxelizer1->SetMaximumDistance(0.0);
 
   vtkSmartPointer<vtkThresholdPoints> thold1 =
     vtkSmartPointer<vtkThresholdPoints>::New();
@@ -74,12 +74,12 @@ GridBasedFluorophoreProperty
   thold1->SetInputConnection(m_Voxelizer1->GetOutputPort());
 
   m_Voxelizer2 = vtkSmartPointer<vtkImplicitModeller>::New();
+  m_Voxelizer2->SetProcessModeToPerVoxel();
   m_Voxelizer2->SetInputConnection(gridSource->GetOutputPort());
   m_Voxelizer2->SetOutputScalarTypeToFloat();
   m_Voxelizer2->AdjustBoundsOff();
   m_Voxelizer2->ScaleToMaximumDistanceOff();
   m_Voxelizer2->CappingOff();
-  m_Voxelizer2->SetMaximumDistance(0.0);
 
   vtkSmartPointer<vtkThresholdPoints> thold2 =
     vtkSmartPointer<vtkThresholdPoints>::New();
