@@ -3,9 +3,7 @@
 
 #include <FluorophoreModelObjectProperty.h>
 
-class vtkAppendPoints;
-class vtkImplicitModeller;
-class vtkProgrammableFilter;
+class vtkPartialVolumeModeller;
 class vtkUnstructuredGridAlgorithm;
 
 
@@ -25,11 +23,6 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
 
   virtual void Update();
 
-  typedef struct _vtkProgrammableFilterUserData {
-    vtkProgrammableFilter* filter;
-    double spacing;
-  } vtkProgrammableFilterUserData;
-
  protected:
   GridBasedFluorophoreProperty() {};
 
@@ -38,10 +31,7 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
   double m_SampleSpacing;
 
   vtkSmartPointer<vtkUnstructuredGridAlgorithm> m_GridSource;
-  vtkSmartPointer<vtkImplicitModeller>          m_Voxelizer1;
-  vtkSmartPointer<vtkImplicitModeller>          m_Voxelizer2;
-  vtkSmartPointer<vtkAppendPoints>              m_PointSource;
-  vtkProgrammableFilterUserData                 m_UserData;
+  vtkSmartPointer<vtkPartialVolumeModeller>     m_PartialVolumeVoxelizer;
 };
 
 
