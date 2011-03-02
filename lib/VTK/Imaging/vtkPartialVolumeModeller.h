@@ -27,6 +27,8 @@
 
 #include "vtkImageAlgorithm.h"
 
+class vtkMultiThreader;
+
 class vtkPartialVolumeModeller : public vtkImageAlgorithm
 {
 public:
@@ -88,7 +90,7 @@ public:
   
 protected:
   vtkPartialVolumeModeller();
-  ~vtkPartialVolumeModeller() {};
+  ~vtkPartialVolumeModeller();
   
   virtual int RequestInformation(vtkInformation *,
                                  vtkInformationVector **,
@@ -101,6 +103,9 @@ protected:
 
   // see algorithm for more info
   virtual int FillInputPortInformation(int port, vtkInformation* info);
+
+  vtkMultiThreader *Threader;
+  int              NumberOfThreads;
 
   int SampleDimensions[3];
   double MaximumDistance;

@@ -18,6 +18,7 @@
 #include "vtkImageData.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
+#include "vtkMultiThreader.h"
 #include "vtkObjectFactory.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkPointData.h"
@@ -29,6 +30,12 @@
 
 vtkCxxRevisionMacro(vtkPartialVolumeModeller, "1.0");
 vtkStandardNewMacro(vtkPartialVolumeModeller);
+
+struct vtkPartialVolumeModellerThreadInfo
+{
+  vtkPartialVolumeModeller *Modeller;
+  vtkDataSet               *Input;
+};
 
 // Construct an instance of vtkPartialVolumeModeller with its sample dimensions
 // set to (50,50,50), and so that the model bounds are
@@ -51,14 +58,28 @@ vtkPartialVolumeModeller::vtkPartialVolumeModeller()
   this->SampleDimensions[2] = 50;
 
   this->OutputScalarType = VTK_DOUBLE;
+
+  this->Threader        = vtkMultiThreader::New();
+  this->NumberOfThreads = this->Threader->GetNumberOfThreads();
 }
 
+//----------------------------------------------------------------------------
+vtkPartialVolumeModeller::~vtkPartialVolumeModeller()
+{
+  if (this->Threader)
+    {
+    this->Threader->Delete();
+    }
+}
+
+//----------------------------------------------------------------------------
 // Specify the position in space to perform the voxelization.
 void vtkPartialVolumeModeller::SetModelBounds(double bounds[6])
 {
   this->SetModelBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 }
 
+//----------------------------------------------------------------------------
 void vtkPartialVolumeModeller::SetModelBounds(double xmin, double xmax, double ymin,
                                       double ymax, double zmin, double zmax)
 {
@@ -76,6 +97,7 @@ void vtkPartialVolumeModeller::SetModelBounds(double xmin, double xmax, double y
     }
 }
 
+//----------------------------------------------------------------------------
 int vtkPartialVolumeModeller::RequestInformation (
   vtkInformation * vtkNotUsed(request),
   vtkInformationVector ** vtkNotUsed( inputVector ),
@@ -112,49 +134,55 @@ int vtkPartialVolumeModeller::RequestInformation (
   return 1;
 }
 
-int vtkPartialVolumeModeller::RequestData(
-  vtkInformation* vtkNotUsed( request ),
-  vtkInformationVector** inputVector,
-  vtkInformationVector* outputVector)
+//----------------------------------------------------------------------------
+static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *arg )
 {
-  // get the input
-  vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
-  vtkDataSet *input = vtkDataSet::SafeDownCast(
-    inInfo->Get(vtkDataObject::DATA_OBJECT()));
-  
-  // get the output
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  vtkImageData *output = vtkImageData::SafeDownCast(
-    outInfo->Get(vtkDataObject::DATA_OBJECT()));
-  
-  // We need to allocate our own scalars since we are overriding
-  // the superclasses "Execute()" method.
-  output->SetExtent(output->GetWholeExtent());
-  output->AllocateScalars();
-  
-  vtkIdType numPts;
+  int threadId = ((vtkMultiThreader::ThreadInfo *)(arg))->ThreadID;
+  int threadCount = ((vtkMultiThreader::ThreadInfo *)(arg))->NumberOfThreads;
+  vtkPartialVolumeModellerThreadInfo *userData = (vtkPartialVolumeModellerThreadInfo *)
+    (((vtkMultiThreader::ThreadInfo *)(arg))->UserData);
+
+  vtkDataSet *input = userData->Input;
+  vtkImageData *output = userData->Modeller->GetOutput();
+  double *spacing = output->GetSpacing();
+  double *origin = output->GetOrigin();
+
+  int *sampleDimensions = userData->Modeller->GetSampleDimensions();
+  if (!output->GetPointData()->GetScalars())
+    {
+    vtkGenericWarningMacro("No output scalars defined.");
+    return VTK_THREAD_RETURN_VALUE;
+    }
+
+  // break up into slabs based on threadId and threadCount
+  int slabSize = sampleDimensions[2] / threadCount;
+  int slabSizeExtra = slabSize + 1; // For slabs with an extra layer
+  int numThreadsWithExtraLayer = sampleDimensions[2] % threadCount;
+
+  int slabMin, slabMax;
+  if (threadId < numThreadsWithExtraLayer)
+    {
+    slabMin = threadId * slabSizeExtra;
+    slabMax = slabMin + slabSizeExtra - 1;
+    }
+  else
+    {
+    slabMin = numThreadsWithExtraLayer * slabSizeExtra +
+      (threadId - numThreadsWithExtraLayer) * slabSize;
+    slabMax = slabMin + slabSize - 1;
+    }
+  if (slabMin >= sampleDimensions[2])
+    {
+    return VTK_THREAD_RETURN_VALUE;
+    }
+
   double *weights = new double[input->GetMaxCellSize()];
-  double voxelHalfWidth[3], origin[3], spacing[3];
   vtkDataArray *newScalars = output->GetPointData()->GetScalars();
 
   //
-  // Initialize self; create output objects
-  //
-  vtkDebugMacro(<< "Executing Voxel model");
-
-  numPts = this->SampleDimensions[0] * this->SampleDimensions[1] *
-    this->SampleDimensions[2];
-  for (int i=0; i<numPts; i++)
-    {
-    newScalars->SetComponent(i,0,0.0);
-    }
-
-  double maxDistance = this->ComputeModelBounds(origin,spacing);
-  outInfo->Set(vtkDataObject::SPACING(),spacing,3);
-  outInfo->Set(vtkDataObject::ORIGIN(),origin,3);
-  //
   // Voxel widths are 1/2 the height, width, length of a voxel
   //
+  double voxelHalfWidth[3];
   for (int i=0; i < 3; i++)
     {
     voxelHalfWidth[i] = spacing[i] / 2.0;
@@ -171,16 +199,16 @@ int vtkPartialVolumeModeller::RequestData(
   //
   // Traverse all voxels, computing partial volume intersecton on all points.
   //
-  int jkFactor = this->SampleDimensions[0]*this->SampleDimensions[1];
-  for (int k = 0; k < this->SampleDimensions[2]; k++)
+  int jkFactor = sampleDimensions[0]*sampleDimensions[1];
+  for (int k = slabMin; k <= slabMax; k++)
     {
     double zmin = (static_cast<double>(k) - 0.5)*spacing[2] + origin[2];
     double zmax = (static_cast<double>(k) + 0.5)*spacing[2] + origin[2];
-    for (int j = 0; j < this->SampleDimensions[1]; j++)
+    for (int j = 0; j < sampleDimensions[1]; j++)
       {
       double ymin = (static_cast<double>(j) - 0.5)*spacing[1] + origin[1];
       double ymax = (static_cast<double>(j) + 0.5)*spacing[1] + origin[1];
-      for (int i = 0; i < this->SampleDimensions[0]; i++)
+      for (int i = 0; i < sampleDimensions[0]; i++)
         {
         double xmin = (static_cast<double>(i) - 0.5)*spacing[0] + origin[0];
         double xmax = (static_cast<double>(i) + 0.5)*spacing[0] + origin[0];
@@ -209,83 +237,62 @@ int vtkPartialVolumeModeller::RequestData(
             }
           else
             {
-            vtkErrorMacro( << "A non-tetrahedral element was encountered.");
+            vtkGenericWarningMacro( << "A non-tetrahedral element was encountered.");
             }
           }
 
-        int idx = jkFactor*k + this->SampleDimensions[0]*j + i;
+        int idx = jkFactor*k + sampleDimensions[0]*j + i;
         newScalars->SetComponent(idx, 0, volume / fullVoxelVolume);
-        std::cout << volume << std::endl;
         }
       }
     }
   clipper->Delete();
 
-#if 0
-  //
-  // Traverse all cells; computing distance function on volume points.
-  //
-  numCells = input->GetNumberOfCells();
-  for (cellNum=0; cellNum < numCells; cellNum++)
-    {
-    cell = input->GetCell(cellNum);
-    bounds = cell->GetBounds();
-    for (i=0; i<3; i++)
-      {
-      adjBounds[2*i] = bounds[2*i] - maxDistance;
-      adjBounds[2*i+1] = bounds[2*i+1] + maxDistance;
-      }
-
-    // compute dimensional bounds in data set
-    for (i=0; i<3; i++)
-      {
-      min[i] = static_cast<int>(
-        static_cast<double>(adjBounds[2*i] - origin[i]) / spacing[i]);
-      max[i] = static_cast<int>(
-        static_cast<double>(adjBounds[2*i+1] - origin[i]) / spacing[i]);
-      if (min[i] < 0)
-        {
-        min[i] = 0;
-        }
-      if (max[i] >= this->SampleDimensions[i])
-        {
-        max[i] = this->SampleDimensions[i] - 1;
-        }
-      }
-
-    jkFactor = this->SampleDimensions[0]*this->SampleDimensions[1];
-    for (k = min[2]; k <= max[2]; k++) 
-      {
-      x[2] = spacing[2] * k + origin[2];
-      for (j = min[1]; j <= max[1]; j++)
-        {
-        x[1] = spacing[1] * j + origin[1];
-        for (i = min[0]; i <= max[0]; i++) 
-          {
-          idx = jkFactor*k + this->SampleDimensions[0]*j + i;
-          if (!(newScalars->GetComponent(idx,0)))
-            {
-            x[0] = spacing[0] * i + origin[0];
-
-            if ( cell->EvaluatePosition(x, closestPoint, subId, pcoords,
-                                        distance2, weights) != -1 &&
-                 ((fabs(closestPoint[0] - x[0]) <= voxelHalfWidth[0]) &&
-                  (fabs(closestPoint[1] - x[1]) <= voxelHalfWidth[1]) &&
-                  (fabs(closestPoint[2] - x[2]) <= voxelHalfWidth[2])) )
-              {
-              newScalars->SetComponent(idx,0,this->ForegroundValue);
-              }
-            }
-          }
-        }
-      }
-    }
-#endif
   delete [] weights;
+
+  return VTK_THREAD_RETURN_VALUE;
+}
+
+//----------------------------------------------------------------------------
+int vtkPartialVolumeModeller::RequestData(
+  vtkInformation* vtkNotUsed( request ),
+  vtkInformationVector** inputVector,
+  vtkInformationVector* outputVector)
+{
+  // get the input
+  vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+  vtkDataSet *input = vtkDataSet::SafeDownCast(
+    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  // get the output
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkImageData *output = vtkImageData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  // We need to allocate our own scalars since we are overriding
+  // the superclasses "Execute()" method.
+  output->SetExtent(output->GetWholeExtent());
+  output->AllocateScalars();
+
+  double origin[3], spacing[3];
+  double maxDistance = this->ComputeModelBounds(origin, spacing);
+  outInfo->Set(vtkDataObject::ORIGIN(), origin, 3);
+
+  vtkPartialVolumeModellerThreadInfo info;
+  info.Modeller = this;
+  info.Input = input;
+
+  // Set the number of threads to use,
+  // then set the execution method and do it.
+  this->Threader->SetNumberOfThreads( this->NumberOfThreads );
+  this->Threader->SetSingleMethod( vtkPartialVolumeModeller_ThreadedExecute,
+    (void *)&info);
+  this->Threader->SingleMethodExecute();
 
   return 1;
 }
 
+//----------------------------------------------------------------------------
 // Compute the ModelBounds based on the input geometry.
 double vtkPartialVolumeModeller::ComputeModelBounds(double origin[3], 
                                             double spacing[3])
@@ -338,6 +345,7 @@ double vtkPartialVolumeModeller::ComputeModelBounds(double origin[3],
   return maxDist;  
 }
 
+//----------------------------------------------------------------------------
 // Set the i-j-k dimensions on which to sample the distance function.
 void vtkPartialVolumeModeller::SetSampleDimensions(int i, int j, int k)
 {
@@ -350,6 +358,7 @@ void vtkPartialVolumeModeller::SetSampleDimensions(int i, int j, int k)
   this->SetSampleDimensions(dim);
 }
 
+//----------------------------------------------------------------------------
 void vtkPartialVolumeModeller::SetSampleDimensions(int dim[3])
 {
   int dataDim, i;
@@ -387,6 +396,7 @@ void vtkPartialVolumeModeller::SetSampleDimensions(int dim[3])
     }
 }
 
+//----------------------------------------------------------------------------
 int vtkPartialVolumeModeller::FillInputPortInformation(
   int vtkNotUsed(port), vtkInformation* info)
 {
@@ -394,6 +404,7 @@ int vtkPartialVolumeModeller::FillInputPortInformation(
   return 1;
 }
 
+//----------------------------------------------------------------------------
 void vtkPartialVolumeModeller::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
