@@ -16,6 +16,9 @@
 
 #include "vtkBoxClipDataSet.h"
 #include "vtkCell.h"
+#include "vtkCellLocator.h"
+#include "vtkDataSetSurfaceFilter.h"
+#include "vtkGenericCell.h"
 #include "vtkImageData.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
@@ -145,6 +148,23 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
     (((vtkMultiThreader::ThreadInfo *)(arg))->UserData);
 
   vtkDataSet *input = userData->Input[threadId];
+
+  // Extract the grid boundaries
+  vtkDataSetSurfaceFilter *surfaceFilter = vtkDataSetSurfaceFilter::New();
+  surfaceFilter->SetInput(input);
+  surfaceFilter->Update();
+
+  // Set up a locator
+  vtkCellLocator *locator = vtkCellLocator::New();
+  locator->SetDataSet(surfaceFilter->GetOutput());
+  locator->AutomaticOn();
+  locator->SetNumberOfCellsPerBucket(1);
+  locator->CacheCellBoundsOn();
+  locator->BuildLocator();
+
+  // Generic cell to use when locating cells
+  vtkGenericCell *cell = vtkGenericCell::New();
+
   vtkImageData *output = userData->Modeller->GetOutput();
   double *spacing = output->GetSpacing();
   double *origin = output->GetOrigin();
@@ -202,44 +222,80 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
   // Traverse all voxels, computing partial volume intersecton on all points.
   //
   int jkFactor = sampleDimensions[0]*sampleDimensions[1];
+  double voxelPoint[3];
   for (int k = slabMin; k <= slabMax; k++)
     {
-    double zmin = (static_cast<double>(k) - 0.5)*spacing[2] + origin[2];
-    double zmax = (static_cast<double>(k) + 0.5)*spacing[2] + origin[2];
+    voxelPoint[2] = static_cast<double>(k)*spacing[2] + origin[2];
+    double zmin = voxelPoint[2] - voxelHalfWidth[2];
+    double zmax = voxelPoint[2] + voxelHalfWidth[2];
     for (int j = 0; j < sampleDimensions[1]; j++)
       {
-      double ymin = (static_cast<double>(j) - 0.5)*spacing[1] + origin[1];
-      double ymax = (static_cast<double>(j) + 0.5)*spacing[1] + origin[1];
+      voxelPoint[1] = static_cast<double>(j)*spacing[1] + origin[1];
+      double ymin = voxelPoint[1] - voxelHalfWidth[1];
+      double ymax = voxelPoint[1] + voxelHalfWidth[1];
       for (int i = 0; i < sampleDimensions[0]; i++)
         {
-        double xmin = (static_cast<double>(i) - 0.5)*spacing[0] + origin[0];
-        double xmax = (static_cast<double>(i) + 0.5)*spacing[0] + origin[0];
-        
-        // Update the box dimensions in the clipper
-        clipper->SetBoxClip(xmin, xmax, ymin, ymax, zmin, zmax);
-        clipper->Update();
-        
-        // Get the output tetrahedra from the clipper and compute the sum of their volumes
-        vtkUnstructuredGrid* intersection = clipper->GetOutput();
-        int numCells = intersection->GetNumberOfCells();
+        voxelPoint[0] = static_cast<double>(i)*spacing[0] + origin[0];
+        double xmin = voxelPoint[0] - voxelHalfWidth[0];
+        double xmax = voxelPoint[0] + voxelHalfWidth[0];
+
+        // Look for the closest point on the surface. If it is outside the voxel,
+        // we can skip the expensive box clipping.
+        double closestPoint[3];
+        vtkIdType cellId;
+        int subId;
+        double dist2;
+        locator->FindClosestPoint(voxelPoint, closestPoint, cell, cellId, subId, dist2);
+
+        bool boundaryIntersectsVoxel = closestPoint[0] >= xmin && closestPoint[0] <= xmax &&
+                                       closestPoint[1] >= ymin && closestPoint[1] <= ymax &&
+                                       closestPoint[2] >= zmin && closestPoint[2] <= zmax;
+
         double volume = 0.0;
-        for (int cellNum = 0; cellNum < numCells; cellNum++)
+        if (boundaryIntersectsVoxel)
           {
-          vtkCell *cell = intersection->GetCell(cellNum);
-          if (cell->GetCellType() == VTK_TETRA)
+          // We need to clip with the voxel bounds and compute the volume of the intersection
+          // Update the box dimensions in the clipper
+          clipper->SetBoxClip(voxelPoint[0] - voxelHalfWidth[0], voxelPoint[0] + voxelHalfWidth[0],
+                              voxelPoint[1] - voxelHalfWidth[1], voxelPoint[1] + voxelHalfWidth[1],
+                              voxelPoint[2] - voxelHalfWidth[2], voxelPoint[2] + voxelHalfWidth[2]);
+          clipper->Update();
+
+          // Get the output tetrahedra from the clipper and compute the sum of their volumes
+          vtkUnstructuredGrid* intersection = clipper->GetOutput();
+          int numCells = intersection->GetNumberOfCells();
+          for (int cellNum = 0; cellNum < numCells; cellNum++)
             {
-            vtkTetra* tet = vtkTetra::SafeDownCast(cell);
-            vtkPoints* pts = tet->GetPoints();
-            double p0[3], p1[3], p2[3], p3[3];
-            pts->GetPoint(0, p0);
-            pts->GetPoint(1, p1);
-            pts->GetPoint(2, p2);
-            pts->GetPoint(3, p3);
-            volume += vtkTetra::ComputeVolume(p0, p1, p2, p3);
+            vtkCell *cell = intersection->GetCell(cellNum);
+            if (cell->GetCellType() == VTK_TETRA)
+              {
+              vtkTetra* tet = vtkTetra::SafeDownCast(cell);
+              vtkPoints* pts = tet->GetPoints();
+              double p0[3], p1[3], p2[3], p3[3];
+              pts->GetPoint(0, p0);
+              pts->GetPoint(1, p1);
+              pts->GetPoint(2, p2);
+              pts->GetPoint(3, p3);
+              volume += vtkTetra::ComputeVolume(p0, p1, p2, p3);
+              }
+            else
+              {
+              vtkGenericWarningMacro( << "A non-tetrahedral element was encountered.");
+              }
+            }
+          }
+        else
+          {
+          // The voxel is either completely inside the grid or completely outside the grid.
+          // We need to determine which.
+          cellId = locator->FindCell(voxelPoint);
+          if (cellId == -1)
+            {
+            volume = 0.0;
             }
           else
             {
-            vtkGenericWarningMacro( << "A non-tetrahedral element was encountered.");
+            volume = fullVoxelVolume;
             }
           }
 
@@ -266,6 +322,17 @@ int vtkPartialVolumeModeller::RequestData(
   vtkDataSet *input = vtkDataSet::SafeDownCast(
     inInfo->Get(vtkDataObject::DATA_OBJECT()));
 
+  // Check that the input type is supported
+  int dataObjectType = input->GetDataObjectType();
+  if (dataObjectType != VTK_STRUCTURED_GRID &&
+      dataObjectType != VTK_UNSTRUCTURED_GRID &&
+      dataObjectType != VTK_RECTILINEAR_GRID)
+    {
+    vtkErrorMacro(<< "vtkPartialVolumeModeller expects an input data set of type "
+                  << "vtkStructuredGrid, vtkUnstructuredGrid, or vtkRectilinearGrid.");
+    return 0;
+    }
+
   // get the output
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkImageData *output = vtkImageData::SafeDownCast(
@@ -290,7 +357,7 @@ int vtkPartialVolumeModeller::RequestData(
   info.Input = new vtkDataSet*[this->Threader->GetNumberOfThreads()];
   for (int threadId = 0; threadId < this->Threader->GetNumberOfThreads(); threadId++)
     {
-    switch (input->GetDataObjectType())
+    switch (dataObjectType)
       {
       case VTK_STRUCTURED_GRID:
         info.Input[threadId] = vtkStructuredGrid::New();
