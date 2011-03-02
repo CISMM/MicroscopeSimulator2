@@ -14,17 +14,19 @@
 =========================================================================*/
 #include "vtkPartialVolumeModeller.h"
 
+#include "vtkBoxClipDataSet.h"
 #include "vtkCell.h"
 #include "vtkImageData.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkMultiThreader.h"
 #include "vtkObjectFactory.h"
-#include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkPointData.h"
-#include "vtkBoxClipDataSet.h"
-#include "vtkUnstructuredGrid.h"
+#include "vtkRectilinearGrid.h"
+#include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkStructuredGrid.h"
 #include "vtkTetra.h"
+#include "vtkUnstructuredGrid.h"
 
 #include <math.h>
 
@@ -34,7 +36,7 @@ vtkStandardNewMacro(vtkPartialVolumeModeller);
 struct vtkPartialVolumeModellerThreadInfo
 {
   vtkPartialVolumeModeller *Modeller;
-  vtkDataSet               *Input;
+  vtkDataSet               **Input;
 };
 
 // Construct an instance of vtkPartialVolumeModeller with its sample dimensions
@@ -142,7 +144,7 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
   vtkPartialVolumeModellerThreadInfo *userData = (vtkPartialVolumeModellerThreadInfo *)
     (((vtkMultiThreader::ThreadInfo *)(arg))->UserData);
 
-  vtkDataSet *input = userData->Input;
+  vtkDataSet *input = userData->Input[threadId];
   vtkImageData *output = userData->Modeller->GetOutput();
   double *spacing = output->GetSpacing();
   double *origin = output->GetOrigin();
@@ -280,7 +282,30 @@ int vtkPartialVolumeModeller::RequestData(
 
   vtkPartialVolumeModellerThreadInfo info;
   info.Modeller = this;
-  info.Input = input;
+
+  // Deep copy the data set to avoid a race condition. We could also
+  // split the mesh into slabs to reduce the amount of work each thread
+  // has to do, but the splitting needs to be done in one thread,
+  // so doing so is not a clear win.
+  info.Input = new vtkDataSet*[this->Threader->GetNumberOfThreads()];
+  for (int threadId = 0; threadId < this->Threader->GetNumberOfThreads(); threadId++)
+    {
+    switch (input->GetDataObjectType())
+      {
+      case VTK_STRUCTURED_GRID:
+        info.Input[threadId] = vtkStructuredGrid::New();
+        break;
+
+      case VTK_UNSTRUCTURED_GRID:
+        info.Input[threadId] = vtkUnstructuredGrid::New();
+        break;
+
+      case VTK_RECTILINEAR_GRID:
+        info.Input[threadId] = vtkRectilinearGrid::New();
+        break;
+      }
+    info.Input[threadId]->DeepCopy(input);
+    }
 
   // Set the number of threads to use,
   // then set the execution method and do it.
@@ -288,6 +313,13 @@ int vtkPartialVolumeModeller::RequestData(
   this->Threader->SetSingleMethod( vtkPartialVolumeModeller_ThreadedExecute,
     (void *)&info);
   this->Threader->SingleMethodExecute();
+
+  // Clean up.
+  for (int threadId = 0; threadId < this->Threader->GetNumberOfThreads(); threadId++)
+    {
+    info.Input[threadId]->Delete();
+    }
+  delete[] info.Input;
 
   return 1;
 }
