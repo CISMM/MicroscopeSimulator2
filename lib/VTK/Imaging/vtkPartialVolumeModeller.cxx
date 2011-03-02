@@ -264,6 +264,7 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
           // Get the output tetrahedra from the clipper and compute the sum of their volumes
           vtkUnstructuredGrid* intersection = clipper->GetOutput();
           int numCells = intersection->GetNumberOfCells();
+          std::cout << "Num cells: " << numCells << std::endl;
           for (int cellNum = 0; cellNum < numCells; cellNum++)
             {
             vtkCell *cell = intersection->GetCell(cellNum);
@@ -284,11 +285,12 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
               }
             }
           }
-        else
+        else // no boundary intersection with voxel
           {
           // The voxel is either completely inside the grid or completely outside the grid.
           // We need to determine which.
-          cellId = locator->FindCell(voxelPoint);
+          double pcoords[3];
+          cellId = input->FindCell(voxelPoint, NULL, 0, 1e-5, subId, pcoords, weights);
           if (cellId == -1)
             {
             volume = 0.0;
