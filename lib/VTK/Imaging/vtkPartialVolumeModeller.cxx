@@ -62,7 +62,7 @@ vtkPartialVolumeModeller::vtkPartialVolumeModeller()
   this->SampleDimensions[1] = 50;
   this->SampleDimensions[2] = 50;
 
-  this->OutputScalarType = VTK_DOUBLE;
+  this->OutputScalarType = VTK_FLOAT;
 
   this->Threader        = vtkMultiThreader::New();
   this->NumberOfThreads = this->Threader->GetNumberOfThreads();
@@ -264,7 +264,6 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
           // Get the output tetrahedra from the clipper and compute the sum of their volumes
           vtkUnstructuredGrid* intersection = clipper->GetOutput();
           int numCells = intersection->GetNumberOfCells();
-          std::cout << "Num cells: " << numCells << std::endl;
           for (int cellNum = 0; cellNum < numCells; cellNum++)
             {
             vtkCell *cell = intersection->GetCell(cellNum);
