@@ -282,7 +282,7 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
 
     vtkPointData *pointData = this->GetInput()->GetPointData();
     vtkFloatArray *intensities = vtkFloatArray::SafeDownCast
-      (pointData->GetScalars("Intensity"));
+      (pointData->GetScalars());
 
     // Copy and cast point locations to texture memory.
     int pointDataLength = this->PointTextureDimension * this->PointTextureDimension;
