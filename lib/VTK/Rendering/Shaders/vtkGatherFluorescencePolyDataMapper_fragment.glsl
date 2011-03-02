@@ -47,7 +47,7 @@ void main() {
 
          // Lookup PSF value in texture
          if (all(greaterThanEqual(texCoord, zero)) && all(lessThanEqual(texCoord, psfMaxTexCoords))) {
-            vec3 sampleValue = texture3D(psfSampler, texCoord).rgb;
+            vec3 sampleValue = texture3D(psfSampler, texCoord).rgb * texPt.a;
 
             // Kahan summation
             vec3 y = sampleValue - err;
