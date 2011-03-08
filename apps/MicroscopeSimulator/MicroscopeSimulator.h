@@ -46,10 +46,15 @@ public:
   static const char* XML_ENCODING;
 
   // Constructor/destructor
-  MicroscopeSimulator(QWidget* parent=0);
+  MicroscopeSimulator(int argc=0, char* argv[]=NULL, QWidget* parent=0);
   virtual ~MicroscopeSimulator();
 
   void CheckOpenGLCapabilities();
+
+  void ProcessCommandLineArguments(int argc, char* argv[]);
+
+  void SetBatchMode(bool mode);
+  bool IsBatchMode();
   
 protected:
   Ui_MainWindow* gui;
@@ -221,6 +226,7 @@ protected:
 protected slots:
 
 private:
+  bool m_BatchMode;
   bool m_SimulationNeedsSaving;
 
   vtkSmartPointer<vtkRenderer>                  m_ModelObjectRenderer;

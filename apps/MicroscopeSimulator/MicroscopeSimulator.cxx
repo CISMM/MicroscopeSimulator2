@@ -74,8 +74,10 @@
 
 // Constructor
 MicroscopeSimulator
-::MicroscopeSimulator(QWidget* p)
+::MicroscopeSimulator(int argc, char* argv[], QWidget* p)
   : QMainWindow(p), m_ModelObjectPropertyListTableModel(NULL) {
+
+  SetBatchMode(false); // Assume interactive mode by default
 
   gui = new Ui_MainWindow();
   gui->setupUi(this);
@@ -377,6 +379,55 @@ MicroscopeSimulator
   // Mark that we've checked the OpenGL capabilities.
   prefs.setValue("Checked", true);
   prefs.endGroup();
+}
+
+
+// Process command-line arguments. This program is a little unusual
+// in that arguments are treated as commands to execute. Arguments
+// are processed in the order in which they appear on the command
+// line.
+void
+MicroscopeSimulator
+::ProcessCommandLineArguments(int argc, char* argv[]) {
+  for (int i = 1; i < argc; i++) {
+    std::cout << argv[i] << std::endl;
+    if (strcmp(argv[i], "--batch-mode") == 0) {
+      SetBatchMode(true);
+    } else if (strcmp(argv[i], "--open-simulation") == 0) {
+      i++;
+      if (i < argc) {
+        NewSimulation();
+        OpenSimulationFile(std::string(argv[i]));
+      } else {
+        std::cerr << "No simulation file provided for command --open-simulation" << std::endl;
+        return;
+      }
+    } else if (strcmp(argv[i], "--save-simulation") == 0) {
+      i++;
+      if (i < argc) {
+        SaveSimulationFile(std::string(argv[i]));
+      } else {
+        std::cerr << "No simulation file provided for command --save-simulation" << std::endl;
+        return;
+      }
+    } else if (strcmp(argv[i], "--optimize-fluorescence") == 0) {
+      m_Simulation->OptimizeToFluorescence();
+    }
+  }
+}
+
+
+void
+MicroscopeSimulator
+::SetBatchMode(bool mode) {
+  m_BatchMode = mode;
+}
+
+
+bool
+MicroscopeSimulator
+::IsBatchMode() {
+  return m_BatchMode;
 }
 
 
