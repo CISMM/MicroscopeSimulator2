@@ -173,6 +173,10 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
   if (!output->GetPointData()->GetScalars())
     {
     vtkGenericWarningMacro("No output scalars defined.");
+    surfaceFilter->Delete();
+    locator->Delete();
+    cell->Delete();
+
     return VTK_THREAD_RETURN_VALUE;
     }
 
@@ -306,6 +310,9 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
       }
     }
   clipper->Delete();
+  surfaceFilter->Delete();
+  locator->Delete();
+  cell->Delete();
 
   delete [] weights;
 
