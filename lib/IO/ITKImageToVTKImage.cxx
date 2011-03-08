@@ -5,11 +5,15 @@
 
 #include <vtkImageData.h>
 #include <vtkImageImport.h>
+#include <vtkImageFlip.h>
 
 
 template <class TImage>
 ITKImageToVTKImage<TImage>
 ::ITKImageToVTKImage() {
+  m_FlipFilter = vtkImageFlip::New();
+  m_FlipFilter->SetFilteredAxis(1);
+
   m_Exporter = itk::VTKImageExport<TImage>::New();
 
   m_Importer = vtkImageImport::New();
@@ -25,6 +29,8 @@ ITKImageToVTKImage<TImage>
   m_Importer->SetDataExtentCallback(m_Exporter->GetDataExtentCallback());
   m_Importer->SetBufferPointerCallback(m_Exporter->GetBufferPointerCallback());
   m_Importer->SetCallbackUserData(m_Exporter->GetCallbackUserData());
+
+  m_FlipFilter->SetInputConnection(m_Importer->GetOutputPort());
 }
 
 
@@ -32,6 +38,7 @@ template <class TImage>
 ITKImageToVTKImage<TImage>
 ::~ITKImageToVTKImage() {
   m_Importer->Delete();
+  m_FlipFilter->Delete();
 }
 
 
@@ -47,7 +54,7 @@ template <class TImage>
 vtkAlgorithmOutput*
 ITKImageToVTKImage<TImage>
 ::GetOutputPort() {
-  return m_Importer->GetOutputPort();
+  return m_FlipFilter->GetOutputPort();
 }
 
 
@@ -55,7 +62,7 @@ template <class TImage>
 vtkImageData*
 ITKImageToVTKImage<TImage>
 ::GetOutput() {
-  return m_Importer->GetOutput();
+  return m_FlipFilter->GetOutput();
 }
 
 
@@ -64,6 +71,7 @@ void
 ITKImageToVTKImage<TImage>
 ::Modified() {
   m_Importer->Modified();
+  m_FlipFilter->Modified();
 }
 
 
@@ -72,6 +80,7 @@ void
 ITKImageToVTKImage<TImage>
 ::Update() {
   m_Importer->Update();
+  m_FlipFilter->Update();
 }
 
 #endif // _ITK_IMAGE_TO_VTK_IMAGE_CXX_ 
