@@ -278,7 +278,12 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
 
     vtkPoints *points = this->GetInput()->GetPoints();
     int numPoints = points->GetNumberOfPoints();
-    this->PointTextureDimension = ceil(sqrt((double) numPoints));
+    //this->PointTextureDimension = ceil(sqrt((double) numPoints));
+    for (int i = 1; i <= 8192; i*=2) {
+      this->PointTextureDimension = i;
+      if (i*i >= numPoints)
+        break;
+    }
 
     vtkPointData *pointData = this->GetInput()->GetPointData();
     vtkFloatArray *intensities = vtkFloatArray::SafeDownCast
