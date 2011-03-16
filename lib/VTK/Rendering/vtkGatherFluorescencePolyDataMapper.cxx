@@ -192,17 +192,21 @@ void vtkGatherFluorescencePolyDataMapper::RenderPoints(vtkActor *actor, vtkRende
 
     while(glGetError());
 
-    // Outer loop required because fragment programs are limited to 2^16 instructions.
-    // We'll generally have far more points than 2^16, so we need to draw several
-    // quads, gathering from a different set of points in each one.
+    // Outer loop required because fragment programs are limited to 2^16 instructions
+    // on older hardware. We'll generally have far more points than 2^16, so we need
+    // to draw several quads, gathering from a different set of points in each one.
     int numPoints = points->GetNumberOfPoints();
-    int increment = this->PointsPerPass;
-    for (int startIndex = 0; startIndex < numPoints; startIndex += increment) {
-      int endIndex = startIndex + increment;
+    int numRows = numPoints / this->PointTextureDimension + (numPoints % this->PointTextureDimension != 0 ? 1 : 0);
+    int rowIncrement = this->PointsPerPass / this->PointTextureDimension;
+    for (int startRow = 0; startRow < numRows; startRow += rowIncrement) {
+      int endRow = startRow + rowIncrement;
+      if (endRow > numRows)
+        endRow = numRows;
+      int endIndex = endRow * this->PointTextureDimension;
       if (endIndex > numPoints)
         endIndex = numPoints;
-      
-      this->SetUniform1i("startIndex", startIndex);
+
+      this->SetUniform1i("startRow", startRow);
       this->SetUniform1i("endIndex", endIndex);
 
       // Draw quad that bounds all contributions from the fluorophores
@@ -278,12 +282,7 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
 
     vtkPoints *points = this->GetInput()->GetPoints();
     int numPoints = points->GetNumberOfPoints();
-    //this->PointTextureDimension = ceil(sqrt((double) numPoints));
-    for (int i = 1; i <= 8192; i*=2) {
-      this->PointTextureDimension = i;
-      if (i*i >= numPoints)
-        break;
-    }
+    this->PointTextureDimension = ceil(sqrt((double) numPoints));
 
     vtkPointData *pointData = this->GetInput()->GetPointData();
     vtkFloatArray *intensities = vtkFloatArray::SafeDownCast
