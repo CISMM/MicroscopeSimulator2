@@ -8,6 +8,10 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkUnstructuredGridAlgorithm.h>
 #include <vtkThresholdPoints.h>
+#include <vtkXMLPolyDataWriter.h>
+
+
+const char* GridBasedFluorophoreProperty::SAMPLE_SPACING_ATT = "sampleSpacing";
 
 
 GridBasedFluorophoreProperty
@@ -24,13 +28,11 @@ GridBasedFluorophoreProperty
   m_PartialVolumeVoxelizer->SetInputConnection(gridSource->GetOutputPort());
   m_PartialVolumeVoxelizer->SetOutputScalarTypeToFloat();
 
-  vtkSmartPointer<vtkThresholdPoints> thold =
-    vtkSmartPointer<vtkThresholdPoints>::New();
-  thold->ThresholdByUpper(1e-9);
-  thold->SetInputConnection(m_PartialVolumeVoxelizer->GetOutputPort());
+  m_Threshold = vtkSmartPointer<vtkThresholdPoints>::New();
+  m_Threshold->ThresholdByUpper(1e-9);
+  m_Threshold->SetInputConnection(m_PartialVolumeVoxelizer->GetOutputPort());
 
-  //m_FluorophoreOutput = intensityCalculator;
-  m_FluorophoreOutput = thold;
+  m_FluorophoreOutput = m_Threshold;
 
   this->Update();
 }
@@ -104,6 +106,31 @@ GridBasedFluorophoreProperty
 
   m_PartialVolumeVoxelizer->SetModelBounds(bounds);
   m_PartialVolumeVoxelizer->SetSampleDimensions(dims);
+  m_PartialVolumeVoxelizer->Update();
+}
+
+
+void
+GridBasedFluorophoreProperty
+::GetXMLConfiguration(xmlNodePtr root) {
+  FluorophoreModelObjectProperty::GetXMLConfiguration(root);
+
+  char value[256];
+  sprintf(value, "%f", GetSampleSpacing());
+  xmlNewProp(root, BAD_CAST SAMPLE_SPACING_ATT, BAD_CAST value);
+}
+
+
+void
+GridBasedFluorophoreProperty
+::RestoreFromXML(xmlNodePtr root) {
+  FluorophoreModelObjectProperty::RestoreFromXML(root);
+
+  char* value = (char *) xmlGetProp(root, BAD_CAST SAMPLE_SPACING_ATT);
+  if (value) {
+    double sampleSpacing = atof(value);
+    SetSampleSpacing(sampleSpacing);
+  }
 }
 
 

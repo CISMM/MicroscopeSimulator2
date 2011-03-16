@@ -4,12 +4,16 @@
 #include <FluorophoreModelObjectProperty.h>
 
 class vtkPartialVolumeModeller;
+class vtkThresholdPoints;
 class vtkUnstructuredGridAlgorithm;
 
 
 class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
 
  public:
+
+  static const char* SAMPLE_SPACING_ATT;
+
   GridBasedFluorophoreProperty(const std::string& name,
                                vtkUnstructuredGridAlgorithm* gridSource,
                                bool editable = false,
@@ -23,6 +27,9 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
 
   virtual void Update();
 
+  virtual void GetXMLConfiguration(xmlNodePtr root);
+  virtual void RestoreFromXML(xmlNodePtr root);
+
  protected:
   GridBasedFluorophoreProperty() {};
 
@@ -31,6 +38,7 @@ class GridBasedFluorophoreProperty : public FluorophoreModelObjectProperty {
   double m_SampleSpacing;
 
   vtkSmartPointer<vtkUnstructuredGridAlgorithm> m_GridSource;
+  vtkSmartPointer<vtkThresholdPoints>           m_Threshold;
   vtkSmartPointer<vtkPartialVolumeModeller>     m_PartialVolumeVoxelizer;
 };
 

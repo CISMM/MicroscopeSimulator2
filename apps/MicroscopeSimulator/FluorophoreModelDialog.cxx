@@ -2,6 +2,7 @@
 #include <GeometryVerticesFluorophoreProperty.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 
 
 FluorophoreModelDialog
@@ -60,6 +61,8 @@ FluorophoreModelDialog
     = dynamic_cast<SurfaceUniformFluorophoreProperty*>(property);
   VolumeUniformFluorophoreProperty* volumeProperty
     = dynamic_cast<VolumeUniformFluorophoreProperty*>(property);
+  GridBasedFluorophoreProperty* gridBasedProperty
+    = dynamic_cast<GridBasedFluorophoreProperty*>(property);
 
   if (geometryProperty) {
 
@@ -83,6 +86,15 @@ FluorophoreModelDialog
     double volume = volumeProperty->GetGeometryVolume();
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
     gui_DensityLabel->setText(tr("Density (fluorophores / micron^3)"));
+
+  } else if (gridBasedProperty) {
+
+    gui_FluorophoreModelLabel->setText(tr("Grid-based Volume Labeling"));
+    gui_SamplingModeGroupBox->setHidden(true);
+    gui_SamplingDensityGroupBox->setHidden(true);
+    gui_FluorophorePatternsGroupBox->setHidden(true);
+    gui_SpacingEdit->setText(QString().sprintf("%.6f", gridBasedProperty->GetSampleSpacing()));
+
   }
 
   // Common settings for density-based fluorophore models.
@@ -153,6 +165,12 @@ FluorophoreModelDialog
     uniformProperty->SetRandomizePatternOrientations(GetRandomizePatternOrientations());
   }
 
+  GridBasedFluorophoreProperty* gridBasedProperty
+    = dynamic_cast<GridBasedFluorophoreProperty*>(m_FluorophoreProperty);
+  if (gridBasedProperty) {
+    gridBasedProperty->SetSampleSpacing(GetSampleSpacing());
+  }
+
   // These options apply to any kind of fluorophore property
   m_FluorophoreProperty->SetEnabled(GetEnabled());
   m_FluorophoreProperty->SetFluorophoreChannel(GetFluorophoreChannel());
@@ -184,6 +202,13 @@ double
 FluorophoreModelDialog
 ::GetIntensityScale() {
   return gui_IntensityScaleEdit->text().toDouble();
+}
+
+
+double
+FluorophoreModelDialog
+::GetSampleSpacing() {
+  return gui_SpacingEdit->text().toDouble();
 }
 
 
@@ -286,41 +311,6 @@ FluorophoreModelDialog
   gui_FluorophoresAroundRingEdit->setEnabled(true);
   gui_RingRadiusLabel->setEnabled(true);
   gui_RingRadiusEdit->setEnabled(true);
-}
-
-
-void
-FluorophoreModelDialog
-::on_gui_ColorChannelGroupBox_toggled(bool checked) {
-  gui_ColorChannelWidget->setHidden(!checked);
-}
-
-
-void
-FluorophoreModelDialog
-::on_gui_SamplingModeGroupBox_toggled(bool checked) {
-  gui_SamplingModeWidget->setHidden(!checked);
-}
-
-
-void
-FluorophoreModelDialog
-::on_gui_SamplingDensityGroupBox_toggled(bool checked) {
-  gui_SamplingDensityWidget->setHidden(!checked);
-}
-
-
-void
-FluorophoreModelDialog
-::on_gui_IntensityGroupBox_toggled(bool checked) {
-  gui_IntensityWidget->setHidden(!checked);
-}
-
-
-void
-FluorophoreModelDialog
-::on_gui_FluorophorePatternsGroupBox_toggled(bool checked) {
-  gui_FluorophorePatternsWidget->setHidden(!checked);
 }
 
 
