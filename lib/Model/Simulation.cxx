@@ -11,19 +11,24 @@
 #include <itkMultiThreader.h>
 #include <itkPoint.h>
 
-#include <Simulation.h>
+#include "Simulation.h"
 
-#include <AFMSimulation.h>
+#include "AFMSimulation.h"
 
-#include <FluorescenceSimulation.h>
-#include <GradientDescentFluorescenceOptimizer.h>
-#include <NelderMeadFluorescenceOptimizer.h>
-#include <PointsGradientFluorescenceOptimizer.h>
+#include "FluorescenceSimulation.h"
+#include "GradientDescentFluorescenceOptimizer.h"
+#include "NelderMeadFluorescenceOptimizer.h"
+#include "PointsGradientFluorescenceOptimizer.h"
 
-#include <ImageModelObject.h>
-#include <ModelObjectList.h>
-#include <XMLHelper.h>
-#include <Version.h>
+#include "ImageModelObject.h"
+#include "ModelObjectList.h"
+#include "XMLHelper.h"
+#include "Version.h"
+
+#include "ImageWriter.h"
+
+// TODO - Simulation.cxx shouldn't have references to VTK header files
+#include <vtkImageExtractComponents.h>
 
 
 const char* Simulation::XML_ENCODING         = "ISO-8859-1";
@@ -470,6 +475,78 @@ Simulation
 
   // Reset the focal plane position
   m_FluoroSim->SetFocalPlaneIndex(focalPlaneIndex);
+}
+
+
+void
+Simulation
+::ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
+                          bool exportRed, bool exportGreen, bool exportBlue) {
+
+  vtkImageData* rawStack = this->GetFluorescenceSimulation()->GetFluorescenceImageSource()->GenerateFluorescenceStackImage();
+  vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+  extractor->SetInput(rawStack);
+
+  char filePath[2048];
+  if (exportRed) {
+    extractor->SetComponents(0);
+    sprintf(filePath, "%s%04d_R.%s", fileName.c_str(), index, extension.c_str());
+
+    try {
+      ImageWriter writer;
+      writer.SetFileName(filePath);
+      writer.SetInputConnection(extractor->GetOutputPort());
+      writer.WriteUShortImage();
+    } catch (itk::ExceptionObject e) {
+      std::cout << "Error on writing the red channel" << std::endl;
+      std::cout << e.GetDescription() << std::endl;
+    }
+  }
+
+  if (exportGreen) {
+    extractor->SetComponents(1);
+    sprintf(filePath, "%s%04d_G.%s", fileName.c_str(), index, extension.c_str());
+
+    try {
+      ImageWriter writer;
+      writer.SetFileName(filePath);
+      writer.SetInputConnection(extractor->GetOutputPort());
+      writer.WriteUShortImage();
+    } catch (itk::ExceptionObject e) {
+      std::cout << "Error on writing the green channel" << std::endl;
+      std::cout << e.GetDescription() << std::endl;
+    }
+  }
+
+  if (exportBlue) {
+    extractor->SetComponents(2);
+    sprintf(filePath, "%s_%04d_B.%s", fileName.c_str(), index, extension.c_str());
+
+    try {
+      ImageWriter writer;
+      writer.SetFileName(filePath);
+      writer.SetInputConnection(extractor->GetOutputPort());
+      writer.WriteUShortImage();
+    } catch (itk::ExceptionObject e) {
+      std::cout << "Error on writing the blue channel" << std::endl;
+      std::cout << e.GetDescription() << std::endl;
+    }
+  }
+
+  rawStack->Delete();
+}
+
+
+void
+Simulation
+::SaveFluorescenceObjectiveFunctionValue(const std::string& fileName) {
+  double value = this->GetFluorescenceOptimizer()->GetObjectiveFunctionValue();
+  std::ofstream file(fileName.c_str());
+
+  file.setf(0,ios::floatfield);
+  file.precision(10);
+  file << value << std::endl;
+  file.close();
 }
 
 

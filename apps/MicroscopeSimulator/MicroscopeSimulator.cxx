@@ -37,6 +37,7 @@
 #include <FocalPlanePositionsDialog.h>
 #include <ImageExportOptionsDialog.h>
 #include <ModelObjectList.h>
+#include "ModelObjectProperty.h"
 #include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
 #include <Preferences.h>
@@ -390,10 +391,13 @@ void
 MicroscopeSimulator
 ::ProcessCommandLineArguments(int argc, char* argv[]) {
   for (int i = 1; i < argc; i++) {
-    std::cout << argv[i] << std::endl;
+
     if (strcmp(argv[i], "--batch-mode") == 0) {
+
       SetBatchMode(true);
+
     } else if (strcmp(argv[i], "--open-simulation") == 0) {
+
       i++;
       if (i < argc) {
         NewSimulation();
@@ -402,7 +406,9 @@ MicroscopeSimulator
         std::cerr << "No simulation file provided for command --open-simulation" << std::endl;
         return;
       }
+
     } else if (strcmp(argv[i], "--save-simulation") == 0) {
+
       i++;
       if (i < argc) {
         SaveSimulationFile(std::string(argv[i]));
@@ -410,8 +416,80 @@ MicroscopeSimulator
         std::cerr << "No simulation file provided for command --save-simulation" << std::endl;
         return;
       }
+
     } else if (strcmp(argv[i], "--optimize-fluorescence") == 0) {
+
       m_Simulation->OptimizeToFluorescence();
+
+    } else if (strcmp(argv[i], "--save-fluorescence-stack") == 0) {
+
+      i++;
+      if (i < argc) {
+        m_Simulation->ExportFluorescenceStack(std::string(argv[i]), 0,
+          "tif", true, false, false);
+      } else {
+        std::cerr << "No stack name provided for command --save-fluorescence-stack" << std::endl;
+      }
+
+    } else if (strcmp(argv[i], "--save-fluorescence-objective-function-value") == 0) {
+
+      i++;
+      if (i < argc) {
+        m_Simulation->SaveFluorescenceObjectiveFunctionValue(std::string(argv[i]));
+      } else {
+        std::cerr << "No file name provided for command --save-fluorescence-objective-function-value" << std::endl;
+      }
+
+    } else if (strcmp(argv[i], "--set-parameter") == 0 ||
+               strcmp(argv[i], "--optimize-parameter") == 0) {
+
+      if (i+1 >= argc) {
+        std::cerr << "No model object name provided." << std::endl;
+        continue;
+      }
+
+      if (i+2 >= argc) {
+        std::cerr << "No parameter name provided." << std::endl;
+        continue;
+      }
+
+      if (i+3 >= argc) {
+        std::cerr << "No parameter value provided." << std::endl;
+        continue;
+      }
+
+      ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectByName(argv[i+1]);
+      if (!mo) {
+        std::cerr << "No model object named '" << argv[i+1] << "' exists." << std::endl;
+      } else {
+        ModelObjectProperty* mop = mo->GetProperty(argv[i+2]);
+        if (!mop) {
+          std::cerr << "No model object parameter named '" << argv[i+2] << "' exists in model object '" << argv[i+1] << "'." << std::endl;
+        } else {
+
+          if (strcmp(argv[i+3], "--set-parameter") == 0) {
+            switch (mop->GetType()) {
+            case ModelObjectProperty::BOOL_TYPE:
+              mop->SetBoolValue(strcmp(argv[i+3], "true") == 0);
+              break;
+
+            case ModelObjectProperty::INT_TYPE:
+              mop->SetIntValue(atoi(argv[i+3]));
+              break;
+
+            case ModelObjectProperty::DOUBLE_TYPE:
+              mop->SetDoubleValue(atoi(argv[i+3]));
+              break;
+
+            case ModelObjectProperty::STRING_TYPE:
+              mop->SetStringValue(std::string(argv[i+3]));
+              break;
+            }
+          } else {
+            mop->SetOptimize(strcmp(argv[i+3], "true") == 0);
+          }
+        }
+      }
     }
   }
 }
