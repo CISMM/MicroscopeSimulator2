@@ -16,9 +16,9 @@
 // with partial volume effects computed.
 // .SECTION Description
 // vtkPartialVolumeModeller is a filter that converts an arbitrary data set to a
-// structured point (i.e., voxel) representation. It is very similar to 
+// structured point (i.e., voxel) representation. It is very similar to
 // vtkImplicitModeller, except that it doesn't record distance; instead it
-// records the volume of the intersection of each voxel with the data set. 
+// records the volume of the intersection of each voxel with the data set.
 // .SECTION see also
 // vtkImplicitModeller vtkVoxelModeller
 
@@ -34,19 +34,19 @@ class vtkPartialVolumeModeller : public vtkImageAlgorithm
 public:
   vtkTypeRevisionMacro(vtkPartialVolumeModeller,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
-  
+
   // Description:
   // Construct an instance of vtkPartialVolumeModeller with its sample dimensions
   // set to (50,50,50), and so that the model bounds are
-  // automatically computed from its input. The maximum distance is set to 
+  // automatically computed from its input. The maximum distance is set to
   // examine the whole grid. This could be made much faster, and probably
   // will be in the future.
   static vtkPartialVolumeModeller *New();
-  
+
   // Description:
   // Compute the ModelBounds based on the input geometry.
   double ComputeModelBounds(double origin[3], double ar[3]);
-  
+
   // Description:
   // Set the i-j-k dimensions on which to sample the distance function.
   // Default is (50, 50, 50)
@@ -59,14 +59,14 @@ public:
   // values make large increases in performance. Default is 1.0.
   vtkSetClampMacro(MaximumDistance,double,0.0,1.0);
   vtkGetMacro(MaximumDistance,double);
-  
+
   // Description:
   // Specify the region in space to perform the voxelization.
   // Default is (0, 0, 0, 0, 0, 0)
   void SetModelBounds(double bounds[6]);
   void SetModelBounds(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
   vtkGetVectorMacro(ModelBounds,double,6);
-  
+
     // Description:
   // Control the scalar type of the output image. The default is
   // VTK_DOUBLE.
@@ -87,15 +87,15 @@ public:
   void SetOutputScalarTypeToChar()
     {this->SetOutputScalarType(VTK_CHAR);};
   vtkGetMacro(OutputScalarType,int);
-  
+
 protected:
   vtkPartialVolumeModeller();
   ~vtkPartialVolumeModeller();
-  
+
   virtual int RequestInformation(vtkInformation *,
                                  vtkInformationVector **,
                                  vtkInformationVector *);
-  
+
     // see vtkAlgorithm for details
   virtual int RequestData(vtkInformation *request,
                           vtkInformationVector** inputVector,

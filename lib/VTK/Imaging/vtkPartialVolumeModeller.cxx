@@ -44,7 +44,7 @@ struct vtkPartialVolumeModellerThreadInfo
 
 // Construct an instance of vtkPartialVolumeModeller with its sample dimensions
 // set to (50,50,50), and so that the model bounds are
-// automatically computed from its input. The maximum distance is set to 
+// automatically computed from its input. The maximum distance is set to
 // examine the whole grid. This could be made much faster, and probably
 // will be in the future.
 vtkPartialVolumeModeller::vtkPartialVolumeModeller()
@@ -62,7 +62,7 @@ vtkPartialVolumeModeller::vtkPartialVolumeModeller()
   this->SampleDimensions[1] = 50;
   this->SampleDimensions[2] = 50;
 
-  this->OutputScalarType = VTK_FLOAT;
+  this->OutputScalarType = VTK_DOUBLE;
 
   this->Threader        = vtkMultiThreader::New();
   this->NumberOfThreads = this->Threader->GetNumberOfThreads();
@@ -113,12 +113,12 @@ int vtkPartialVolumeModeller::RequestInformation (
 
   int i;
   double ar[3], origin[3];
-  
+
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
                0, this->SampleDimensions[0]-1,
                0, this->SampleDimensions[1]-1,
                0, this->SampleDimensions[2]-1);
-  
+
   for (i=0; i < 3; i++)
     {
     origin[i] = this->ModelBounds[2*i];
@@ -213,12 +213,16 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
     {
     voxelHalfWidth[i] = spacing[i] / 2.0;
     }
-  
+
+  double voxelRadius = sqrt(voxelHalfWidth[0]*voxelHalfWidth[0] +
+                            voxelHalfWidth[1]*voxelHalfWidth[1] +
+                            voxelHalfWidth[2]*voxelHalfWidth[2]);
+
   // Set up the box clipping filter
   vtkBoxClipDataSet *clipper = vtkBoxClipDataSet::New();
   clipper->SetInput(input);
   clipper->SetOrientation(0);
-  
+
   // Compute the volume of a filled voxel.
   double fullVoxelVolume = spacing[0]*spacing[1]*spacing[2];
 
@@ -249,11 +253,15 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
         vtkIdType cellId;
         int subId;
         double dist2;
-        locator->FindClosestPoint(voxelPoint, closestPoint, cell, cellId, subId, dist2);
+        int cellFound =
+          locator->FindClosestPointWithinRadius(voxelPoint, voxelRadius,
+                                                closestPoint, cell, cellId,
+                                                subId, dist2);
 
-        bool boundaryIntersectsVoxel = closestPoint[0] >= xmin && closestPoint[0] <= xmax &&
-                                       closestPoint[1] >= ymin && closestPoint[1] <= ymax &&
-                                       closestPoint[2] >= zmin && closestPoint[2] <= zmax;
+        bool boundaryIntersectsVoxel = cellFound == 1 &&
+          closestPoint[0] >= xmin && closestPoint[0] <= xmax &&
+          closestPoint[1] >= ymin && closestPoint[1] <= ymax &&
+          closestPoint[2] >= zmin && closestPoint[2] <= zmax;
 
         double volume = 0.0;
         if (boundaryIntersectsVoxel)
@@ -280,11 +288,11 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
               pts->GetPoint(1, p1);
               pts->GetPoint(2, p2);
               pts->GetPoint(3, p3);
-              volume += vtkTetra::ComputeVolume(p0, p1, p2, p3);
-              }
-            else
-              {
-              vtkGenericWarningMacro( << "A non-tetrahedral element was encountered.");
+              double cellVolume = vtkTetra::ComputeVolume(p0, p1, p2, p3);
+
+              // Should really check for negative volume elements here, but it's not
+              // clear what the right course of action is in that case.
+              volume += cellVolume;
               }
             }
           }
@@ -401,7 +409,7 @@ int vtkPartialVolumeModeller::RequestData(
 
 //----------------------------------------------------------------------------
 // Compute the ModelBounds based on the input geometry.
-double vtkPartialVolumeModeller::ComputeModelBounds(double origin[3], 
+double vtkPartialVolumeModeller::ComputeModelBounds(double origin[3],
                                             double spacing[3])
 {
   double *bounds, maxDist;
@@ -449,7 +457,7 @@ double vtkPartialVolumeModeller::ComputeModelBounds(double origin[3],
       (this->SampleDimensions[i] - 1);
     }
 
-  return maxDist;  
+  return maxDist;
 }
 
 //----------------------------------------------------------------------------
