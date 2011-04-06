@@ -186,8 +186,8 @@ void vtkGatherFluorescencePolyDataMapper::RenderPoints(vtkActor *actor, vtkRende
     double quad[4];
 
     double *imgBB = texture->GetInput()->GetBounds();
-    double xPad = 0.5*(imgBB[1] - imgBB[0]);
-    double yPad = 0.5*(imgBB[3] - imgBB[2]);
+    double xPad = 0.5*(imgBB[1] - imgBB[0]) + psfSpacing[0];
+    double yPad = 0.5*(imgBB[3] - imgBB[2]) + psfSpacing[1];
     this->ComputeBoundingQuad(bb, matrix, xPad, yPad, quad);
 
     while(glGetError());
