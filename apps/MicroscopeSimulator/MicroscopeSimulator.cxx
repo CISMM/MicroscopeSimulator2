@@ -245,7 +245,6 @@ MicroscopeSimulator
   // Restore inter-session GUI settings.
   ReadProgramSettings();
   RefreshUI();
-  RefreshObjectiveFunctions();
   RefreshModelObjectViews();
   on_actionResetCamera_triggered();
   gui->modelObjectQvtkWidget->GetRenderWindow()->Render();
@@ -2229,13 +2228,15 @@ MicroscopeSimulator
     }
   }
 
+  RefreshObjectiveFunctions();
+
   RenderViews();
 }
 
 void
 MicroscopeSimulator
 ::RefreshObjectiveFunctions() {
-  QString selectedObjectiveFunction = gui->fluoroSimObjectiveFunctionComboBox->currentText();
+  gui->fluoroSimObjectiveFunctionComboBox->blockSignals(true);
   gui->fluoroSimObjectiveFunctionComboBox->clear();
 
   FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
@@ -2247,12 +2248,12 @@ MicroscopeSimulator
     std::string name = optimizer->GetAvailableObjectiveFunctionName(i);
     gui->fluoroSimObjectiveFunctionComboBox->addItem(QString(name.c_str()));
 
-    if (name == selectedObjectiveFunction.toStdString()) {
+    if (name == optimizer->GetObjectiveFunctionName()) {
       gui->fluoroSimObjectiveFunctionComboBox->setCurrentIndex(i);
     }
   }
 
-
+  gui->fluoroSimObjectiveFunctionComboBox->blockSignals(false);
 }
 
 
