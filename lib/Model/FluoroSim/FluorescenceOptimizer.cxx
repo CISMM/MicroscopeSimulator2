@@ -65,6 +65,10 @@ FluorescenceOptimizer
     xmlNodePtr paramNode = xmlNewChild(node, NULL, BAD_CAST nodeName.c_str(), NULL);
     xmlNewProp(paramNode, BAD_CAST "value", BAD_CAST buf);
   }
+
+  xmlNodePtr objectiveFunctionNode = xmlNewChild(node, NULL, BAD_CAST "ObjectiveFunction", NULL);
+  xmlNewProp(objectiveFunctionNode, BAD_CAST "name", BAD_CAST m_ActiveObjectiveFunctionName.c_str());
+
 }
 
 
@@ -108,6 +112,13 @@ FluorescenceOptimizer
     }
 
     SetOptimizerParameterValue(i, newValue);
+  }
+
+  xmlNodePtr objectiveFunctionNode =
+    xmlGetFirstElementChildWithName(node, BAD_CAST "ObjectiveFunction");
+  char* value = (char *) xmlGetProp(objectiveFunctionNode, BAD_CAST "name");
+  if (value) {
+    SetObjectiveFunctionByName(std::string(value));
   }
 }
 
@@ -255,6 +266,13 @@ FluorescenceOptimizer
 ::SetObjectiveFunctionByName(const std::string& name) {
   m_ActiveObjectiveFunctionName = name;
   std::cout << "Setting objective function to '" << name << "'." << std::endl;
+}
+
+
+std::string
+FluorescenceOptimizer
+::GetObjectiveFunctionName() {
+  return m_ActiveObjectiveFunctionName;
 }
 
 
