@@ -131,10 +131,7 @@ TARGET_LINK_LIBRARIES( MicroscopeSimulator
   msvtkFiltering
   msvtkImaging
   msvtkRendering
-  itksys
-  ITKCommon
-  ITKBasicFilters
-  ITKIO
+  ${ITK_LIBRARIES}
   msimFilter
   msimIO
   msimModel
