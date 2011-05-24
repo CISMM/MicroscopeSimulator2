@@ -6,7 +6,7 @@
 #define ITK_MANUAL_INSTANTIATION
 #include <itkChangeInformationImageFilter.h>
 #include <itkImageFileReader.h>
-#include <itkAddConstantToImageFilter.h>
+#include <itkAddImageFilter.h> // NOTE: deprecated in ITK v4
 #include <ITKImageToVTKImage.h>
 #undef ITK_MANUAL_INSTANTIATION
 
@@ -50,7 +50,7 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   typedef PointSpreadFunction::ImageType               ImageType;
   typedef itk::ImageFileReader<ImageType>              ImageSourceType;
   typedef itk::ChangeInformationImageFilter<ImageType> ChangeInfoFilterType;
-  typedef itk::AddConstantToImageFilter<ImageType, double, ImageType>
+  typedef itk::AddImageFilter<ImageType, ImageType, ImageType>
     AddConstantFilterType;
   
  protected:
