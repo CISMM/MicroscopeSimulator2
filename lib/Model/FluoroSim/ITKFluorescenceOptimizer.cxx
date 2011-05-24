@@ -59,7 +59,10 @@ ITKFluorescenceOptimizer
   } else if (m_ActiveObjectiveFunctionName == POISSON_NOISE_OBJECTIVE_FUNCTION) {
     m_ImageToImageCostFunction = PoissonNoiseCostFunctionType::New();
   } else if (m_ActiveObjectiveFunctionName == NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION) {
-    m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
+    NormalizedCorrelationCostFunctionType::Pointer costFunction =
+      NormalizedCorrelationCostFunctionType::New();
+    costFunction->SubtractMeanOn();
+    m_ImageToImageCostFunction = costFunction;
   }
   m_ImageToImageCostFunction->ComputeGradientOff();
 }
