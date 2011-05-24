@@ -23,6 +23,8 @@ const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_IMMERSION_OIL_
 const std::string GibsonLanniWidefieldPointSpreadFunction::DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "DesignSpecimenLayerRefractiveIndex";
 const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE = "ActualSpecimenLayerRefractiveIndex";
 const std::string GibsonLanniWidefieldPointSpreadFunction::ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE = "ActualPointSourceDepthInSpecimenLayer";
+const std::string GibsonLanniWidefieldPointSpreadFunction::PSF_SHEAR_IN_X_ATTRIBUTE = "PSFShearInX";
+const std::string GibsonLanniWidefieldPointSpreadFunction::PSF_SHEAR_IN_Y_ATTRIBUTE = "PSFShearInY";
 
 
 GibsonLanniWidefieldPointSpreadFunction
@@ -48,6 +50,8 @@ GibsonLanniWidefieldPointSpreadFunction
   m_ParameterNames.push_back("Design Specimen Layer Refractive Index");
   m_ParameterNames.push_back("Actual Specimen Layer Refractive Index");
   m_ParameterNames.push_back("Actual Point Source Depth in Specimen Layer (microns)");
+  m_ParameterNames.push_back("PSF Shear in X");
+  m_ParameterNames.push_back("PSF Shear in Y");
 
   m_GibsonLanniSource = ImageSourceType::New();
 
@@ -129,6 +133,8 @@ GibsonLanniWidefieldPointSpreadFunction
   case 17: return m_GibsonLanniSource->GetDesignSpecimenLayerRefractiveIndex(); break;
   case 18: return m_GibsonLanniSource->GetActualSpecimenLayerRefractiveIndex(); break;
   case 19: return m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer(); break;
+  case 20: return m_GibsonLanniSource->GetShearX(); break;
+  case 21: return m_GibsonLanniSource->GetShearY(); break;
 
   default: return 0.0;
   }
@@ -214,6 +220,14 @@ GibsonLanniWidefieldPointSpreadFunction
 
   case 19:
     m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(value);
+    break;
+
+  case 20:
+    m_GibsonLanniSource->SetShearX(value);
+    break;
+
+  case 21:
+    m_GibsonLanniSource->SetShearY(value);
     break;
 
   default:
@@ -307,6 +321,11 @@ GibsonLanniWidefieldPointSpreadFunction
   sprintf(buf, doubleFormat, m_GibsonLanniSource->GetActualPointSourceDepthInSpecimenLayer());
   xmlNewProp(root, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str(), BAD_CAST buf);
 
+  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetShearX());
+  xmlNewProp(root, BAD_CAST PSF_SHEAR_IN_X_ATTRIBUTE.c_str(), BAD_CAST buf);
+
+  sprintf(buf, doubleFormat, m_GibsonLanniSource->GetShearY());
+  xmlNewProp(root, BAD_CAST PSF_SHEAR_IN_Y_ATTRIBUTE.c_str(), BAD_CAST buf);
 }
 
 
@@ -401,6 +420,16 @@ GibsonLanniWidefieldPointSpreadFunction
   attribute = (const char*) xmlGetProp(node, BAD_CAST ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE.c_str());
   if (attribute) {
     m_GibsonLanniSource->SetActualPointSourceDepthInSpecimenLayer(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST PSF_SHEAR_IN_X_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetShearX(atof(attribute));
+  }
+
+  attribute = (const char*) xmlGetProp(node, BAD_CAST PSF_SHEAR_IN_Y_ATTRIBUTE.c_str());
+  if (attribute) {
+    m_GibsonLanniSource->SetShearY(atof(attribute));
   }
 
   RecenterImage();

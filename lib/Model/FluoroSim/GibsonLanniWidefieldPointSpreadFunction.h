@@ -29,6 +29,8 @@ class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
   static const std::string DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
   static const std::string ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
   static const std::string ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE;
+  static const std::string PSF_SHEAR_IN_X_ATTRIBUTE;
+  static const std::string PSF_SHEAR_IN_Y_ATTRIBUTE;
 
 
   GibsonLanniWidefieldPointSpreadFunction();
