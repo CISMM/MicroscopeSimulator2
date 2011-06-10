@@ -1,5 +1,5 @@
 PROJECT (MicroscopeSimulator)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 
 # Set version information. Bump this up with every release.
 SET (MicroscopeSimulator_MAJOR_NUMBER "2")
@@ -14,30 +14,39 @@ OPTION (CMAKE_VERBOSE_MAKEFILE  "Enable/Disable verbose compiler output" ON)
 OPTION (CMAKE_COLOR_MAKEFILE "Enable/Disable color cues when building" ON)
 MARK_AS_ADVANCED (CLEAR CMAKE_VERBOSE_MAKEFILE CMAKE_COLOR_MAKEFILE)
 
+OPTION (USE_SUPERBUILD "Enable superbuild" ON)
+IF (${USE_SUPERBUILD})
+  INCLUDE(SuperBuild.cmake)
+  RETURN()
+ENDIF()
 
 #######################################
 # Include ITK
 #######################################
-
-FIND_PACKAGE(ITK)
-IF(ITK_FOUND)
-  INCLUDE(${ITK_USE_FILE})
-ELSE(ITK_FOUND)
-  MESSAGE(FATAL_ERROR
-     "Cannot build without ITK.  Please set ITK_DIR.")
-ENDIF(ITK_FOUND)
+FIND_PACKAGE(ITK
+  REQUIRED
+  NO_DEFAULT_PATH
+  NO_CMAKE_ENVIRONMENT_PATH
+  NO_CMAKE_PATH
+  NO_SYSTEM_ENVIRONMENT_PATH
+  NO_CMAKE_PACKAGE_REGISTRY
+  PATHS ${MicroscopeSimulator_BINARY_DIR}/External/src/ITK-build
+  )
+INCLUDE(${ITK_USE_FILE})
 
 #######################################
 # Include VTK
 #######################################
-
-FIND_PACKAGE(VTK)
-IF (VTK_FOUND)
-  INCLUDE(${VTK_USE_FILE})
-ELSE(VTK_FOUND)
-  MESSAGE(FATAL_ERROR
-     "Cannot build without VTK.  Please set VTK_DIR.")
-ENDIF (VTK_FOUND)
+FIND_PACKAGE(VTK
+  REQUIRED
+  NO_DEFAULT_PATH
+  NO_CMAKE_ENVIRONMENT_PATH
+  NO_CMAKE_PATH
+  NO_SYSTEM_ENVIRONMENT_PATH
+  NO_CMAKE_PACKAGE_REGISTRY
+  PATHS ${MicroscopeSimulator_BINARY_DIR}/External/src/VTK-build
+  )
+INCLUDE(${VTK_USE_FILE})
 
 #######################################
 # Include CLAPACK
