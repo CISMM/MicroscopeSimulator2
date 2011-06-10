@@ -5,7 +5,7 @@
 
 #include <itkChangeInformationImageFilter.txx>
 #include <itkImageFileReader.txx>
-#include <itkBinaryFunctorImageFilter.txx> // Needed by AddConstantToImageFilter
+#include <itkUnaryFunctorImageFilter.txx> // Needed for AddConstantToImageFilter
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
@@ -102,7 +102,7 @@ void
 ImportedPointSpreadFunction
 ::SetIntensityOffset(double offset) {
   m_IntensityOffset = offset;
-  m_AddConstantFilter->SetConstant2(m_IntensityOffset);
+  m_AddConstantFilter->SetConstant(m_IntensityOffset);
 }
 
 
