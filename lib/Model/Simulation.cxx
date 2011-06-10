@@ -543,7 +543,7 @@ Simulation
   double value = this->GetFluorescenceOptimizer()->GetObjectiveFunctionValue();
   std::ofstream file(fileName.c_str());
 
-  file.setf(0,ios::floatfield);
+  file.setf(ios::scientific, ios::floatfield);
   file.precision(10);
   file << value << std::endl;
   file.close();
