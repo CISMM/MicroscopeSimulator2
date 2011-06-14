@@ -83,8 +83,8 @@ public:
                                bool exportRed, bool exportGreen, bool exportBlue);
   void SaveFluorescenceObjectiveFunctionValue(const std::string& fileName);
 
-  void SetNumberOfThreads(int threads);
-  int  GetNumberOfThreads();
+  void SetNumberOfThreads(unsigned int threads);
+  unsigned int  GetNumberOfThreads();
 
   void AddNewModelObject(const std::string& objectTypeName);
   void ImportModelObject(const std::string& objectTypeName, const std::string& fileName);

@@ -552,13 +552,13 @@ Simulation
 
 void
 Simulation
-::SetNumberOfThreads(int threads) {
+::SetNumberOfThreads(unsigned int threads) {
   itk::MultiThreader::SetGlobalDefaultNumberOfThreads(threads);
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(threads);
 }
 
 
-int
+unsigned int
 Simulation
 ::GetNumberOfThreads() {
   return itk::MultiThreader::GetGlobalMaximumNumberOfThreads();
