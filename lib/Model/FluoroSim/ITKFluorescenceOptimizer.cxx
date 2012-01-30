@@ -1,8 +1,8 @@
 #include <itkFluorescenceImageSource.txx>
-#include <itkImage.txx>
+#include <itkImage.hxx>
 #include <itkImageToParametricImageSourceMetric.txx>
-#include <itkMeanSquaresImageToImageMetric.txx>
-#include <itkNormalizedCorrelationImageToImageMetric.txx>
+#include <itkMeanSquaresImageToImageMetric.hxx>
+#include <itkNormalizedCorrelationImageToImageMetric.hxx>
 #include <itkPoissonNoiseImageToImageMetric.txx>
 
 // WARNING: Always include the header file for this class AFTER

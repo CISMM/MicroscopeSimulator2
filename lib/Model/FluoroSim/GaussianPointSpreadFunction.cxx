@@ -1,5 +1,5 @@
 
-#include <itkGaussianImageSource.txx>
+#include <itkGaussianImageSource.hxx>
 #include <ITKImageToVTKImage.cxx>
 
 

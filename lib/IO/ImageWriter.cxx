@@ -1,7 +1,7 @@
-#include <itkFlipImageFilter.txx>
-#include <itkImage.txx>
-#include <itkImageFileWriter.txx>
-#include <itkShiftScaleImageFilter.txx>
+#include <itkFlipImageFilter.hxx>
+#include <itkImage.hxx>
+#include <itkImageFileWriter.hxx>
+#include <itkShiftScaleImageFilter.hxx>
 
 #include <VTKImageToITKImage.cxx>
 

@@ -1,4 +1,4 @@
-#include <itkRecursiveGaussianImageFilter.txx>
+#include <itkRecursiveGaussianImageFilter.hxx>
 #include <itkStatisticsImageFilter.h>
 #include <itkShiftScaleImageFilter.h>
 

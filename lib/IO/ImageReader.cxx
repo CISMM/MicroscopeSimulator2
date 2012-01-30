@@ -1,6 +1,6 @@
-#include <itkFlipImageFilter.txx>
-#include <itkImage.txx>
-#include <itkImageFileReader.txx>
+#include <itkFlipImageFilter.hxx>
+#include <itkImage.hxx>
+#include <itkImageFileReader.hxx>
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
