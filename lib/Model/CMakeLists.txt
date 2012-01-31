@@ -106,4 +106,5 @@ TARGET_LINK_LIBRARIES( msimModel
   msvtkGraphics
   ${ITK_LIBRARIES}
   msimUtilities
+  ${LIBXML2_LIBRARIES}
 )
