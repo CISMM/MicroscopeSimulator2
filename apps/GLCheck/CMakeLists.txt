@@ -33,6 +33,7 @@ TARGET_LINK_LIBRARIES( GLCheck
   vtkImaging
   vtkRendering
   vtkVolumeRendering
+  ${OPENGL_LIBRARIES}
 )
 
 INSTALL( TARGETS GLCheck

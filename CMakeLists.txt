@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 
 # Set version information. Bump this up with every release.
 SET (MicroscopeSimulator_MAJOR_NUMBER "2")
-SET (MicroscopeSimulator_MINOR_NUMBER "0")
+SET (MicroscopeSimulator_MINOR_NUMBER "1")
 SET (MicroscopeSimulator_REVISION_NUMBER "0")
 SET (MicroscopeSimulator_VERSION_STRING "${MicroscopeSimulator_MAJOR_NUMBER}.${MicroscopeSimulator_MINOR_NUMBER}.${MicroscopeSimulator_REVISION_NUMBER}")
 
@@ -69,6 +69,19 @@ ELSE(CLAPACK_FOUND)
   "Cannot build without CLAPACK. Please set CLAPACK_DIR.")
 ENDIF(CLAPACK_FOUND)
 
+#######################################
+# Need to link against OpenGL
+#######################################
+FIND_PACKAGE( OpenGL REQUIRED )
+
+#######################################
+# Find include files for libxml2
+#######################################
+# Find the include directory for libxml2
+FILE( READ "${VTK_DIR}/CMakeCache.txt" VTK_CMAKE_CACHE )
+STRING( REGEX REPLACE ".*LIBXML2_INCLUDE_DIR:PATH=([^\n]+).*" "\\1" LIBXML2_INCLUDE_DIR ${VTK_CMAKE_CACHE} )
+INCLUDE_DIRECTORIES( ${LIBXML2_INCLUDE_DIR} )
+STRING( REGEX REPLACE ".*LIBXML2_LIBRARIES:FILEPATH=([^\n]+).*" "\\1" LIBXML2_LIBRARIES ${VTK_CMAKE_CACHE} )
 
 #######################################
 # Personal filter library and support classes.
