@@ -69,8 +69,8 @@ FlexibleTubeModelObject
 
   AddProperty(new VolumeUniformFluorophoreProperty
               (VOLUME_FLUOR_PROP, tetrahedralizer));
-  AddProperty(new GridBasedFluorophoreProperty
-              (GRID_FLUOR_PROP, tetrahedralizer));
+  //AddProperty(new GridBasedFluorophoreProperty
+  //            (GRID_FLUOR_PROP, tetrahedralizer));
 
 
   m_PointPropertyStartingIndex = GetPropertyList()->GetSize();
