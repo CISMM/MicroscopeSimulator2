@@ -1,3 +1,5 @@
+#pragma warning(disable : 4996)
+
 #include <GaussianPointSpreadFunction.h>
 #include <ImportedPointSpreadFunction.h>
 #include <GibsonLanniWidefieldPointSpreadFunction.h>
