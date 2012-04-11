@@ -81,8 +81,17 @@ PointSpreadFunction
 void
 PointSpreadFunction
 ::Update() {
-  m_Statistics->Update();
-  m_ScaleFilter->SetScale(m_SummedIntensity / m_Statistics->GetSum());
+  try {
+    m_Statistics->Update();
+  } catch ( itk::ExceptionObject & except ) {
+    std::cerr << except << std::endl;
+  }
+  double sum = m_Statistics->GetSum();
+  if ( sum > 0.0 ) {
+    m_ScaleFilter->SetScale(m_SummedIntensity / sum);
+  } else {
+    m_ScaleFilter->SetScale(1.0);
+  }
   UpdateGradientImage();
 }
 
