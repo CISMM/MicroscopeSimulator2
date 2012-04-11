@@ -61,7 +61,7 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   double      m_IntensityOffset;
   double      m_PointCenter[3];
 
-  ImageSourceType::Pointer       m_ImageReader;
+  ImageType::Pointer m_Image;
 
   ITKImageToVTKImage<ImageType>* m_ITKToVTKFilter;
 
@@ -69,6 +69,11 @@ class ImportedPointSpreadFunction : public PointSpreadFunction {
   AddConstantFilterType::Pointer m_AddConstantFilter;
 
   void RecenterImage();
+
+  template< class TPixel >
+  bool ReadFileTemplate( const TPixel *);
+
+  bool ReadFile();
 };
 
 

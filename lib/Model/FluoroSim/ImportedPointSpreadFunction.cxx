@@ -1,8 +1,11 @@
+#pragma warning(disable : 4996)
+
 #include <XMLHelper.h>
 
 #include <vtkAlgorithmOutput.h>
 #include <vtkImageChangeInformation.h>
 
+#include <itkCastImageFilter.h>
 #include <itkChangeInformationImageFilter.hxx>
 #include <itkImageFileReader.hxx>
 #include <itkBinaryFunctorImageFilter.hxx> // Needed for AddConstantToImageFilter
@@ -22,7 +25,7 @@ const std::string ImportedPointSpreadFunction::POINT_CENTER_ELEMENT       = "Poi
 
 ImportedPointSpreadFunction
 ::ImportedPointSpreadFunction() : PointSpreadFunction() {
-  m_ImageReader = ImageSourceType::New();
+  //m_ImageReader = ImageSourceType::New();
 
   m_IntensityOffset = 0.0;
   m_PointCenter[0] = m_PointCenter[1] = m_PointCenter[2] = 0.0;
@@ -57,10 +60,10 @@ ImportedPointSpreadFunction
   origin[1] = 0.0;
   origin[2] = 0.0;
   m_ChangeInformationFilter->SetOutputOrigin(origin);
-  m_ChangeInformationFilter->SetInput(m_ImageReader->GetOutput());
 
   m_AddConstantFilter = AddConstantFilterType::New();
   m_AddConstantFilter->SetInput(m_ChangeInformationFilter->GetOutput());
+  m_AddConstantFilter->SetConstant2(m_IntensityOffset);
 
   m_Statistics->SetInput(m_AddConstantFilter->GetOutput());
 
@@ -85,8 +88,7 @@ void
 ImportedPointSpreadFunction
 ::SetFileName(const std::string& fileName) {
   m_FileName = fileName;
-  m_ImageReader->SetFileName(m_FileName);
-  m_ImageReader->UpdateLargestPossibleRegion();
+  this->ReadFile();
   m_ChangeInformationFilter->UpdateLargestPossibleRegion();
 }
 
@@ -156,9 +158,9 @@ ImportedPointSpreadFunction
   switch (index) {
   case  0: return m_SummedIntensity;
   case  1: return m_IntensityOffset;
-  case  2: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[0]; break;
-  case  3: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[1]; break;
-  case  4: return m_ImageReader->GetOutput()->GetLargestPossibleRegion().GetSize()[2]; break;
+  case  2: return m_Image->GetLargestPossibleRegion().GetSize()[0]; break;
+  case  3: return m_Image->GetLargestPossibleRegion().GetSize()[1]; break;
+  case  4: return m_Image->GetLargestPossibleRegion().GetSize()[2]; break;
   case  5: return m_ChangeInformationFilter->GetOutputSpacing()[0]; break;
   case  6: return m_ChangeInformationFilter->GetOutputSpacing()[1]; break;
   case  7: return m_ChangeInformationFilter->GetOutputSpacing()[2]; break;
@@ -329,4 +331,94 @@ ImportedPointSpreadFunction
   m_ChangeInformationFilter->SetOutputOrigin(origin);
 
   m_ChangeInformationFilter->UpdateLargestPossibleRegion();
+}
+
+
+template< class TPixel >
+bool
+ImportedPointSpreadFunction
+::ReadFileTemplate( const TPixel * ) {
+  typedef itk::Image< TPixel, 3 > FileImageType;
+  typedef itk::ImageFileReader< FileImageType > ImageReader;
+
+  ImageReader::Pointer reader = ImageReader::New();
+  reader->SetFileName( m_FileName );
+  try {
+    reader->UpdateLargestPossibleRegion();
+    typedef itk::CastImageFilter< FileImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer caster = CastFilterType::New();
+    caster->SetInput( reader->GetOutput() );
+    m_ChangeInformationFilter->SetInput( caster->GetOutput() );
+    m_ChangeInformationFilter->UpdateLargestPossibleRegion();
+    m_Image = m_ChangeInformationFilter->GetOutput();
+  } catch ( itk::ExceptionObject & except ) {
+    std::cerr << "Could not read file '" << m_FileName << "'" << std::endl;
+    std::cerr << except << std::endl;
+    return false;
+  }
+
+  // Successfully read file
+  return true;
+}
+
+
+bool
+ImportedPointSpreadFunction
+::ReadFile() {
+  typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
+
+  itk::ImageIOBase::Pointer imageIO =
+    itk::ImageIOFactory::CreateImageIO(m_FileName.c_str(), itk::ImageIOFactory::ReadMode);
+
+  imageIO->SetFileName(m_FileName);
+  imageIO->ReadImageInformation();
+  const ScalarPixelType pixelType = imageIO->GetComponentType();
+
+  switch (pixelType) {
+    case itk::ImageIOBase::UCHAR:
+      return this->ReadFileTemplate(static_cast<unsigned char *>(0));
+      break;
+
+    case itk::ImageIOBase::CHAR:
+      return this->ReadFileTemplate(static_cast<char *>(0));
+      break;
+
+    case itk::ImageIOBase::USHORT:
+      return this->ReadFileTemplate(static_cast<unsigned short *>(0));
+      break;
+
+    case itk::ImageIOBase::SHORT:
+      return this->ReadFileTemplate(static_cast<short *>(0));
+      break;
+
+    case itk::ImageIOBase::UINT:
+      return this->ReadFileTemplate(static_cast<unsigned int *>(0));
+      break;
+
+    case itk::ImageIOBase::INT:
+      return this->ReadFileTemplate(static_cast<int *>(0));
+      break;
+
+    case itk::ImageIOBase::ULONG:
+      return this->ReadFileTemplate(static_cast<unsigned long *>(0));
+      break;
+
+    case itk::ImageIOBase::LONG:
+      return this->ReadFileTemplate(static_cast<long *>(0));
+      break;
+
+    case itk::ImageIOBase::FLOAT:
+      return this->ReadFileTemplate(static_cast<float *>(0));
+      break;
+
+    case itk::ImageIOBase::DOUBLE:
+      return this->ReadFileTemplate(static_cast<double *>(0));
+      break;
+
+    default:
+      return false;
+      break;
+  }
+
+  return false;
 }
