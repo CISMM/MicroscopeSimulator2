@@ -520,7 +520,7 @@ Simulation
 
   if (exportBlue) {
     extractor->SetComponents(2);
-    sprintf(filePath, "%s_%04d_B.%s", fileName.c_str(), index, extension.c_str());
+    sprintf(filePath, "%s%04d_B.%s", fileName.c_str(), index, extension.c_str());
 
     try {
       ImageWriter writer;
