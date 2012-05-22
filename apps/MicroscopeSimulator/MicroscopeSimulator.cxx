@@ -425,7 +425,7 @@ MicroscopeSimulator
       i++;
       if (i < argc) {
         m_Simulation->ExportFluorescenceStack(std::string(argv[i]), 0,
-          "tif", true, false, false);
+          "tif", true, true, true);
       } else {
         std::cerr << "No stack name provided for command --save-fluorescence-stack" << std::endl;
       }
