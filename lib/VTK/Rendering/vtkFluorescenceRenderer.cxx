@@ -104,6 +104,7 @@ void vtkFluorescenceRenderer::LoadNoiseFragmentProgram() {
   char glVersion2_0[] = "GL_VERSION_2_0";
   char textureRect[]  = "GL_ARB_texture_rectangle";
   vtkOpenGLExtensionManager *manager = vtkOpenGLExtensionManager::New();
+  manager->SetRenderWindow(this->GetRenderWindow());
   if (manager->ExtensionSupported(glVersion2_0))
     manager->LoadExtension(glVersion2_0);
   else
