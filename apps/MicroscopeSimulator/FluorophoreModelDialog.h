@@ -26,6 +26,8 @@ Q_OBJECT
   bool                   GetEnabled();
 
   FluorophoreChannelType GetFluorophoreChannel();
+  double                 GetIntensityScale();
+  double                 GetSampleSpacing();
   bool                   GetUseFixedNumberOfFluorophores();
 
   double                 GetDensity();

@@ -1,3 +1,4 @@
+#version 130
 #extension GL_ARB_texture_rectangle : enable
 #pragma optimize(on)
 
@@ -9,49 +10,62 @@ uniform vec3  psfScale;
 uniform vec3  psfMaxTexCoords;
 uniform float focalDepth;
 uniform float gain;
-uniform int   startIndex;
+uniform int   startRow;
 uniform int   endIndex;
 
 varying vec4  screenPosition;
+
 uniform float shearInX;
 uniform float shearInY;
 
 void main() {
-   vec3 sum = vec3(0.0, 0.0, 0.0);
+  vec3 zero = vec3(0.0);
+  vec3 sum = zero;
+  vec3 err = zero;
 
-   // Get pixel position in world space
-   vec2 shear = vec2(shearInX*focalDepth, shearInY*focalDepth);
-   vec3 samplePosition = vec3(screenPosition.xy - shear, focalDepth);
+  // Get pixel position in world space
+  vec2 shear = vec2(shearInX*focalDepth, shearInY*focalDepth);
+  vec3 samplePosition = vec3(screenPosition.xy - shear, focalDepth);
 
-   // 3-vectors for checking whether texture coordinate is valid
-   vec3 zero = vec3(0.0);
+  // Initialize counter
+  int col = 0;
+  int row = startRow;
+  bool done = false;
+  while (!done) {
+    while (!done) {
+      vec2 ptTexCoord = vec2(float(col), float(row)) + 0.5;
 
-   // Initialize counter
-   int index = startIndex;
-   bool done = false;
-   while (!done) {
-      while (!done) {
-         float div = float(index) / float(pointTexDim);
-         vec2 ptTexCoord = vec2(fract(div) * float(pointTexDim), floor(div));
-         vec4 texPt = texture2DRect(ptsSampler, ptTexCoord);
+      vec4 texPt = texture2DRect(ptsSampler, ptTexCoord);
+      vec4 fluorophorePt = vec4(texPt.xyz, 1.0);
+      float intensity = texPt.w;
 
-         // Get PSF origin
-         vec3 origin = (gl_TextureMatrix[1] * texPt).xyz + psfOrigin;
+      // Get PSF origin
+      vec3 origin = (gl_TextureMatrix[1] * fluorophorePt).xyz + psfOrigin;
 
-         // Get texture coordinate in PSF. If we are outside
-         // the texture, we should get black.
-         vec3 texCoord = (samplePosition - origin) * psfScale;
+      // Get texture coordinate in PSF. If we are outside
+      // the texture, we should get black.
+      vec3 texCoord = (samplePosition - origin) * psfScale;
 
-         // Lookup PSF value in texture
-         if (all(greaterThanEqual(texCoord, zero)) && all(lessThanEqual(texCoord, psfMaxTexCoords))) {
-            vec3 sampleValue = texture3D(psfSampler, texCoord).rgb;
-            sum += sampleValue;
-         }
+      // Lookup PSF value in texture
+      if (all(greaterThanEqual(texCoord, zero)) && all(lessThanEqual(texCoord, psfMaxTexCoords))) {
+        vec3 sampleValue = texture3D(psfSampler, texCoord).rgb * texPt.a;
 
-         index = index + 1;
-         done = index >= endIndex;
+        // Kahan summation
+        vec3 y = sampleValue - err;
+        vec3 t = sum + y;
+        err = (t - sum) - y;
+        sum = t;
       }
-   }
-   gl_FragColor.rgb = sum * gain * gl_Color.rgb;
-   gl_FragColor.a = 1.0;
+
+      col = col + 1;
+      if (col >= pointTexDim) {
+        row = row + 1;
+        col = 0;
+      }
+      int index = row * pointTexDim + col;
+      done = index >= endIndex;
+    }
+  }
+  gl_FragColor.rgb = sum * gain * gl_Color.rgb;
+  gl_FragColor.a = 1.0;
 }

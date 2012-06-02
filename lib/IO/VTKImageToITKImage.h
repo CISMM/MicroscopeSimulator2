@@ -6,6 +6,7 @@
 
 class vtkImageData;
 class vtkImageExport;
+class vtkImageFlip;
 class vtkAlgorithmOutput;
 
 
@@ -34,6 +35,7 @@ class VTKImageToITKImage {
  protected:
   ImageImportTypePointer m_ITKImporter;
 
+  vtkImageFlip*   m_FlipFilter;
   vtkImageExport* m_VTKExporter;
 	
 };

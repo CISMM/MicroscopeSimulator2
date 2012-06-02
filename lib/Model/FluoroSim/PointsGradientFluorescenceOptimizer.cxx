@@ -1,9 +1,12 @@
 #include <PointsGradientFluorescenceOptimizer.h>
 
 #include <FluorescenceSimulation.h>
+#include <FluorophoreModelObjectProperty.h>
 #include <ImageModelObject.h>
 #include <ModelObjectList.h>
 #include <VisualizationFluorescenceImageSource.h>
+
+#include <vtkPolyDataCollection.h>
 
 
 const char* PointsGradientFluorescenceOptimizer::OPTIMIZER_ELEM = "PointsGradientFluorescenceOptimizer";
@@ -54,9 +57,7 @@ PointsGradientFluorescenceOptimizer
     
     // Compute the gradient. We don't need to read or process image data 
     // here because it is all done on the GPU.
-    VisualizationFluorescenceImageSource* imageSource =
-      dynamic_cast<VisualizationFluorescenceImageSource*>
-      (m_FluoroSim->GetFluorescenceImageSource());
+    FluorescenceImageSource* imageSource = m_FluoroSim->GetFluorescenceImageSource();
     imageSource->ComputePointsGradient();
     
     // Loop over the model objects. For each model object, get the
@@ -66,29 +67,10 @@ PointsGradientFluorescenceOptimizer
     for (size_t objectIndex = 0; objectIndex < m_ModelObjectList->GetSize(); objectIndex++) {
       ModelObjectPtr modelObject = m_ModelObjectList->GetModelObjectAtIndex(objectIndex);
 
-      for (int fluorophorePropertyIndex = 0;
-           fluorophorePropertyIndex < modelObject->GetNumberOfFluorophoreProperties();
-           fluorophorePropertyIndex++) {
-           
-        int numPoints;
-        float* gradientSrc = imageSource->
-          GetPointsGradientForFluorophoreProperty
-          (objectIndex, fluorophorePropertyIndex, numPoints);
-        float* gradient = new float[3*numPoints];
-        memcpy(gradient, gradientSrc, sizeof(float)*3*numPoints);
-        
-        // Scale the gradient
-        for (int i = 0; i < numPoints; i++) {
-          gradient[3*i + 0] *= stepSize;
-          gradient[3*i + 1] *= stepSize;
-          gradient[3*i + 2] *= stepSize;
-        }
-        
-        m_ModelObjectList->GetModelObjectAtIndex(objectIndex)->
-          ApplySampleForces(fluorophorePropertyIndex, gradient);
-
-        delete[] gradient;
-      }
+      vtkPolyDataCollection* pointGradients = 
+        imageSource->GetPointGradientsForModelObject(objectIndex);
+      modelObject->ApplyPointGradients(pointGradients, stepSize);
+      pointGradients->Delete();
     }
   }
 }

@@ -59,8 +59,18 @@ ModelObjectList
 
   // Iterate over model objects
   while (modelObjectNode) {
+    // Make sure we are dealing only with XML elements and not
+    // text or attributes.
+    if (modelObjectNode->type != XML_ELEMENT_NODE) {
+      modelObjectNode = modelObjectNode->next;
+      continue;
+    }
+
     ModelObjectPtr mo = AddModelObject(std::string((char*) modelObjectNode->name));
-    mo->RestoreFromXML(modelObjectNode);
+
+    if (mo) {
+      mo->RestoreFromXML(modelObjectNode);
+    }
 
     modelObjectNode = modelObjectNode->next;
   }

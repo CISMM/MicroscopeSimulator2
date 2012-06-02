@@ -4,6 +4,7 @@
 #include <vtkPLYReader.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataReader.h>
+#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkTriangleFilter.h>
@@ -12,6 +13,7 @@
 #include <ImportedGeometryModelObject.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 #include <ModelObjectPropertyList.h>
 
 
@@ -21,6 +23,7 @@ const char* ImportedGeometryModelObject::FILE_NAME_PROP     = "File Name";
 const char* ImportedGeometryModelObject::SCALE_PROP         = "Scale";
 const char* ImportedGeometryModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
 const char* ImportedGeometryModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
+const char* ImportedGeometryModelObject::GRID_FLUOR_PROP    = "Grid Fluorophore Model";
 
 
 ImportedGeometryModelObject
@@ -50,13 +53,20 @@ ImportedGeometryModelObject
   m_CleanPolyData->PointMergingOn();
   m_CleanPolyData->SetInputConnection(m_TriangleFilter->GetOutputPort());
 
+  // Perform the tetrahedralization here
+  vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
+    vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
+  tetrahedralizer->SetInputConnection(m_CleanPolyData->GetOutputPort());
+  
   // Set up properties
   AddProperty(new ModelObjectProperty(SCALE_PROP, 1.0, "-", true, true));
   AddProperty(new ModelObjectProperty(FILE_NAME_PROP, ModelObjectProperty::STRING_TYPE, "-", false, false));
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_CleanPolyData));
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP, m_CleanPolyData));
+              (VOLUME_FLUOR_PROP, tetrahedralizer));
+  AddProperty(new GridBasedFluorophoreProperty
+              (GRID_FLUOR_PROP, tetrahedralizer));
 
   // Must call this after setting up properties
   Update();
@@ -134,4 +144,7 @@ ImportedGeometryModelObject
   }
 
   m_TransformFilter->Update();
+
+  // Call superclass update method
+  ModelObject::Update();
 }

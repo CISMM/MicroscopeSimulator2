@@ -6,6 +6,7 @@
 #include <XMLHelper.h>
 
 #include <vtkGlyph3D.h>
+#include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkSphereSource.h>
@@ -121,6 +122,9 @@ PointSetModelObject
   }
 
   GetGeometrySubAssembly("Points")->GetInput()->Modified();
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 
 
@@ -150,12 +154,18 @@ PointSetModelObject
 }
 
 
+#if 0
 void
 PointSetModelObject
-::ApplySampleForces(int fluorophorePropertyIndex, float* forces) {
-  int numPoints = 
-    GetProperty(PointSetModelObject::NUMBER_OF_POINTS_PROP)->GetIntValue();
+::ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize) {
+  vtkCollectionSimpleIterator iter;
+  pointGradients->InitTraversal(iter);
 
+  vtkPolyData* gradientData = pointGradients->GetNextPolyData(iter);
+  float* gradientPtr = reinterpret_cast<float*>
+    (gradientData->GetPointData()->GetArray("Gradient")->GetVoidPointer(0));
+
+  int numPoints = gradientData->GetNumberOfPoints();
   for (int i = 1; i <= numPoints; i++) {
     char buf[128];
 
@@ -172,18 +182,18 @@ PointSetModelObject
       double z = prop3->GetDoubleValue();
 
       if (prop1->GetOptimize()) {
-        prop1->SetDoubleValue(x + forces[(i-1)*3 + 0]);
-        std::cout << prop1->GetName() << ": " << forces[(i-1)*3 + 0] << std::endl;
+        prop1->SetDoubleValue(x + stepSize * gradientPtr[(i-1)*3 + 0]);
+        std::cout << prop1->GetName() << ": " << stepSize * gradientPtr[(i-1)*3 + 0] << std::endl;
       }
 
       if (prop2->GetOptimize()) {
-        prop2->SetDoubleValue(y + forces[(i-1)*3 + 1]);
-        std::cout << prop2->GetName() << ": " << forces[(i-1)*3 + 1] << std::endl;
+        prop2->SetDoubleValue(y + stepSize * gradientPtr[(i-1)*3 + 1]);
+        std::cout << prop2->GetName() << ": " << stepSize * gradientPtr[(i-1)*3 + 1] << std::endl;
       }
       
       if (prop3->GetOptimize()) {
-        prop3->SetDoubleValue(z + forces[(i-1)*3 + 2]);
-        std::cout << prop3->GetName() << ": " << forces[(i-1)*3 + 2] << std::endl;
+        prop3->SetDoubleValue(z + stepSize * gradientPtr[(i-1)*3 + 2]);
+        std::cout << prop3->GetName() << ": " << stepSize * gradientPtr[(i-1)*3 + 2] << std::endl;
       }
     }
 
@@ -191,6 +201,7 @@ PointSetModelObject
 
   Update();
 }
+#endif
 
 
 void

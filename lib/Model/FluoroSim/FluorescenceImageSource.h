@@ -6,6 +6,7 @@
 
 // Forward declarations
 class vtkImageData;
+class vtkPolyDataCollection;
 
 
 class FluorescenceImageSource {
@@ -19,6 +20,15 @@ class FluorescenceImageSource {
 
   // Exports a stack of 2D fluorescence images (i.e. a 3D stack)
   virtual vtkImageData* GenerateFluorescenceStackImage() = 0;
+
+  // Computes gradients for the point samples from all the
+  // model objects.
+  virtual void ComputePointsGradient() = 0;
+
+  // Get point gradient for a model object. Each model object can have
+  // one or more fluorophore models; the vtkPolyDataCollection returned by
+  // this function holds gradients from all the fluorophore models.
+  virtual vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex) = 0;
 
   virtual int GetNumberOfParameters() = 0;
 

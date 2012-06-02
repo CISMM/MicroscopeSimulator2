@@ -1,15 +1,20 @@
-#include <itkFluorescenceImageSource.cxx>
-#include <itkImage.txx>
-#include <itkImageToParameterizedImageSourceMetric.cxx>
-#include <itkMeanSquaresImageToImageMetric.txx>
-#include <itkNormalizedCorrelationImageToImageMetric.txx>
-#include <itkPoissonNoiseImageToImageMetric.cxx>
+#include <itkFluorescenceImageSource.txx>
+#include <itkImage.hxx>
+#include <itkImageToParametricImageSourceMetric.txx>
+#include <itkMeanSquaresImageToImageMetric.hxx>
+#include <itkNormalizedCorrelationImageToImageMetric.hxx>
+#include <itkPoissonNoiseImageToImageMetric.txx>
 
 // WARNING: Always include the header file for this class AFTER
 // including the ITK headers. Otherwise, the ITK headers will be included
 // without including the implementation files, and you will have many linker
 // errors.
 #include <ITKFluorescenceOptimizer.h>
+
+#include <FluorescenceSimulation.h>
+#include <ImageModelObject.h>
+
+#include <cfloat>
 
 
 const char* ITKFluorescenceOptimizer::GAUSSIAN_NOISE_OBJECTIVE_FUNCTION =
@@ -23,11 +28,11 @@ const char* ITKFluorescenceOptimizer::NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION 
 
 
 ITKFluorescenceOptimizer
-::ITKFluorescenceOptimizer(DirtyListener* listener) 
+::ITKFluorescenceOptimizer(DirtyListener* listener)
   : FluorescenceOptimizer(listener) {
   m_FluorescenceImageSource = SyntheticImageSourceType::New();
 
-  m_CostFunction = ParameterizedCostFunctionType::New();
+  m_CostFunction = ParametricCostFunctionType::New();
 
   m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
 
@@ -35,7 +40,7 @@ ITKFluorescenceOptimizer
   AddObjectiveFunctionName(std::string(POISSON_NOISE_OBJECTIVE_FUNCTION));
   AddObjectiveFunctionName(std::string(NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION));
 
-  m_ActiveObjectiveFunctionName = GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;  
+  m_ActiveObjectiveFunctionName = GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;
 }
 
 
@@ -51,12 +56,49 @@ ITKFluorescenceOptimizer
   // Set up the cost function
   if (m_ActiveObjectiveFunctionName == GAUSSIAN_NOISE_OBJECTIVE_FUNCTION) {
     m_ImageToImageCostFunction = GaussianNoiseCostFunctionType::New();
-    std::cout << "Using Gaussian noise cost function, ";
   } else if (m_ActiveObjectiveFunctionName == POISSON_NOISE_OBJECTIVE_FUNCTION) {
     m_ImageToImageCostFunction = PoissonNoiseCostFunctionType::New();
-    std::cout << "Using Poisson noise cost function, ";
   } else if (m_ActiveObjectiveFunctionName == NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION) {
-    m_ImageToImageCostFunction = NormalizedCorrelationCostFunctionType::New();
-    std::cout << "Using normalized correlation cost function, ";
+    NormalizedCorrelationCostFunctionType::Pointer costFunction =
+      NormalizedCorrelationCostFunctionType::New();
+    costFunction->SubtractMeanOn();
+    m_ImageToImageCostFunction = costFunction;
   }
+  m_ImageToImageCostFunction->ComputeGradientOff();
+}
+
+
+double
+ITKFluorescenceOptimizer
+::GetObjectiveFunctionValue() {
+  SetUpObjectiveFunction();
+
+  // Make sure to set the fluorescence image source and moving image.
+  m_FluorescenceImageSource->
+    SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
+
+  if (!m_ComparisonImageModelObject)
+    return DBL_MAX;
+
+  m_FluorescenceImageSource->GetOutput()->Update();
+  m_ImageToImageCostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage());
+  m_ImageToImageCostFunction->SetMovingImage
+    (m_FluorescenceImageSource->GetOutput());
+
+  ImageToImageCostFunctionType::FixedImageRegionType region =
+    m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion();
+  m_ImageToImageCostFunction->SetFixedImageRegion
+    (m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
+
+  ParametricCostFunctionType::TransformTypePointer identity =
+    ParametricCostFunctionType::TransformType::New();
+  m_ImageToImageCostFunction->SetTransform(identity);
+
+  InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  interpolator->SetInputImage(m_FluorescenceImageSource->GetOutput());
+  m_ImageToImageCostFunction->SetInterpolator(interpolator);
+  m_ImageToImageCostFunction->Initialize();
+
+  ImageToImageCostFunctionType::ParametersType parameters(1);
+  return m_ImageToImageCostFunction->GetValue(parameters);
 }

@@ -12,7 +12,7 @@
 #include <MicroscopeSimulator.h>
 
 
-int main(int argc, char** argv) {
+int main(int argc, char* argv[]) {
 
   // Set application information
   QCoreApplication::setOrganizationName("CISMM");
@@ -27,9 +27,13 @@ int main(int argc, char** argv) {
   splash.showMessage("Loading libraries...", Qt::AlignBottom | Qt::AlignRight, Qt::white);
   app.processEvents();
 
-  MicroscopeSimulator mainWindow;
+  MicroscopeSimulator mainWindow(argc, argv);
   mainWindow.show();
   splash.finish(&mainWindow);
+
+  mainWindow.ProcessCommandLineArguments(argc, argv);
   
-  return app.exec();
+  if (!mainWindow.IsBatchMode()) {
+    return app.exec();
+  }
 }

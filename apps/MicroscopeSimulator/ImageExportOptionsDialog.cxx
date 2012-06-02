@@ -39,3 +39,38 @@ ImageExportOptionsDialog
 ::GetNumberOfCopies() {
   return QVariant(numberEdit->text()).toInt();
 }
+
+
+bool
+ImageExportOptionsDialog
+::IsRegenerateFluorophoresEnabled() {
+  return regenerateFluorophoresButton->isChecked();
+}
+
+
+bool
+ImageExportOptionsDialog
+::IsRandomizeObjectPositionsEnabled() {
+  return randomizeObjectPositions->isChecked();
+}
+
+
+double
+ImageExportOptionsDialog
+::GetObjectRandomPositionRangeX() {
+  return QVariant(randomPositionRangeXEdit->text()).toDouble();
+}
+
+
+double
+ImageExportOptionsDialog
+::GetObjectRandomPositionRangeY() {
+  return QVariant(randomPositionRangeYEdit->text()).toDouble();
+}
+
+
+double
+ImageExportOptionsDialog
+::GetObjectRandomPositionRangeZ() {
+  return QVariant(randomPositionRangeZEdit->text()).toDouble();
+}

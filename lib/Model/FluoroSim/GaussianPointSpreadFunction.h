@@ -13,6 +13,7 @@
 
 class GaussianPointSpreadFunction : public PointSpreadFunction {
  public:
+  static const std::string PSF_ELEMENT;
   static const std::string SIGMA_ELEMENT;
 
   GaussianPointSpreadFunction();

@@ -6,6 +6,7 @@
 
 SET (Imaging_SRCS
   vtkImageConstantSource.cxx
+  vtkPartialVolumeModeller.cxx
 )
 
 # Create the msvtkImaging C++ library

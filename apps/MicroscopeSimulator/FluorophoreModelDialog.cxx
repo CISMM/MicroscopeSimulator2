@@ -2,6 +2,7 @@
 #include <GeometryVerticesFluorophoreProperty.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 
 
 FluorophoreModelDialog
@@ -24,6 +25,9 @@ void
 FluorophoreModelDialog
 ::SetProperty(FluorophoreModelObjectProperty* property) {
   m_FluorophoreProperty = property;
+
+  // Collapse the fluorophore patterns group box
+  gui_FluorophorePatternsGroupBox->setChecked(false);
 
   // Setup the UI to reflect the property values.
   gui_EnabledCheckBox->
@@ -49,12 +53,16 @@ FluorophoreModelDialog
   }
   gui_ColorChannelComboBox->setCurrentIndex(colorChannelIndex);
 
+  gui_IntensityScaleEdit->setText(QVariant(property->GetIntensityScale()).toString());
+
   GeometryVerticesFluorophoreProperty* geometryProperty
     = dynamic_cast<GeometryVerticesFluorophoreProperty*>(property);
   SurfaceUniformFluorophoreProperty* surfaceProperty
     = dynamic_cast<SurfaceUniformFluorophoreProperty*>(property);
   VolumeUniformFluorophoreProperty* volumeProperty
     = dynamic_cast<VolumeUniformFluorophoreProperty*>(property);
+  GridBasedFluorophoreProperty* gridBasedProperty
+    = dynamic_cast<GridBasedFluorophoreProperty*>(property);
 
   if (geometryProperty) {
 
@@ -78,6 +86,15 @@ FluorophoreModelDialog
     double volume = volumeProperty->GetGeometryVolume();
     gui_AreaEdit->setText(QString().sprintf("%.6f", volume));
     gui_DensityLabel->setText(tr("Density (fluorophores / micron^3)"));
+
+  } else if (gridBasedProperty) {
+
+    gui_FluorophoreModelLabel->setText(tr("Grid-based Volume Labeling"));
+    gui_SamplingModeGroupBox->setHidden(true);
+    gui_SamplingDensityGroupBox->setHidden(true);
+    gui_FluorophorePatternsGroupBox->setHidden(true);
+    gui_SpacingEdit->setText(QString().sprintf("%.6f", gridBasedProperty->GetSampleSpacing()));
+
   }
 
   // Common settings for density-based fluorophore models.
@@ -103,7 +120,7 @@ FluorophoreModelDialog
     gui_NumberOfFluorophoresSlider->setValue(numFluorophores);
 
     if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::SINGLE_POINT) {
-      gui_UseSingleFluorophorePerSampleRadioButton->click();  
+      gui_UseSingleFluorophorePerSampleRadioButton->click();
     } else if (uniformProperty->GetSamplePattern() == UniformFluorophoreProperty::POINT_RING) {
       gui_UsePointRingClusterRadioButton->click();
     }
@@ -144,13 +161,20 @@ FluorophoreModelDialog
 
     uniformProperty->SetNumberOfRingFluorophores(GetNumberOfFluorophoresAroundRing());
     uniformProperty->SetRingRadius(GetRingRadius());
-    
+
     uniformProperty->SetRandomizePatternOrientations(GetRandomizePatternOrientations());
+  }
+
+  GridBasedFluorophoreProperty* gridBasedProperty
+    = dynamic_cast<GridBasedFluorophoreProperty*>(m_FluorophoreProperty);
+  if (gridBasedProperty) {
+    gridBasedProperty->SetSampleSpacing(GetSampleSpacing());
   }
 
   // These options apply to any kind of fluorophore property
   m_FluorophoreProperty->SetEnabled(GetEnabled());
   m_FluorophoreProperty->SetFluorophoreChannel(GetFluorophoreChannel());
+  m_FluorophoreProperty->SetIntensityScale(GetIntensityScale());
 }
 
 
@@ -171,6 +195,20 @@ FluorophoreModelDialog
   case 3: return ALL_CHANNELS; break;
   default: return ALL_CHANNELS; break;
   }
+}
+
+
+double
+FluorophoreModelDialog
+::GetIntensityScale() {
+  return gui_IntensityScaleEdit->text().toDouble();
+}
+
+
+double
+FluorophoreModelDialog
+::GetSampleSpacing() {
+  return gui_SpacingEdit->text().toDouble();
 }
 
 

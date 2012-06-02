@@ -1,6 +1,8 @@
 #include <FlexibleTubeModelObject.h>
+
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 
 #include <DirtyListener.h>
 #include <ModelObjectPropertyList.h>
@@ -10,6 +12,7 @@
 #include <vtkParametricSpline.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkPoints.h>
+#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSpline.h>
 #include <vtkTubeFilter.h>
 #include <vtkTriangleFilter.h>
@@ -20,6 +23,7 @@ const char* FlexibleTubeModelObject::OBJECT_TYPE_NAME = "FlexibleTubeModel";
 const char* FlexibleTubeModelObject::RADIUS_PROP        = "Radius";
 const char* FlexibleTubeModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
 const char* FlexibleTubeModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
+const char* FlexibleTubeModelObject::GRID_FLUOR_PROP    = "Grid Fluorophore Model";
 
 
 FlexibleTubeModelObject
@@ -57,8 +61,16 @@ FlexibleTubeModelObject
 
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_TubeSource));
+
+  // Perform the tetrahedralization here
+  vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
+    vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
+  tetrahedralizer->SetInputConnection(m_TubeSource->GetOutputPort());
+
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP, m_TubeSource));
+              (VOLUME_FLUOR_PROP, tetrahedralizer));
+  //AddProperty(new GridBasedFluorophoreProperty
+  //            (GRID_FLUOR_PROP, tetrahedralizer));
 
 
   m_PointPropertyStartingIndex = GetPropertyList()->GetSize();
@@ -142,6 +154,9 @@ FlexibleTubeModelObject
     double length = GetLength();
     m_SplineSource->SetUResolution(static_cast<int>(length/100.0));
   }
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 
 

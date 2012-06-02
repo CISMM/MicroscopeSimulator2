@@ -18,11 +18,11 @@ class QModelObjectPropertyListTableModel : public QAbstractTableModel {
   ModelObject* GetModelObject();
 
   bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-  
+
   QVariant data(const QModelIndex& index, int role) const;
 
   Qt::ItemFlags flags(const QModelIndex& index) const;
-  
+
   QVariant headerData(int section, Qt::Orientation orientation,
                       int role = Qt::DisplayRole) const;
 

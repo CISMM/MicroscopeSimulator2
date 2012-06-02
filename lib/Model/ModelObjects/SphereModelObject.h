@@ -10,23 +10,18 @@
 
 #include <vtkSmartPointer.h>
 
-class vtkSphereSource;
-class vtkTriangleFilter;
+class vtkPolyDataNormals;
+class vtkVolumetricEllipsoidSource;
 
 
 class SphereModelObject : public ModelObject {
 
  public:
   static const char* OBJECT_TYPE_NAME;
-
-  static const char* RADIUS_ATT;
   static const char* RADIUS_PROP;
-
-  static const char* SURFACE_FLUOR_ATT;
   static const char* SURFACE_FLUOR_PROP;
-
-  static const char* VOLUME_FLUOR_ATT;
   static const char* VOLUME_FLUOR_PROP;
+  static const char* GRID_FLUOR_PROP;
 
 
   SphereModelObject(DirtyListener* dirtyListener);
@@ -39,8 +34,8 @@ class SphereModelObject : public ModelObject {
 
   ModelObjectPropertyList* CreateProperties();
 
-  vtkSmartPointer<vtkSphereSource>   m_SphereSource;
-  vtkSmartPointer<vtkTriangleFilter> m_GeometrySource;
+  vtkSmartPointer<vtkVolumetricEllipsoidSource> m_SphereSource;
+  vtkSmartPointer<vtkPolyDataNormals>           m_GeometrySource;
 
 };
 

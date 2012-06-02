@@ -1,27 +1,16 @@
 # Qt frameworks
+FILE( GLOB QT_FRAMEWORKS "/Library/Frameworks/Qt*" )
+
 SET( QT_FRAMEWORKS
-  Qt3Support
-  QtAssistant
-  QtCore
-  QtDBus
-  QtGui
-  QtHelp
-  QtNetwork
-  QtOpenGL
-  QtScript
-  QtScriptTools
-  QtSql
-  QtSvg
-  QtWebKit
-  QtXml
-  QtXMLPatterns
-  phonon
+  ${QT_FRAMEWORKS}
+  phonon.framework
 )
 
 FOREACH( FRAMEWORK ${QT_FRAMEWORKS} )
+  GET_FILENAME_COMPONENT( FRAMEWORK ${FRAMEWORK} NAME_WE )
   INSTALL( FILES
     "${QT_LIBRARY_DIR}/${FRAMEWORK}.framework/Versions/4/${FRAMEWORK}"
-    DESTINATION ../Frameworks/${FRAMEWORK}.framework/Versions/4/
+    DESTINATION ../Frameworks/${FRAMEWORK}/Versions/4/
   )
 ENDFOREACH( FRAMEWORK )
 

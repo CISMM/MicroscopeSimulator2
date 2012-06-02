@@ -12,13 +12,16 @@
 // Forward declarations
 class GeometrySource;
 class FluorophoreModelObjectProperty;
+class Matrix;
 class ModelObjectProperty;
 class ModelObjectPropertyList;
 typedef ModelObjectProperty* ModelObjectPropertyPtr;
 
 class vtkActor;
 class vtkPoints;
+class vtkPolyData;
 class vtkPolyDataAlgorithm;
+class vtkPolyDataCollection;
 
 
 class ModelObject : public DirtyListener, public XMLStorable {
@@ -78,6 +81,7 @@ class ModelObject : public DirtyListener, public XMLStorable {
   ModelObjectProperty* GetProperty(int index);
 
   FluorophoreModelObjectProperty* GetFluorophoreProperty(int index);
+  void RegenerateFluorophores();
 
   ModelObjectPropertyList* GetPropertyList();
   int GetNumberOfProperties();
@@ -99,16 +103,14 @@ class ModelObject : public DirtyListener, public XMLStorable {
   vtkPolyDataAlgorithm* GetAllGeometryTransformed();
   vtkPolyDataAlgorithm* GetGeometrySubAssembly(const std::string& name);
 
-  /** Applies forces at fluorophore sample points to geometry and/or 
-      sample points themselves. The size of the forces array should be 
+  /** Applies point gradient at fluorophore sample points to geometry and/or 
+      the sample points themselves. The size of the gradient array should be 
       three times the number of fluorophores samples in the given
       fluorophore model. It is up to subclasses to decide how to use
-      these forces.
+      this gradient. */
+  virtual void ApplyPointGradients(vtkPolyDataCollection* pointGradients, double stepSize);
 
-      TODO: make this a pure virtual method once all existing model objects have implementations. */
-  virtual void ApplySampleForces(int fluorophorePropertyIndex, float* forces);
-
-  virtual void Update() = 0;
+  virtual void Update();
 
 
  protected:
@@ -127,6 +129,27 @@ class ModelObject : public DirtyListener, public XMLStorable {
   ModelObjectPropertyList* CreateDefaultProperties();
 
   void SetGeometrySubAssembly(const std::string& name, vtkPolyDataAlgorithm* assembly);
+
+  /** Get Jacobian matrix column entries for rotation components.
+    Valid values for the component argument are:
+      ROTATION_ANGLE_PROP
+      ROTATION_VECTOR_X_PROP
+      ROTATION_VECTOR_Y_PROP
+      ROTATION_VECTOR_Z_PROP
+  */
+  void GetRotationJacobianMatrixColumn(vtkPolyData* points,
+    const char* component, int column, Matrix* matrix);
+
+  void GetRotationAngleJacobianMatrixColumn
+  (vtkPolyData* points, int column, Matrix* matrix,
+   double *currentRotation, double* newRotation);
+
+  /** Get Jacobian matrix column entries for translation components.
+      Values of the parameter axis mean: 0 - x axis; 1 - y axis; 2 - z axis. */
+  void GetTranslationJacobianMatrixColumn(vtkPolyData* points, int axis,
+                                          int column, Matrix* matrix);
+
+  void NormalizeRotationVector();
 
  private:
   void Initialize();

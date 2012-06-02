@@ -1,13 +1,11 @@
 #include <HollowCylinderModelObject.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 #include <VolumeUniformFluorophoreProperty.h>
+#include <GridBasedFluorophoreProperty.h>
 
-#include <vtkDiskSource.h>
-#include <vtkLinearExtrusionFilter.h>
+#include <vtkDataSetSurfaceFilter.h>
 #include <vtkPolyDataNormals.h>
-#include <vtkTransform.h>
-#include <vtkTransformPolyDataFilter.h>
-#include <vtkTriangleFilter.h>
+#include <vtkVolumetricHollowCylinderSource.h>
 
 
 const char* HollowCylinderModelObject::OBJECT_TYPE_NAME = "HollowCylinderModel";
@@ -17,6 +15,7 @@ const char* HollowCylinderModelObject::THICKNESS_PROP     = "Thickness";
 const char* HollowCylinderModelObject::LENGTH_PROP        = "Length";
 const char* HollowCylinderModelObject::SURFACE_FLUOR_PROP = "Surface Fluorophore Model";
 const char* HollowCylinderModelObject::VOLUME_FLUOR_PROP  = "Volume Fluorophore Model";
+const char* HollowCylinderModelObject::GRID_FLUOR_PROP    = "Grid Fluorophore Model";
 
 
 HollowCylinderModelObject
@@ -27,29 +26,15 @@ HollowCylinderModelObject
   SetName("Hollow Cylinder");
 
   // Set up geometry
-  m_DiskSource = vtkSmartPointer<vtkDiskSource>::New();
-  m_DiskSource->SetRadialResolution(1);
-  m_DiskSource->SetCircumferentialResolution(32);
+  m_HollowCylinderSource = vtkSmartPointer<vtkVolumetricHollowCylinderSource>::New();
+  m_HollowCylinderSource->SetResolution(32);
 
-  m_Transform = vtkSmartPointer<vtkTransform>::New();
-  m_Transform->RotateX(90.0);
-
-  m_TransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-  m_TransformFilter->SetTransform(m_Transform);
-  m_TransformFilter->SetInputConnection(m_DiskSource->GetOutputPort());
-
-  m_ExtrusionSource = vtkSmartPointer<vtkLinearExtrusionFilter>::New();
-  m_ExtrusionSource->SetExtrusionTypeToVectorExtrusion();
-  m_ExtrusionSource->CappingOn();
-  m_ExtrusionSource->SetScaleFactor(1.0);
-  m_ExtrusionSource->SetVector(0.0, 1.0, 0.0);
-  m_ExtrusionSource->SetInputConnection(m_TransformFilter->GetOutputPort());
-
-  m_TriangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-  m_TriangleFilter->SetInputConnection(m_ExtrusionSource->GetOutputPort());
+  vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+    vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+  surfaceFilter->SetInputConnection(m_HollowCylinderSource->GetOutputPort());
 
   m_GeometrySource = vtkSmartPointer<vtkPolyDataNormals>::New();
-  m_GeometrySource->SetInputConnection(m_TriangleFilter->GetOutputPort());
+  m_GeometrySource->SetInputConnection(surfaceFilter->GetOutputPort());
 
   SetGeometrySubAssembly("All", m_GeometrySource);
 
@@ -61,7 +46,9 @@ HollowCylinderModelObject
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_GeometrySource));
   AddProperty(new VolumeUniformFluorophoreProperty
-              (VOLUME_FLUOR_PROP, m_GeometrySource));
+              (VOLUME_FLUOR_PROP, m_HollowCylinderSource));
+  AddProperty(new GridBasedFluorophoreProperty
+              (GRID_FLUOR_PROP, m_HollowCylinderSource));
 
   // Must call this after setting up properties
   Update();
@@ -79,15 +66,11 @@ HollowCylinderModelObject
 ::Update() {
   double outerRadius = GetProperty(OUTER_RADIUS_PROP)->GetDoubleValue();
   double thickness   = GetProperty(THICKNESS_PROP)->GetDoubleValue();
-  m_DiskSource->SetOuterRadius(GetProperty(OUTER_RADIUS_PROP)->GetDoubleValue());
-  m_DiskSource->SetInnerRadius(outerRadius - thickness);
+  m_HollowCylinderSource->SetOuterRadius(GetProperty(OUTER_RADIUS_PROP)->GetDoubleValue());
+  m_HollowCylinderSource->SetInnerRadius(outerRadius - thickness);
+  m_HollowCylinderSource->SetHeight(GetProperty(LENGTH_PROP)->GetDoubleValue());
 
-  double length = GetProperty(LENGTH_PROP)->GetDoubleValue();
-
-  m_Transform->Identity();
-  m_Transform->Translate(0.0, -0.5*length, 0.0);
-  m_Transform->RotateX(90.0);
-
-  m_ExtrusionSource->SetScaleFactor(length);
+  // Call superclass update method
+  ModelObject::Update();
 }
 

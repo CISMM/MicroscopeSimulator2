@@ -53,7 +53,8 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
   void              SetComparisonImageModelObjectIndex(int index);
   ImageModelObject* GetComparisonImageModelObject();
 
-  virtual void SetObjectiveFunctionByName(const std::string& name);
+  virtual void        SetObjectiveFunctionByName(const std::string& name);
+  virtual std::string GetObjectiveFunctionName();
 
   virtual void Optimize() = 0;
 
@@ -74,6 +75,8 @@ class FluorescenceOptimizer : public DirtyListener, public XMLStorable {
 
   Parameter    GetOptimizerParameter(int index);
   Parameter    GetOptimizerParameter(const std::string& name);
+
+  virtual double GetObjectiveFunctionValue();
 
  protected:
   FluorescenceOptimizer() {};

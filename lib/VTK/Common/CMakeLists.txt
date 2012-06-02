@@ -10,4 +10,14 @@ SET (Common_SRCS
 
 # Create the msvtkCommon C++ library
 ADD_LIBRARY (msvtkCommon ${Common_SRCS})
-TARGET_LINK_LIBRARIES(msvtkCommon vtkGraphics vtkCommon vtkFiltering vtkRendering vtkHybrid vtkImaging vtkIO)
+TARGET_LINK_LIBRARIES(
+  msvtkCommon
+  vtkGraphics
+  vtkCommon
+  vtkFiltering
+  vtkRendering
+  vtkHybrid
+  vtkImaging
+  vtkIO
+  ${OPENGL_LIBRARIES}
+)

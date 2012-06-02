@@ -39,7 +39,6 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   } SamplePattern_t;
 
   UniformFluorophoreProperty(const std::string& name,
-                             vtkPolyDataAlgorithm* geometry,
                              bool editable = false,
                              bool optimizable = true);
   virtual ~UniformFluorophoreProperty();
@@ -70,6 +69,8 @@ class UniformFluorophoreProperty : public FluorophoreModelObjectProperty {
   void RandomizePatternOrientationsOn();
   void RandomizePatternOrientationsOff();
   bool GetRandomizePatternOrientations();
+
+  void RegenerateFluorophores();
  
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);

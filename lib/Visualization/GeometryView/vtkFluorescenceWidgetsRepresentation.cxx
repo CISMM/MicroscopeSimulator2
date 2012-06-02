@@ -45,7 +45,7 @@ vtkFluorescenceWidgetsRepresentation
   this->SimulatedFocalPlaneImageShiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
   this->SimulatedFocalPlaneImageShiftScale->SetOutputScalarTypeToUnsignedChar();
   this->SimulatedFocalPlaneImageShiftScale->ClampOverflowOn();
-  
+
   this->SimulatedFocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
   this->SimulatedFocalPlaneTexture->InterpolateOff();
   this->SimulatedFocalPlaneTexture->RepeatOff();
@@ -69,7 +69,7 @@ vtkFluorescenceWidgetsRepresentation
   this->ComparisonFocalPlaneImageShiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
   this->ComparisonFocalPlaneImageShiftScale->SetOutputScalarTypeToUnsignedChar();
   this->ComparisonFocalPlaneImageShiftScale->ClampOverflowOn();
-  
+
   this->ComparisonFocalPlaneTexture = vtkSmartPointer<vtkTexture>::New();
   this->ComparisonFocalPlaneTexture->InterpolateOff();
   this->ComparisonFocalPlaneTexture->RepeatOff();
@@ -92,6 +92,7 @@ vtkFluorescenceWidgetsRepresentation
   // Set up the reference grid
   vtkSmartPointer<vtkProperty> focalPlaneProperty = vtkSmartPointer<vtkProperty>::New();
   focalPlaneProperty->SetRepresentationToWireframe();
+  focalPlaneProperty->SetLineWidth(2.0);
   focalPlaneProperty->SetColor(1.0, 1.0, 1.0);
   focalPlaneProperty->LightingOff();
 
@@ -100,7 +101,7 @@ vtkFluorescenceWidgetsRepresentation
 
   this->FocalPlaneGridMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   this->FocalPlaneGridMapper->SetInputConnection(this->FocalPlaneGrid->GetOutputPort());
-  
+
   this->FocalPlaneGridActor = vtkSmartPointer<vtkActor>::New();
   this->FocalPlaneGridActor->SetMapper(this->FocalPlaneGridMapper);
   this->FocalPlaneGridActor->PickableOff();
@@ -112,7 +113,7 @@ vtkFluorescenceWidgetsRepresentation
 
   this->ImageVolumeOutlineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   this->ImageVolumeOutlineMapper->SetInputConnection(this->ImageVolumeOutlineSource->GetOutputPort());
-  
+
   this->ImageVolumeOutlineActor = vtkSmartPointer<vtkActor>::New();
   this->ImageVolumeOutlineActor->SetMapper(this->ImageVolumeOutlineMapper);
   this->ImageVolumeOutlineActor->SetUserMatrix(this->ShearTransformMatrix);
@@ -156,7 +157,7 @@ vtkFluorescenceWidgetsRepresentation
       this->SimulatedFocalPlaneImageShiftScale->SetShift(-mapsToZero);
       this->SimulatedFocalPlaneImageShiftScale->SetScale(255.0 / (mapsToOne - mapsToZero));
 
-      FluorescenceImageSource* imageSource = 
+      FluorescenceImageSource* imageSource =
         this->Simulation->GetFluorescenceImageSource();
 
       vtkDataObject* oldImage = this->SimulatedFocalPlaneImageShiftScale->GetInput();
@@ -166,7 +167,7 @@ vtkFluorescenceWidgetsRepresentation
         oldImage->Delete();
 
       this->SimulatedFocalPlaneTexture->Modified();
-                                                
+
       this->SimulatedFocalPlaneSource->SetPoint1(width, 0.0, 0.0);
       this->SimulatedFocalPlaneSource->SetPoint2(0.0, height, 0.0);
       this->SimulatedFocalPlaneActor->SetPosition(0.0, 0.0, depth);
@@ -179,21 +180,20 @@ vtkFluorescenceWidgetsRepresentation
       this->ComparisonFocalPlaneImageShiftScale->SetShift(-mapsToZero);
       this->ComparisonFocalPlaneImageShiftScale->SetScale(255.0 / (mapsToOne - mapsToZero));
 
-      ImageModelObject* comparisonImage = this->Simulation->GetComparisonImageModelObject();
-      if (comparisonImage) {
-        vtkImageData* experimentalImage = 
-          this->Simulation->GetComparisonImageModelObject()->GetImageData();
+      ImageModelObject* comparisonImageObject = this->Simulation->GetComparisonImageModelObject();
+      if (comparisonImageObject) {
+        vtkImageData* comparisonImage = comparisonImageObject->GetImageData();
         int extent[6];
-        experimentalImage->GetExtent(extent);
+        comparisonImage->GetExtent(extent);
         extent[4] = extent[5] = this->Simulation->GetFocalPlaneIndex();
 
-        double comparisonImageWidth  = extent[1] * comparisonImage->
+        double comparisonImageWidth  = (extent[1]+1) * comparisonImageObject->
           GetProperty(ImageModelObject::X_SPACING_PROP)->GetDoubleValue();
-        double comparisonImageHeight = extent[3] * comparisonImage->
+        double comparisonImageHeight = (extent[3]+1) * comparisonImageObject->
           GetProperty(ImageModelObject::Y_SPACING_PROP)->GetDoubleValue();
 
         vtkImageClip* clipper = vtkImageClip::New();
-        clipper->SetInput(experimentalImage);
+        clipper->SetInput(comparisonImage);
         clipper->SetOutputWholeExtent(extent);
 
         this->ComparisonFocalPlaneImageShiftScale->SetInputConnection
@@ -217,7 +217,7 @@ vtkFluorescenceWidgetsRepresentation
     this->FocalPlaneGridActor->SetPosition(0.0, 0.0, depth);
     this->FocalPlaneGridActor->
       SetVisibility(this->Simulation->GetShowReferenceGrid() ? 1 : 0);
-    
+
     double spacing = this->Simulation->GetReferenceGridSpacing();
     this->FocalPlaneGrid->SetSpacing(spacing, spacing);
 

@@ -4,8 +4,7 @@
 #include <ModelObject.h>
 #include <vtkSmartPointer.h>
 
-class vtkPlaneSource;
-class vtkTriangleFilter;
+class vtkRectangleSource;
 
 
 class PlaneModelObject : public ModelObject {
@@ -26,8 +25,7 @@ class PlaneModelObject : public ModelObject {
  protected:
   PlaneModelObject() {};
 
-  vtkSmartPointer<vtkPlaneSource>    m_PlaneSource;
-  vtkSmartPointer<vtkTriangleFilter> m_GeometrySource;
+  vtkSmartPointer<vtkRectangleSource> m_GeometrySource;
 
 };
 

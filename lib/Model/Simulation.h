@@ -55,16 +55,16 @@ public:
   virtual void Sully();
   virtual void SetStatusMessage(const std::string& status);
 
-  void SetSimulationDescription(const std::string& description);
+  void         SetSimulationDescription(const std::string& description);
   std::string& GetSimulationDescription();
 
-  void SetSimulationFileName(const std::string& name);
+  void         SetSimulationFileName(const std::string& name);
   std::string& GetSimulationFileName();
 
   void SetSimulationAlreadySaved(bool saved);
   bool GetSimulationAlreadySaved();
 
-  void SetSimulationCreationDate(const std::string& date);
+  void         SetSimulationCreationDate(const std::string& date);
   std::string& GetSimulationCreationDate();
 
   AFMSimulation*          GetAFMSimulation();
@@ -79,9 +79,12 @@ public:
   ImageModelObject* GetComparisonImageModelObject();
 
   void OptimizeToFluorescence();
+  void ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
+                               bool exportRed, bool exportGreen, bool exportBlue);
+  void SaveFluorescenceObjectiveFunctionValue(const std::string& fileName);
 
-  void SetNumberOfThreads(int threads);
-  int  GetNumberOfThreads();
+  void SetNumberOfThreads(unsigned int threads);
+  unsigned int  GetNumberOfThreads();
 
   void AddNewModelObject(const std::string& objectTypeName);
   void ImportModelObject(const std::string& objectTypeName, const std::string& fileName);
@@ -90,13 +93,15 @@ public:
 
   vtkPolyDataAlgorithm* GetModelObjectGeometry(ModelObject* object);
 
+  void RegenerateFluorophores();
+
 protected:
   static const std::string DATE_FORMAT_STRING;
 
   std::string m_SimulationDescription;
 
   std::string m_SimulationFileName;
-  
+
   bool m_SimulationAlreadySaved;
 
   std::string m_SimulationCreationDate;

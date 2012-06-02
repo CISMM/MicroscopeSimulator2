@@ -3,6 +3,7 @@
 
 #include <UniformFluorophoreProperty.h>
 
+class vtkPolyDataAlgorithm;
 class vtkSurfaceUniformPointSampler;
 
 
@@ -10,7 +11,7 @@ class SurfaceUniformFluorophoreProperty : public UniformFluorophoreProperty {
 
  public:
   SurfaceUniformFluorophoreProperty(const std::string& name,
-                                    vtkPolyDataAlgorithm* geometry,
+                                    vtkPolyDataAlgorithm* surfaceSource,
                                     bool editable = false,
                                     bool optimizable = true);
   virtual ~SurfaceUniformFluorophoreProperty();
@@ -22,6 +23,7 @@ class SurfaceUniformFluorophoreProperty : public UniformFluorophoreProperty {
 
   virtual double GetDensityScale();
 
+  vtkSmartPointer<vtkPolyDataAlgorithm>          m_SurfaceSource;
   vtkSmartPointer<vtkSurfaceUniformPointSampler> m_SurfaceSampler;
 };
 

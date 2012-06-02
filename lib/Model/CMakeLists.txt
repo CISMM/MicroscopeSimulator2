@@ -26,12 +26,16 @@ SET(modelModelObjectsSrc
   ModelObjects/SurfaceUniformFluorophoreProperty.cxx
   ModelObjects/VolumeUniformFluorophoreProperty.h
   ModelObjects/VolumeUniformFluorophoreProperty.cxx
+  ModelObjects/GridBasedFluorophoreProperty.h
+  ModelObjects/GridBasedFluorophoreProperty.cxx
   ModelObjects/ModelObjectPropertyList.h
   ModelObjects/ModelObjectPropertyList.cxx
   ModelObjects/CylinderModelObject.h
   ModelObjects/CylinderModelObject.cxx
   ModelObjects/DiskModelObject.h
   ModelObjects/DiskModelObject.cxx
+  ModelObjects/EllipsoidModelObject.h
+  ModelObjects/EllipsoidModelObject.cxx
   ModelObjects/FlexibleTubeModelObject.h
   ModelObjects/FlexibleTubeModelObject.cxx
   ModelObjects/HollowCylinderModelObject.h
@@ -76,8 +80,12 @@ SET(modelFluoroSimSrc
   FluoroSim/GaussianPointSpreadFunction.cxx
   FluoroSim/ImportedPointSpreadFunction.h
   FluoroSim/ImportedPointSpreadFunction.cxx
-  FluoroSim/WidefieldPointSpreadFunction.h
-  FluoroSim/WidefieldPointSpreadFunction.cxx
+  FluoroSim/GibsonLanniWidefieldPointSpreadFunction.h
+  FluoroSim/GibsonLanniWidefieldPointSpreadFunction.cxx
+  FluoroSim/ModifiedGibsonLanniWidefieldPointSpreadFunction.h
+  FluoroSim/ModifiedGibsonLanniWidefieldPointSpreadFunction.cxx
+  FluoroSim/HaeberleWidefieldPointSpreadFunction.h
+  FluoroSim/HaeberleWidefieldPointSpreadFunction.cxx
   FluoroSim/PointSpreadFunctionList.h
   FluoroSim/PointSpreadFunctionList.cxx
 )
@@ -95,10 +103,8 @@ TARGET_LINK_LIBRARIES( msimModel
   vtkRendering
   vtkViews
   vtkVolumeRendering
-  itksys
-  ITKCommon
-  ITKBasicFilters
-  ITKIO
-  ITKNumerics
+  msvtkGraphics
+  ${ITK_LIBRARIES}
   msimUtilities
+  ${LIBXML2_LIBRARIES}
 )

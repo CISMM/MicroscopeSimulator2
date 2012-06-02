@@ -102,8 +102,8 @@ vtkActor* vtkModelObjectFluorescenceRepresentation::GetGradientActor() {
 }
 
 
-float* vtkModelObjectFluorescenceRepresentation::GetPointsGradient(int& numPoints) {
-  return this->GradientMapper->GetPointsGradient(numPoints);
+vtkPolyData* vtkModelObjectFluorescenceRepresentation::GetPointsGradient() {
+  return this->GradientMapper->GetPointsGradient();
 }
 
 
@@ -143,6 +143,8 @@ void vtkModelObjectFluorescenceRepresentation::UpdateRepresentation() {
     this->Actor->GetProperty()->SetColor(1.0, 1.0, 1.0);
     this->GradientActor->GetProperty()->SetColor(1.0, 1.0, 1.0);
   }
+  this->GatherMapper->SetIntensityScale(
+    this->FluorophoreProperty->GetIntensityScale());
 
   bool visible = this->ModelObject->GetVisible() && 
     this->FluorophoreProperty->GetEnabled();

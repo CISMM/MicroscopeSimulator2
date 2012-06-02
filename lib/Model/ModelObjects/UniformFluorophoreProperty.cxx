@@ -26,9 +26,8 @@ const char* UniformFluorophoreProperty::RANDOMIZE_PATTERN_ORIENTATIONS_ATT = "ra
 
 UniformFluorophoreProperty::
 UniformFluorophoreProperty(const std::string& name,
-                           vtkPolyDataAlgorithm* geometry,
                            bool editable, bool optimizable) 
-  : FluorophoreModelObjectProperty(name, geometry, editable, optimizable) {
+  : FluorophoreModelObjectProperty(name, editable, optimizable) {
 
   // Subclasses need to set up specific samplers and connect them to
   // the point ring glypher and the set it as the fluorophore output.
@@ -103,8 +102,7 @@ void
 UniformFluorophoreProperty
 ::SetDensity(double density) {
   m_Sampler->SetDensity(density * GetDensityScale());
-  m_Sampler->Modified(); // Ensure resampling is performed no matter what
-  m_Sampler->Update();
+  RegenerateFluorophores(); // Ensure resampling is performed no matter what
 }
 
 
@@ -125,7 +123,8 @@ UniformFluorophoreProperty
 int
 UniformFluorophoreProperty
 ::GetNumberOfFluorophores() {
-  return m_Sampler->GetNumberOfSamples();
+  m_Sampler->GetOutput()->Update();
+  return m_Sampler->GetOutput()->GetNumberOfPoints();
 }
 
 
@@ -282,6 +281,14 @@ void UniformFluorophoreProperty::GlyphFunction(void* arg) {
 
     transform->RotateWXYZ(theta, v1, v2, v3);
   }
+}
+
+
+void
+UniformFluorophoreProperty
+::RegenerateFluorophores() {
+  m_Sampler->Modified();
+  m_Sampler->Update();
 }
 
 

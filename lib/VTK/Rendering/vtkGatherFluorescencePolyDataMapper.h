@@ -53,6 +53,11 @@ public:
   vtkGetMacro(PointsPerPass, int);
 
   // Description:
+  // Sets/gets the intensity scale factor. Default is 1.0 (no scaling).
+  vtkSetMacro(IntensityScale, double);
+  vtkGetMacro(IntensityScale, double);
+
+  // Description:
   // Release any graphics resources that are being consumed by this mapper.
   // The parameter window could be used to determine which graphic
   // resources to release.
@@ -109,6 +114,10 @@ protected:
   void SetUniform1i(const char* name, int value);
   void SetUniform1f(const char* name, float value);
   void SetUniform3dv(const char* name, double* values);
+
+  // Description:
+  // Intensity scale factor for the fluorophores being mapped.
+  double IntensityScale;
 
   // Description:
   // Integer handle for texture storing point data from the mapped object.

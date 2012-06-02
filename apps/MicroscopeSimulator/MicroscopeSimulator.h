@@ -46,10 +46,15 @@ public:
   static const char* XML_ENCODING;
 
   // Constructor/destructor
-  MicroscopeSimulator(QWidget* parent=0);
+  MicroscopeSimulator(int argc=0, char* argv[]=NULL, QWidget* parent=0);
   virtual ~MicroscopeSimulator();
 
   void CheckOpenGLCapabilities();
+
+  void ProcessCommandLineArguments(int argc, char* argv[]);
+
+  void SetBatchMode(bool mode);
+  bool IsBatchMode();
   
 protected:
   Ui_MainWindow* gui;
@@ -83,6 +88,7 @@ public slots:
   virtual void on_actionAddPointRing_triggered();
   virtual void on_actionAddPointSet_triggered();
   virtual void on_actionAddSphere_triggered();
+  virtual void on_actionAddEllipsoid_triggered();
   virtual void on_actionAddTorus_triggered();
 
   // Import
@@ -151,6 +157,8 @@ public slots:
   virtual void on_fluoroSimShowImageVolumeOutlineCheckBox_toggled(bool);
   virtual void on_fluoroSimGainEdit_textChanged(QString text);
   virtual void on_fluoroSimOffsetEdit_textChanged(QString text);
+  virtual void on_fluoroSimMaximumVoxelIntensityEdit_editingFinished();
+  virtual void on_fluoroSimUpdateIntensitySettingsButton_clicked();
   virtual void on_fluoroSimPixelSizeEdit_editingFinished();
   virtual void on_fluoroSimImageWidthEdit_editingFinished();
   virtual void on_fluoroSimImageHeightEdit_editingFinished();
@@ -167,6 +175,7 @@ public slots:
   virtual void on_fluoroSimMaxLevelEdit_editingFinished();
   virtual void on_fluoroSimMaxLevelSlider_sliderMoved(int value);
   virtual void on_fluoroSimSetToFullIntensityRange_clicked();
+  virtual void on_fluoroSimRegenerateFluorophores_clicked();
   virtual void on_fluoroSimExportImageButton_clicked();
   virtual void on_fluoroSimExportStackButton_clicked();
   virtual void on_fluoroSimComparisonImageComboBox_currentIndexChanged(int selected);
@@ -178,6 +187,8 @@ public slots:
   virtual void on_fluoroSimObjectiveFunctionComboBox_currentIndexChanged(int selected);
   
   virtual void on_fluoroSimOptimizeButton_clicked();
+
+  virtual void on_fluoroSimUpdateObjectiveFunctionValueButton_clicked();
 
 protected:
   Simulation* m_Simulation;
@@ -215,6 +226,7 @@ protected:
 protected slots:
 
 private:
+  bool m_BatchMode;
   bool m_SimulationNeedsSaving;
 
   vtkSmartPointer<vtkRenderer>                  m_ModelObjectRenderer;

@@ -56,7 +56,7 @@ vtkFluorescenceRenderer::~vtkFluorescenceRenderer() {
 
 void vtkFluorescenceRenderer::DeviceRender(void) {
   // Do not remove this MakeCurrent! Due to Start / End methods on
-  // some objects which get executed during a pipeline update, 
+  // some objects which get executed during a pipeline update,
   // other windows might get rendered since the last time
   // a MakeCurrent was called.
   this->RenderWindow->MakeCurrent();
@@ -104,6 +104,7 @@ void vtkFluorescenceRenderer::LoadNoiseFragmentProgram() {
   char glVersion2_0[] = "GL_VERSION_2_0";
   char textureRect[]  = "GL_ARB_texture_rectangle";
   vtkOpenGLExtensionManager *manager = vtkOpenGLExtensionManager::New();
+  manager->SetRenderWindow(this->GetRenderWindow());
   if (manager->ExtensionSupported(glVersion2_0))
     manager->LoadExtension(glVersion2_0);
   else
@@ -116,7 +117,7 @@ void vtkFluorescenceRenderer::LoadNoiseFragmentProgram() {
 
   this->NoiseProgramHandle = vtkgl::CreateProgram();
 
-  std::string programString = 
+  std::string programString =
 #include "GaussianNoise_fragment.glsl"
 	  ;
   const vtkgl::GLchar *programPointer = programString.c_str();
@@ -157,6 +158,7 @@ void vtkFluorescenceRenderer::LoadBackgroundIntensityProgram(void) {
   char glVersion2_0[] = "GL_VERSION_2_0";
   char textureRect[]  = "GL_ARB_texture_rectangle";
   vtkOpenGLExtensionManager *manager = vtkOpenGLExtensionManager::New();
+  manager->SetRenderWindow(this->RenderWindow);
   if (manager->ExtensionSupported(glVersion2_0))
     manager->LoadExtension(glVersion2_0);
   else
@@ -169,7 +171,7 @@ void vtkFluorescenceRenderer::LoadBackgroundIntensityProgram(void) {
 
   this->BackgroundIntensityProgramHandle = vtkgl::CreateProgram();
 
-  std::string programString = 
+  std::string programString =
 #include "BackgroundIntensity_fragment.glsl"
 	  ;
   const vtkgl::GLchar *programPointer = programString.c_str();
@@ -242,7 +244,7 @@ void vtkFluorescenceRenderer::RenderNoise(int index) {
 
   // Make sure to disable any 3D textures
   glDisable(vtkgl::TEXTURE_3D);
-  
+
   int s = this->GetFramebufferTexture(index)->GetMaxCoordS();
   int t = this->GetFramebufferTexture(index)->GetMaxCoordT();
   int w = this->GetFramebufferTexture(index)->GetTextureWidth();
@@ -298,7 +300,7 @@ void vtkFluorescenceRenderer::RenderBackgroundIntensity() {
 
   // Bind noise fragment program
   vtkgl::UseProgram(this->BackgroundIntensityProgramHandle);
-  
+
   // Send background intensity to the fragment program
   GLint intensityHandle = vtkgl::GetUniformLocation
     (this->BackgroundIntensityProgramHandle, "intensity");

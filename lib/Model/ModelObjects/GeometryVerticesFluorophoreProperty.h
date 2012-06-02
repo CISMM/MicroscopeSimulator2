@@ -3,17 +3,24 @@
 
 #include <FluorophoreModelObjectProperty.h>
 
+class vtkPolyDataAlgorithm;
+
+
 class GeometryVerticesFluorophoreProperty : public FluorophoreModelObjectProperty {
 
  public:
   GeometryVerticesFluorophoreProperty(const std::string& name,
-                                    vtkPolyDataAlgorithm* geometry,
+                                    vtkPolyDataAlgorithm* pointSet,
                                     bool editable = false,
                                     bool optimizable = true);
   virtual ~GeometryVerticesFluorophoreProperty();
 
+  int GetNumberOfFluorophores();
+
  protected:
   GeometryVerticesFluorophoreProperty() {};
+ 
+  vtkSmartPointer<vtkPolyDataAlgorithm> m_GeometrySource;
 
 };
 

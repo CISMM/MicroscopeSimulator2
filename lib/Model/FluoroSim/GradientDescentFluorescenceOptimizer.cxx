@@ -62,42 +62,34 @@ GradientDescentFluorescenceOptimizer
 
   double stepSizeScaleFactor = GetOptimizerParameterValue(STEP_SIZE_SCALE_FACTOR).dValue;
   optimizer->SetLearningRate(stepSizeScaleFactor);
-  
+
 
   // Make sure to set the fluorescence image source and moving image.
   m_FluorescenceImageSource->
     SetFluorescenceImageSource(m_FluoroSim->GetFluorescenceImageSource());
 
   if (m_ComparisonImageModelObject)
-    m_CostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage()); 
+    m_CostFunction->SetFixedImage(m_ComparisonImageModelObject->GetITKImage());
   m_CostFunction->SetMovingImageSource(m_FluorescenceImageSource);
-  
-  typedef ParameterizedCostFunctionType::ParametersMaskType
-    ParametersMaskType;
-  ParametersMaskType* mask = m_CostFunction->GetParametersMask();
-  
-  // Pluck out the active parameters
-  typedef ParameterizedCostFunctionType::ParametersType ParametersType;
-  ParametersType activeParameters
-    = ParametersType(m_CostFunction->GetNumberOfParameters());
-  int activeIndex = 0;
-  for (unsigned int i = 0; i < mask->Size(); i++) {
-    if (mask->GetElement(i)) {
-      // TODO - The right hand side is slower than it has to be. Make it faster
-      activeParameters[activeIndex++] = m_FluorescenceImageSource->GetParameters()[i];
-    }
-  }
-  
-  std::cout << "Starting parameters: " << activeParameters << std::endl;
-  
+  InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  interpolator->SetInputImage(m_FluorescenceImageSource->GetOutput());
+  m_CostFunction->SetInterpolator(interpolator);
+
+  // Mark all parameters as active
+  m_CostFunction->GetParametersMask()->Fill(1);
+
+  typedef ParametricCostFunctionType::ParametersType ParametersType;
+  ParametersType params = m_FluorescenceImageSource->GetParameters();
+  std::cout << "Starting parameters: " << params << std::endl;
+
   // Connect to the cost function, set the initial parameters, and optimize.
   m_ImageToImageCostFunction->SetFixedImageRegion
     (m_FluorescenceImageSource->GetOutput()->GetLargestPossibleRegion());
-  
-  m_CostFunction->SetImageToImageMetric(m_ImageToImageCostFunction);
+
+  m_CostFunction->SetDelegateMetric(m_ImageToImageCostFunction);
   optimizer->SetCostFunction(m_CostFunction);
-  optimizer->SetInitialPosition(activeParameters);
-  
+  optimizer->SetInitialPosition(params);
+
   try {
     optimizer->StartOptimization();
   } catch (itk::ExceptionObject exception) {

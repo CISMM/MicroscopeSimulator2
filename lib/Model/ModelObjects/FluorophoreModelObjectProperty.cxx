@@ -1,24 +1,19 @@
 #include <FluorophoreModelObjectProperty.h>
 #include <StringUtils.h>
 
-#include <vtkAlgorithm.h>
-#include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkSmartPointer.h>
-#include <vtkSurfaceUniformPointSampler.h>
 #include <vtkTriangleFilter.h>
-#include <vtkVolumeUniformPointSampler.h>
 
 
 FluorophoreModelObjectProperty
 ::FluorophoreModelObjectProperty(const std::string& name,
-                                 vtkPolyDataAlgorithm* geometry,
                                  bool editable, bool optimizable)
   : ModelObjectProperty(name, ModelObjectProperty::FLUOROPHORE_MODEL_TYPE,
                         "-", editable, optimizable) {
-  m_GeometrySource = geometry;
   m_FluorophoreOutput = NULL;
   SetEnabled(true);
   SetFluorophoreChannelToAll();
+  SetIntensityScale(1.0);
 }
 
 
@@ -39,6 +34,20 @@ bool
 FluorophoreModelObjectProperty
 ::GetEnabled() {
   return m_Enabled;
+}
+
+
+void
+FluorophoreModelObjectProperty
+::SetDoubleValue(double value) {
+  SetIntensityScale(value);
+}
+
+
+double
+FluorophoreModelObjectProperty
+::GetDoubleValue() {
+  return GetIntensityScale();
 }
 
 
@@ -84,10 +93,17 @@ FluorophoreModelObjectProperty
 }
 
 
-vtkPolyDataAlgorithm*
+void
 FluorophoreModelObjectProperty
-::GetGeometry() {
-  return m_GeometrySource;
+::SetIntensityScale(double scale) {
+  m_IntensityScale = scale;
+}
+
+
+double
+FluorophoreModelObjectProperty
+::GetIntensityScale() {
+  return m_IntensityScale;
 }
 
 
@@ -128,6 +144,11 @@ FluorophoreModelObjectProperty
   }
   xmlNewProp(root, BAD_CAST "channel", BAD_CAST value);
 
+  sprintf(value, "%f", GetIntensityScale());
+  xmlNewProp(root, BAD_CAST "intensityScale", BAD_CAST value);
+
+  if (IsOptimizable())
+    xmlNewProp(root, BAD_CAST "optimize", BAD_CAST (GetOptimize() ? "true" : "false"));
 }
 
 
@@ -153,4 +174,15 @@ FluorophoreModelObjectProperty
       SetFluorophoreChannelToAll();
     }
   }
+
+  value = (char *) xmlGetProp(root, BAD_CAST "intensityScale");
+  if (value) {
+    SetIntensityScale(atof(value));
+  }
+
+  char* optimize = (char *) xmlGetProp(root, BAD_CAST "optimize");
+  if (optimize)
+    SetOptimize(!strcmp(optimize,"true"));
+  else
+    SetOptimize(false);
 }

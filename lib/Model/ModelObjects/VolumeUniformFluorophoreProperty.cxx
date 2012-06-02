@@ -1,24 +1,22 @@
 #include <VolumeUniformFluorophoreProperty.h>
 
 #include <vtkGlyph3D.h>
-#include <vtkPolyDataAlgorithm.h>
 #include <vtkPolyDataToTetrahedralGrid.h>
 #include <vtkProgrammableGlyphFilter.h>
+#include <vtkUnstructuredGridAlgorithm.h>
 #include <vtkVolumeUniformPointSampler.h>
 
 
 VolumeUniformFluorophoreProperty::
 VolumeUniformFluorophoreProperty(const std::string& name,
-                                 vtkPolyDataAlgorithm* geometry,
+                                 vtkUnstructuredGridAlgorithm* gridSource,
                                  bool editable, bool optimizable)
-  : UniformFluorophoreProperty(name, geometry, editable, optimizable) {
-
-  vtkSmartPointer<vtkPolyDataToTetrahedralGrid> tetrahedralizer =
-    vtkSmartPointer<vtkPolyDataToTetrahedralGrid>::New();
-  tetrahedralizer->SetInputConnection(geometry->GetOutputPort());
+  : UniformFluorophoreProperty(name, editable, optimizable) {
   
+  m_GridSource = gridSource;
+
   m_VolumeSampler = vtkSmartPointer<vtkVolumeUniformPointSampler>::New();
-  m_VolumeSampler->SetInputConnection(tetrahedralizer->GetOutputPort());
+  m_VolumeSampler->SetInputConnection(m_GridSource->GetOutputPort());
   m_Sampler = m_VolumeSampler;
 
   m_Glypher->SetInputConnection(m_Sampler->GetOutputPort());

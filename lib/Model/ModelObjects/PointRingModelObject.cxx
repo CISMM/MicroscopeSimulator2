@@ -88,5 +88,8 @@ PointRingModelObject
   m_PointRingSource->SetRadius(ringRadius);
   m_PointRingSource->SetNumberOfPoints(numPoints);
   m_PointRingSource->Update();
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 

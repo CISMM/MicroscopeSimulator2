@@ -4,8 +4,9 @@
 #define ITK_MANUAL_INSTANTIATION
 #include <itkFluorescenceImageSource.h>
 #include <itkImage.h>
-#include <itkImageToParameterizedImageSourceMetric.h>
+#include <itkImageToParametricImageSourceMetric.h>
 #include <itkMeanSquaresImageToImageMetric.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkNormalizedCorrelationImageToImageMetric.h>
 #include <itkPoissonNoiseImageToImageMetric.h>
 #undef ITK_MANUAL_INSTANTIATION
@@ -17,7 +18,7 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
  public:
 
   static const char* GAUSSIAN_NOISE_OBJECTIVE_FUNCTION;
-  
+
   static const char* POISSON_NOISE_OBJECTIVE_FUNCTION;
 
   static const char* NORMALIZED_CORRELATION_OBJECTIVE_FUNCTION;
@@ -28,8 +29,10 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
   typedef itk::FluorescenceImageSource<FluorescenceImageType> SyntheticImageSourceType;
 
   // Types for optimization.
-  typedef itk::ImageToParameterizedImageSourceMetric<FluorescenceImageType, SyntheticImageSourceType>
-    ParameterizedCostFunctionType;
+  typedef itk::ImageToParametricImageSourceMetric<FluorescenceImageType, SyntheticImageSourceType>
+    ParametricCostFunctionType;
+  typedef itk::NearestNeighborInterpolateImageFunction<FluorescenceImageType, double>
+    InterpolatorType;
 
   typedef itk::ImageToImageMetric<FluorescenceImageType, FluorescenceImageType>
     ImageToImageCostFunctionType;
@@ -44,13 +47,14 @@ class ITKFluorescenceOptimizer : public FluorescenceOptimizer {
   ITKFluorescenceOptimizer(DirtyListener* listener);
   virtual ~ITKFluorescenceOptimizer();
 
+  virtual double GetObjectiveFunctionValue();
 
  protected:
-  
+
   SyntheticImageSourceType::Pointer m_FluorescenceImageSource;
 
   // The cost function used by the optimizer
-  ParameterizedCostFunctionType::Pointer m_CostFunction;
+  ParametricCostFunctionType::Pointer m_CostFunction;
 
   // The delegate cost function used by m_CostFunction
   ImageToImageCostFunctionType::Pointer  m_ImageToImageCostFunction;

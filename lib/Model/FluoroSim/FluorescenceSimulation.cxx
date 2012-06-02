@@ -16,6 +16,7 @@ const char* FluorescenceSimulation::INDEX_ATT = "index";
 const char* FluorescenceSimulation::POSITION_ATT = "position";
 const char* FluorescenceSimulation::GAIN_ATT = "gain";
 const char* FluorescenceSimulation::OFFSET_ATT = "offset";
+const char* FluorescenceSimulation::MAXIMUM_VOXEL_INTENSITY_ATT = "maximumVoxelIntensity";
 const char* FluorescenceSimulation::PIXEL_SIZE_ATT = "pixelSize";
 const char* FluorescenceSimulation::PSF_NAME_ATT = "psfName";
 const char* FluorescenceSimulation::IMAGE_WIDTH_ATT = "imageWidth";
@@ -63,6 +64,7 @@ FluorescenceSimulation
   m_ActivePSFIndex = -1;
   m_Gain           = 1.0;
   m_Offset         = 0.0;
+  m_MaximumVoxelIntensity = 200.0;
   m_PixelSize   = 65.0;
   m_ImageWidth  = 200;
   m_ImageHeight = 200;
@@ -109,6 +111,8 @@ FluorescenceSimulation
   xmlNewProp(node, BAD_CAST GAIN_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetOffset());
   xmlNewProp(node, BAD_CAST OFFSET_ATT, BAD_CAST buf);
+  sprintf(buf, "%f", GetMaximumVoxelIntensity(), BAD_CAST buf);
+  xmlNewProp(node, BAD_CAST MAXIMUM_VOXEL_INTENSITY_ATT, BAD_CAST buf);
   sprintf(buf, "%f", GetPixelSize());
   xmlNewProp(node, BAD_CAST PIXEL_SIZE_ATT, BAD_CAST buf);
 
@@ -215,6 +219,11 @@ FluorescenceSimulation
   char* offsetStr = (char*) xmlGetProp(node, BAD_CAST OFFSET_ATT);
   if (offsetStr) {
     SetOffset(atof(offsetStr));
+  }
+
+  char* maxVoxelIntensityStr = (char*) xmlGetProp(node, BAD_CAST MAXIMUM_VOXEL_INTENSITY_ATT);
+  if (maxVoxelIntensityStr) {
+    SetMaximumVoxelIntensity(atof(maxVoxelIntensityStr));
   }
 
   char* pixelSizeStr = (char*) xmlGetProp(node, BAD_CAST PIXEL_SIZE_ATT);

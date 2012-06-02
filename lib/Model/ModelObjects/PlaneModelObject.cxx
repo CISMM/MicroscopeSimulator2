@@ -1,8 +1,7 @@
 #include <PlaneModelObject.h>
 #include <SurfaceUniformFluorophoreProperty.h>
 
-#include <vtkPlaneSource.h>
-#include <vtkTriangleFilter.h>
+#include <vtkRectangleSource.h>
 
 const char* PlaneModelObject::OBJECT_TYPE_NAME = "PlaneModel";
 
@@ -18,19 +17,15 @@ PlaneModelObject
   SetName("Plane");
 
   // Set up geometry
-  m_PlaneSource = vtkSmartPointer<vtkPlaneSource>::New();
-  m_PlaneSource->SetOrigin(0.0, 0.0, 0.0);
-  m_PlaneSource->SetXResolution(2);
-  m_PlaneSource->SetYResolution(2);
-
-  m_GeometrySource = vtkSmartPointer<vtkTriangleFilter>::New();
-  m_GeometrySource->SetInputConnection(m_PlaneSource->GetOutputPort());
+  m_GeometrySource = vtkSmartPointer<vtkRectangleSource>::New();
+  m_GeometrySource->SetWidthResolution(2);
+  m_GeometrySource->SetHeightResolution(2);
 
   SetGeometrySubAssembly("All", m_GeometrySource);
 
   // Set up properties
-  AddProperty(new ModelObjectProperty(WIDTH_PROP,  100.0, "nanometers"));
-  AddProperty(new ModelObjectProperty(HEIGHT_PROP, 100.0, "nanometers"));
+  AddProperty(new ModelObjectProperty(WIDTH_PROP,  1000.0, "nanometers"));
+  AddProperty(new ModelObjectProperty(HEIGHT_PROP, 1000.0, "nanometers"));
 
   AddProperty(new SurfaceUniformFluorophoreProperty
               (SURFACE_FLUOR_PROP, m_GeometrySource));
@@ -51,8 +46,10 @@ PlaneModelObject
 ::Update() {
   double width  = GetProperty(PlaneModelObject::WIDTH_PROP)->GetDoubleValue();
   double height = GetProperty(PlaneModelObject::HEIGHT_PROP)->GetDoubleValue();
-  m_PlaneSource->SetOrigin(-0.5*width, -0.5*height, 0.0);
-  m_PlaneSource->SetPoint1( 0.5*width, -0.5*height, 0.0);
-  m_PlaneSource->SetPoint2(-0.5*width,  0.5*height, 0.0);
+  m_GeometrySource->SetWidth(width);
+  m_GeometrySource->SetHeight(height);
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 

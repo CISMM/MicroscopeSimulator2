@@ -12,8 +12,8 @@
   Portions of this code are covered under the VTK copyright.
   See VTKCopyright.txt or http://www.kitware.com/VTKCopyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
@@ -37,8 +37,8 @@ namespace itk
 /**
  *
  */
-template <typename TOutputImage>
-FluorescenceImageSource<TOutputImage>
+template< typename TOutputImage >
+FluorescenceImageSource< TOutputImage >
 ::FluorescenceImageSource()
 {
   m_ImageSource = NULL;
@@ -53,16 +53,16 @@ FluorescenceImageSource<TOutputImage>
 }
 
 
-template <typename TOutputImage>
-FluorescenceImageSource<TOutputImage>
+template< typename TOutputImage >
+FluorescenceImageSource< TOutputImage >
 ::~FluorescenceImageSource() {
   delete m_VTKToITKFilter;
 }
 
 
-template <typename TOutputImage>
+template< typename TOutputImage >
 void
-FluorescenceImageSource<TOutputImage>
+FluorescenceImageSource< TOutputImage >
 ::SetFluorescenceImageSource(::FluorescenceImageSource* source) {
   m_ImageSource = source;
 
@@ -70,9 +70,9 @@ FluorescenceImageSource<TOutputImage>
 }
 
 
-template <typename TOutputImage>
+template< typename TOutputImage >
 void
-FluorescenceImageSource<TOutputImage>
+FluorescenceImageSource< TOutputImage >
 ::SetParameters(const ParametersType& parameters) {
   int numParameters = GetNumberOfParameters();
   double* doubleParams = new double[numParameters];
@@ -88,9 +88,9 @@ FluorescenceImageSource<TOutputImage>
 }
 
 
-template <typename TOutputImage>
-typename FluorescenceImageSource<TOutputImage>::ParametersType
-FluorescenceImageSource<TOutputImage>
+template< typename TOutputImage >
+typename FluorescenceImageSource< TOutputImage >::ParametersType
+FluorescenceImageSource< TOutputImage >
 ::GetParameters() const {
   int numParameters = GetNumberOfParameters();
   double* doubleParams = new double[numParameters];
@@ -108,9 +108,30 @@ FluorescenceImageSource<TOutputImage>
 }
 
 
-template <typename TOutputImage>
+template< typename TOutputImage >
+void
+FluorescenceImageSource< TOutputImage >
+::SetParameter(unsigned int index, double value)
+{
+  ParametersType params = this->GetParameters();
+  params[index] = value;
+  this->SetParameters(params);
+}
+
+
+template< typename TOutputImage >
+double
+FluorescenceImageSource< TOutputImage >
+::GetParameter(unsigned int index) const
+{
+  ParametersType params = this->GetParameters();
+  return params[index];
+}
+
+
+template< typename TOutputImage >
 unsigned int
-FluorescenceImageSource<TOutputImage>
+FluorescenceImageSource< TOutputImage >
 ::GetNumberOfParameters() const {
   if (m_ImageSource)
     return m_ImageSource->GetNumberOfParameters();
@@ -122,18 +143,18 @@ FluorescenceImageSource<TOutputImage>
 /**
  *
  */
-template <typename TOutputImage>
-void 
-FluorescenceImageSource<TOutputImage>
+template< typename TOutputImage >
+void
+FluorescenceImageSource< TOutputImage >
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
 }
 
 
-template <typename TOutputImage>
-void 
-FluorescenceImageSource<TOutputImage>
+template< typename TOutputImage >
+void
+FluorescenceImageSource< TOutputImage >
 ::GenerateOutputInformation()
 {
   TOutputImage *output;
@@ -144,7 +165,7 @@ FluorescenceImageSource<TOutputImage>
   for (unsigned long i = 0; i < TOutputImage::ImageDimension; i++) {
     size.SetElement(i, static_cast<typename TOutputImage::SizeType::SizeValueType>(sourceSize[i]));
   }
-  
+
   output = this->GetOutput(0);
 
   typename TOutputImage::RegionType largestPossibleRegion;
@@ -162,9 +183,9 @@ FluorescenceImageSource<TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template <typename TOutputImage>
-void 
-FluorescenceImageSource<TOutputImage>
+template< typename TOutputImage >
+void
+FluorescenceImageSource< TOutputImage >
 ::GenerateData()
 {
   vtkImageData* image = m_ImageSource->GenerateFluorescenceStackImage();

@@ -1,6 +1,6 @@
-#include <itkFlipImageFilter.txx>
-#include <itkImage.txx>
-#include <itkImageFileReader.txx>
+#include <itkFlipImageFilter.hxx>
+#include <itkImage.hxx>
+#include <itkImageFileReader.hxx>
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
@@ -14,17 +14,8 @@ ImageReader
 ::ImageReader() {
   m_ImageReader = ImageSourceType::New();
 
-  // ITK apparently flips the y axis when reading TIFs.
-  m_Flipper = FloatFlipType::New();
-  itk::FixedArray<bool,3> flipArray;
-  flipArray[0] = false;
-  flipArray[1] = true; // Flip about the y-axis
-  flipArray[2] = false;
-  m_Flipper->SetFlipAxes(flipArray);
-  m_Flipper->SetInput(m_ImageReader->GetOutput());
-
   m_ITKToVTKFilter = new ITKImageToVTKImage<ImageType>();
-  m_ITKToVTKFilter->SetInput(m_Flipper->GetOutput());
+  m_ITKToVTKFilter->SetInput(m_ImageReader->GetOutput());
 }
 
 

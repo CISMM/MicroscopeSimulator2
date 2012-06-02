@@ -3,6 +3,7 @@
 
 #include <UniformFluorophoreProperty.h>
 
+class vtkUnstructuredGridAlgorithm;
 class vtkVolumeUniformPointSampler;
 
 
@@ -10,7 +11,7 @@ class VolumeUniformFluorophoreProperty : public UniformFluorophoreProperty {
 
  public:
   VolumeUniformFluorophoreProperty(const std::string& name,
-                                    vtkPolyDataAlgorithm* geometry,
+                                    vtkUnstructuredGridAlgorithm* gridSource,
                                     bool editable = false,
                                     bool optimizable = true);
   virtual ~VolumeUniformFluorophoreProperty();
@@ -22,6 +23,7 @@ class VolumeUniformFluorophoreProperty : public UniformFluorophoreProperty {
 
   virtual double GetDensityScale();
 
+  vtkSmartPointer<vtkUnstructuredGridAlgorithm> m_GridSource;
   vtkSmartPointer<vtkVolumeUniformPointSampler> m_VolumeSampler;
 };
 

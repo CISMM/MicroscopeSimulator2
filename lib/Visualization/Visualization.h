@@ -14,6 +14,7 @@ class vtkImageData;
 class vtkImagePlaneWidgetRepresentation;
 class vtkInteractorStyleTrackballCamera;
 class vtkInteractorStyleTrackballActor;
+class vtkPolyDataCollection;
 class vtkRenderer;
 class vtkRenderView;
 class vtkRenderWindow;
@@ -61,13 +62,12 @@ public:
   void SetInteractionModeToActor();
 
   // Fluorescence-related stuff
-  void GetFluorescenceScalarRange(double scalarRange[2]);
+  void Get2DFluorescenceImageScalarRange(double scalarRange[2]);
+  void Get3DFluorescenceImageScalarRange(double scalarRange[2]);
 
   void FocusOnObject(ModelObject* object);
 
-  float* GetPointsGradientForFluorophoreProperty(int objectIndex,
-                                                 int fluorophorePropertyIndex,
-                                                 int& numPoints);
+  vtkPolyDataCollection* GetPointGradientsForModelObject(int objectIndex);
 
 protected:
   Simulation* m_Simulation;

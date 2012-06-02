@@ -136,6 +136,9 @@ ImageModelObject
   m_InfoChanger->SetOutputOrigin(0.5*xSpacing, 0.5*ySpacing, 0.0);
 
   m_IsosurfaceSource->SetValue(0, GetProperty(ISO_VALUE_PROP)->GetDoubleValue());
+
+  // Call superclass update method
+  ModelObject::Update();
 }
 
 

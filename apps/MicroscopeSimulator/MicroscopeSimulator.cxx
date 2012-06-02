@@ -36,6 +36,8 @@
 #include <FluorophoreModelDialog.h>
 #include <FocalPlanePositionsDialog.h>
 #include <ImageExportOptionsDialog.h>
+#include <ModelObjectList.h>
+#include "ModelObjectProperty.h"
 #include <OptimizerSettingsDialog.h>
 #include <PSFEditorDialog.h>
 #include <Preferences.h>
@@ -52,6 +54,7 @@
 #include <vtkImageShiftScale.h>
 #include <vtkImageWriter.h>
 #include <vtkJPEGWriter.h>
+#include <vtkMath.h>
 #include <vtkOutputWindow.h>
 #include <vtkPLYWriter.h>
 #include <vtkPNGWriter.h>
@@ -72,8 +75,10 @@
 
 // Constructor
 MicroscopeSimulator
-::MicroscopeSimulator(QWidget* p)
+::MicroscopeSimulator(int argc, char* argv[], QWidget* p)
   : QMainWindow(p), m_ModelObjectPropertyListTableModel(NULL) {
+
+  SetBatchMode(false); // Assume interactive mode by default
 
   gui = new Ui_MainWindow();
   gui->setupUi(this);
@@ -82,7 +87,7 @@ MicroscopeSimulator
   gui->controlPanelTabs->removePage(gui->AFMSimTab);
 
   // Set up error dialog box.
-  m_ErrorDialog.setModal(true);  
+  m_ErrorDialog.setModal(true);
 
   // Check the capabilities of OpenGL on this system
   CheckOpenGLCapabilities();
@@ -115,6 +120,9 @@ MicroscopeSimulator
     SetInteractor(gui->modelObjectQvtkWidget->GetInteractor());
   gui->modelObjectQvtkWidget->SetRenderWindow(m_Visualization->GetModelObjectRenderWindow());
 
+  // Set line smoothing on
+  m_Visualization->GetModelObjectRenderWindow()->LineSmoothingOn();
+
   gui->fluorescenceQvtkWidget->SetRenderWindow(m_Visualization->GetFluorescenceRenderWindow());
   gui->fluorescenceQvtkWidget->setMaximumSize(200, 200);
   gui->fluorescenceQvtkWidget->setMinimumSize(200, 200);
@@ -131,7 +139,7 @@ MicroscopeSimulator
   m_PSFMenuListModel->SetHasNone(true);
   m_PSFMenuListModel->SetPSFList(m_Simulation->GetFluorescenceSimulation()->GetPSFList());
   gui->fluoroSimPSFMenuComboBox->setModel(m_PSFMenuListModel);
-  
+
   m_ImageListModel = new QImageListModel();
   m_ImageListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
   gui->fluoroSimComparisonImageComboBox->setModel(m_ImageListModel);
@@ -155,7 +163,7 @@ MicroscopeSimulator
   m_InteractionActionGroup->addAction(gui->actionMoveCamera);
   gui->actionMoveCamera->setChecked(true);
   m_InteractionActionGroup->addAction(gui->actionMoveObjects);
-  
+
   m_ModelObjectListModel = new QModelObjectListModel();
   m_ModelObjectListModel->SetModelObjectList(m_Simulation->GetModelObjectList());
   gui->fluoroSimModelObjectList->setModel(m_ModelObjectListModel);
@@ -170,7 +178,7 @@ MicroscopeSimulator
   gui->fluoroSimModelObjectPropertiesTable->setModel(m_ModelObjectPropertyListTableModel);
   connect(m_ModelObjectPropertyListTableModel,
           SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, 
+          this,
           SLOT(handle_ModelObjectPropertyListTableModel_dataChanged(const QModelIndex&, const QModelIndex&)));
 
   // Set up error reporter
@@ -200,7 +208,7 @@ MicroscopeSimulator
   m_OptimizerSettingsDialog->SetFluorescenceOptimizer(m_Simulation->GetFluorescenceOptimizer());
 
   m_Preferences = new Preferences();
-  
+
   m_PreferencesDialog = new PreferencesDialog(this, this, m_Preferences);
   m_PreferencesDialog->setModal(true);
 
@@ -209,7 +217,7 @@ MicroscopeSimulator
     QString dataDirectoryPath = QDir::homePath();
     dataDirectoryPath.append(QDir::separator());
     dataDirectoryPath.append("MicroscopeSimulatorData");
-    
+
     // Notify user that a data directory is needed
     QString message =
       QString("Microscope Simulator needs a directory in which to store "
@@ -217,7 +225,7 @@ MicroscopeSimulator
     message.append(dataDirectoryPath);
     message.append("'? If you click 'No', you will be able to select a "
                    "different data directory.");
-    QMessageBox::StandardButton buttonClicked = 
+    QMessageBox::StandardButton buttonClicked =
       QMessageBox::question(this, tr("Create data directory?"), message,
                             QMessageBox::Yes | QMessageBox::No,
                             QMessageBox::Yes);
@@ -237,7 +245,6 @@ MicroscopeSimulator
   // Restore inter-session GUI settings.
   ReadProgramSettings();
   RefreshUI();
-  RefreshObjectiveFunctions();
   RefreshModelObjectViews();
   on_actionResetCamera_triggered();
   gui->modelObjectQvtkWidget->GetRenderWindow()->Render();
@@ -266,10 +273,10 @@ MicroscopeSimulator
   delete m_OptimizerSettingsDialog;
   delete m_FocalPlanePositionsDialog;
   delete m_PSFEditorDialog;
- 
+
   delete m_Preferences;
   delete m_PreferencesDialog;
- 
+
   delete m_Visualization;
   delete m_ViewModeActionGroup;
   delete m_InteractionActionGroup;
@@ -302,13 +309,13 @@ MicroscopeSimulator
 
     // Now parse the output of the test
     QStringList knownFeatureNames;
-    knownFeatureNames 
+    knownFeatureNames
       << "RequiredExtensions"
-      << "16BitFloatingPointBlend" 
+      << "16BitFloatingPointBlend"
       << "32BitFloatingPointBlend"
       << "FloatingPointTextureTrilinearInterpolation"
       << "GLSLUnsignedInts";
-    
+
     QStringListIterator iter(knownFeatureNames);
     while (iter.hasNext()) {
       QString featureName = iter.next();
@@ -318,13 +325,13 @@ MicroscopeSimulator
       glCheckProcess.start(appName, args);
       if (glCheckProcess.waitForFinished(60000)) {
         QString output(glCheckProcess.readAllStandardOutput());
-        
+
         QStringList outputColumns = output.split(" ");
         if (outputColumns.size() >= 2 && outputColumns[0] == featureName) {
-          bool supported = 
+          bool supported =
             outputColumns[1].indexOf(tr("PASSED"), 0, Qt::CaseInsensitive) > -1;
           prefs.setValue(featureName, supported);
-          std::cout << featureName.toStdString() << " " 
+          std::cout << featureName.toStdString() << " "
                     << (supported ? "supported" : "not supported") << std::endl;
         }
       } else {
@@ -341,7 +348,7 @@ MicroscopeSimulator
 
   // Bail out with an error message if the user's OpenGL implementation
   // won't support the fluorescence simulator.
-  bool extensionsSupported = 
+  bool extensionsSupported =
     prefs.value("RequiredExtensions", false).toBool();
   bool fp16BlendSupported =
     prefs.value("16BitFloatingPointBlend", false).toBool();
@@ -375,6 +382,132 @@ MicroscopeSimulator
 }
 
 
+// Process command-line arguments. This program is a little unusual
+// in that arguments are treated as commands to execute. Arguments
+// are processed in the order in which they appear on the command
+// line.
+void
+MicroscopeSimulator
+::ProcessCommandLineArguments(int argc, char* argv[]) {
+  for (int i = 1; i < argc; i++) {
+
+    if (strcmp(argv[i], "--batch-mode") == 0) {
+
+      SetBatchMode(true);
+
+    } else if (strcmp(argv[i], "--open-simulation") == 0) {
+
+      i++;
+      if (i < argc) {
+        NewSimulation();
+        OpenSimulationFile(std::string(argv[i]));
+      } else {
+        std::cerr << "No simulation file provided for command --open-simulation" << std::endl;
+        return;
+      }
+
+    } else if (strcmp(argv[i], "--save-simulation") == 0) {
+
+      i++;
+      if (i < argc) {
+        SaveSimulationFile(std::string(argv[i]));
+      } else {
+        std::cerr << "No simulation file provided for command --save-simulation" << std::endl;
+        return;
+      }
+
+    } else if (strcmp(argv[i], "--optimize-fluorescence") == 0) {
+
+      m_Simulation->OptimizeToFluorescence();
+
+    } else if (strcmp(argv[i], "--save-fluorescence-stack") == 0) {
+
+      i++;
+      if (i < argc) {
+        m_Simulation->ExportFluorescenceStack(std::string(argv[i]), 0,
+          "tif", true, true, true);
+      } else {
+        std::cerr << "No stack name provided for command --save-fluorescence-stack" << std::endl;
+      }
+
+    } else if (strcmp(argv[i], "--save-fluorescence-objective-function-value") == 0) {
+
+      i++;
+      if (i < argc) {
+        m_Simulation->SaveFluorescenceObjectiveFunctionValue(std::string(argv[i]));
+      } else {
+        std::cerr << "No file name provided for command --save-fluorescence-objective-function-value" << std::endl;
+      }
+
+    } else if (strcmp(argv[i], "--set-parameter") == 0 ||
+               strcmp(argv[i], "--optimize-parameter") == 0) {
+
+      if (i+1 >= argc) {
+        std::cerr << "No model object name provided." << std::endl;
+        continue;
+      }
+
+      if (i+2 >= argc) {
+        std::cerr << "No parameter name provided." << std::endl;
+        continue;
+      }
+
+      if (i+3 >= argc) {
+        std::cerr << "No parameter value provided." << std::endl;
+        continue;
+      }
+
+      ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectByName(argv[i+1]);
+      if (!mo) {
+        std::cerr << "No model object named '" << argv[i+1] << "' exists." << std::endl;
+      } else {
+        ModelObjectProperty* mop = mo->GetProperty(argv[i+2]);
+        if (!mop) {
+          std::cerr << "No model object parameter named '" << argv[i+2] << "' exists in model object '" << argv[i+1] << "'." << std::endl;
+        } else {
+
+          if (strcmp(argv[i+3], "--set-parameter") == 0) {
+            switch (mop->GetType()) {
+            case ModelObjectProperty::BOOL_TYPE:
+              mop->SetBoolValue(strcmp(argv[i+3], "true") == 0);
+              break;
+
+            case ModelObjectProperty::INT_TYPE:
+              mop->SetIntValue(atoi(argv[i+3]));
+              break;
+
+            case ModelObjectProperty::DOUBLE_TYPE:
+              mop->SetDoubleValue(atoi(argv[i+3]));
+              break;
+
+            case ModelObjectProperty::STRING_TYPE:
+              mop->SetStringValue(std::string(argv[i+3]));
+              break;
+            }
+          } else {
+            mop->SetOptimize(strcmp(argv[i+3], "true") == 0);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+void
+MicroscopeSimulator
+::SetBatchMode(bool mode) {
+  m_BatchMode = mode;
+}
+
+
+bool
+MicroscopeSimulator
+::IsBatchMode() {
+  return m_BatchMode;
+}
+
+
 void
 MicroscopeSimulator
 ::on_actionNewSimulation_triggered() {
@@ -405,7 +538,7 @@ MicroscopeSimulator
   prefs.setValue("OpenSimulationDirectory", fileDialog.directory().absolutePath());
   prefs.endGroup();
 
-  if (result == QDialog::Rejected) 
+  if (result == QDialog::Rejected)
     return;
 
   QString selectedFileName = fileDialog.selectedFiles()[0];
@@ -445,8 +578,8 @@ MicroscopeSimulator
   QSettings prefs;
   prefs.beginGroup("FileDialogs");
   QString directory = prefs.value("SaveSimulationDirectory").toString();
-  
-  QFileDialog fileDialog(this, "Save Simulation File As", directory, 
+
+  QFileDialog fileDialog(this, "Save Simulation File As", directory,
                          "XML Files (*.xml)");
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   int result = fileDialog.exec();
@@ -467,7 +600,7 @@ MicroscopeSimulator
   QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
   if (!selectedFileName.endsWith(extension))
     selectedFileName.append(extension);
-    
+
   SaveSimulationFile(selectedFileName.toStdString());
 }
 
@@ -522,7 +655,7 @@ MicroscopeSimulator
 ::SaveSimulationFile(const std::string& fileName) {
   QString message = tr("Saved simulation '").append(fileName.c_str()).append("'.");
   SetStatusMessage(message.toStdString());
-  
+
   if (m_Simulation->SaveXMLConfiguration(fileName) < 0) {
     m_ErrorDialog.
       showMessage(tr("Could not save simulation file. Please make sure the "
@@ -619,6 +752,13 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_actionAddEllipsoid_triggered() {
+  AddNewModelObject("EllipsoidModel");
+}
+
+
+void
+MicroscopeSimulator
 ::on_actionAddTorus_triggered() {
   AddNewModelObject("TorusModel");
 }
@@ -631,7 +771,7 @@ MicroscopeSimulator
   prefs.beginGroup("FileDialogs");
   QString directory = prefs.value("ImportImageDataDirectory").toString();
 
-  QFileDialog fileDialog(this, "Open Image File", directory, 
+  QFileDialog fileDialog(this, "Open Image File", directory,
                          "TIF Files (*.tif);;LSM Files (*.lsm);;All Files (*)");
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   int result = fileDialog.exec();
@@ -645,7 +785,7 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty()) {
     return;
   }
-  
+
   m_Simulation->ImportModelObject("ImageModel", selectedFileName.toStdString());
 
   QString previousSelection = gui->fluoroSimComparisonImageComboBox->
@@ -705,7 +845,7 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionAboutApplication_triggered() {
-  QString version = QString().sprintf("%d.%d.%d", 
+  QString version = QString().sprintf("%d.%d.%d",
 				      MicroscopeSimulator_MAJOR_NUMBER,
 				      MicroscopeSimulator_MINOR_NUMBER,
 				      MicroscopeSimulator_REVISION_NUMBER);
@@ -734,7 +874,7 @@ MicroscopeSimulator
   QString directory = prefs.value("SaveImageDirectory").toString();
 
   // Get a file name.
-  QFileDialog fileDialog(this, "Save Image File", directory, 
+  QFileDialog fileDialog(this, "Save Image File", directory,
                          "PNG Files (*.png)");
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
   int result = fileDialog.exec();
@@ -754,12 +894,12 @@ MicroscopeSimulator
     selectedFileName.append(extension);
 
   // Grab screen shot and save it.
-  vtkSmartPointer<vtkWindowToImageFilter> w2if = 
+  vtkSmartPointer<vtkWindowToImageFilter> w2if =
     vtkSmartPointer<vtkWindowToImageFilter>::New();
   w2if->SetInput(gui->modelObjectQvtkWidget->GetRenderWindow());
   w2if->SetMagnification(1);
   w2if->Update();
-  
+
   vtkSmartPointer<vtkPNGWriter> pngWriter =
     vtkSmartPointer<vtkPNGWriter>::New();
   pngWriter->SetInputConnection(w2if->GetOutputPort());
@@ -889,7 +1029,7 @@ MicroscopeSimulator
   QString directory  = prefs.value("ExportGeometryDirectory").toString();
   QString nameFilter = prefs.value("ExportGeometryNameFilter").toString();
 
-  QFileDialog fileDialog(this, tr("Export Model Geometry"), directory, 
+  QFileDialog fileDialog(this, tr("Export Model Geometry"), directory,
                          "VTK File (*.vtk);;VTK Poly Data File (*.vtp);;PLY File (*.ply);;BYU File (*.byu)");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -915,7 +1055,7 @@ MicroscopeSimulator
   if (selectedFileName.endsWith(tr(".vtk"))) {
     writer = vtkSmartPointer<vtkPolyDataWriter>::New();
   } else if (selectedFileName.endsWith(tr(".vtp"))) {
-    vtkSmartPointer<vtkXMLPolyDataWriter> vtpWriter = 
+    vtkSmartPointer<vtkXMLPolyDataWriter> vtpWriter =
       vtkSmartPointer<vtkXMLPolyDataWriter>::New();
     vtpWriter->SetInputConnection(geometrySource->GetOutputPort());
     vtpWriter->SetFileName(selectedFileName.toStdString().c_str());
@@ -949,19 +1089,42 @@ MicroscopeSimulator
 void
 MicroscopeSimulator
 ::on_actionDeleteModelObject_triggered() {
-  // See which object is selected in the list.
+  // Get the model object to delete.
   int row = gui->fluoroSimModelObjectList->currentIndex().row();
-
   ModelObjectListPtr mol = m_Simulation->GetModelObjectList();
+  ModelObject* mo = NULL;
   if (row >= 0 && row < static_cast<int>(mol->GetSize())) {
-    mol->Delete(mol->GetModelObjectAtIndex(row));
-
-    RefreshModelObjectViews();
-    m_ModelObjectListModel->Refresh();
+    mo = mol->GetModelObjectAtIndex(row);
   }
+
+  if (mo == NULL)
+    return;
+
+  QString objectName(mo->GetName().c_str());
+
+  // Get confirmation first.
+  QString message = QString("Really delete model object '").
+    append(objectName).append("'?");
+  QMessageBox messageBox;
+  messageBox.setText(message);
+  messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  messageBox.setDefaultButton(QMessageBox::No);
+
+  int selected = messageBox.exec();
+  if (selected == QMessageBox::No)
+    return;
+
+  mol->Delete(mo);
+
+  RefreshModelObjectViews();
+  m_ModelObjectListModel->Refresh();
   m_ModelObjectPropertyListTableModel->SetModelObject(NULL);
   m_ModelObjectPropertyListTableModel->Refresh();
   m_ImageListModel->Refresh();
+
+  QString statusMessage = QString().append(tr("Deleted model object '")).
+    append(objectName).append(tr("'."));
+  SetStatusMessage(statusMessage.toStdString());
 }
 
 
@@ -990,7 +1153,7 @@ MicroscopeSimulator
   ModelObject* object = m_ModelObjectPropertyListTableModel->GetModelObject();
   if (object) {
     ModelObjectProperty* prop = object->GetProperty(index.row());
-    
+
     if (prop && prop->GetType() == ModelObjectProperty::FLUOROPHORE_MODEL_TYPE) {
       FluorophoreModelObjectProperty* fluorProp =
         dynamic_cast<FluorophoreModelObjectProperty*>(prop);
@@ -1277,6 +1440,38 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimMaximumVoxelIntensityEdit_editingFinished() {
+  double maxIntensity = gui->fluoroSimMaximumVoxelIntensityEdit->text().toDouble();
+  m_Simulation->GetFluorescenceSimulation()->SetMaximumVoxelIntensity(maxIntensity);
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimUpdateIntensitySettingsButton_clicked() {
+
+  // Get the scalar range of the 3D image
+  double scalarRange[2];
+  m_Visualization->Get3DFluorescenceImageScalarRange(scalarRange);
+  double currentMaxIntensity = scalarRange[1];
+
+  // Subtract off the offset from the current and desired maximum intensity value
+  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
+  double desiredMaxIntensity = fluoroSim->GetMaximumVoxelIntensity();
+  desiredMaxIntensity -= fluoroSim->GetOffset();
+  currentMaxIntensity -= fluoroSim->GetOffset();
+
+  // Figure out the gain scaling factor and apply it
+  double scale = desiredMaxIntensity / currentMaxIntensity;
+
+  fluoroSim->SetGain(scale*fluoroSim->GetGain());
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimPixelSizeEdit_editingFinished() {
   double pixelSize = gui->fluoroSimPixelSizeEdit->text().toDouble();
   m_Simulation->GetFluorescenceSimulation()->SetPixelSize(pixelSize);
@@ -1407,7 +1602,7 @@ MicroscopeSimulator
   double dValue = static_cast<double>(value);
   m_Simulation->GetFluorescenceSimulation()->SetMinimumIntensityLevel(dValue);
   m_Visualization->FluorescenceViewRender();
-  
+
   RefreshUI();
 }
 
@@ -1439,7 +1634,7 @@ MicroscopeSimulator
 ::on_fluoroSimSetToFullIntensityRange_clicked() {
   m_Visualization->FluorescenceViewRender();
   double scalarRange[2];
-  m_Visualization->GetFluorescenceScalarRange(scalarRange);
+  m_Visualization->Get2DFluorescenceImageScalarRange(scalarRange);
 
   m_Simulation->GetFluorescenceSimulation()->
     SetMinimumIntensityLevel(scalarRange[0]);
@@ -1452,77 +1647,163 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
+::on_fluoroSimRegenerateFluorophores_clicked() {
+  m_Simulation->RegenerateFluorophores();
+
+  RenderViews();
+}
+
+
+void
+MicroscopeSimulator
 ::on_fluoroSimExportImageButton_clicked() {
   QSettings prefs;
   prefs.beginGroup("FileDialogs");
   QString directory  = prefs.value("ExportImageDirectory").toString();
   QString nameFilter = prefs.value("ExportImageNameFilter").toString();
-  
+
   int result;
 
-#if 0
   // Now get the options for the export
   result = m_ImageExportOptionsDialog->exec();
   if (result == QDialog::Rejected)
     return;
-#endif
 
   QFileDialog fileDialog(this, tr("Export Fluorescence Image"), directory,
                          "PNG File (*.png);;BMP File (*.bmp);;JPG File (*.jpg);;16-bit TIFF File (*.tif)");
   fileDialog.selectNameFilter(nameFilter);
   fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-  result = fileDialog.exec();
+  if (fileDialog.exec() == QDialog::Rejected)
+    return;
   prefs.setValue("ExportImageDirectory", fileDialog.directory().absolutePath());
   prefs.setValue("ExportImageNameFilter", fileDialog.selectedNameFilter());
   prefs.endGroup();
-
-  if (result == QDialog::Rejected)
-    return;
 
   QString selectedFileName = fileDialog.selectedFiles()[0];
   if (selectedFileName.isEmpty())
     return;
 
-  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
-  std::cout << extension.toStdString() << std::endl;
-  if (!selectedFileName.endsWith(extension))
-    selectedFileName.append(extension);
+  QString extension = QString().append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (selectedFileName.endsWith(QString('.').append(extension)))
+    selectedFileName.chop(extension.size() + 1);
 
-  vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
-
-  vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
-  scaler->SetOutputScalarTypeToUnsignedChar();
-  scaler->ClampOverflowOn();
-  scaler->SetInput(image);
-  image->Delete();
-
-  double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
-  double maxIntensity = m_Simulation->GetFluorescenceSimulation()->GetMaximumIntensityLevel();
-  scaler->SetShift(-minIntensity);
-  scaler->SetScale(255.0 / (maxIntensity - minIntensity));
-
-  vtkSmartPointer<vtkImageWriter> writer;
-  if (extension == QString(".png")) {
-    writer = vtkSmartPointer<vtkPNGWriter>::New();
-  } else if (extension == QString(".bmp")) {
-    writer = vtkSmartPointer<vtkBMPWriter>::New();
-  } else if (extension == QString(".jpg")) {
-    writer = vtkSmartPointer<vtkJPEGWriter>::New();
-  } else if (extension == QString(".tif")) {
-    vtkSmartPointer<vtkTIFFWriter> tiffWriter = vtkSmartPointer<vtkTIFFWriter>::New();
-    tiffWriter->SetCompressionToNoCompression();
-    writer = tiffWriter;
-    
-    scaler->SetShift(0.0);
-    scaler->SetScale(1.0);
-    scaler->SetOutputScalarTypeToUnsignedShort();
+  // Save the original object positions
+  std::vector< double > originalPositions;
+  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      originalPositions.push_back(mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue());
+    }
   }
-  
-  if (writer) {
-    writer->SetInputConnection(scaler->GetOutputPort());
-    writer->SetFileName(selectedFileName.toStdString().c_str());
-    writer->Write();
+
+  int numberOfImages = m_ImageExportOptionsDialog->GetNumberOfCopies();
+  if (numberOfImages <= 0) numberOfImages = 1;
+
+  for (int i = 0; i < numberOfImages; i++) {
+
+    if (m_ImageExportOptionsDialog->IsRegenerateFluorophoresEnabled()) {
+      m_Simulation->RegenerateFluorophores();
+    }
+
+    if (m_ImageExportOptionsDialog->IsRandomizeObjectPositionsEnabled()) {
+      // Randomize each object's position.
+      double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
+      double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
+      double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
+
+      unsigned int mIndex = 0;
+      for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
+
+        double newX = originalPositions[mIndex++] + xRange * (vtkMath::Random() - 0.5);
+        double newY = originalPositions[mIndex++] + yRange * (vtkMath::Random() - 0.5);
+        double newZ = originalPositions[mIndex++] + zRange * (vtkMath::Random() - 0.5);
+
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
+      }
+    }
+
+    vtkImageData* image = m_Visualization->GenerateFluorescenceImage();
+
+    vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
+    scaler->SetOutputScalarTypeToUnsignedChar();
+    scaler->ClampOverflowOn();
+    scaler->SetInput(image);
+    image->Delete();
+
+    double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
+    double maxIntensity = m_Simulation->GetFluorescenceSimulation()->GetMaximumIntensityLevel();
+    scaler->SetShift(-minIntensity);
+    scaler->SetScale(255.0 / (maxIntensity - minIntensity));
+
+    vtkSmartPointer<vtkImageWriter> writer;
+    if (extension == QString("png")) {
+      writer = vtkSmartPointer<vtkPNGWriter>::New();
+    } else if (extension == QString("bmp")) {
+      writer = vtkSmartPointer<vtkBMPWriter>::New();
+    } else if (extension == QString("jpg")) {
+      writer = vtkSmartPointer<vtkJPEGWriter>::New();
+    } else if (extension == QString("tif")) {
+      vtkSmartPointer<vtkTIFFWriter> tiffWriter = vtkSmartPointer<vtkTIFFWriter>::New();
+      tiffWriter->SetCompressionToNoCompression();
+      writer = tiffWriter;
+
+      scaler->SetShift(0.0);
+      scaler->SetScale(1.0);
+      scaler->SetOutputScalarTypeToUnsignedShort();
+    }
+
+
+    if (writer) {
+      QString fileName;
+      vtkSmartPointer<vtkImageExtractComponents> extractor =
+        vtkSmartPointer<vtkImageExtractComponents>::New();
+      extractor->SetInputConnection(scaler->GetOutputPort());
+      writer->SetInputConnection(extractor->GetOutputPort());
+
+      if (m_ImageExportOptionsDialog->IsExportRedEnabled()) {
+        fileName.sprintf("%s%04d_R.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+        extractor->SetComponents(0);
+        writer->SetFileName(fileName.toStdString().c_str());
+        writer->Write();
+      }
+
+      if (m_ImageExportOptionsDialog->IsExportGreenEnabled()) {
+        fileName.sprintf("%s%04d_G.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+        extractor->SetComponents(1);
+        writer->SetFileName(fileName.toStdString().c_str());
+        writer->Write();
+      }
+
+      if (m_ImageExportOptionsDialog->IsExportBlueEnabled()) {
+        fileName.sprintf("%s%04d_B.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+        extractor->SetComponents(2);
+        writer->SetFileName(fileName.toStdString().c_str());
+        writer->Write();
+      }
+    }
   }
+
+  // Restore the original object positions
+  unsigned int index = 0;
+  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+    }
+  }
+
 }
 
 
@@ -1534,12 +1815,10 @@ MicroscopeSimulator
   QString directory  = prefs.value("ExportStackDirectory").toString();
   QString nameFilter = prefs.value("ExportStackNameFilter").toString();
 
-#if 0
   // Now get the options for the export
   if (m_ImageExportOptionsDialog->exec() == QDialog::Rejected)
     return;
-#endif
-  
+
   QFileDialog fileDialog(this, tr("Export Fluorescence Stack"), directory,
                          "16-bit TIFF File (*.tif)");
   fileDialog.selectNameFilter(nameFilter);
@@ -1554,53 +1833,120 @@ MicroscopeSimulator
   if (selectedFileName.isEmpty())
     return;
 
-  QString extension = QString('.').append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
-  if (!selectedFileName.endsWith(extension))
-    selectedFileName.append(extension);
+  QString extension = QString().append(fileDialog.selectedNameFilter().right(4).left(3).toLower());
+  if (selectedFileName.endsWith(QString('.').append(extension)))
+    selectedFileName.chop(extension.size() + 1);
 
-  // Set up red, green, blue channel file names
-  QString redFileName   = QString(selectedFileName);
-  redFileName.replace(extension, QString("_R") + extension, Qt::CaseInsensitive);
-  QString greenFileName = QString(selectedFileName);
-  greenFileName.replace(extension, QString("_G") + extension, Qt::CaseInsensitive);
-  QString blueFileName  = QString(selectedFileName);
-  blueFileName.replace(extension, QString("_B") + extension, Qt::CaseInsensitive);
-
+  // Save away the starting focal plane index so that we can reset to it later.
   FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
   unsigned int originalIndex = fluoroSim->GetFocalPlaneIndex();
 
-  vtkSmartPointer<vtkImageExtractComponents> redExtractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  redExtractor->SetComponents(0);
+  // Save the original object positions
+  std::vector< double > originalPositions;
+  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      originalPositions.push_back(mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue());
+    }
+  }
 
-  vtkSmartPointer<vtkImageExtractComponents> greenExtractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  greenExtractor->SetComponents(1);
+  int numberOfImages = m_ImageExportOptionsDialog->GetNumberOfCopies();
+  if (numberOfImages <= 0) numberOfImages = 1;
 
-  vtkSmartPointer<vtkImageExtractComponents> blueExtractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  blueExtractor->SetComponents(2);
+  for (int i = 0; i < numberOfImages; i++) {
+    if (m_ImageExportOptionsDialog->IsRegenerateFluorophoresEnabled()) {
+      m_Simulation->RegenerateFluorophores();
+    }
 
-  vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
-  redExtractor->SetInput(rawStack);
-  greenExtractor->SetInput(rawStack);
-  blueExtractor->SetInput(rawStack);
-  rawStack->Delete();
+    if (m_ImageExportOptionsDialog->IsRandomizeObjectPositionsEnabled()) {
+      // Randomize each object's position.
+      double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
+      double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
+      double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
 
-  try {
-    ImageWriter writer;
-    writer.SetFileName(redFileName.toStdString());
-    writer.SetInputConnection(redExtractor->GetOutputPort());
-    writer.WriteUShortImage();
+      unsigned int mIndex = 0;
+      for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
 
-    writer.SetFileName(greenFileName.toStdString());
-    writer.SetInputConnection(greenExtractor->GetOutputPort());
-    writer.WriteUShortImage();
+        double newX = originalPositions[mIndex++] + xRange * (vtkMath::Random() - 0.5);
+        double newY = originalPositions[mIndex++] + yRange * (vtkMath::Random() - 0.5);
+        double newZ = originalPositions[mIndex++] + zRange * (vtkMath::Random() - 0.5);
 
-    writer.SetFileName(blueFileName.toStdString());
-    writer.SetInputConnection(blueExtractor->GetOutputPort());
-    writer.WriteUShortImage();
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
+      }
+    }
 
-  } catch (itk::ExceptionObject e) {
-    std::cout << "Error on write:" << std::endl;
-    std::cout << e.GetDescription() << std::endl;
+    vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
+    vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+    extractor->SetInput(rawStack);
+
+    QString fileName;
+    if (m_ImageExportOptionsDialog->IsExportRedEnabled()) {
+      extractor->SetComponents(0);
+      fileName.sprintf("%s%04d_R.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileName.toStdString());
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the red channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    if (m_ImageExportOptionsDialog->IsExportGreenEnabled()) {
+      extractor->SetComponents(1);
+      fileName.sprintf("%s%04d_G.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileName.toStdString());
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the green channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    if (m_ImageExportOptionsDialog->IsExportBlueEnabled()) {
+      extractor->SetComponents(2);
+      fileName.sprintf("%s%04d_B.%s", selectedFileName.toStdString().c_str(),
+                         i, extension.toStdString().c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileName.toStdString());
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the blue channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    rawStack->Delete();
+  }
+
+  // Restore the original object positions
+  unsigned int index = 0;
+  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+    }
   }
 
   // Reset to original focal plane depth
@@ -1706,7 +2052,7 @@ MicroscopeSimulator
     messageBox.setText(tr("WARNING: Optimization may take a long time. Run the optimizer?"));
     messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     messageBox.setDefaultButton(QMessageBox::Yes);
-    
+
     int selected = messageBox.exec();
     if (selected == QMessageBox::Yes) {
       m_Simulation->OptimizeToFluorescence();
@@ -1717,6 +2063,16 @@ MicroscopeSimulator
     messageBox.setDefaultButton(QMessageBox::Ok);
     messageBox.exec();
   }
+}
+
+
+void
+MicroscopeSimulator
+::on_fluoroSimUpdateObjectiveFunctionValueButton_clicked() {
+  double value = m_Simulation->GetFluorescenceOptimizer()->GetObjectiveFunctionValue();
+
+  QString valueStr; valueStr.sprintf("%e", value);
+  gui->fluoroSimObjectiveFunctionValueEdit->setText(valueStr);
 }
 
 
@@ -1743,7 +2099,7 @@ void
 MicroscopeSimulator
 ::UpdateMainWindowTitle() {
   ///////////////// Update window title /////////////////
-  QString version = QString().sprintf("%d.%d.%d", 
+  QString version = QString().sprintf("%d.%d.%d",
     MicroscopeSimulator_MAJOR_NUMBER,
     MicroscopeSimulator_MINOR_NUMBER,
 		MicroscopeSimulator_REVISION_NUMBER);
@@ -1797,7 +2153,7 @@ MicroscopeSimulator
 
   // Refresh AFMSim UI widgets
   AFMSimulation* afmSim = m_Simulation->GetAFMSimulation();
-  
+
   gui->afmSimPixelSizeEdit->setText(QVariant(afmSim->GetPixelSize()).toString());
   gui->afmSimImageWidthEdit->setText(QVariant(afmSim->GetImageWidth()).toString());
   gui->afmSimImageHeightEdit->setText(QVariant(afmSim->GetImageHeight()).toString());
@@ -1816,7 +2172,7 @@ MicroscopeSimulator
   QString focalDepth = QVariant(fluoroSim->GetFocalPlanePosition()).toString();
   focalDepth.append(" nm");
   gui->fluoroSimFocalDepthEdit->setText(focalDepth);
-  
+
   gui->fluoroSimCurrentPlaneEdit->setText(QVariant(fluoroSim->GetFocalPlaneIndex()+1).toString());
   gui->fluoroSimNumberOfFocalPlanesEdit->setText(QVariant(fluoroSim->GetNumberOfFocalPlanes()).toString());
   gui->fluoroSimFocalPlaneSpacingEdit->setText(QVariant(fluoroSim->GetFocalPlaneSpacing()).toString());
@@ -1828,6 +2184,7 @@ MicroscopeSimulator
   // Simulator Settings group box
   gui->fluoroSimGainEdit->setText(QVariant(fluoroSim->GetGain()).toString());
   gui->fluoroSimOffsetEdit->setText(QVariant(fluoroSim->GetOffset()).toString());
+  gui->fluoroSimMaximumVoxelIntensityEdit->setText(QVariant(fluoroSim->GetMaximumVoxelIntensity()).toString());
   gui->fluoroSimPixelSizeEdit->setText(QVariant(fluoroSim->GetPixelSize()).toString());
   gui->fluoroSimImageWidthEdit->setText(QVariant(fluoroSim->GetImageWidth()).toString());
   gui->fluoroSimImageHeightEdit->setText(QVariant(fluoroSim->GetImageHeight()).toString());
@@ -1871,13 +2228,15 @@ MicroscopeSimulator
     }
   }
 
+  RefreshObjectiveFunctions();
+
   RenderViews();
 }
 
 void
 MicroscopeSimulator
 ::RefreshObjectiveFunctions() {
-  QString selectedObjectiveFunction = gui->fluoroSimObjectiveFunctionComboBox->currentText();
+  gui->fluoroSimObjectiveFunctionComboBox->blockSignals(true);
   gui->fluoroSimObjectiveFunctionComboBox->clear();
 
   FluorescenceOptimizer* optimizer = m_Simulation->GetFluorescenceOptimizer();
@@ -1889,12 +2248,12 @@ MicroscopeSimulator
     std::string name = optimizer->GetAvailableObjectiveFunctionName(i);
     gui->fluoroSimObjectiveFunctionComboBox->addItem(QString(name.c_str()));
 
-    if (name == selectedObjectiveFunction.toStdString()) {
+    if (name == optimizer->GetObjectiveFunctionName()) {
       gui->fluoroSimObjectiveFunctionComboBox->setCurrentIndex(i);
     }
   }
 
-
+  gui->fluoroSimObjectiveFunctionComboBox->blockSignals(false);
 }
 
 
@@ -1919,7 +2278,7 @@ MicroscopeSimulator
   if (m_ModelObjectPropertyListTableModel) {
     m_ModelObjectPropertyListTableModel->Refresh();
   }
-  
+
   RenderViews();
 }
 
@@ -1941,7 +2300,7 @@ MicroscopeSimulator
 
 void
 MicroscopeSimulator
-::WriteProgramSettings() { 
+::WriteProgramSettings() {
  QSettings settings;
 
   // Save size and position of the main window.
@@ -1963,7 +2322,7 @@ void
 MicroscopeSimulator
 ::WritePSFSettings() {
   // Write out PSF list settings
-  
+
   /* Create a new XML DOM tree, to which the XML document will be written. */
   xmlDocPtr doc = xmlNewDoc(BAD_CAST XML_DEFAULT_VERSION);
   if (doc == NULL) {
@@ -2022,13 +2381,13 @@ MicroscopeSimulator
   if (!doc) {
     return;
   }
-  
+
   xmlNodePtr rootNode = xmlDocGetRootElement(doc);
-  
+
   // Restore the simulation from the XML tree.
   m_Simulation->GetFluorescenceSimulation()->GetPSFList()->
     RestoreFromXML(rootNode);
-  
+
   xmlFreeDoc(doc);
 }
 

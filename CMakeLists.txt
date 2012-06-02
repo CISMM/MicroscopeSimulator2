@@ -1,10 +1,10 @@
 PROJECT (MicroscopeSimulator)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 
 # Set version information. Bump this up with every release.
 SET (MicroscopeSimulator_MAJOR_NUMBER "2")
-SET (MicroscopeSimulator_MINOR_NUMBER "0")
-SET (MicroscopeSimulator_REVISION_NUMBER "0")
+SET (MicroscopeSimulator_MINOR_NUMBER "1")
+SET (MicroscopeSimulator_REVISION_NUMBER "2")
 SET (MicroscopeSimulator_VERSION_STRING "${MicroscopeSimulator_MAJOR_NUMBER}.${MicroscopeSimulator_MINOR_NUMBER}.${MicroscopeSimulator_REVISION_NUMBER}")
 
 SET (EXECUTABLE_OUTPUT_PATH "${MicroscopeSimulator_BINARY_DIR}/bin")
@@ -14,42 +14,74 @@ OPTION (CMAKE_VERBOSE_MAKEFILE  "Enable/Disable verbose compiler output" ON)
 OPTION (CMAKE_COLOR_MAKEFILE "Enable/Disable color cues when building" ON)
 MARK_AS_ADVANCED (CLEAR CMAKE_VERBOSE_MAKEFILE CMAKE_COLOR_MAKEFILE)
 
+OPTION (USE_SUPERBUILD "Enable superbuild" ON)
+IF (${USE_SUPERBUILD})
+  INCLUDE(SuperBuild.cmake)
+  RETURN()
+ENDIF()
 
 #######################################
 # Include ITK
 #######################################
-
-FIND_PACKAGE(ITK)
-IF(ITK_FOUND)
-  INCLUDE(${ITK_USE_FILE})
-ELSE(ITK_FOUND)
-  MESSAGE(FATAL_ERROR
-     "Cannot build without ITK.  Please set ITK_DIR.")
-ENDIF(ITK_FOUND)
+FIND_PACKAGE(ITK
+  REQUIRED
+  NO_DEFAULT_PATH
+  NO_CMAKE_ENVIRONMENT_PATH
+  NO_CMAKE_PATH
+  NO_SYSTEM_ENVIRONMENT_PATH
+  NO_CMAKE_PACKAGE_REGISTRY
+  PATHS ${MicroscopeSimulator_BINARY_DIR}/External/src/ITK-build
+  )
+INCLUDE(${ITK_USE_FILE})
 
 #######################################
 # Include VTK
 #######################################
+FIND_PACKAGE(VTK
+  REQUIRED
+  NO_DEFAULT_PATH
+  NO_CMAKE_ENVIRONMENT_PATH
+  NO_CMAKE_PATH
+  NO_SYSTEM_ENVIRONMENT_PATH
+  NO_CMAKE_PACKAGE_REGISTRY
+  PATHS ${MicroscopeSimulator_BINARY_DIR}/External/src/VTK-build
+  )
+INCLUDE(${VTK_USE_FILE})
 
-FIND_PACKAGE(VTK)
-IF (VTK_FOUND)
-  INCLUDE(${VTK_USE_FILE})
-ELSE(VTK_FOUND)
+#######################################
+# Include CLAPACK
+#######################################
+FIND_PACKAGE(CLAPACK)
+if (CLAPACK_FOUND)
+  #INCLUDE( "${CLAPACK_CONFIG}" )
+  #MESSAGE(${CLAPACK_SOURCE_DIR})
+
+  # Find the source directory for CLapack
+  FILE( READ "${CLAPACK_DIR}/CMakeCache.txt" CLAPACK_CMAKE_CACHE )
+  STRING( REGEX REPLACE ".*CLAPACK_SOURCE_DIR:STATIC=([^\n]+).*" "\\1" CLAPACK_SOURCE_DIR ${CLAPACK_CMAKE_CACHE} )
+  MESSAGE( ${CLAPACK_SOURCE_DIR} )
+
+  INCLUDE_DIRECTORIES( ${CLAPACK_SOURCE_DIR}/INCLUDE )
+  LINK_DIRECTORIES( ${CLAPACK_DIR}/SRC )
+
+ELSE(CLAPACK_FOUND)
   MESSAGE(FATAL_ERROR
-     "Cannot build without VTK.  Please set VTK_DIR.")
-ENDIF (VTK_FOUND)
+  "Cannot build without CLAPACK. Please set CLAPACK_DIR.")
+ENDIF(CLAPACK_FOUND)
 
 #######################################
-# Include VTKMS
+# Need to link against OpenGL
 #######################################
+FIND_PACKAGE( OpenGL REQUIRED )
 
-#FIND_PACKAGE(VTKMS)
-#IF (VTKMS_FOUND)
-#  INCLUDE(${VTKMS_USE_FILE})
-#ELSE(VTKMS_FOUND)
-#  MESSAGE(FATAL_ERROR
-#    "Cannot build without VTKMS. Please set VTKMS_DIR.")
-#ENDIF (VTKMS_FOUND)
+#######################################
+# Find include files for libxml2
+#######################################
+# Find the include directory for libxml2
+FILE( READ "${VTK_DIR}/CMakeCache.txt" VTK_CMAKE_CACHE )
+STRING( REGEX REPLACE ".*LIBXML2_INCLUDE_DIR:PATH=([^\n]+).*" "\\1" LIBXML2_INCLUDE_DIR ${VTK_CMAKE_CACHE} )
+INCLUDE_DIRECTORIES( ${LIBXML2_INCLUDE_DIR} )
+STRING( REGEX REPLACE ".*LIBXML2_LIBRARIES:FILEPATH=([^\n]+).*" "\\1" LIBXML2_LIBRARIES ${VTK_CMAKE_CACHE} )
 
 #######################################
 # Personal filter library and support classes.
@@ -58,9 +90,11 @@ ENDIF (VTK_FOUND)
 # apps      - a place for various applications related to the main application
 #######################################
 INCLUDE_DIRECTORIES (
+    ${MicroscopeSimulator_SOURCE_DIR}/NanoITK/Code/Algorithms
+    ${MicroscopeSimulator_SOURCE_DIR}/NanoITK/Code/BasicFilters
+    ${MicroscopeSimulator_SOURCE_DIR}/NanoITK/Code/Common
     ${MicroscopeSimulator_SOURCE_DIR}/lib
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters
-    ${MicroscopeSimulator_SOURCE_DIR}/lib/Filters/itk
     ${MicroscopeSimulator_SOURCE_DIR}/lib/IO
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Model/AFMSim
@@ -72,6 +106,7 @@ INCLUDE_DIRECTORIES (
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Visualization/FluorescenceView
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Common
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Filtering
+    ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Graphics
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Imaging
     ${MicroscopeSimulator_SOURCE_DIR}/lib/VTK/Rendering
     ${MicroscopeSimulator_SOURCE_DIR}/lib/Utilities

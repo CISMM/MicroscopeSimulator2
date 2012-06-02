@@ -17,6 +17,8 @@
 #include "vtkMatrix4x4.h"
 #include "vtkOpenGLTexture.h"
 #include "vtkOpenGL3DTexture.h"
+#include "vtkPointData.h"
+#include "vtkFloatArray.h"
 
 #include <vector>
 
@@ -48,6 +50,9 @@ vtkGatherFluorescencePolyDataMapper::vtkGatherFluorescencePolyDataMapper() {
 
   // Set default number of points to render per pass.
   this->PointsPerPass = 3000;
+
+  // Set the default intensity scale factor.
+  this->IntensityScale = 1.0;
 }
 
 
@@ -129,9 +134,13 @@ void vtkGatherFluorescencePolyDataMapper::RenderPoints(vtkActor *actor, vtkRende
   glPushMatrix();
   glLoadIdentity();
 
+  double halfPixelX = 0.5*this->PixelSize[0];
+  double halfPixelY = 0.5*this->PixelSize[1];
   double worldWinW = this->PixelSize[0] * winW;
   double worldWinH = this->PixelSize[1] * winH;
-  glOrtho(0, worldWinW, 0, worldWinH, 0, 1);
+
+  // We want cell-centered pixels
+  glOrtho(-halfPixelX, worldWinW-halfPixelX, -halfPixelY, worldWinH-halfPixelY, 0, 1);
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -177,23 +186,27 @@ void vtkGatherFluorescencePolyDataMapper::RenderPoints(vtkActor *actor, vtkRende
     double quad[4];
 
     double *imgBB = texture->GetInput()->GetBounds();
-    double xPad = 0.5*(imgBB[1] - imgBB[0]);
-    double yPad = 0.5*(imgBB[3] - imgBB[2]);
+    double xPad = 0.5*(imgBB[1] - imgBB[0]) + psfSpacing[0];
+    double yPad = 0.5*(imgBB[3] - imgBB[2]) + psfSpacing[1];
     this->ComputeBoundingQuad(bb, matrix, xPad, yPad, quad);
 
     while(glGetError());
 
-    // Outer loop required because fragment programs are limited to 2^16 instructions.
-    // We'll generally have far more points than 2^16, so we need to draw several
-    // quads, gathering from a different set of points in each one.
+    // Outer loop required because fragment programs are limited to 2^16 instructions
+    // on older hardware. We'll generally have far more points than 2^16, so we need
+    // to draw several quads, gathering from a different set of points in each one.
     int numPoints = points->GetNumberOfPoints();
-    int increment = this->PointsPerPass;
-    for (int startIndex = 0; startIndex < numPoints; startIndex += increment) {
-      int endIndex = startIndex + increment;
+    int numRows = numPoints / this->PointTextureDimension + (numPoints % this->PointTextureDimension != 0 ? 1 : 0);
+    int rowIncrement = this->PointsPerPass / this->PointTextureDimension;
+    for (int startRow = 0; startRow < numRows; startRow += rowIncrement) {
+      int endRow = startRow + rowIncrement;
+      if (endRow > numRows)
+        endRow = numRows;
+      int endIndex = endRow * this->PointTextureDimension;
       if (endIndex > numPoints)
         endIndex = numPoints;
-      
-      this->SetUniform1i("startIndex", startIndex);
+
+      this->SetUniform1i("startRow", startRow);
       this->SetUniform1i("endIndex", endIndex);
 
       // Draw quad that bounds all contributions from the fluorophores
@@ -271,19 +284,33 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
     int numPoints = points->GetNumberOfPoints();
     this->PointTextureDimension = ceil(sqrt((double) numPoints));
 
+    vtkPointData *pointData = this->GetInput()->GetPointData();
+    vtkFloatArray *intensities = vtkFloatArray::SafeDownCast
+      (pointData->GetScalars());
+
     // Copy and cast point locations to texture memory.
     int pointDataLength = this->PointTextureDimension * this->PointTextureDimension;
-    GLfloat *pointsData = new GLfloat[pointDataLength * 3];
+    int tupleSize = 4;
+    GLfloat *textureData = new GLfloat[pointDataLength * tupleSize];
     for (int i = 0; i < numPoints; i++) {
       double *tmp = points->GetPoint(i);
-      pointsData[i*3 + 0] = (GLfloat) tmp[0];
-      pointsData[i*3 + 1] = (GLfloat) tmp[1];
-      pointsData[i*3 + 2] = (GLfloat) tmp[2];
+      textureData[i*tupleSize + 0] = (GLfloat) tmp[0];
+      textureData[i*tupleSize + 1] = (GLfloat) tmp[1];
+      textureData[i*tupleSize + 2] = (GLfloat) tmp[2];
+      if (intensities) {
+        textureData[i*tupleSize + 3] = 
+          this->IntensityScale * intensities->GetValue(i);
+      } else {
+        textureData[i*tupleSize + 3] = this->IntensityScale;
+      }
     }
+
+    // Fill the rest of the array (these points will not be used).
     for (int i = numPoints; i < pointDataLength; i++) {
-      pointsData[i*3 + 0] = 1.0f;
-      pointsData[i*3 + 1] = 0.0f;
-      pointsData[i*3 + 2] = 0.0f;
+      textureData[i*tupleSize + 0] = 0.0f;
+      textureData[i*tupleSize + 1] = 0.0f;
+      textureData[i*tupleSize + 2] = 0.0f;
+      textureData[i*tupleSize + 3] = 0.0f;
     }
 
     this->PtsLastTimePointsModified = ptsModifiedTime;
@@ -299,10 +326,10 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
     glTexParameteri(this->PointTextureTarget, GL_TEXTURE_WRAP_S, vtkgl::CLAMP_TO_EDGE);
     glTexParameteri(this->PointTextureTarget, GL_TEXTURE_WRAP_T, vtkgl::CLAMP_TO_EDGE);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexImage2D(this->PointTextureTarget, 0, vtkgl::RGB_FLOAT32_ATI, this->PointTextureDimension, 
-      this->PointTextureDimension, 0, GL_RGB, GL_FLOAT, pointsData);
+    glTexImage2D(this->PointTextureTarget, 0, vtkgl::RGBA_FLOAT32_ATI, this->PointTextureDimension, 
+      this->PointTextureDimension, 0, GL_RGBA, GL_FLOAT, textureData);
 
-    delete[] pointsData;
+    delete[] textureData;
 
     vtkgl::ActiveTexture(vtkgl::TEXTURE0);
   }

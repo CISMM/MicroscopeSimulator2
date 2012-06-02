@@ -4,8 +4,7 @@
 #include <ModelObject.h>
 #include <vtkSmartPointer.h>
 
-class vtkDiskSource;
-class vtkTriangleFilter;
+class vtkDiskSource2;
 
 
 class DiskModelObject : public ModelObject {
@@ -25,8 +24,7 @@ class DiskModelObject : public ModelObject {
  protected:
   DiskModelObject() {};
 
-  vtkSmartPointer<vtkDiskSource>     m_DiskSource;
-  vtkSmartPointer<vtkTriangleFilter> m_GeometrySource;
+  vtkSmartPointer<vtkDiskSource2> m_GeometrySource;
 };
 
 #endif // _DISK_MODEL_OBJECT_H_

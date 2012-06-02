@@ -17,6 +17,13 @@ Q_OBJECT
   bool IsExportGreenEnabled();
   bool IsExportBlueEnabled();
 
+  bool IsRegenerateFluorophoresEnabled();
+
+  bool IsRandomizeObjectPositionsEnabled();
+  double GetObjectRandomPositionRangeX();
+  double GetObjectRandomPositionRangeY();
+  double GetObjectRandomPositionRangeZ();
+
   int GetNumberOfCopies();
 
 };

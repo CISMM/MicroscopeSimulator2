@@ -1,10 +1,10 @@
-#ifndef _WIDEFIELD_POINT_SPREAD_FUNCTION_H_
-#define _WIDEFIELD_POINT_SPREAD_FUNCTION_H_
+#ifndef _GIBSON_LANNI_WIDEFIELD_POINT_SPREAD_FUNCTION_H_
+#define _GIBSON_LANNI_WIDEFIELD_POINT_SPREAD_FUNCTION_H_
 
 #include <vector>
 
 #define ITK_MANUAL_INSTANTIATION
-#include <itkGibsonLanniPSFImageSource.h>
+#include <itkGibsonLanniPointSpreadFunctionImageSource.h>
 #include <ITKImageToVTKImage.h>
 #undef ITK_MANUAL_INSTANTIATION
 
@@ -12,11 +12,10 @@
 #include <PointSpreadFunction.h>
 
 
-class WidefieldPointSpreadFunction : public PointSpreadFunction {
+class GibsonLanniWidefieldPointSpreadFunction : public PointSpreadFunction {
 
  public:
-  static const std::string POINT_CENTER_ELEMENT;
-  static const std::string CCD_BORDER_WIDTH_ELEMENT;
+  static const std::string PSF_ELEMENT;
   static const std::string EMISSION_WAVELENGTH_ATTRIBUTE;
   static const std::string NUMERICAL_APERTURE_ATTRIBUTE;
   static const std::string MAGNIFICATION_ATTRIBUTE;
@@ -30,27 +29,27 @@ class WidefieldPointSpreadFunction : public PointSpreadFunction {
   static const std::string DESIGN_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
   static const std::string ACTUAL_SPECIMEN_LAYER_REFRACTIVE_INDEX_ATTRIBUTE;
   static const std::string ACTUAL_POINT_SOURCE_DEPTH_IN_SPECIMEN_LAYER_ATTRIBUTE;
-  static const std::string DESIGN_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
-  static const std::string ACTUAL_DISTANCE_FROM_BACK_FOCAL_PLANE_TO_DETECTOR_ATTRIBUTE;
+  static const std::string PSF_SHEAR_IN_X_ATTRIBUTE;
+  static const std::string PSF_SHEAR_IN_Y_ATTRIBUTE;
 
 
-  WidefieldPointSpreadFunction();
-  virtual ~WidefieldPointSpreadFunction();
+  GibsonLanniWidefieldPointSpreadFunction();
+  virtual ~GibsonLanniWidefieldPointSpreadFunction();
 
-  virtual vtkImageData* GetOutput();
+  virtual vtkImageData*       GetOutput();
   virtual vtkAlgorithmOutput* GetOutputPort();
 
-  virtual int GetNumberOfProperties();
+  virtual int         GetNumberOfProperties();
   virtual std::string GetParameterName(int index);
   virtual double      GetParameterValue(int index);
-  virtual void SetParameterValue(int index, double value);
+  virtual void        SetParameterValue(int index, double value);
 
   virtual void GetXMLConfiguration(xmlNodePtr node);
   virtual void RestoreFromXML(xmlNodePtr node);
 
   typedef float                                     PixelType;
   typedef itk::Image<PixelType, 3>                  ImageType;
-  typedef itk::GibsonLanniPSFImageSource<ImageType> ImageSourceType;
+  typedef itk::GibsonLanniPointSpreadFunctionImageSource<ImageType> ImageSourceType;
   typedef ImageSourceType::Pointer                  ImageSourceTypePointer;
 
  protected:
@@ -62,4 +61,4 @@ class WidefieldPointSpreadFunction : public PointSpreadFunction {
   void RecenterImage();
 };
 
-#endif // _WIDEFIELD_POINT_SPREAD_FUNCTION_H_
+#endif // _GIBSON_LANNI_WIDEFIELD_POINT_SPREAD_FUNCTION_H_

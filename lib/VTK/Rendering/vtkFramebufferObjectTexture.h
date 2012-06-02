@@ -31,6 +31,7 @@
 class vtkWindow;
 class vtkOpenGLRenderer;
 class vtkUnsignedShortArray;
+class vtkRenderWindow;
 class vtkImageData;
 
 class vtkFramebufferObjectTexture : public vtkOpenGLTexture
@@ -39,7 +40,7 @@ public:
   static vtkFramebufferObjectTexture *New();
   vtkTypeRevisionMacro(vtkFramebufferObjectTexture, vtkOpenGLTexture);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
-  
+
   // Description:
   // Gets/sets whether texture dimensions are automatically set to match
   // the size of the renderer
@@ -58,15 +59,15 @@ public:
   // Sets texture format to RGBA or luminance. RGBA is default.
   void SetTextureFormatToLuminance();
   void SetTextureFormatToRGBA();
-  
+
   // Description:
   // Gets maximum texture coordinates of framebuffer texture.
   vtkGetMacro(MaxCoordS, int);
   vtkGetMacro(MaxCoordT, int);
-  
+
   // Description:
   // Load necessary OpenGL extensions. Returns 1 if successful, false otherwise.
-  int LoadExtensions(void);
+  int LoadExtensions(vtkRenderWindow* renWin);
 
   // Description:
   // Setup/teardown of texture as a rendering target.
@@ -88,19 +89,19 @@ public:
   // Description:
   // Implement base class method.
   void Load(vtkRenderer *ren);
-  
+
   // Description:
   // Called after textured objects have been rendered.
   void PostRender();
-  
+
   // Description:
   // Release any graphics resources that are being consumed by this texture.
   // The parameter window could be used to determine which graphic
   // resources to release. Using the same texture object in multiple
-  // render windows is NOT currently supported. 
+  // render windows is NOT currently supported.
   void ReleaseGraphicsResources(vtkWindow *);
 
-  virtual int RequestInformation (vtkInformation *, vtkInformationVector **, 
+  virtual int RequestInformation (vtkInformation *, vtkInformationVector **,
                                   vtkInformationVector *);
 
 protected:
@@ -124,7 +125,7 @@ protected:
   // Description:
   // Frame buffer
   GLuint FrameBufferHandle;
-  
+
   // Description:
   // Render buffer
   GLuint RenderBufferHandle;
@@ -157,16 +158,16 @@ protected:
   int MaxCoordT;
 
   //virtual void ExecuteData(vtkDataObject *d);
-  virtual int RequestData(vtkInformation* request, 
+  virtual int RequestData(vtkInformation* request,
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
 private:
   vtkFramebufferObjectTexture(const vtkFramebufferObjectTexture&);  // Not implemented.
   void operator=(const vtkFramebufferObjectTexture&);  // Not implemented.
-  
+
   void CheckFrameBufferStatus(void);
-  
+
   void Clean(void);
 };
 

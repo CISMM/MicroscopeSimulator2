@@ -4,6 +4,7 @@
 
 #include <CylinderModelObject.h>
 #include <DiskModelObject.h>
+#include <EllipsoidModelObject.h>
 #include <FlexibleTubeModelObject.h>
 #include <HollowCylinderModelObject.h>
 #include <ImageModelObject.h>
@@ -33,6 +34,8 @@ ModelObjectFactory
   ModelObjectPtr object = NULL;
   if (objectName == CylinderModelObject::OBJECT_TYPE_NAME) {
     object = new CylinderModelObject(m_DirtyListener);
+  } else if (objectName == EllipsoidModelObject::OBJECT_TYPE_NAME) {
+    object = new EllipsoidModelObject(m_DirtyListener);
   } else if (objectName == HollowCylinderModelObject::OBJECT_TYPE_NAME) {
     object = new HollowCylinderModelObject(m_DirtyListener);
   } else if (objectName == DiskModelObject::OBJECT_TYPE_NAME) {

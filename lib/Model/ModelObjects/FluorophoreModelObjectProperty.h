@@ -7,7 +7,6 @@
 #include <vtkSmartPointer.h>
 
 class vtkAlgorithm;
-class vtkPolyDataAlgorithm;
 
 
 class FluorophoreModelObjectProperty : public ModelObjectProperty {
@@ -15,7 +14,6 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
  public:
 
   FluorophoreModelObjectProperty(const std::string& name,
-                                 vtkPolyDataAlgorithm* geometry,
                                  bool editable = false,
                                  bool optimizable = true);
 
@@ -24,6 +22,10 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   void SetEnabled(bool enabled);
   bool GetEnabled();
 
+  // Overridden to make the IntensityScale parameter optimizable.
+  void   SetDoubleValue(double value);
+  double GetDoubleValue();
+
   void SetFluorophoreChannel(FluorophoreChannelType type);
   void SetFluorophoreChannelToRed();
   void SetFluorophoreChannelToGreen();
@@ -31,9 +33,14 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
   void SetFluorophoreChannelToAll();
   FluorophoreChannelType GetFluorophoreChannel();
 
-  vtkPolyDataAlgorithm* GetGeometry();
+  void   SetIntensityScale(double scale);
+  double GetIntensityScale();
+
+  virtual int GetNumberOfFluorophores() = 0;
 
   vtkAlgorithm* GetFluorophoreOutput();
+
+  virtual void RegenerateFluorophores() {};
 
   virtual void GetXMLConfiguration(xmlNodePtr root);
   virtual void RestoreFromXML(xmlNodePtr root);
@@ -41,9 +48,9 @@ class FluorophoreModelObjectProperty : public ModelObjectProperty {
  protected:
   FluorophoreModelObjectProperty();
 
-  vtkPolyDataAlgorithm*  m_GeometrySource;
   bool                   m_Enabled;
   FluorophoreChannelType m_Channel;
+  double                 m_IntensityScale;
 
   vtkSmartPointer<vtkAlgorithm> m_FluorophoreOutput;
 

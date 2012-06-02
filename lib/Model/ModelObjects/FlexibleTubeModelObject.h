@@ -20,6 +20,7 @@ class FlexibleTubeModelObject : public PointSetModelObject {
   static const char* RADIUS_PROP;
   static const char* SURFACE_FLUOR_PROP;
   static const char* VOLUME_FLUOR_PROP;
+  static const char* GRID_FLUOR_PROP;
 
   FlexibleTubeModelObject(DirtyListener* dirtyListener);
   virtual ~FlexibleTubeModelObject();

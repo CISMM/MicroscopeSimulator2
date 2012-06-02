@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>774</width>
-    <height>600</height>
+    <width>772</width>
+    <height>753</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>396</width>
-            <height>596</height>
+            <width>398</width>
+            <height>751</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -94,8 +94,11 @@
                   <string>Point-Spread Functions</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <property name="spacing">
+                   <number>3</number>
+                  </property>
                   <property name="margin">
-                   <number>6</number>
+                   <number>3</number>
                   </property>
                   <item>
                    <widget class="QListView" name="gui_PSFListView"/>
@@ -108,9 +111,23 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="gui_AddCalculatedWidefieldPSFButton">
+                   <widget class="QPushButton" name="gui_AddCalculatedGibsonLanniWidefieldPSFButton">
                     <property name="text">
-                     <string>Add Calculated Widefield PSF</string>
+                     <string>Add Calculated Gibson-Lanni Widefield PSF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="gui_AddModifiedGibsonLanniWidefieldPSFButton">
+                    <property name="text">
+                     <string>Add Modified Gibson-Lanni Widefield PSF</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="gui_AddCalculatedHaeberleWidefieldPSFButton">
+                    <property name="text">
+                     <string>Add Calculated Haeberle Widefield PSF</string>
                     </property>
                    </widget>
                   </item>
@@ -202,9 +219,76 @@
                  </layout>
                 </widget>
                </item>
+               <item>
+                <widget class="QGroupBox" name="gui_FittingGroupBox">
+                 <property name="title">
+                  <string>Fitting</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_6">
+                  <property name="margin">
+                   <number>3</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="gui_MeasuredImageLabel">
+                    <property name="text">
+                     <string>Fit to measured image:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="gui_MeasuredImageComboBox"/>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="gui_BeadDiameterWidget" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <property name="margin">
+                      <number>3</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="gui_BeadDiameterLabel">
+                       <property name="text">
+                        <string>Bead diameter:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="gui_BeadDiameterEdit"/>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="gui_NoiseModelLabel">
+                    <property name="text">
+                     <string>Noise model:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="gui_NoiseModelComboBox">
+                    <item>
+                     <property name="text">
+                      <string>Gaussian noise</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Poisson noise</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="gui_FitPSFButton">
+                    <property name="text">
+                     <string>Fit PSF</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
               </layout>
-              <zorder>gui_PSFPropertiesGroupBox</zorder>
-              <zorder>gui_PSFListGroupBox</zorder>
              </widget>
              <widget class="QWidget" name="gui_DisplayTab">
               <attribute name="title">
