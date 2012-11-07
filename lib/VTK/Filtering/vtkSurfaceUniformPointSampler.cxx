@@ -25,7 +25,6 @@
 #include "vtkTriangle.h"
 #include <cstdlib>
 
-vtkCxxRevisionMacro(vtkSurfaceUniformPointSampler, "$Revision: 1.3 $");
 vtkStandardNewMacro(vtkSurfaceUniformPointSampler);
 
 //----------------------------------------------------------------------------

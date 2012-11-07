@@ -25,7 +25,6 @@
 #include "vtkPolyData.h"
 #include "vtkTransform.h"
 
-vtkCxxRevisionMacro(vtkReferenceGridSource, "$Revision: 1.65 $");
 vtkStandardNewMacro(vtkReferenceGridSource);
 
 // Construct plane perpendicular to z-axis, spacing 1x1, width and height

@@ -44,7 +44,7 @@
 class vtkFluorescencePolyDataMapper : public vtkOpenGLPolyDataMapper
 {
 public:
-  vtkTypeRevisionMacro(vtkFluorescencePolyDataMapper,vtkOpenGLPolyDataMapper);
+  vtkTypeMacro(vtkFluorescencePolyDataMapper,vtkOpenGLPolyDataMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

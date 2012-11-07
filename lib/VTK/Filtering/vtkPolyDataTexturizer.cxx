@@ -40,7 +40,6 @@
 #include <set>
 #include <map>
 
-vtkCxxRevisionMacro(vtkPolyDataTexturizer, "$Revision: 1.1 $");
 vtkStandardNewMacro(vtkPolyDataTexturizer);
 
 vtkPolyDataTexturizer::vtkPolyDataTexturizer() : vtkPolyDataAlgorithm()

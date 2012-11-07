@@ -29,7 +29,7 @@ class vtkSurfaceUniformPointSampler : public vtkUniformPointSampler
 {
 public:
   static vtkSurfaceUniformPointSampler *New();
-  vtkTypeRevisionMacro(vtkSurfaceUniformPointSampler,vtkUniformPointSampler);
+  vtkTypeMacro(vtkSurfaceUniformPointSampler,vtkUniformPointSampler);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

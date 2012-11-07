@@ -36,7 +36,7 @@ class vtkFluorescenceRenderer : public vtkFramebufferObjectRenderer
 
 public:
   static vtkFluorescenceRenderer *New();
-  vtkTypeRevisionMacro(vtkFluorescenceRenderer,vtkFramebufferObjectRenderer);
+  vtkTypeMacro(vtkFluorescenceRenderer,vtkFramebufferObjectRenderer);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

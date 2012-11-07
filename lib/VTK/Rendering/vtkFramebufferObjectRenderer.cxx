@@ -31,7 +31,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkFramebufferObjectRenderer, "$Revision$");
 vtkStandardNewMacro(vtkFramebufferObjectRenderer);
 
 

@@ -16,7 +16,7 @@ class vtkModelObjectActorPickObserver;
 class vtkModelObjectGeometryRepresentation : public vtkRenderedSurfaceRepresentation {
  public:
   static vtkModelObjectGeometryRepresentation *New();
-  vtkTypeRevisionMacro(vtkModelObjectGeometryRepresentation, vtkRenderedSurfaceRepresentation);
+  vtkTypeMacro(vtkModelObjectGeometryRepresentation, vtkRenderedSurfaceRepresentation);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   vtkActor* GetActor();

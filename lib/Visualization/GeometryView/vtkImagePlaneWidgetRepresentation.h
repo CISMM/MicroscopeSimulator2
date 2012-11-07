@@ -13,7 +13,7 @@ class Simulation;
 class vtkImagePlaneWidgetRepresentation : public vtkRenderedRepresentation {
  public:
   static vtkImagePlaneWidgetRepresentation *New();
-  vtkTypeRevisionMacro(vtkImagePlaneWidgetRepresentation, vtkRenderedRepresentation);
+  vtkTypeMacro(vtkImagePlaneWidgetRepresentation, vtkRenderedRepresentation);
   void PrintSelf(ostream& os, vtkIndent indent);
 
  protected:

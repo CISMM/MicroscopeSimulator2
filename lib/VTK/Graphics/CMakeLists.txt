@@ -16,11 +16,5 @@ SET (Graphics_SRCS
 # Create the msvtkGraphics C++ library
 ADD_LIBRARY (msvtkGraphics ${Graphics_SRCS})
 TARGET_LINK_LIBRARIES(msvtkGraphics 
-  vtkGraphics
-  vtkCommon
-  vtkFiltering
-  vtkRendering
-  vtkHybrid
-  vtkImaging
-  vtkIO
+  ${VTK_LIBRARIES}
 )

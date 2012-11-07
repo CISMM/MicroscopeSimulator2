@@ -35,7 +35,7 @@ class vtkBlendingPolyDataMapper : public vtkOpenGLPolyDataMapper
 {
 public:
   static vtkBlendingPolyDataMapper *New();
-  vtkTypeRevisionMacro(vtkBlendingPolyDataMapper,vtkOpenGLPolyDataMapper);
+  vtkTypeMacro(vtkBlendingPolyDataMapper,vtkOpenGLPolyDataMapper);
 
   // Description:
   // Turns blending on prior to calling RenderPiece() from the superclass.

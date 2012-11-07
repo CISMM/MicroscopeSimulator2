@@ -11,5 +11,7 @@ SET (Imaging_SRCS
 
 # Create the msvtkImaging C++ library
 ADD_LIBRARY (msvtkImaging ${Imaging_SRCS})
-TARGET_LINK_LIBRARIES(msvtkImaging vtkImaging)
+TARGET_LINK_LIBRARIES(msvtkImaging
+  ${VTK_LIBRARIES}
+)
 

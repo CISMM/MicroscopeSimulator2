@@ -28,7 +28,7 @@ class vtkVolumetricEllipsoidSource : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkVolumetricEllipsoidSource *New();
-  vtkTypeRevisionMacro(vtkVolumetricEllipsoidSource,vtkUnstructuredGridAlgorithm);
+  vtkTypeMacro(vtkVolumetricEllipsoidSource,vtkUnstructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

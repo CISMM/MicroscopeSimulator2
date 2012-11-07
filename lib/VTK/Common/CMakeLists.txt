@@ -5,7 +5,7 @@
 #
 
 SET (Common_SRCS
-  vtkImplicitPolyData.cxx
+  #vtkImplicitPolyData.cxx
 )
 
 # Create the msvtkCommon C++ library

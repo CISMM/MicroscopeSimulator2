@@ -29,7 +29,7 @@ class vtkPointRingSource : public vtkPolyDataAlgorithm {
   // Description:
   // Construct a ring about the x-axis with radius 1 and 5 vertices.
   static vtkPointRingSource* New();
-  vtkTypeRevisionMacro(vtkPointRingSource,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkPointRingSource,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

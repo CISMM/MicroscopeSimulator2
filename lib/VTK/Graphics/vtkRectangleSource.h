@@ -23,7 +23,7 @@ class vtkRectangleSource : public vtkPolyDataAlgorithm
 {
 public:
   static vtkRectangleSource *New();
-  vtkTypeRevisionMacro(vtkRectangleSource,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkRectangleSource,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

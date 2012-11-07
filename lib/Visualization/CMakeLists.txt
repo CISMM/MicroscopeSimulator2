@@ -42,8 +42,8 @@ ADD_LIBRARY( msimVisualization
 )
 
 TARGET_LINK_LIBRARIES( msimVisualization
-  msvtkCommon
   msvtkFiltering
   msvtkImaging
   msvtkRendering
+  msimModel
 )

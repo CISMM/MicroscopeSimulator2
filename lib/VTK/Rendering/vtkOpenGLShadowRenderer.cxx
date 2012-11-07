@@ -39,10 +39,7 @@
 
 #include <math.h>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkOpenGLShadowRenderer, "$Revision: 1.2 $");
 vtkStandardNewMacro(vtkOpenGLShadowRenderer);
-#endif
 
 #define VTK_MAX_LIGHTS 8
 

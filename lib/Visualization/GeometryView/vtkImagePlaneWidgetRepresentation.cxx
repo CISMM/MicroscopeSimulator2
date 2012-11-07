@@ -10,10 +10,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 
-
-vtkCxxRevisionMacro(vtkImagePlaneWidgetRepresentation, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkImagePlaneWidgetRepresentation);
-
 
 vtkImagePlaneWidgetRepresentation
 ::vtkImagePlaneWidgetRepresentation() {
@@ -71,9 +68,9 @@ vtkImagePlaneWidgetRepresentation
   }
 
   if (this->GetInputDataObject(0,0)) {
-    this->XWidget->SetInput(dynamic_cast<vtkImageData*>(this->GetInputDataObject(0, 0)));
-    this->YWidget->SetInput(dynamic_cast<vtkImageData*>(this->GetInputDataObject(0, 0)));
-    this->ZWidget->SetInput(dynamic_cast<vtkImageData*>(this->GetInputDataObject(0, 0)));
+    this->XWidget->SetInputData(dynamic_cast<vtkImageData*>(this->GetInputDataObject(0, 0)));
+    this->YWidget->SetInputData(dynamic_cast<vtkImageData*>(this->GetInputDataObject(0, 0)));
+    this->ZWidget->SetInputData(dynamic_cast<vtkImageData*>(this->GetInputDataObject(0, 0)));
 
     vtkAbstractPropPicker* picker = dynamic_cast<vtkAbstractPropPicker*>(interactor->GetPicker());
     this->XWidget->SetPicker(picker);

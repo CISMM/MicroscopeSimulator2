@@ -118,18 +118,9 @@ ADD_EXECUTABLE( MicroscopeSimulator
 )
 
 TARGET_LINK_LIBRARIES( MicroscopeSimulator
-  QVTK
   ${QT_LIBRARIES}
-  vtksys
-  vtkCommon
-  vtkFiltering
-  vtkGraphics
-  vtkHybrid
-  vtkImaging
-  vtkRendering
-  vtkVolumeRendering
+  ${VTK_LIBRARIES}
   ${OPENGL_LIBRARIES}
-  msvtkCommon
   msvtkFiltering
   msvtkImaging
   msvtkRendering

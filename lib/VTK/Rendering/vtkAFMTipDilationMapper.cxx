@@ -17,7 +17,6 @@
 =========================================================================*/
 #include "vtkAFMTipDilationMapper.h"
 
-vtkCxxRevisionMacro(vtkAFMTipDilationMapper, "$Revision: 1.8 $");
 vtkStandardNewMacro(vtkAFMTipDilationMapper);
 
 //------------------------------------------------------------------------

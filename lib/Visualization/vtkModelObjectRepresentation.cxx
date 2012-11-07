@@ -1,8 +1,5 @@
 #include "vtkModelObjectRepresentation.h"
 
-vtkCxxRevisionMacro(vtkModelObjectRepresentation, "$Revision: 1.0 $");
-
-
 vtkModelObjectRepresentation::vtkModelObjectRepresentation() {
   this->ModelObject = NULL;
 }

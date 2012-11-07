@@ -33,10 +33,7 @@
 #include <math.h>
 #include <vector>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkFramebufferObjectTexture, "$Revision: 1.12 $");
 vtkStandardNewMacro(vtkFramebufferObjectTexture);
-#endif
 
 // Initializes an instance, generates a unique index.
 vtkFramebufferObjectTexture::vtkFramebufferObjectTexture()
@@ -290,7 +287,7 @@ int vtkFramebufferObjectTexture::RequestData(vtkInformation* vtkNotUsed(request)
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkImageData *output = vtkImageData::SafeDownCast
     (outInfo->Get(vtkDataObject::DATA_OBJECT()));
-  vtkImageData *data = this->AllocateOutputData(output);
+  vtkImageData *data = this->AllocateOutputData(output, outInfo);
 
   if (data->GetScalarType() != VTK_FLOAT)
     {

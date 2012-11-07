@@ -21,18 +21,10 @@ TARGET_LINK_LIBRARIES( GLCheck
   msimModel
   msimVisualization
   msimUtilities
-  msvtkCommon
   msvtkFiltering
   msvtkImaging
   msvtkRendering
-  vtksys
-  vtkCommon
-  vtkFiltering
-  vtkGraphics
-  vtkHybrid
-  vtkImaging
-  vtkRendering
-  vtkVolumeRendering
+  ${VTK_LIBRARIES}
   ${OPENGL_LIBRARIES}
 )
 

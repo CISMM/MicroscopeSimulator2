@@ -1051,9 +1051,11 @@ MicroscopeSimulator
 
   vtkPolyDataAlgorithm* geometrySource = object->GetAllGeometryTransformed();
 
-  vtkSmartPointer<vtkPolyDataWriter> writer = NULL;
   if (selectedFileName.endsWith(tr(".vtk"))) {
-    writer = vtkSmartPointer<vtkPolyDataWriter>::New();
+    vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
+    writer->SetInputConnection(geometrySource->GetOutputPort());
+    writer->SetFileName(selectedFileName.toStdString().c_str());
+    writer->Update();
   } else if (selectedFileName.endsWith(tr(".vtp"))) {
     vtkSmartPointer<vtkXMLPolyDataWriter> vtpWriter =
       vtkSmartPointer<vtkXMLPolyDataWriter>::New();
@@ -1061,23 +1063,20 @@ MicroscopeSimulator
     vtpWriter->SetFileName(selectedFileName.toStdString().c_str());
     vtpWriter->Update();
   } else if (selectedFileName.endsWith(tr(".ply"))) {
-    writer = vtkSmartPointer<vtkPLYWriter>::New();
+    vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+    plyWriter->SetInputConnection(geometrySource->GetOutputPort());
+    plyWriter->SetFileName(selectedFileName.toStdString().c_str());
+    plyWriter->Update();
   } else if (selectedFileName.endsWith(tr(".byu"))) {
     vtkSmartPointer<vtkBYUWriter> byuWriter = vtkSmartPointer<vtkBYUWriter>::New();
     byuWriter->SetGeometryFileName(selectedFileName.toStdString().c_str());
     byuWriter->WriteDisplacementOff();
     byuWriter->WriteScalarOff();
     byuWriter->WriteTextureOff();
-    writer = byuWriter;
   } else {
     SetStatusMessage("Error: Could not export geometry");
   }
 
-  if (writer) {
-    writer->SetInputConnection(geometrySource->GetOutputPort());
-    writer->SetFileName(selectedFileName.toStdString().c_str());
-    writer->Update();
-  }
   geometrySource->Delete();
 
   QString message = QString().append(tr("Exported model geometry to file '")).
@@ -1734,7 +1733,7 @@ MicroscopeSimulator
     vtkSmartPointer<vtkImageShiftScale> scaler = vtkSmartPointer<vtkImageShiftScale>::New();
     scaler->SetOutputScalarTypeToUnsignedChar();
     scaler->ClampOverflowOn();
-    scaler->SetInput(image);
+    scaler->SetInputData(image);
     image->Delete();
 
     double minIntensity = m_Simulation->GetFluorescenceSimulation()->GetMinimumIntensityLevel();
@@ -1884,7 +1883,7 @@ MicroscopeSimulator
 
     vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
     vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-    extractor->SetInput(rawStack);
+    extractor->SetInputData(rawStack);
 
     QString fileName;
     if (m_ImageExportOptionsDialog->IsExportRedEnabled()) {

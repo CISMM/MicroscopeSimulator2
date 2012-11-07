@@ -189,7 +189,7 @@ FluorescenceImageSource< TOutputImage >
 ::GenerateData()
 {
   vtkImageData* image = m_ImageSource->GenerateFluorescenceStackImage();
-  m_Extractor->SetInput(image);
+  m_Extractor->SetInputData(image);
   image->Delete();
 
   m_VTKToITKFilter->GraftOutput(this->GetOutput());

@@ -12,7 +12,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkVolumetricEllipsoidSource, "$Revision: 1.55 $");
 vtkStandardNewMacro(vtkVolumetricEllipsoidSource);
 
 vtkVolumetricEllipsoidSource::vtkVolumetricEllipsoidSource (int res)
@@ -36,7 +35,7 @@ void vtkVolumetricEllipsoidSource::ComputeObjectCoordinates(double x[3], double 
 {
   double theta = atan2(x[1], x[0]);
   if (theta < 0.0)
-    theta += vtkMath::DoubleTwoPi();
+    theta += 2.0 * vtkMath::Pi();
   double r = sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]);
   double phi = acos(x[2] / r);
 
@@ -83,8 +82,8 @@ int vtkVolumetricEllipsoidSource::RequestData(
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  double thetaAngle = vtkMath::DoubleTwoPi()/this->ThetaResolution;
-  double phiAngle   = vtkMath::DoublePi()/(this->PhiResolution-1);
+  double thetaAngle = 2.0 * vtkMath::Pi()/this->ThetaResolution;
+  double phiAngle   = 2.0 * vtkMath::Pi()/(this->PhiResolution-1);
   int numCells, numPts;
   double x[3];
   int i, j;
@@ -132,7 +131,7 @@ int vtkVolumetricEllipsoidSource::RequestData(
   //
   // South and north poles
   //
-  this->ComputePoint(0.0, vtkMath::DoublePi(), 1.0, x);
+  this->ComputePoint(0.0, 2.0 * vtkMath::Pi(), 1.0, x);
   newPoints->InsertPoint(numPts-2,x);
 
   this->ComputePoint(0.0, 0.0, 1.0, x);

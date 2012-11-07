@@ -9,7 +9,7 @@ typedef ModelObject* ModelObjectPtr;
 
 class vtkModelObjectRepresentation : public vtkDataRepresentation {
  public:
-  vtkTypeRevisionMacro(vtkModelObjectRepresentation, vtkDataRepresentation);
+  vtkTypeMacro(vtkModelObjectRepresentation, vtkDataRepresentation);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

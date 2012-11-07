@@ -185,7 +185,7 @@ Visualization
     fluoroSim->SetFocalPlaneIndex(i);
 
     vtkImageData* image = GenerateFluorescenceImage();
-    appender->AddInput(image);
+    appender->AddInputData(image);
     image->Delete();
   }
 
@@ -280,7 +280,6 @@ void
 Visualization
 ::Get2DFluorescenceImageScalarRange(double scalarRange[2]) {
   vtkImageData* image = m_FluorescenceRenderView->GetImage();
-  image->Update();
 
   int components = image->GetNumberOfScalarComponents();
   double min = DBL_MAX;
@@ -331,7 +330,7 @@ void
 Visualization
 ::FocusOnObject(ModelObject* object) {
   vtkPolyDataAlgorithm* geometrySource = object->GetAllGeometryTransformed();
-  geometrySource->GetOutput()->Update();
+  geometrySource->Update();
 
   double* bounds = geometrySource->GetOutput()->GetBounds();
   if (bounds) {

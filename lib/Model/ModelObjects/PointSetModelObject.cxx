@@ -38,13 +38,13 @@ PointSetModelObject
   m_SphereSource->SetPhiResolution(8);
 
   m_GlyphSource = vtkSmartPointer<vtkGlyph3D>::New();
-  m_GlyphSource->SetInput(m_PointSource);
+  m_GlyphSource->SetInputData(m_PointSource);
   m_GlyphSource->SetSourceConnection(m_SphereSource->GetOutputPort());
 
   // Need a vertex source for the points so that the fluorescence renderer
   // knows it has something to render.
   m_VertexSource = vtkSmartPointer<vtkVertexGlyphFilter>::New();
-  m_VertexSource->SetInput(m_PointSource);
+  m_VertexSource->SetInputData(m_PointSource);
 
   SetGeometrySubAssembly("All", m_GlyphSource);
   SetGeometrySubAssembly("Points", m_VertexSource);

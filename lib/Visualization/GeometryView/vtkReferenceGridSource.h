@@ -51,7 +51,7 @@ class vtkReferenceGridSource : public vtkPolyDataAlgorithm
 {
 public:
   void PrintSelf(ostream& os, vtkIndent indent);
-  vtkTypeRevisionMacro(vtkReferenceGridSource,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkReferenceGridSource,vtkPolyDataAlgorithm);
 
   // Description:
   // Construct plane perpendicular to z-axis, spacing 1x1, width

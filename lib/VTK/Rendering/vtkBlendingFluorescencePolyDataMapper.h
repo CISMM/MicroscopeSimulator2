@@ -44,7 +44,7 @@ class vtkBlendingFluorescencePolyDataMapper : public vtkFluorescencePolyDataMapp
 {
 public:
   static vtkBlendingFluorescencePolyDataMapper *New();
-  vtkTypeRevisionMacro(vtkBlendingFluorescencePolyDataMapper,vtkFluorescencePolyDataMapper);
+  vtkTypeMacro(vtkBlendingFluorescencePolyDataMapper,vtkFluorescencePolyDataMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

@@ -28,11 +28,7 @@
 
 #include <math.h>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkFluorescencePointsGradientRenderer, "$Revision: 1.2 $");
 vtkStandardNewMacro(vtkFluorescencePointsGradientRenderer);
-#endif
-
 
 vtkFluorescencePointsGradientRenderer::vtkFluorescencePointsGradientRenderer() {
   this->ExperimentalImageTexture = NULL;

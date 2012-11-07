@@ -33,7 +33,7 @@ class vtkTexturedActor2D;
 class vtkGeometryRenderView : public vtkRenderView {
  public:
   static vtkGeometryRenderView* New();
-  vtkTypeRevisionMacro(vtkGeometryRenderView, vtkRenderView);
+  vtkTypeMacro(vtkGeometryRenderView, vtkRenderView);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

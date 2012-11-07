@@ -16,10 +16,7 @@
 
 #include "vtkProperty.h"
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkBlendingPolyDataMapper, "$Revision: 1.1 $");
 vtkStandardNewMacro(vtkBlendingPolyDataMapper);
-#endif
 
 // Construct empty object.
 vtkBlendingPolyDataMapper::vtkBlendingPolyDataMapper() {

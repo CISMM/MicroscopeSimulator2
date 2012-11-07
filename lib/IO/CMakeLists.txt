@@ -10,3 +10,5 @@ SET(ioSrc
 )
 
 ADD_LIBRARY(msimIO ${ioSrc})
+
+TARGET_LINK_LIBRARIES(msimIO ${ITK_LIBRARIES})

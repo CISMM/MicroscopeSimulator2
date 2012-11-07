@@ -26,7 +26,6 @@
 
 #include <cmath>
 
-vtkCxxRevisionMacro(vtkImageConvolvePoints, "$Revision: 1.4 $");
 vtkStandardNewMacro(vtkImageConvolvePoints);
 
 //----------------------------------------------------------------------------
@@ -85,8 +84,7 @@ int vtkImageConvolvePoints::RequestData(
   // This initializes all field data and passes on existing cell data.
   output->CopyStructure( input );
   output->GetCellData()->PassData( input->GetCellData() );
-  output->SetNumberOfScalarComponents(1);
-  output->AllocateScalars();
+  output->AllocateScalars( VTK_DOUBLE, 1 );
 
   if (!input) {
     vtkErrorMacro(<<"No input!");

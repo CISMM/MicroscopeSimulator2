@@ -27,7 +27,6 @@
 #include "vtkUnstructuredGrid.h"
 #include "tetgen.h"
 
-vtkCxxRevisionMacro(vtkPolyDataToTetrahedralGrid, "$Revision: 1.4 $");
 vtkStandardNewMacro(vtkPolyDataToTetrahedralGrid);
 
 //----------------------------------------------------------------------------

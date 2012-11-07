@@ -28,7 +28,7 @@ class vtkImageConstantSource : public vtkImageAlgorithm
 {
 public:
   static vtkImageConstantSource *New();
-  vtkTypeRevisionMacro(vtkImageConstantSource,vtkImageAlgorithm);
+  vtkTypeMacro(vtkImageConstantSource,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -61,7 +61,7 @@ protected:
   int WholeExtent[6];
 
   virtual int RequestInformation (vtkInformation *, vtkInformationVector**, vtkInformationVector *);
-  virtual void ExecuteData(vtkDataObject *data);
+  virtual void ExecuteData(vtkDataObject *data, vtkInformation *outInfo);
 private:
   vtkImageConstantSource(const vtkImageConstantSource&);  // Not implemented.
   void operator=(const vtkImageConstantSource&);  // Not implemented.

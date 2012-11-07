@@ -36,7 +36,7 @@ class vtkFluorescencePointsGradientRenderer : public vtkFluorescenceRenderer
 
 public:
   static vtkFluorescencePointsGradientRenderer *New();
-  vtkTypeRevisionMacro(vtkFluorescencePointsGradientRenderer,vtkFramebufferObjectRenderer);
+  vtkTypeMacro(vtkFluorescencePointsGradientRenderer,vtkFramebufferObjectRenderer);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

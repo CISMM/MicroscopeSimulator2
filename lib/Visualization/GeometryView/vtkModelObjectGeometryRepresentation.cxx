@@ -25,8 +25,6 @@
 
 #include <vtkModelObjectActorPickObserver.h>
 
-
-vtkCxxRevisionMacro(vtkModelObjectGeometryRepresentation, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkModelObjectGeometryRepresentation);
 
 //----------------------------------------------------------------------------

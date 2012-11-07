@@ -22,7 +22,6 @@
 #include "vtkObjectFactory.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 
-vtkCxxRevisionMacro(vtkImageConstantSource, "$Revision: 1.1 $");
 vtkStandardNewMacro(vtkImageConstantSource);
 
 //----------------------------------------------------------------------------
@@ -98,9 +97,10 @@ int vtkImageConstantSource::RequestInformation (
 }
 
 //----------------------------------------------------------------------------
-void vtkImageConstantSource::ExecuteData(vtkDataObject *output)
+void vtkImageConstantSource::ExecuteData(vtkDataObject *output,
+                                         vtkInformation *outInfo)
 {
-  vtkImageData *data = this->AllocateOutputData(output);
+  vtkImageData *data = this->AllocateOutputData(output, outInfo);
   
   if (data->GetScalarType() != VTK_DOUBLE)
     {

@@ -45,7 +45,7 @@ class vtkImageConvolvePoints : public vtkImageAlgorithm
 {
 public:
   static vtkImageConvolvePoints *New();
-  vtkTypeRevisionMacro(vtkImageConvolvePoints,vtkImageAlgorithm);
+  vtkTypeMacro(vtkImageConvolvePoints,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

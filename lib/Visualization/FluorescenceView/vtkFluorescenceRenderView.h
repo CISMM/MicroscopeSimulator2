@@ -30,7 +30,7 @@ class Simulation;
 class vtkFluorescenceRenderView : public vtkView {
  public:
   static vtkFluorescenceRenderView* New();
-  vtkTypeRevisionMacro(vtkFluorescenceRenderView, vtkView);
+  vtkTypeMacro(vtkFluorescenceRenderView, vtkView);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   void SetBlendingTo16Bit();

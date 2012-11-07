@@ -57,7 +57,7 @@ template <class TImage>
 void
 VTKImageToITKImage<TImage>
 ::SetInput(vtkImageData* image) {
-  m_FlipFilter->SetInput(image);
+  m_FlipFilter->SetInputData(image);
 }
 
 

@@ -14,10 +14,6 @@
 =========================================================================*/
 #include "vtkFluorescencePolyDataMapper.h"
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkFluorescencePolyDataMapper, "$Revision: 1.11 $");
-#endif
-
 // Construct empty object.
 vtkFluorescencePolyDataMapper::vtkFluorescencePolyDataMapper() {
   this->ListId = 0;

@@ -33,7 +33,7 @@ class vtkOpenGLAlphaTestTexture : public vtkOpenGLTexture
 {
 public:
   static vtkOpenGLAlphaTestTexture *New();
-  vtkTypeRevisionMacro(vtkOpenGLAlphaTestTexture,vtkOpenGLTexture);
+  vtkTypeMacro(vtkOpenGLAlphaTestTexture,vtkOpenGLTexture);
 
   // Description:
   // Implement base class method.

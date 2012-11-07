@@ -24,7 +24,7 @@
 
 class vtkPolyDataTexturizer : public vtkPolyDataAlgorithm {
    public:
-      vtkTypeRevisionMacro(vtkPolyDataTexturizer, vtkPolyDataAlgorithm);
+      vtkTypeMacro(vtkPolyDataTexturizer, vtkPolyDataAlgorithm);
 
       static vtkPolyDataTexturizer *New();
 

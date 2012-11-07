@@ -22,7 +22,7 @@ class vtkUniformPointSampler;
 class vtkModelObjectFluorescenceRepresentation : public vtkModelObjectRepresentation {
  public:
   static vtkModelObjectFluorescenceRepresentation *New();
-  vtkTypeRevisionMacro(vtkModelObjectFluorescenceRepresentation, vtkModelObjectRepresentation);
+  vtkTypeMacro(vtkModelObjectFluorescenceRepresentation, vtkModelObjectRepresentation);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

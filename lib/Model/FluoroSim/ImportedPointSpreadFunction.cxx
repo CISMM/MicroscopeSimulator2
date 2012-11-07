@@ -341,7 +341,7 @@ ImportedPointSpreadFunction
   typedef itk::Image< TPixel, 3 > FileImageType;
   typedef itk::ImageFileReader< FileImageType > ImageReader;
 
-  ImageReader::Pointer reader = ImageReader::New();
+  typename ImageReader::Pointer reader = ImageReader::New();
   reader->SetFileName( m_FileName );
   try {
     reader->UpdateLargestPossibleRegion();

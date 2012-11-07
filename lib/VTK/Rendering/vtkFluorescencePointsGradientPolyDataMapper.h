@@ -33,7 +33,7 @@ class vtkFluorescencePointsGradientPolyDataMapper : public vtkFluorescencePolyDa
 {
 public:
   static vtkFluorescencePointsGradientPolyDataMapper *New();
-  vtkTypeRevisionMacro(vtkFluorescencePointsGradientPolyDataMapper,vtkFluorescencePolyDataMapper);
+  vtkTypeMacro(vtkFluorescencePointsGradientPolyDataMapper,vtkFluorescencePolyDataMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

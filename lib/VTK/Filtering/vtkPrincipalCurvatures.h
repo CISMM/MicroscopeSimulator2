@@ -26,7 +26,7 @@
 class vtkPrincipalCurvatures : public vtkPolyDataAlgorithm
 {
    public:
-      vtkTypeRevisionMacro(vtkPrincipalCurvatures, vtkPolyDataAlgorithm);
+      vtkTypeMacro(vtkPrincipalCurvatures, vtkPolyDataAlgorithm);
       void PrintSelf(ostream& os, vtkIndent indent);
 
       static vtkPrincipalCurvatures *New();

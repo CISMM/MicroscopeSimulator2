@@ -16,10 +16,7 @@
 
 #include "vtkProperty.h"
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkBlendingFluorescencePolyDataMapper, "$Revision: 1.5 $");
 vtkStandardNewMacro(vtkBlendingFluorescencePolyDataMapper);
-#endif
 
 // Some convenience macros
 #define X 0

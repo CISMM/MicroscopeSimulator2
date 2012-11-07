@@ -42,7 +42,7 @@ class vtkFramebufferObjectRenderer : public vtkOpenGLRenderer
 
 public:
   static vtkFramebufferObjectRenderer *New();
-  vtkTypeRevisionMacro(vtkFramebufferObjectRenderer,vtkOpenGLRenderer);
+  vtkTypeMacro(vtkFramebufferObjectRenderer,vtkOpenGLRenderer);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

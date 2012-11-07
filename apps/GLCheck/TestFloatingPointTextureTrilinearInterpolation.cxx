@@ -78,10 +78,10 @@ GLCheck
   vtkSmartPointer<vtkImageMathematics> diffFilter = 
     vtkSmartPointer<vtkImageMathematics>::New();
   diffFilter->SetOperationToSubtract();
-  diffFilter->SetInput1(initialImage);
-  diffFilter->SetInput2(shiftedImage);
+  diffFilter->SetInput1Data(initialImage);
+  diffFilter->SetInput2Data(shiftedImage);
+  diffFilter->Update();
   vtkImageData* difference = diffFilter->GetOutput();
-  difference->Update();
 
   double* range = difference->GetScalarRange();
   

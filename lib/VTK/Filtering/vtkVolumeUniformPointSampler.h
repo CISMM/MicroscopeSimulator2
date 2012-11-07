@@ -32,7 +32,7 @@ class vtkVolumeUniformPointSampler : public vtkUniformPointSampler
 {
 public:
   static vtkVolumeUniformPointSampler *New();
-  vtkTypeRevisionMacro(vtkVolumeUniformPointSampler,vtkUniformPointSampler);
+  vtkTypeMacro(vtkVolumeUniformPointSampler,vtkUniformPointSampler);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

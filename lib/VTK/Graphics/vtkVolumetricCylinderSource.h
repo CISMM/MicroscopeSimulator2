@@ -27,7 +27,7 @@ class vtkVolumetricCylinderSource : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkVolumetricCylinderSource *New();
-  vtkTypeRevisionMacro(vtkVolumetricCylinderSource,vtkUnstructuredGridAlgorithm);
+  vtkTypeMacro(vtkVolumetricCylinderSource,vtkUnstructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

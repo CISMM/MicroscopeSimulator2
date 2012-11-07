@@ -21,7 +21,6 @@
 #include "vtkObjectFactory.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 
-vtkCxxRevisionMacro(vtkPointRingSource, "$Revision: 1.65 $");
 vtkStandardNewMacro(vtkPointRingSource);
 
 
@@ -71,7 +70,7 @@ int vtkPointRingSource::RequestData(
   newPolys->Allocate(newPolys->EstimateSize(this->NumberOfPoints,1));
 
   // Generate points
-  double dTheta = (vtkMath::DoubleTwoPi()) / static_cast<double>(this->NumberOfPoints);
+  double dTheta = (2.0 * vtkMath::Pi()) / static_cast<double>(this->NumberOfPoints);
   for (int i = 0; i < this->NumberOfPoints; i++) {
     double pt[3];
     pt[0] = 0.0;

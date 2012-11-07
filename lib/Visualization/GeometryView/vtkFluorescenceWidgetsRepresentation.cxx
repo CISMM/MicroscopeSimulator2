@@ -21,10 +21,7 @@
 #include <FluorescenceImageSource.h>
 #include <ImageModelObject.h>
 
-
-vtkCxxRevisionMacro(vtkFluorescenceWidgetsRepresentation, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkFluorescenceWidgetsRepresentation);
-
 
 vtkFluorescenceWidgetsRepresentation
 ::vtkFluorescenceWidgetsRepresentation() {
@@ -162,7 +159,7 @@ vtkFluorescenceWidgetsRepresentation
 
       vtkDataObject* oldImage = this->SimulatedFocalPlaneImageShiftScale->GetInput();
       vtkImageData* fluorescenceImage = imageSource->GenerateFluorescenceImage();
-      this->SimulatedFocalPlaneImageShiftScale->SetInput(fluorescenceImage);
+      this->SimulatedFocalPlaneImageShiftScale->SetInputData(fluorescenceImage);
       if (oldImage)
         oldImage->Delete();
 
@@ -193,7 +190,7 @@ vtkFluorescenceWidgetsRepresentation
           GetProperty(ImageModelObject::Y_SPACING_PROP)->GetDoubleValue();
 
         vtkImageClip* clipper = vtkImageClip::New();
-        clipper->SetInput(comparisonImage);
+        clipper->SetInputData(comparisonImage);
         clipper->SetOutputWholeExtent(extent);
 
         this->ComparisonFocalPlaneImageShiftScale->SetInputConnection
@@ -204,7 +201,7 @@ vtkFluorescenceWidgetsRepresentation
         this->ComparisonFocalPlaneActor->VisibilityOn();
 
       } else {
-        this->ComparisonFocalPlaneImageShiftScale->SetInput(NULL);
+        this->ComparisonFocalPlaneImageShiftScale->SetInputData(NULL);
         this->ComparisonFocalPlaneActor->VisibilityOff();
       }
 

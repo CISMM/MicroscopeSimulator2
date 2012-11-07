@@ -8,7 +8,7 @@ class vtkQtOutputLogger : public vtkOutputWindow
 {
  public:
   static vtkQtOutputLogger* New();
-  vtkTypeRevisionMacro(vtkQtOutputLogger, vtkOutputWindow);
+  vtkTypeMacro(vtkQtOutputLogger, vtkOutputWindow);
   virtual void PrintSelf(std::ostream& os, vtkIndent indent);
 
   vtkSetMacro(BufferSize,int);

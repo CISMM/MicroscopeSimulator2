@@ -47,7 +47,7 @@ UniformFluorophoreProperty(const std::string& name,
 
   m_Glypher = vtkSmartPointer<vtkProgrammableGlyphFilter>::New();
   m_Glypher->SetGlyphMethod(GlyphFunction, (void*) this);
-  m_Glypher->SetSource(m_TransformFilter->GetOutput());
+  m_Glypher->SetSourceData(m_TransformFilter->GetOutput());
 
   m_RandomSequence = vtkSmartPointer<vtkMinimalStandardRandomSequence>::New();
 
@@ -123,7 +123,7 @@ UniformFluorophoreProperty
 int
 UniformFluorophoreProperty
 ::GetNumberOfFluorophores() {
-  m_Sampler->GetOutput()->Update();
+  m_Sampler->Update();
   return m_Sampler->GetOutput()->GetNumberOfPoints();
 }
 
@@ -267,7 +267,7 @@ void UniformFluorophoreProperty::GlyphFunction(void* arg) {
   if (property->GetRandomizePatternOrientations()) {
 
     // This is from http://planning.cs.uiuc.edu/node198.html
-    double twoPi = vtkMath::DoubleTwoPi();
+    double twoPi = 2.0 * vtkMath::Pi();
     double q1 = sqrt(1.0-u1) * sin(twoPi*u2);
     double q2 = sqrt(1.0-u1) * cos(twoPi*u2);
     double q3 = sqrt(u1)     * sin(twoPi*u3);

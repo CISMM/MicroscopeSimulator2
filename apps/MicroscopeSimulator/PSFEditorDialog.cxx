@@ -464,7 +464,6 @@ PSFEditorDialog
   activePSF->Update();
   activePSF->GetOutputPort()->GetProducer()->Update();
   activePSF->GetOutputPort()->GetProducer()->UpdateWholeExtent();
-  activePSF->GetOutput()->Update();
 
   m_XImagePlaneVisualization->SetInputConnection(activePSF->GetOutputPort());
   m_XImagePlaneVisualization->SetToXPlane();
@@ -487,7 +486,6 @@ PSFEditorDialog
 ::UpdateSliders() {
   // Get bounds of image
   PointSpreadFunction* activePSF = m_PSFTableModel->GetPointSpreadFunction();
-  activePSF->GetOutput()->Update();
   int *bounds = activePSF->GetOutput()->GetDimensions();
 
   m_XImagePlaneVisualization->SetSliceNumber(gui_XPlaneSlider->value());
@@ -541,8 +539,6 @@ PSFEditorDialog
   PointSpreadFunction* psf = m_PSFTableModel->GetPointSpreadFunction();
   if (!psf)
     return;
-
-  psf->GetOutput()->Update();
 
   double minTextValue = SliderValueToIntensity(gui_MinLevelSlider->value(),
                                                *gui_MinLevelSlider);

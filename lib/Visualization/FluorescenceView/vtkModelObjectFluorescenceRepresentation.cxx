@@ -15,7 +15,6 @@
 
 #include <ModelObject.h>
 
-vtkCxxRevisionMacro(vtkModelObjectFluorescenceRepresentation, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkModelObjectFluorescenceRepresentation);
 
 

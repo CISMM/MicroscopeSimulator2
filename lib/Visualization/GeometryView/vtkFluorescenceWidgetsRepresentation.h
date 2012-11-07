@@ -21,7 +21,7 @@ class vtkTexture;
 class vtkFluorescenceWidgetsRepresentation : public vtkRenderedRepresentation {
  public:
   static vtkFluorescenceWidgetsRepresentation *New();
-  vtkTypeRevisionMacro(vtkFluorescenceWidgetsRepresentation, vtkRenderedRepresentation);
+  vtkTypeMacro(vtkFluorescenceWidgetsRepresentation, vtkRenderedRepresentation);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

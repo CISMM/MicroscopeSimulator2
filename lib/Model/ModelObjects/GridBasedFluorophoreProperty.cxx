@@ -61,10 +61,10 @@ GridBasedFluorophoreProperty
 int
 GridBasedFluorophoreProperty
 ::GetNumberOfFluorophores() {
+  m_FluorophoreOutput->Update();
   vtkPolyData* output = vtkPolyData::SafeDownCast(m_FluorophoreOutput->GetOutputDataObject(0));
   int numPoints = 0;
   if (output) {
-    output->Update();
     numPoints = output->GetNumberOfPoints();
   }
 
@@ -85,7 +85,7 @@ GridBasedFluorophoreProperty
 
   // Get bounding box size of the grid source
   double bounds[6];
-  m_GridSource->GetOutput()->Update();
+  m_GridSource->Update();
   m_GridSource->GetOutput()->GetBounds(bounds);
 
   for (int i = 0; i < 3; i++) {

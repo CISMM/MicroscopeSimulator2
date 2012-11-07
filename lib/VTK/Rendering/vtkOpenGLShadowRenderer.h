@@ -35,7 +35,7 @@ protected:
 
 public:
    static vtkOpenGLShadowRenderer *New();
-   vtkTypeRevisionMacro(vtkOpenGLShadowRenderer,vtkOpenGLRenderer);
+   vtkTypeMacro(vtkOpenGLShadowRenderer,vtkOpenGLRenderer);
    void PrintSelf(ostream& os, vtkIndent indent);
 
    // Description:

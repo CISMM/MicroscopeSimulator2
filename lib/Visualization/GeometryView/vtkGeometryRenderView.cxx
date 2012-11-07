@@ -30,8 +30,6 @@
 #include <vtkPNGWriter.h>
 #include <vtkImageShiftScale.h>
 
-
-vtkCxxRevisionMacro(vtkGeometryRenderView, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkGeometryRenderView);
 
 

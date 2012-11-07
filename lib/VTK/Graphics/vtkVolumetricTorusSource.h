@@ -27,7 +27,7 @@ class vtkVolumetricTorusSource : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkVolumetricTorusSource *New();
-  vtkTypeRevisionMacro(vtkVolumetricTorusSource,vtkUnstructuredGridAlgorithm);
+  vtkTypeMacro(vtkVolumetricTorusSource,vtkUnstructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

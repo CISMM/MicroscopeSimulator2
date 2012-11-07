@@ -485,7 +485,7 @@ Simulation
 
   vtkImageData* rawStack = this->GetFluorescenceSimulation()->GetFluorescenceImageSource()->GenerateFluorescenceStackImage();
   vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  extractor->SetInput(rawStack);
+  extractor->SetInputData(rawStack);
 
   char filePath[2048];
   if (exportRed) {

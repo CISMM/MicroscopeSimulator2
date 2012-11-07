@@ -28,10 +28,7 @@
 #include <float.h>
 #include <vector>
 
-
-vtkCxxRevisionMacro(vtkFluorescencePointsGradientPolyDataMapper, "$Revision: 1.9 $");
 vtkStandardNewMacro(vtkFluorescencePointsGradientPolyDataMapper);
-
 
 // Construct empty object.
 vtkFluorescencePointsGradientPolyDataMapper::vtkFluorescencePointsGradientPolyDataMapper() {
@@ -71,7 +68,6 @@ vtkFluorescencePointsGradientPolyDataMapper::~vtkFluorescencePointsGradientPolyD
 vtkPolyData* vtkFluorescencePointsGradientPolyDataMapper::GetPointsGradient() {
   // Get the gradient data from the texture target
   this->TextureTarget->Update();
-  this->TextureTarget->GetOutput()->Update();
   vtkSmartPointer<vtkFloatArray> gradientArray = 
     vtkSmartPointer<vtkFloatArray>::New();
   gradientArray->DeepCopy(this->TextureTarget->GetOutput()->GetPointData()->GetScalars());

@@ -2,7 +2,6 @@
 //------------------------------------------------------------------------------
 #include <vtkObjectFactory.h>
 //------------------------------------------------------------------------------
-vtkCxxRevisionMacro(vtkQtOutputLogger, "$Revision$");
 vtkStandardNewMacro(vtkQtOutputLogger);
 //------------------------------------------------------------------------------
 vtkQtOutputLogger::vtkQtOutputLogger()

@@ -31,10 +31,7 @@
 
 #include <math.h>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkOpenGLAlphaTestTexture, "$Revision: 1.1 $");
 vtkStandardNewMacro(vtkOpenGLAlphaTestTexture);
-#endif
 
 // Initializes an instance, generates a unique index.
 vtkOpenGLAlphaTestTexture::vtkOpenGLAlphaTestTexture() : vtkOpenGLTexture()

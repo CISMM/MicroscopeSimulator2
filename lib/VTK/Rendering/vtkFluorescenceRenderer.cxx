@@ -27,11 +27,7 @@
 
 #include <math.h>
 
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkFluorescenceRenderer, "$Revision: 1.2 $");
 vtkStandardNewMacro(vtkFluorescenceRenderer);
-#endif
-
 
 vtkFluorescenceRenderer::vtkFluorescenceRenderer() {
   this->GenerateNoise = 0;

@@ -36,7 +36,6 @@
 #include <vtkMath.h>
 #include <vtkTriangle.h>
 
-vtkCxxRevisionMacro(vtkPrincipalCurvatures, "$Revision: 1.1 $");
 vtkStandardNewMacro(vtkPrincipalCurvatures);
 
 vtkPrincipalCurvatures::vtkPrincipalCurvatures() : vtkPolyDataAlgorithm()

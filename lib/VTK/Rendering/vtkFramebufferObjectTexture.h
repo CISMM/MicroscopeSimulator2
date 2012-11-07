@@ -38,7 +38,7 @@ class vtkFramebufferObjectTexture : public vtkOpenGLTexture
 {
 public:
   static vtkFramebufferObjectTexture *New();
-  vtkTypeRevisionMacro(vtkFramebufferObjectTexture, vtkOpenGLTexture);
+  vtkTypeMacro(vtkFramebufferObjectTexture, vtkOpenGLTexture);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

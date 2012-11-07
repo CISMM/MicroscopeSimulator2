@@ -33,7 +33,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkPartialVolumeModeller, "1.0");
 vtkStandardNewMacro(vtkPartialVolumeModeller);
 
 struct vtkPartialVolumeModellerThreadInfo
@@ -151,7 +150,7 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
 
   // Extract the grid boundaries
   vtkDataSetSurfaceFilter *surfaceFilter = vtkDataSetSurfaceFilter::New();
-  surfaceFilter->SetInput(input);
+  surfaceFilter->SetInputData(input);
   surfaceFilter->Update();
 
   // Set up a locator
@@ -220,7 +219,7 @@ static VTK_THREAD_RETURN_TYPE vtkPartialVolumeModeller_ThreadedExecute( void *ar
 
   // Set up the box clipping filter
   vtkBoxClipDataSet *clipper = vtkBoxClipDataSet::New();
-  clipper->SetInput(input);
+  clipper->SetInputData(input);
   clipper->SetOrientation(0);
 
   // Compute the volume of a filled voxel.
@@ -356,8 +355,8 @@ int vtkPartialVolumeModeller::RequestData(
 
   // We need to allocate our own scalars since we are overriding
   // the superclasses "Execute()" method.
-  output->SetExtent(output->GetWholeExtent());
-  output->AllocateScalars();
+  output->SetExtent(output->GetExtent());
+  output->AllocateScalars(this->OutputScalarType, 1);
 
   double origin[3], spacing[3];
   double maxDistance = this->ComputeModelBounds(origin, spacing);

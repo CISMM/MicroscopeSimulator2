@@ -22,12 +22,7 @@
 
 #include <vector>
 
-
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkGatherFluorescencePolyDataMapper, "$Revision: 1.9 $");
 vtkStandardNewMacro(vtkGatherFluorescencePolyDataMapper);
-#endif
-
 
 // Construct empty object.
 vtkGatherFluorescencePolyDataMapper::vtkGatherFluorescencePolyDataMapper() {

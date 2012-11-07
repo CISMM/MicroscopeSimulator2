@@ -23,7 +23,7 @@ class vtkDiskSource2 : public vtkPolyDataAlgorithm
 {
 public:
   static vtkDiskSource2 *New();
-  vtkTypeRevisionMacro(vtkDiskSource2,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkDiskSource2,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

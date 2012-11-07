@@ -25,7 +25,6 @@
 #include "vtkTetra.h"
 #include <cstdlib>
 
-vtkCxxRevisionMacro(vtkVolumeUniformPointSampler, "$Revision: 1.4 $");
 vtkStandardNewMacro(vtkVolumeUniformPointSampler);
 
 //----------------------------------------------------------------------------

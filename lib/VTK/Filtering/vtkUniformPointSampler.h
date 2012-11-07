@@ -28,7 +28,7 @@ class vtkDoubleArray;
 class vtkUniformPointSampler : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkUniformPointSampler,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkUniformPointSampler,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

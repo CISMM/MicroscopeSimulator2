@@ -11,7 +11,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkRectangleSource, "$Revision: 1.55 $");
 vtkStandardNewMacro(vtkRectangleSource);
 
 vtkRectangleSource::vtkRectangleSource (int res)

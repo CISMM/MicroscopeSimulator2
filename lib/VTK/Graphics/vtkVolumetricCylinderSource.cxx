@@ -12,7 +12,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkVolumetricCylinderSource, "$Revision: 1.55 $");
 vtkStandardNewMacro(vtkVolumetricCylinderSource);
 
 vtkVolumetricCylinderSource::vtkVolumetricCylinderSource (int res)
@@ -37,7 +36,7 @@ void vtkVolumetricCylinderSource::ComputeObjectCoordinates(double x[3], double r
   result[0] = x[1] / this->Height + 0.5;
   result[1] = atan2(x[2],x[0]);
   if (result[1] < 0.0)
-    result[1] += vtkMath::DoubleTwoPi();
+    result[1] += 2.0 * vtkMath::Pi();
 
   double r = sqrt(x[0]*x[0] + x[2]*x[2]);
   result[2] = r / this->Radius;
@@ -69,7 +68,7 @@ int vtkVolumetricCylinderSource::RequestData(
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  double angle= vtkMath::DoubleTwoPi()/this->Resolution;
+  double angle= 2.0 * vtkMath::Pi()/this->Resolution;
   int numCells, numPts;
   double xtop[3], xbot[3];
   int i, idx;

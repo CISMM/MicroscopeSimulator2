@@ -42,7 +42,7 @@ class vtkPolyDataToTetrahedralGrid : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkPolyDataToTetrahedralGrid *New();
-  vtkTypeRevisionMacro(vtkPolyDataToTetrahedralGrid,vtkUnstructuredGridAlgorithm);
+  vtkTypeMacro(vtkPolyDataToTetrahedralGrid,vtkUnstructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
 

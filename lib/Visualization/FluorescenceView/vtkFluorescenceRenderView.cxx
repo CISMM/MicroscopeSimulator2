@@ -24,10 +24,7 @@
 #include <vtkFluorescencePointsGradientRenderer.h>
 #include <vtkFluorescencePointsGradientPolyDataMapper.h>
 
-
-vtkCxxRevisionMacro(vtkFluorescenceRenderView, "$Revision: 1.0 $");
 vtkStandardNewMacro(vtkFluorescenceRenderView);
-
 
 vtkFluorescenceRenderView::vtkFluorescenceRenderView() {
   this->SyntheticImageTexture = vtkFramebufferObjectTexture::New();
@@ -146,7 +143,7 @@ void vtkFluorescenceRenderView::PrepareForRendering() {
   ImageModelObject* comparisonImage = this->Sim->
     GetFluorescenceOptimizer()->GetComparisonImageModelObject();
   if (comparisonImage) {
-    this->ExperimentalImageTexture->SetInput(comparisonImage->GetImageData());
+    this->ExperimentalImageTexture->SetInputData(comparisonImage->GetImageData());
     this->GradientRenderer->
       SetExperimentalImageTexture(this->ExperimentalImageTexture);
     this->GradientRenderer->SetBackgroundIntensity(this->FluoroSim->GetOffset());

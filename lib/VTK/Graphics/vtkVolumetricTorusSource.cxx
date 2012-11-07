@@ -12,7 +12,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkVolumetricTorusSource, "$Revision: 1.55 $");
 vtkStandardNewMacro(vtkVolumetricTorusSource);
 
 vtkVolumetricTorusSource::vtkVolumetricTorusSource (int res)
@@ -38,7 +37,7 @@ void vtkVolumetricTorusSource::ComputeObjectCoordinates(double x[3], double resu
 {
   double theta = atan2(x[1], x[0]);
   if (theta < 0.0)
-    theta += vtkMath::DoubleTwoPi();
+    theta += 2.0 * vtkMath::Pi();
   
   double axisPt[3];
   this->ComputePoint(theta, 0.0, 0.0, axisPt);
@@ -48,7 +47,7 @@ void vtkVolumetricTorusSource::ComputeObjectCoordinates(double x[3], double resu
 
   double phi = atan2(x[2], rPlane - this->RingRadius);
   if (phi < 0.0)
-    phi += vtkMath::DoubleTwoPi();
+    phi += 2.0 * vtkMath::Pi();
 
   double rFull  = sqrt(dx*dx + dy*dy + x[2]*x[2]); // This is the full hypotenuse length
   double r = rFull / this->CrossSectionRadius;
@@ -84,8 +83,8 @@ int vtkVolumetricTorusSource::RequestData(
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  double thetaAngle = vtkMath::DoubleTwoPi()/this->ThetaResolution;
-  double phiAngle   = vtkMath::DoubleTwoPi()/this->PhiResolution;
+  double thetaAngle = 2.0 * vtkMath::Pi()/this->ThetaResolution;
+  double phiAngle   = 2.0 * vtkMath::Pi()/this->PhiResolution;
   int numCells, numPts;
   double x[3];
   int i, j;

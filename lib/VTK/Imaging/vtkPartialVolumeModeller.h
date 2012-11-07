@@ -32,7 +32,7 @@ class vtkMultiThreader;
 class vtkPartialVolumeModeller : public vtkImageAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkPartialVolumeModeller,vtkImageAlgorithm);
+  vtkTypeMacro(vtkPartialVolumeModeller,vtkImageAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

@@ -34,7 +34,7 @@ class vtkAFMTipDilationMapper : public vtkDataSetMapper
 {
 public:
   static vtkAFMTipDilationMapper *New();
-  vtkTypeRevisionMacro(vtkAFMTipDilationMapper,vtkDataSetMapper);
+  vtkTypeMacro(vtkAFMTipDilationMapper,vtkDataSetMapper);
   void PrintSelf(ostream& os, vtkIndent indent);
   void Render(vtkRenderer *ren, vtkActor *act);
 

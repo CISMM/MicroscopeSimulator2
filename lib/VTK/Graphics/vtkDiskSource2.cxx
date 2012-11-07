@@ -11,7 +11,6 @@
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkDiskSource2, "$Revision: 1.55 $");
 vtkStandardNewMacro(vtkDiskSource2);
 
 vtkDiskSource2::vtkDiskSource2 (int res)
@@ -34,7 +33,7 @@ void vtkDiskSource2::ComputeObjectCoordinates(double x[3], double result[2])
 {
   double theta = atan2(x[1], x[0]);
   if (theta < 0.0)
-    theta += vtkMath::DoubleTwoPi();
+    theta += 2.0 * vtkMath::Pi();
 
   double r = sqrt(x[0]*x[0] + x[1]*x[1]) / this->Radius;;
 
@@ -61,7 +60,7 @@ int vtkDiskSource2::RequestData(
   vtkPolyData *output = vtkPolyData::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  double thetaAngle = vtkMath::DoubleTwoPi()/this->CircumferentialResolution;
+  double thetaAngle = 2.0 * vtkMath::Pi()/this->CircumferentialResolution;
   int numCells, numPts;
   double x[3];
   int i;

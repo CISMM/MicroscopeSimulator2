@@ -28,12 +28,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkUnsignedShortArray.h"
 
-
-#ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkOpenGL3DTexture, "$Revision: 1.11 $");
 vtkStandardNewMacro(vtkOpenGL3DTexture);
-#endif
-
 
 // Initializes an instance, generates a unique index.
 vtkOpenGL3DTexture::vtkOpenGL3DTexture() {
@@ -135,7 +130,7 @@ void vtkOpenGL3DTexture::Load(vtkRenderer *ren) {
     if (needsResize) {
       this->ImagePadder->
         SetOutputWholeExtent(0, newSize[0]-1, 0, newSize[1]-1, 0, newSize[2]-1);
-      this->ImagePadder->SetInput(this->GetInput());
+      this->ImagePadder->SetInputData(this->GetInput());
       this->ImagePadder->UpdateWholeExtent();
       input = this->ImagePadder->GetOutput();
 
@@ -288,7 +283,7 @@ void vtkOpenGL3DTexture::PostRender(vtkRenderer *ren) {
 vtkFloatArray* vtkOpenGL3DTexture::GetFloatArray(vtkImageData *image, int component) {
   vtkImageCast *cast = vtkImageCast::New();
   cast->SetOutputScalarTypeToFloat();
-  cast->SetInput(image);
+  cast->SetInputData(image);
   vtkImageData *floatData = cast->GetOutput();
   cast->Update();
   vtkFloatArray *array = vtkFloatArray::New();

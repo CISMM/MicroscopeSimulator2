@@ -6,12 +6,12 @@
 
 SET (Filtering_SRCS
   vtkImageConvolvePoints.cxx
-  vtkPolyDataDistance.cxx
-  vtkPolyDataIntersection.cxx
+  #vtkPolyDataDistance.cxx
+  #vtkPolyDataIntersection.cxx
   vtkPolyDataTexturizer.cxx
   vtkPolyDataUtilities.cxx
   vtkPrincipalCurvatures.cxx
-  vtkRefactorPolyData.cxx
+  #vtkRefactorPolyData.cxx
   vtkUniformPointSampler.cxx
   vtkSurfaceUniformPointSampler.cxx
   vtkVolumeUniformPointSampler.cxx
@@ -35,4 +35,6 @@ ADD_DEFINITIONS(-DTETLIBRARY)
 
 # Create the msvtkFiltering C++ library
 ADD_LIBRARY (msvtkFiltering ${Filtering_SRCS})
-TARGET_LINK_LIBRARIES(msvtkFiltering msvtkCommon vtkFiltering vtkGraphics)
+TARGET_LINK_LIBRARIES(msvtkFiltering
+  ${VTK_LIBRARIES}
+)
