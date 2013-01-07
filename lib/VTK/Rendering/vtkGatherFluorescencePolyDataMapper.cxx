@@ -475,16 +475,16 @@ int vtkGatherFluorescencePolyDataMapper::LoadShaderProgram(vtkRenderWindow *renW
   GLint length;
   vtkgl::GetShaderiv(this->VertexProgramHandle, vtkgl::COMPILE_STATUS, &status);
   if (!status) {
-    vtkErrorMacro("Failed to compile vertex program");
+    vtkErrorMacro(<< "Failed to compile vertex program");
     vtkgl::GetShaderInfoLog(this->VertexProgramHandle, 256, &length, infoLog);
-    vtkGraphicErrorMacro(renWin, infoLog);
+    vtkErrorMacro(<< infoLog);
     return 0;
   }
   vtkgl::GetShaderiv(this->FragmentProgramHandle, vtkgl::COMPILE_STATUS, &status);
   if (!status) {
-    vtkErrorMacro("Failed to compile fragment program");
+    vtkErrorMacro(<< "Failed to compile fragment program");
     vtkgl::GetShaderInfoLog(this->FragmentProgramHandle, 256, &length, infoLog);
-    vtkGraphicErrorMacro(renWin, infoLog);
+    vtkErrorMacro(<< infoLog);
     return 0;
   }
 
