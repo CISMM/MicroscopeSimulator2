@@ -392,7 +392,7 @@ int vtkPartialVolumeModeller::RequestData(
     {
     numTuples *= ( output->GetExtent()[2*i+1] - output->GetExtent()[2*i] + 1 );
     }
-  output->AllocateScalars(this->OutputScalarType, numTuples);
+  output->AllocateScalars(this->OutputScalarType, 1);
 
   double origin[3], spacing[3];
   double maxDistance = this->ComputeModelBounds(origin, spacing);
