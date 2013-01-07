@@ -133,6 +133,10 @@ int vtkPartialVolumeModeller::RequestInformation (
     }
   outInfo->Set(vtkDataObject::ORIGIN(),origin,3);
   outInfo->Set(vtkDataObject::SPACING(),ar,3);
+  outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
+               0, this->SampleDimensions[0] - 1,
+               0, this->SampleDimensions[1] - 1,
+               0, this->SampleDimensions[2] - 1);
 
   vtkDataObject::SetPointDataActiveScalarInfo(outInfo, this->OutputScalarType, 1);
   return 1;
@@ -355,8 +359,14 @@ int vtkPartialVolumeModeller::RequestData(
 
   // We need to allocate our own scalars since we are overriding
   // the superclasses "Execute()" method.
-  output->SetExtent(output->GetExtent());
-  output->AllocateScalars(this->OutputScalarType, 1);
+  output->SetExtent(
+    outInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT()));
+  int numTuples = 1;
+  for ( int i = 0; i < 3; ++i )
+    {
+    numTuples *= ( output->GetExtent()[2*i+1] - output->GetExtent()[2*i] + 1 );
+    }
+  output->AllocateScalars(this->OutputScalarType, numTuples);
 
   double origin[3], spacing[3];
   double maxDistance = this->ComputeModelBounds(origin, spacing);
