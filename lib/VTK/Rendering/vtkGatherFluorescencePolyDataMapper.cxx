@@ -18,7 +18,6 @@
 #include "vtkOpenGLTexture.h"
 #include "vtkOpenGL3DTexture.h"
 #include "vtkPointData.h"
-#include "vtkFloatArray.h"
 
 #include <vector>
 
@@ -280,8 +279,7 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
     this->PointTextureDimension = ceil(sqrt((double) numPoints));
 
     vtkPointData *pointData = this->GetInput()->GetPointData();
-    vtkFloatArray *intensities = vtkFloatArray::SafeDownCast
-      (pointData->GetScalars());
+    vtkDataArray *intensities = pointData->GetScalars();
 
     // Copy and cast point locations to texture memory.
     int pointDataLength = this->PointTextureDimension * this->PointTextureDimension;
@@ -293,8 +291,7 @@ void vtkGatherFluorescencePolyDataMapper::LoadPointTexture() {
       textureData[i*tupleSize + 1] = (GLfloat) tmp[1];
       textureData[i*tupleSize + 2] = (GLfloat) tmp[2];
       if (intensities) {
-        textureData[i*tupleSize + 3] = 
-          this->IntensityScale * intensities->GetValue(i);
+        textureData[i*tupleSize + 3] = this->IntensityScale * intensities->GetComponent(i, 0);
       } else {
         textureData[i*tupleSize + 3] = this->IntensityScale;
       }
@@ -414,26 +411,34 @@ int vtkGatherFluorescencePolyDataMapper::LoadExtensions(vtkRenderWindow *renWin)
   manager->SetRenderWindow(renWin);
 
   std::vector<std::string> versions;
-  versions.push_back("GL_VERSION_1_1");
   versions.push_back("GL_VERSION_1_2");
   versions.push_back("GL_VERSION_1_3");
   versions.push_back("GL_VERSION_1_4");
   versions.push_back("GL_VERSION_2_0");
   
   for (unsigned int i = 0; i < versions.size(); i++) {
-    manager->LoadSupportedExtension(versions[i].c_str());
+    int supported = manager->LoadSupportedExtension(versions[i].c_str());
+    if (!supported) {
+      vtkErrorMacro(<< versions[i] << " not supported on your system!" );
+    }
   }
 
-  std::vector<std::string> extensions;
-  extensions.push_back("GL_ARB_texture_rectangle");
-  extensions.push_back("GL_ARB_imaging");
-
-  for (unsigned int i = 0; i < extensions.size(); i++) {
-    int supported = manager->LoadSupportedExtension(extensions[i].c_str());
-    if (!supported) {
-      vtkErrorMacro(<< extensions[i] << " not supported on your system!");
-      return 0;
-    }
+  int supported = manager->ExtensionSupported("GL_ARB_multitexture");
+  if ( supported ) {
+    manager->LoadCorePromotedExtension("GL_ARB_multitexture");
+  } else {
+    vtkErrorMacro(<< "GL_ARB_multitexture is not supported");
+    return 0;
+  }
+  supported = manager->LoadSupportedExtension("GL_ARB_imaging");
+  if ( !supported ) {
+    vtkErrorMacro(<< "GL_ARB_imaging is not supported");
+    return 0;
+  }
+  supported = manager->LoadSupportedExtension("GL_ARB_texture_rectangle");
+  if ( !supported ) {
+    vtkErrorMacro(<< "GL_ARB_texture_rectangle is not supported");
+    return 0;
   }
 
   this->ExtensionsLoaded = 1;
