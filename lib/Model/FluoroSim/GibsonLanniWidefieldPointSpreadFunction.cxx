@@ -1,4 +1,4 @@
-#include <itkGibsonLanniPointSpreadFunctionImageSource.txx>
+#include <itkGibsonLanniPointSpreadFunctionImageSource.hxx>
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER

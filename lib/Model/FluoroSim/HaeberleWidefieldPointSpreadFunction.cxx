@@ -1,4 +1,4 @@
-#include <itkHaeberlePointSpreadFunctionImageSource.txx>
+#include <itkHaeberlePointSpreadFunctionImageSource.hxx>
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
