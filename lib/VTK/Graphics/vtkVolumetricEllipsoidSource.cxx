@@ -83,7 +83,7 @@ int vtkVolumetricEllipsoidSource::RequestData(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   double thetaAngle = 2.0 * vtkMath::Pi()/this->ThetaResolution;
-  double phiAngle   = 2.0 * vtkMath::Pi()/(this->PhiResolution-1);
+  double phiAngle   = vtkMath::Pi()/(this->PhiResolution-1);
   int numCells, numPts;
   double x[3];
   int i, j;
@@ -131,7 +131,7 @@ int vtkVolumetricEllipsoidSource::RequestData(
   //
   // South and north poles
   //
-  this->ComputePoint(0.0, 2.0 * vtkMath::Pi(), 1.0, x);
+  this->ComputePoint(0.0, vtkMath::Pi(), 1.0, x);
   newPoints->InsertPoint(numPts-2,x);
 
   this->ComputePoint(0.0, 0.0, 1.0, x);
