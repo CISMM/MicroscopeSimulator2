@@ -1,16 +1,15 @@
-#include <GLCheck.h>
+#include <Common.h>
 
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkOpenGLExtensionManager.h>
 #include <vtkSmartPointer.h>
 
+#include <iostream>
 #include <vector>
 
 
-bool
-GLCheck
-::TestRequiredExtensions() {
+bool TestRequiredExtensions(bool verbose) {
   vtkSmartPointer<vtkRenderWindow> renWin = vtkSmartPointer<vtkRenderWindow>::New();
 
   vtkSmartPointer<vtkOpenGLExtensionManager> extManager =
@@ -32,7 +31,7 @@ GLCheck
 
   for (size_t i = 0; i < extensions.size(); i++) {
     if (!extManager->ExtensionSupported(extensions[i].c_str())) {
-      if (m_Verbose) {
+      if (verbose) {
         std::cout << "OpenGL extension '" << extensions[i].c_str() << "' not supported."
                   << std::endl;
       }

@@ -1,4 +1,4 @@
-#include <GLCheck.h>
+#include <Common.h>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -26,9 +26,7 @@
 #include <Visualization.h>
 
 
-bool
-GLCheck
-::TestFloatingPointTextureTrilinearInterpolation() {
+bool TestFloatingPointTextureTrilinearInterpolation(bool verbose) {
   Visualization* vis = new Visualization();
   vis->SetBlendingTo16Bit();
   
@@ -85,7 +83,7 @@ GLCheck
 
   double* range = difference->GetScalarRange();
   
-  if (m_Verbose) {
+  if (verbose) {
     std::cout << "Image difference range: " << range[0] << ", " << range[1] << std::endl;
   }
 

@@ -1,4 +1,4 @@
-#include <GLCheck.h>
+#include <Common.h>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -25,9 +25,7 @@
 #include <Visualization.h>
 
 
-bool
-GLCheck
-::Test16BitFloatingPointBlend() {
+bool Test16BitFloatingPointBlend(bool verbose) {
   Visualization* vis = new Visualization();
   vis->SetBlendingTo16Bit();
   
@@ -83,7 +81,7 @@ GLCheck
 
   vis->FluorescenceViewRender();
   vis->Get2DFluorescenceImageScalarRange(range);
-  if (m_Verbose) {
+  if (verbose) {
     std::cout << "Image intensity range: " << range[0] << ", " << range[1] << std::endl;
   }
 

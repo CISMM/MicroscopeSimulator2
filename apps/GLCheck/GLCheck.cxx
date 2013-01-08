@@ -1,70 +1,51 @@
-#include <GLCheck.h>
-
 #include <cstdio>
 #include <string>
 
+#include "Common.h"
 
-GLCheck
-::GLCheck() {
-  m_Verbose = false;
-}
+// Headers for individual tests
+#include "TestRequiredExtensions.h"
+#include "Test16BitFloatingPointBlend.h"
+#include "Test32BitFloatingPointBlend.h"
+#include "TestFloatingPointTextureTrilinearInterpolation.h"
+#include "TestGLSLUnsignedInts.h"
 
-
-GLCheck
-::~GLCheck() {
-
-}
-
-
-void
-GLCheck
-::VerboseOn() {
-  m_Verbose = true;
-}
-
-
-void
-GLCheck
-::SetVerbose(bool verbose) {
-  m_Verbose = verbose;
-}
-
-
-void
-GLCheck
-::VerboseOff() {
-  m_Verbose = false;
-}
-
-
-#define ADD_TEST(testName) { \
-    if ((argc == 1) ||                                                  \
-        (argc == 2 && (strcmp(argv[1],"-v") == 0 || strcmp(argv[1],"--verbose") == 0)) || \
-        (argc >= 2 && std::string(argv[argc-1]) == std::string(#testName))) { \
-      bool verbose = false;                                             \
-      for (int i = 1; i < argc; i++) {                                  \
-        if (strcmp(argv[1],"-v") == 0 || strcmp(argv[1],"--verbose") == 0) \
-          verbose = true;                                               \
-      }                                                                 \
-      GLCheck checker;                                                  \
-      checker.SetVerbose(verbose);                                      \
-      RunTest(checker.Test##testName(), #testName);                     \
-    }                                                                   \
-  }                                                                     
-    
 
 void RunTest(bool passed, const std::string& name) {
   printf("%s %s\n", name.c_str(), passed ? "PASSED" : "FAILED");
+  fflush(stdout);
 }
 
 
 int main(int argc, char* argv[]) {
+  // Verbose mode?
+  bool verbose = false;
+  if ( argc >= 2 &&
+       ( argv[1] == std::string("-v") || argv[1] == std::string("--verbose") ) ) {
+    verbose = true;
+  }
 
-  ADD_TEST(RequiredExtensions);
-  ADD_TEST(16BitFloatingPointBlend);
-  ADD_TEST(32BitFloatingPointBlend);
-  ADD_TEST(FloatingPointTextureTrilinearInterpolation);
-  ADD_TEST(GLSLUnsignedInts);
+  // Process tests
+  if ( ShouldTestBeRun( "RequiredExtensions", argc, argv ) ) {
+    RunTest( TestRequiredExtensions( verbose ),
+             "RequiredExtensions" );
+  }
+  if ( ShouldTestBeRun( "16BitFloatingPointBlend", argc, argv ) ) {
+    RunTest( Test16BitFloatingPointBlend( verbose ),
+             "16BitFloatingPointBlend" );
+  }
+  if ( ShouldTestBeRun( "32BitFloatingPointBlend", argc, argv ) ) {
+    RunTest( Test32BitFloatingPointBlend( verbose ),
+             "32BitFloatingPointBlend" );
+  }
+  if ( ShouldTestBeRun( "FloatingPointTextureTrilinearInterpolation", argc, argv ) ) {
+    RunTest( TestFloatingPointTextureTrilinearInterpolation( verbose ),
+             "FloatingPointTextureTrilinearInterpolation" );
+  }
+  if ( ShouldTestBeRun( "GLSLUnsignedInts", argc, argv ) ) {
+    RunTest( TestGLSLUnsignedInts( verbose ),
+             "GLSLUnsignedInts" );
+  }
 
   return 0;
 }
