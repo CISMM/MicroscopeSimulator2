@@ -9,7 +9,7 @@ PRELIMINARIES
 
 You'll need to obtain CMake, Qt, libxml2, VTK, and ITK.
 
-1. Download CMake 2.8 or higher from
+1. Download CMake 2.8.10 or higher from
 http://www.cmake.org/cmake/resources/software.html
 
 If you are developing on Windows, you will also need to develop the NSIS
@@ -25,19 +25,19 @@ and install them.
 On Windows, download Qt libraries and applications by going to
 http://www.qtsoftware.com/downloads/downloads and choosing the LGPL/Free tab.
 Download the Qt SDK appropriate for the platform on which you are developing.
-Qt 4.6.3 is known to work and is available here:
+Qt 4.8.4 is known to work and is available here:
 
-ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.3.zip
+http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-4.8.4.tar.gz
 
-Unzip this file. The zip file contains the directory qt-everywhere-opensource-src-4.6.3,
+Unzip this file. The tar.gz file contains the directory qt-everywhere-opensource-src-4.8.4,
 so there is no need to place the zip file in a new directory.
 
-Add the qt-everywhere-opensource-src-4.6.3/bin directory to PATH environment variable.
-Open a command prompt through Start -> All Programs -> Microsoft Visual Studio 2005 -> 
-Visual Studio Tools -> Visual Studio 2005 Command Prompt. Navigate to the 
-qt-all-opensource-src-4.5.3 directory and type
+Add the qt-everywhere-opensource-src-4.8.4/bin directory to PATH environment variable.
+Open a command prompt through Start -> All Programs -> Microsoft Visual Studio 2008 -> 
+Visual Studio Tools -> Visual Studio 2008 Command Prompt. Navigate to the 
+qt-everywhere-opensource-src-4.8.4 directory and type
 
-configure -platform win32-msvc2005 -no-webkit -no-dbus -no-phonon
+configure -platform win32-msvc2008 -no-webkit -no-dbus -no-phonon
 -debug-and-release -opensource -shared
 
 Agree to the license terms by typing ‘y’ and pressing return. Qt will take a while
@@ -70,12 +70,13 @@ nmake /f Makefile.msvc install
 4. Download the VTK source code. The best way to do this is to clone it from 
 the git repository
 
-git clone --recursive git://vtk.org/VTK.git
+git clone git://vtk.org/VTK.git
 
-A stable version that is known to work with the Microscope Simulator 2 is VTK 5.8.0.
-To obtain 5.8.0, run
+A stable version that is known to work with the Microscope Simulator 2 is commit
+0700cfe8229c.
+To obtain VTK, run
 
-git checkout v5.8.0
+git checkout 0700cfe8229c
 git submodule update
 
 Configure VTK with CMake and build it. You'll need to configure it once first.
@@ -101,8 +102,8 @@ by clicking on the "Generate" button. Build VTK in Visual Studio.
 5. Download the ITK source code. The best way to do this is to clone it from
 the git repository
 
-git clone --recursive git://itk.org/ITK.git
-git checkout v4.0.0
+git clone git://itk.org/ITK.git
+git checkout v4.3.1
 git submodule update
 
 Configure ITK with CMake. Disable BUILD_EXAMPLES, enable BUILD_SHARED_LIBS,
