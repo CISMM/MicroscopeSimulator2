@@ -7,13 +7,11 @@ SET( QT_DLLS
   "${QT_LIBRARY_DIR}/../bin/QtWebKit4.dll"
   "${QT_LIBRARY_DIR}/../bin/QtXmlPatterns4.dll"
   "${QT_LIBRARY_DIR}/../bin/phonon4.dll"
-  "${VTK_LIBRARY_DIRS}/Release/QVTK.dll"
+  "${VTK_DIR}/bin/Release/QVTK.dll"
   )
 FOREACH ( QT_LIB ${QT_DLLS} )
   IF ( EXISTS ${QT_LIB} )
     INSTALL( FILES ${QT_LIB} DESTINATION bin )
-  ELSE ( EXISTS ${QT_LIB} )
-    MESSAGE( FATAL_ERROR "Library ${QT_LIB} does not exist!" )
   ENDIF ( EXISTS ${QT_LIB} )
 ENDFOREACH ( QT_LIB )
 
@@ -22,14 +20,14 @@ ENDFOREACH ( QT_LIB )
 #SET(CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${VTK_BINARY_DIR};VTK;ALL;/")
 
 # VTK DLLs
-FILE( GLOB VTK_DLLS "${VTK_LIBRARY_DIRS}/Release/vtk*.dll" )
+FILE( GLOB VTK_DLLS "${VTK_DIR}/bin/Release/vtk*.dll" )
 INSTALL( FILES ${VTK_DLLS} DESTINATION bin )
-FILE( GLOB LS_DYNA_DLL "${VTK_LIBRARY_DIRS}/Release/LSDyna.dll" )
+FILE( GLOB LS_DYNA_DLL "${VTK_DIR}/bin/Release/LSDyna.dll" )
 INSTALL( FILES ${LS_DYNA_DLL} DESTINATION bin )
 
 # libxml2 DLL
 # First, find which one VTK was built with
-FILE( READ "${VTK_LIBRARY_DIRS}/../CMakeCache.txt" VTK_CMAKE_CACHE )
+FILE( READ "${VTK_DIR}/CMakeCache.txt" VTK_CMAKE_CACHE )
 STRING( REGEX REPLACE ".*LIBXML2_LIBRARIES:FILEPATH=([^\n]+).*" "\\1" LIBXML2_DLL ${VTK_CMAKE_CACHE} )
 STRING( REPLACE ".lib" ".dll" LIBXML2_DLL ${LIBXML2_DLL} )
 INSTALL( FILES "${LIBXML2_DLL}" DESTINATION bin )
@@ -38,8 +36,6 @@ INSTALL( FILES "${LIBXML2_DLL}" DESTINATION bin )
 FILE( GLOB ITK_DLLS "${ITK_DIR}/bin/Release/ITKCommon*.dll" )
 IF( ITK_DLLS )
   INSTALL( FILES ${ITK_DLLS} DESTINATION bin )
-ELSE( ITK_DLLS )
-  MESSAGE( FATAL_ERROR "ITKCommon.dll not found!" )
 ENDIF( ITK_DLLS )
 
 SET( USER_GUIDE_NAME "MicroscopeSimulator-${MicroscopeSimulator_VERSION_STRING}-UserGuide.pdf" )
