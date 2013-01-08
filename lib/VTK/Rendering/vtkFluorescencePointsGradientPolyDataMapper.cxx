@@ -101,13 +101,13 @@ void vtkFluorescencePointsGradientPolyDataMapper::ReleaseGraphicsResources(vtkWi
   }
   this->LastWindow = NULL;
 
-  vtkgl::DeleteShader(this->VertexProgramHandle);
+  if ( this->ExtensionsLoaded ) {
+    vtkgl::DeleteShader(this->VertexProgramHandle);
+    vtkgl::DeleteShader(this->FragmentProgramHandle);
+    vtkgl::DeleteProgram(this->ShaderProgramHandle);
+  }
   this->VertexProgramHandle = 0;
-
-  vtkgl::DeleteShader(this->FragmentProgramHandle);
   this->FragmentProgramHandle = 0;
-
-  vtkgl::DeleteProgram(this->ShaderProgramHandle);
   this->ShaderProgramHandle = 0;
 }
 
