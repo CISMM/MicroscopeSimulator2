@@ -12,4 +12,6 @@ bool ShouldTestBeRun( const char * testName, int argc, char* argv[] ) {
     
     return true;
   }
+
+  return false;
 }
