@@ -1,6 +1,8 @@
-#include <itkRecursiveGaussianImageFilter.hxx>
+#include <itkRecursiveGaussianImageFilter.h>
 #include <itkStatisticsImageFilter.h>
 #include <itkShiftScaleImageFilter.h>
+
+#include <ITKImageToVTKImage.h>
 
 #include <vtkImageAppendComponents.h>
 
