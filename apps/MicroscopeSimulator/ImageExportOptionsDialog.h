@@ -20,6 +20,7 @@ Q_OBJECT
   bool IsRegenerateFluorophoresEnabled();
 
   bool IsRandomizeObjectPositionsEnabled();
+  bool IsRandomizeStagePositionEnabled();
   double GetObjectRandomPositionRangeX();
   double GetObjectRandomPositionRangeY();
   double GetObjectRandomPositionRangeZ();

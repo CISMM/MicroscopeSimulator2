@@ -55,6 +55,13 @@ ImageExportOptionsDialog
 }
 
 
+bool
+ImageExportOptionsDialog
+::IsRandomizeStagePositionEnabled() {
+  return randomizeStagePosition->isChecked();
+}
+
+
 double
 ImageExportOptionsDialog
 ::GetObjectRandomPositionRangeX() {

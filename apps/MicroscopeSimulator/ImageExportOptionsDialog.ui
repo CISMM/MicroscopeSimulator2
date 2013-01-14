@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>-1</number>
+    <number>6</number>
    </property>
    <property name="margin">
     <number>12</number>
@@ -80,8 +80,21 @@
       </item>
       <item>
        <widget class="QCheckBox" name="randomizeObjectPositions">
+        <property name="toolTip">
+         <string>Offset all objects by a different random offset in x,y,z</string>
+        </property>
         <property name="text">
          <string>Randomize Object Positions</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="randomizeStagePosition">
+        <property name="toolTip">
+         <string>Offset all objects by the same random offset in x,y,z. This is the same as moving the stage by a random offset.</string>
+        </property>
+        <property name="text">
+         <string>Randomize Stage Position</string>
         </property>
        </widget>
       </item>
