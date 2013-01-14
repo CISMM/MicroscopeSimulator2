@@ -1878,12 +1878,12 @@ MicroscopeSimulator
       m_Simulation->RegenerateFluorophores();
     }
 
+    double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
+    double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
+    double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
+
     if (m_ImageExportOptionsDialog->IsRandomizeObjectPositionsEnabled()) {
       // Randomize each object's position.
-      double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
-      double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
-      double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
-
       unsigned int mIndex = 0;
       for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
         ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
@@ -1897,6 +1897,25 @@ MicroscopeSimulator
         mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
         mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
         mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
+      }
+    }
+
+    if (m_ImageExportOptionsDialog->IsRandomizeStagePositionEnabled()) {
+      // Randomize all object's positions by the same random offset.
+      double offsetX = xRange * (vtkMath::Random() - 0.5);
+      double offsetY = yRange * (vtkMath::Random() - 0.5);
+      double offsetZ = zRange * (vtkMath::Random() - 0.5);
+
+      for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
+        double x = mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue() + offsetX;
+        double y = mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue() + offsetY;
+        double z = mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue() + offsetZ;
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(x);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(y);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(z);
       }
     }
 
