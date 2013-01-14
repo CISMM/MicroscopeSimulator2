@@ -66,6 +66,10 @@ void
 VTKImageToITKImage<TImage>
 ::SetInputConnection(vtkAlgorithmOutput* input) {
   m_FlipFilter->SetInputConnection(input);
+
+  // This is apparently required to make sure the image scalar
+  // type output by the flip filter is correct
+  m_FlipFilter->Update();
 }
 
 
