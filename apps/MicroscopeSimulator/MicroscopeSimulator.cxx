@@ -424,12 +424,12 @@ MicroscopeSimulator
 
       i++;
 
-      bool exportRed = true;
-      bool exportGreen = true;
-      bool exportBlue = true;
-      bool regenerateFluorophores = false;
+      bool exportRed   = false;
+      bool exportGreen = false;
+      bool exportBlue  = false;
+      bool regenerateFluorophores   = false;
       bool randomizeObjectPositions = false;
-      bool randomizeStagePosition = false;
+      bool randomizeStagePosition   = false;
       double xRange = 0.0;
       double yRange = 0.0;
       double zRange = 0.0;
@@ -439,48 +439,58 @@ MicroscopeSimulator
       bool doneParsingSaveOptions = false;
       while (!doneParsingSaveOptions) {
         if ( argv[i][0] == '-' && argv[i][1] == '-' ) {
-          if (strcmp(argv[i], "--red")) {
+          if (strcmp(argv[i], "--red") == 0) {
             exportRed = true;
-          } else if (strcmp(argv[i], "--green")) {
+            std::cout << "--red" << std::endl;
+          } else if (strcmp(argv[i], "--green") == 0) {
             exportGreen = true;
-          } else if (strcmp(argv[i], "--blue")) {
+            std::cout << "--green" << std::endl;
+          } else if (strcmp(argv[i], "--blue") == 0) {
             exportBlue = true;
-          } else if (strcmp(argv[i], "--regenerateFluorophores")) {
+            std::cout << "--blue" << std::endl;
+          } else if (strcmp(argv[i], "--regenerateFluorophores") == 0) {
             regenerateFluorophores = true;
-          } else if (strcmp(argv[i], "--randomizeObjectPositions")) {
+            std::cout << "regenerateFluorophores" << std::endl;
+          } else if (strcmp(argv[i], "--randomizeObjectPositions") == 0) {
             randomizeObjectPositions = true;
-          } else if (strcmp(argv[i], "--randomizeStagePosition")) {
+            std::cout << "randomizeObjectPositions" << std::endl;
+          } else if (strcmp(argv[i], "--randomizeStagePosition") == 0) {
             randomizeStagePosition = true;
-          } else if (strcmp(argv[i], "--xrange")) {
+            std::cout << "randomizeStagePosition" << std::endl;
+          } else if (strcmp(argv[i], "--xrange") == 0) {
             if (i+1 < argc) {
               xRange = atof(argv[i+1]);
+              std::cout << "--xrange " << argv[i+1] << std::endl;
               i++;
             } else {
               doneParsingSaveOptions = true;
             }
-          } else if (strcmp(argv[i], "--yrange")) {
+          } else if (strcmp(argv[i], "--yrange") == 0) {
             if (i+1 < argc) {
               yRange = atof(argv[i+1]);
+              std::cout << "--yrange " << argv[i+1] << std::endl;
               i++;
             } else {
               doneParsingSaveOptions = true;
             }
-          } else if (strcmp(argv[i], "--zrange")) {
+          } else if (strcmp(argv[i], "--zrange") == 0) {
             if (i+1 < argc) {
               zRange = atof(argv[i+1]);
+              std::cout << "--zrange " << argv[i+1] << std::endl;
               i++;
             } else {
               doneParsingSaveOptions = true;
             }
-          } else if (strcmp(argv[i], "--numberOfCopies")) {
+          } else if (strcmp(argv[i], "--numberOfCopies") == 0) {
             if (i+1 < argc) {
               numberOfCopies = atoi(argv[i+1]);
+              std::cout << "--numberOfCopies " << argv[i+1] << std::endl;
               i++;
             } else {
               doneParsingSaveOptions = true;
             }
           } else {
-            std::cerr << "Unknown --save-fluorescnce-stack sub-option '" << argv[i] << "'" << std::endl;
+            std::cerr << "Unknown --save-fluorescence-stack sub-option '" << argv[i] << "'" << std::endl;
           }
           i++;
         } else {
@@ -489,7 +499,7 @@ MicroscopeSimulator
       }
       if (i < argc) {
         m_Simulation->ExportFluorescenceStack(std::string(argv[i]), 0,
-          "tif", exportRed, exportBlue, exportGreen, regenerateFluorophores,
+          "tif", exportRed, exportGreen, exportBlue, regenerateFluorophores,
           randomizeObjectPositions, randomizeStagePosition, xRange, yRange, zRange,
           numberOfCopies);
       } else {
