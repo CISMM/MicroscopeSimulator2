@@ -423,9 +423,75 @@ MicroscopeSimulator
     } else if (strcmp(argv[i], "--save-fluorescence-stack") == 0) {
 
       i++;
+
+      bool exportRed = true;
+      bool exportGreen = true;
+      bool exportBlue = true;
+      bool regenerateFluorophores = false;
+      bool randomizeObjectPositions = false;
+      bool randomizeStagePosition = false;
+      double xRange = 0.0;
+      double yRange = 0.0;
+      double zRange = 0.0;
+      int numberOfCopies = 1;
+
+      // See if there are any other options for saving the stack
+      bool doneParsingSaveOptions = false;
+      while (!doneParsingSaveOptions) {
+        if ( argv[i][0] == '-' && argv[i][1] == '-' ) {
+          if (strcmp(argv[i], "--red")) {
+            exportRed = true;
+          } else if (strcmp(argv[i], "--green")) {
+            exportGreen = true;
+          } else if (strcmp(argv[i], "--blue")) {
+            exportBlue = true;
+          } else if (strcmp(argv[i], "--regenerateFluorophores")) {
+            regenerateFluorophores = true;
+          } else if (strcmp(argv[i], "--randomizeObjectPositions")) {
+            randomizeObjectPositions = true;
+          } else if (strcmp(argv[i], "--randomizeStagePosition")) {
+            randomizeStagePosition = true;
+          } else if (strcmp(argv[i], "--xrange")) {
+            if (i+1 < argc) {
+              xRange = atof(argv[i+1]);
+              i++;
+            } else {
+              doneParsingSaveOptions = true;
+            }
+          } else if (strcmp(argv[i], "--yrange")) {
+            if (i+1 < argc) {
+              yRange = atof(argv[i+1]);
+              i++;
+            } else {
+              doneParsingSaveOptions = true;
+            }
+          } else if (strcmp(argv[i], "--zrange")) {
+            if (i+1 < argc) {
+              zRange = atof(argv[i+1]);
+              i++;
+            } else {
+              doneParsingSaveOptions = true;
+            }
+          } else if (strcmp(argv[i], "--numberOfCopies")) {
+            if (i+1 < argc) {
+              numberOfCopies = atoi(argv[i+1]);
+              i++;
+            } else {
+              doneParsingSaveOptions = true;
+            }
+          } else {
+            std::cerr << "Unknown --save-fluorescnce-stack sub-option '" << argv[i] << "'" << std::endl;
+          }
+          i++;
+        } else {
+          doneParsingSaveOptions = true;
+        }
+      }
       if (i < argc) {
         m_Simulation->ExportFluorescenceStack(std::string(argv[i]), 0,
-          "tif", true, true, true);
+          "tif", exportRed, exportBlue, exportGreen, regenerateFluorophores,
+          randomizeObjectPositions, randomizeStagePosition, xRange, yRange, zRange,
+          numberOfCopies);
       } else {
         std::cerr << "No stack name provided for command --save-fluorescence-stack" << std::endl;
       }

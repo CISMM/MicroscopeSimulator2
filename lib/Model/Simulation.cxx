@@ -481,7 +481,11 @@ Simulation
 void
 Simulation
 ::ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
-                          bool exportRed, bool exportGreen, bool exportBlue) {
+                          bool exportRed, bool exportGreen, bool exportBlue,
+                          bool regenerateFluorophores, bool randomizeObjectPositions,
+                          bool randomizeStagePosition,
+                          double xRange, double yRange, double zRange,
+                          int numberOfCopies) {
 
   vtkImageData* rawStack = this->GetFluorescenceSimulation()->GetFluorescenceImageSource()->GenerateFluorescenceStackImage();
   vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
