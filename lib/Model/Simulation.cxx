@@ -3,6 +3,7 @@
 
 #if defined(_WIN32) // Turn off deprecation warnings in Visual Studio
 #pragma warning( disable : 4996 )
+#define snprintf _snprintf
 #endif
 
 #include <cstdlib>
