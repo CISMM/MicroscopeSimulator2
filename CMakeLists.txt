@@ -5,8 +5,8 @@ INCLUDE( ${MicroscopeSimulator_SOURCE_DIR}/CMake/GetCMakeCacheValue.cmake )
 
 # Set version information. Bump this up with every release.
 SET (MicroscopeSimulator_MAJOR_NUMBER "2")
-SET (MicroscopeSimulator_MINOR_NUMBER "1")
-SET (MicroscopeSimulator_REVISION_NUMBER "4")
+SET (MicroscopeSimulator_MINOR_NUMBER "2")
+SET (MicroscopeSimulator_REVISION_NUMBER "0")
 SET (MicroscopeSimulator_VERSION_STRING "${MicroscopeSimulator_MAJOR_NUMBER}.${MicroscopeSimulator_MINOR_NUMBER}.${MicroscopeSimulator_REVISION_NUMBER}")
 
 SET (EXECUTABLE_OUTPUT_PATH "${MicroscopeSimulator_BINARY_DIR}/bin")
