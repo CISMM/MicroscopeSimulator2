@@ -16,6 +16,7 @@ class FluorescenceOptimizer;
 class GradientDescentFluorescenceOptimizer;
 class NelderMeadFluorescenceOptimizer;
 class PointsGradientFluorescenceOptimizer;
+class Visualization;
 
 
 // This is the data model for the Microscope Simulator library.
@@ -79,7 +80,8 @@ public:
   ImageModelObject* GetComparisonImageModelObject();
 
   void OptimizeToFluorescence();
-  void ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
+  void ExportFluorescenceStack(const std::string& fileName, Visualization * visualization,
+                               const std::string& extension,
                                bool exportRed, bool exportGreen, bool exportBlue,
                                bool regenerateFluorophores, bool randomizeObjectPositions,
                                bool randomizeStagePosition,

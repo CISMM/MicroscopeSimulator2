@@ -11,6 +11,8 @@
 #include <itkMultiThreader.h>
 #include <itkPoint.h>
 
+#include <vtkMath.h>
+
 #include "Simulation.h"
 
 #include "AFMSimulation.h"
@@ -24,6 +26,7 @@
 #include "ModelObjectList.h"
 #include "XMLHelper.h"
 #include "Version.h"
+#include "Visualization.h"
 
 #include "ImageWriter.h"
 
@@ -480,13 +483,15 @@ Simulation
 
 void
 Simulation
-::ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
+::ExportFluorescenceStack(const std::string& fileName, Visualization * visualization,
+                          const std::string& extension,
                           bool exportRed, bool exportGreen, bool exportBlue,
                           bool regenerateFluorophores, bool randomizeObjectPositions,
                           bool randomizeStagePosition,
                           double xRange, double yRange, double zRange,
                           int numberOfCopies) {
 
+#if 0
   vtkImageData* rawStack = this->GetFluorescenceSimulation()->GetFluorescenceImageSource()->GenerateFluorescenceStackImage();
   vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
   extractor->SetInputData(rawStack);
@@ -538,6 +543,134 @@ Simulation
   }
 
   rawStack->Delete();
+#else
+
+  int originalIndex = this->GetFluorescenceSimulation()->GetFocalPlaneIndex();
+
+  // Save the original object positions
+  std::vector< double > originalPositions;
+  for (unsigned int i = 0; i < this->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      originalPositions.push_back(mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue());
+    }
+  }
+
+  for (int i = 0; i < numberOfCopies; i++) {
+    if (regenerateFluorophores) {
+      this->RegenerateFluorophores();
+    }
+
+    if (randomizeObjectPositions) {
+      // Randomize each object's position.
+      unsigned int mIndex = 0;
+      for (unsigned int mi = 0; mi < this->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
+
+        double newX = originalPositions[mIndex++] + xRange * (vtkMath::Random() - 0.5);
+        double newY = originalPositions[mIndex++] + yRange * (vtkMath::Random() - 0.5);
+        double newZ = originalPositions[mIndex++] + zRange * (vtkMath::Random() - 0.5);
+
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
+      }
+    }
+
+    if (randomizeStagePosition) {
+      // Randomize all object's positions by the same random offset.
+      double offsetX = xRange * (vtkMath::Random() - 0.5);
+      double offsetY = yRange * (vtkMath::Random() - 0.5);
+      double offsetZ = zRange * (vtkMath::Random() - 0.5);
+
+      for (unsigned int mi = 0; mi < this->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
+        double x = mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue() + offsetX;
+        double y = mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue() + offsetY;
+        double z = mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue() + offsetZ;
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(x);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(y);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(z);
+      }
+    }
+
+    vtkImageData* rawStack = visualization->GenerateFluorescenceStackImage();
+    vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+    extractor->SetInputData(rawStack);
+
+    char fileNameBuffer[2048];
+    if (exportRed) {
+      extractor->SetComponents(0);
+      snprintf( fileNameBuffer, sizeof(fileNameBuffer), "%s%04d_R.%s",
+                fileName.c_str(), i, extension.c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileNameBuffer);
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the red channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    if (exportGreen) {
+      extractor->SetComponents(1);
+      snprintf( fileNameBuffer, sizeof(fileNameBuffer), "%s%04d_G.%s",
+                fileName.c_str(), i, extension.c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileNameBuffer);
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the green channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    if (exportBlue) {
+      extractor->SetComponents(2);
+      snprintf( fileNameBuffer, sizeof(fileNameBuffer), "%s%04d_B.%s",
+                fileName.c_str(), i, extension.c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileNameBuffer);
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the blue channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    rawStack->Delete();
+  }
+
+  // Restore the original object positions
+  unsigned int index = 0;
+  for (unsigned int i = 0; i < this->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+    }
+  }
+
+  // Reset to original focal plane depth
+  this->GetFluorescenceSimulation()->SetFocalPlaneIndex(originalIndex);
+
+#endif
 }
 
 

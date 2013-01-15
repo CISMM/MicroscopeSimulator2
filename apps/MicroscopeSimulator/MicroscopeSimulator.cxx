@@ -1931,139 +1931,28 @@ MicroscopeSimulator
   if (selectedFileName.endsWith(QString('.').append(extension)))
     selectedFileName.chop(extension.size() + 1);
 
-  // Save away the starting focal plane index so that we can reset to it later.
-  FluorescenceSimulation* fluoroSim = m_Simulation->GetFluorescenceSimulation();
-  unsigned int originalIndex = fluoroSim->GetFocalPlaneIndex();
+  bool exportRed   = m_ImageExportOptionsDialog->IsExportRedEnabled();
+  bool exportGreen = m_ImageExportOptionsDialog->IsExportGreenEnabled();
+  bool exportBlue  = m_ImageExportOptionsDialog->IsExportBlueEnabled();
+  bool regenerateFluorophores = m_ImageExportOptionsDialog->
+    IsRegenerateFluorophoresEnabled();
+  bool randomizeObjectPositions = m_ImageExportOptionsDialog->
+    IsRandomizeObjectPositionsEnabled();
+  bool randomizeStagePosition = m_ImageExportOptionsDialog->
+    IsRandomizeStagePositionEnabled();
+  double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
+  double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
+  double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
+  int numberOfCopies = m_ImageExportOptionsDialog->GetNumberOfCopies();
 
-  // Save the original object positions
-  std::vector< double > originalPositions;
-  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
-    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
-    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
-      originalPositions.push_back(mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue());
-      originalPositions.push_back(mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue());
-      originalPositions.push_back(mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue());
-    }
-  }
+  m_Simulation->ExportFluorescenceStack(
+    selectedFileName.toStdString(), m_Visualization, ".tif",
+    exportRed, exportGreen, exportBlue,
+    regenerateFluorophores, randomizeObjectPositions,
+    randomizeStagePosition, xRange, yRange, zRange, numberOfCopies );
 
-  int numberOfImages = m_ImageExportOptionsDialog->GetNumberOfCopies();
-  if (numberOfImages <= 0) numberOfImages = 1;
+  ////
 
-  for (int i = 0; i < numberOfImages; i++) {
-    if (m_ImageExportOptionsDialog->IsRegenerateFluorophoresEnabled()) {
-      m_Simulation->RegenerateFluorophores();
-    }
-
-    double xRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeX();
-    double yRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeY();
-    double zRange = m_ImageExportOptionsDialog->GetObjectRandomPositionRangeZ();
-
-    if (m_ImageExportOptionsDialog->IsRandomizeObjectPositionsEnabled()) {
-      // Randomize each object's position.
-      unsigned int mIndex = 0;
-      for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
-        ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
-        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
-          continue;
-
-        double newX = originalPositions[mIndex++] + xRange * (vtkMath::Random() - 0.5);
-        double newY = originalPositions[mIndex++] + yRange * (vtkMath::Random() - 0.5);
-        double newZ = originalPositions[mIndex++] + zRange * (vtkMath::Random() - 0.5);
-
-        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
-        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
-        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
-      }
-    }
-
-    if (m_ImageExportOptionsDialog->IsRandomizeStagePositionEnabled()) {
-      // Randomize all object's positions by the same random offset.
-      double offsetX = xRange * (vtkMath::Random() - 0.5);
-      double offsetY = yRange * (vtkMath::Random() - 0.5);
-      double offsetZ = zRange * (vtkMath::Random() - 0.5);
-
-      for (unsigned int mi = 0; mi < m_Simulation->GetModelObjectList()->GetSize(); mi++) {
-        ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(mi);
-        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
-          continue;
-        double x = mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue() + offsetX;
-        double y = mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue() + offsetY;
-        double z = mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue() + offsetZ;
-        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(x);
-        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(y);
-        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(z);
-      }
-    }
-
-    vtkImageData* rawStack = m_Visualization->GenerateFluorescenceStackImage();
-    vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-    extractor->SetInputData(rawStack);
-
-    QString fileName;
-    if (m_ImageExportOptionsDialog->IsExportRedEnabled()) {
-      extractor->SetComponents(0);
-      fileName.sprintf("%s%04d_R.%s", selectedFileName.toStdString().c_str(),
-                         i, extension.toStdString().c_str());
-
-      try {
-        ImageWriter writer;
-        writer.SetFileName(fileName.toStdString());
-        writer.SetInputConnection(extractor->GetOutputPort());
-        writer.WriteUShortImage();
-      } catch (itk::ExceptionObject e) {
-        std::cout << "Error on writing the red channel" << std::endl;
-        std::cout << e.GetDescription() << std::endl;
-      }
-    }
-
-    if (m_ImageExportOptionsDialog->IsExportGreenEnabled()) {
-      extractor->SetComponents(1);
-      fileName.sprintf("%s%04d_G.%s", selectedFileName.toStdString().c_str(),
-                         i, extension.toStdString().c_str());
-
-      try {
-        ImageWriter writer;
-        writer.SetFileName(fileName.toStdString());
-        writer.SetInputConnection(extractor->GetOutputPort());
-        writer.WriteUShortImage();
-      } catch (itk::ExceptionObject e) {
-        std::cout << "Error on writing the green channel" << std::endl;
-        std::cout << e.GetDescription() << std::endl;
-      }
-    }
-
-    if (m_ImageExportOptionsDialog->IsExportBlueEnabled()) {
-      extractor->SetComponents(2);
-      fileName.sprintf("%s%04d_B.%s", selectedFileName.toStdString().c_str(),
-                         i, extension.toStdString().c_str());
-
-      try {
-        ImageWriter writer;
-        writer.SetFileName(fileName.toStdString());
-        writer.SetInputConnection(extractor->GetOutputPort());
-        writer.WriteUShortImage();
-      } catch (itk::ExceptionObject e) {
-        std::cout << "Error on writing the blue channel" << std::endl;
-        std::cout << e.GetDescription() << std::endl;
-      }
-    }
-
-    rawStack->Delete();
-  }
-
-  // Restore the original object positions
-  unsigned int index = 0;
-  for (unsigned int i = 0; i < m_Simulation->GetModelObjectList()->GetSize(); i++) {
-    ModelObject* mo = m_Simulation->GetModelObjectList()->GetModelObjectAtIndex(i);
-    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
-      mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
-      mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
-      mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
-    }
-  }
-
-  // Reset to original focal plane depth
-  fluoroSim->SetFocalPlaneIndex(originalIndex);
   RenderViews();
 }
 
