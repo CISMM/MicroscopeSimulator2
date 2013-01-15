@@ -27,7 +27,6 @@
 #include "ModelObjectList.h"
 #include "XMLHelper.h"
 #include "Version.h"
-#include "Visualization.h"
 
 #include "ImageWriter.h"
 

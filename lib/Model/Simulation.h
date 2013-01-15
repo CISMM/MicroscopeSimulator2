@@ -16,7 +16,6 @@ class FluorescenceOptimizer;
 class GradientDescentFluorescenceOptimizer;
 class NelderMeadFluorescenceOptimizer;
 class PointsGradientFluorescenceOptimizer;
-class Visualization;
 
 
 // This is the data model for the Microscope Simulator library.
