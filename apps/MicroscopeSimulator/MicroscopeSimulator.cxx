@@ -498,7 +498,7 @@ MicroscopeSimulator
         }
       }
       if (i < argc) {
-        m_Simulation->ExportFluorescenceStack(std::string(argv[i]), m_Visualization,
+        m_Simulation->ExportFluorescenceStack(std::string(argv[i]),
           "tif", exportRed, exportGreen, exportBlue, regenerateFluorophores,
           randomizeObjectPositions, randomizeStagePosition, xRange, yRange, zRange,
           numberOfCopies);
@@ -1946,7 +1946,7 @@ MicroscopeSimulator
   int numberOfCopies = m_ImageExportOptionsDialog->GetNumberOfCopies();
 
   m_Simulation->ExportFluorescenceStack(
-    selectedFileName.toStdString(), m_Visualization, ".tif",
+    selectedFileName.toStdString(), ".tif",
     exportRed, exportGreen, exportBlue,
     regenerateFluorophores, randomizeObjectPositions,
     randomizeStagePosition, xRange, yRange, zRange, numberOfCopies );

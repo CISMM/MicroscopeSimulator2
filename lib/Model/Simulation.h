@@ -80,8 +80,7 @@ public:
   ImageModelObject* GetComparisonImageModelObject();
 
   void OptimizeToFluorescence();
-  void ExportFluorescenceStack(const std::string& fileName, Visualization * visualization,
-                               const std::string& extension,
+  void ExportFluorescenceStack(const std::string& fileName, const std::string& extension,
                                bool exportRed, bool exportGreen, bool exportBlue,
                                bool regenerateFluorophores, bool randomizeObjectPositions,
                                bool randomizeStagePosition,

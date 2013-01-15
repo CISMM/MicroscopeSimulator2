@@ -484,67 +484,12 @@ Simulation
 
 void
 Simulation
-::ExportFluorescenceStack(const std::string& fileName, Visualization * visualization,
-                          const std::string& extension,
+::ExportFluorescenceStack(const std::string& fileName, const std::string& extension,
                           bool exportRed, bool exportGreen, bool exportBlue,
                           bool regenerateFluorophores, bool randomizeObjectPositions,
                           bool randomizeStagePosition,
                           double xRange, double yRange, double zRange,
                           int numberOfCopies) {
-
-#if 0
-  vtkImageData* rawStack = this->GetFluorescenceSimulation()->GetFluorescenceImageSource()->GenerateFluorescenceStackImage();
-  vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  extractor->SetInputData(rawStack);
-
-  char filePath[2048];
-  if (exportRed) {
-    extractor->SetComponents(0);
-    sprintf(filePath, "%s%04d_R.%s", fileName.c_str(), index, extension.c_str());
-
-    try {
-      ImageWriter writer;
-      writer.SetFileName(filePath);
-      writer.SetInputConnection(extractor->GetOutputPort());
-      writer.WriteUShortImage();
-    } catch (itk::ExceptionObject e) {
-      std::cout << "Error on writing the red channel" << std::endl;
-      std::cout << e.GetDescription() << std::endl;
-    }
-  }
-
-  if (exportGreen) {
-    extractor->SetComponents(1);
-    sprintf(filePath, "%s%04d_G.%s", fileName.c_str(), index, extension.c_str());
-
-    try {
-      ImageWriter writer;
-      writer.SetFileName(filePath);
-      writer.SetInputConnection(extractor->GetOutputPort());
-      writer.WriteUShortImage();
-    } catch (itk::ExceptionObject e) {
-      std::cout << "Error on writing the green channel" << std::endl;
-      std::cout << e.GetDescription() << std::endl;
-    }
-  }
-
-  if (exportBlue) {
-    extractor->SetComponents(2);
-    sprintf(filePath, "%s%04d_B.%s", fileName.c_str(), index, extension.c_str());
-
-    try {
-      ImageWriter writer;
-      writer.SetFileName(filePath);
-      writer.SetInputConnection(extractor->GetOutputPort());
-      writer.WriteUShortImage();
-    } catch (itk::ExceptionObject e) {
-      std::cout << "Error on writing the blue channel" << std::endl;
-      std::cout << e.GetDescription() << std::endl;
-    }
-  }
-
-  rawStack->Delete();
-#else
 
   int originalIndex = this->GetFluorescenceSimulation()->GetFocalPlaneIndex();
 
@@ -601,7 +546,13 @@ Simulation
       }
     }
 
-    vtkImageData* rawStack = visualization->GenerateFluorescenceStackImage();
+    FluorescenceImageSource * imageSource = this->GetFluorescenceSimulation()->GetFluorescenceImageSource();
+    if ( !imageSource ) {
+      std::cerr << "No FluorescenceImageSource set in Simulation::ExportFluorescenceStack" << std::endl;
+      return;
+    }
+
+    vtkImageData* rawStack = imageSource->GenerateFluorescenceStackImage();
     vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
     extractor->SetInputData(rawStack);
 
@@ -670,8 +621,6 @@ Simulation
 
   // Reset to original focal plane depth
   this->GetFluorescenceSimulation()->SetFocalPlaneIndex(originalIndex);
-
-#endif
 }
 
 
