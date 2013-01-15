@@ -3,6 +3,7 @@
 
 #if defined(_WIN32) // Turn off deprecation warnings in Visual Studio
 #pragma warning( disable : 4996 )
+#define snprintf _snprintf
 #endif
 
 #include <cstdlib>
@@ -10,6 +11,8 @@
 
 #include <itkMultiThreader.h>
 #include <itkPoint.h>
+
+#include <vtkMath.h>
 
 #include "Simulation.h"
 
@@ -480,60 +483,143 @@ Simulation
 
 void
 Simulation
-::ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
-                          bool exportRed, bool exportGreen, bool exportBlue) {
+::ExportFluorescenceStack(const std::string& fileName, const std::string& extension,
+                          bool exportRed, bool exportGreen, bool exportBlue,
+                          bool regenerateFluorophores, bool randomizeObjectPositions,
+                          bool randomizeStagePosition,
+                          double xRange, double yRange, double zRange,
+                          int numberOfCopies) {
 
-  vtkImageData* rawStack = this->GetFluorescenceSimulation()->GetFluorescenceImageSource()->GenerateFluorescenceStackImage();
-  vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
-  extractor->SetInputData(rawStack);
+  int originalIndex = this->GetFluorescenceSimulation()->GetFocalPlaneIndex();
 
-  char filePath[2048];
-  if (exportRed) {
-    extractor->SetComponents(0);
-    sprintf(filePath, "%s%04d_R.%s", fileName.c_str(), index, extension.c_str());
-
-    try {
-      ImageWriter writer;
-      writer.SetFileName(filePath);
-      writer.SetInputConnection(extractor->GetOutputPort());
-      writer.WriteUShortImage();
-    } catch (itk::ExceptionObject e) {
-      std::cout << "Error on writing the red channel" << std::endl;
-      std::cout << e.GetDescription() << std::endl;
+  // Save the original object positions
+  std::vector< double > originalPositions;
+  for (unsigned int i = 0; i < this->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      originalPositions.push_back(mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue());
+      originalPositions.push_back(mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue());
     }
   }
 
-  if (exportGreen) {
-    extractor->SetComponents(1);
-    sprintf(filePath, "%s%04d_G.%s", fileName.c_str(), index, extension.c_str());
+  for (int i = 0; i < numberOfCopies; i++) {
+    if (regenerateFluorophores) {
+      this->RegenerateFluorophores();
+    }
 
-    try {
-      ImageWriter writer;
-      writer.SetFileName(filePath);
-      writer.SetInputConnection(extractor->GetOutputPort());
-      writer.WriteUShortImage();
-    } catch (itk::ExceptionObject e) {
-      std::cout << "Error on writing the green channel" << std::endl;
-      std::cout << e.GetDescription() << std::endl;
+    if (randomizeObjectPositions) {
+      // Randomize each object's position.
+      unsigned int mIndex = 0;
+      for (unsigned int mi = 0; mi < this->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
+
+        double newX = originalPositions[mIndex++] + xRange * (vtkMath::Random() - 0.5);
+        double newY = originalPositions[mIndex++] + yRange * (vtkMath::Random() - 0.5);
+        double newZ = originalPositions[mIndex++] + zRange * (vtkMath::Random() - 0.5);
+
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(newX);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(newY);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(newZ);
+      }
+    }
+
+    if (randomizeStagePosition) {
+      // Randomize all object's positions by the same random offset.
+      double offsetX = xRange * (vtkMath::Random() - 0.5);
+      double offsetY = yRange * (vtkMath::Random() - 0.5);
+      double offsetZ = zRange * (vtkMath::Random() - 0.5);
+
+      for (unsigned int mi = 0; mi < this->GetModelObjectList()->GetSize(); mi++) {
+        ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(mi);
+        if (!mo->GetProperty(ModelObject::X_POSITION_PROP))
+          continue;
+        double x = mo->GetProperty(ModelObject::X_POSITION_PROP)->GetDoubleValue() + offsetX;
+        double y = mo->GetProperty(ModelObject::Y_POSITION_PROP)->GetDoubleValue() + offsetY;
+        double z = mo->GetProperty(ModelObject::Z_POSITION_PROP)->GetDoubleValue() + offsetZ;
+        mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(x);
+        mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(y);
+        mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(z);
+      }
+    }
+
+    FluorescenceImageSource * imageSource = this->GetFluorescenceSimulation()->GetFluorescenceImageSource();
+    if ( !imageSource ) {
+      std::cerr << "No FluorescenceImageSource set in Simulation::ExportFluorescenceStack" << std::endl;
+      return;
+    }
+
+    vtkImageData* rawStack = imageSource->GenerateFluorescenceStackImage();
+    vtkSmartPointer<vtkImageExtractComponents> extractor = vtkSmartPointer<vtkImageExtractComponents>::New();
+    extractor->SetInputData(rawStack);
+
+    char fileNameBuffer[2048];
+    if (exportRed) {
+      extractor->SetComponents(0);
+      snprintf( fileNameBuffer, sizeof(fileNameBuffer), "%s%04d_R.%s",
+                fileName.c_str(), i, extension.c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileNameBuffer);
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the red channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    if (exportGreen) {
+      extractor->SetComponents(1);
+      snprintf( fileNameBuffer, sizeof(fileNameBuffer), "%s%04d_G.%s",
+                fileName.c_str(), i, extension.c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileNameBuffer);
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the green channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    if (exportBlue) {
+      extractor->SetComponents(2);
+      snprintf( fileNameBuffer, sizeof(fileNameBuffer), "%s%04d_B.%s",
+                fileName.c_str(), i, extension.c_str());
+
+      try {
+        ImageWriter writer;
+        writer.SetFileName(fileNameBuffer);
+        writer.SetInputConnection(extractor->GetOutputPort());
+        writer.WriteUShortImage();
+      } catch (itk::ExceptionObject e) {
+        std::cout << "Error on writing the blue channel" << std::endl;
+        std::cout << e.GetDescription() << std::endl;
+      }
+    }
+
+    rawStack->Delete();
+  }
+
+  // Restore the original object positions
+  unsigned int index = 0;
+  for (unsigned int i = 0; i < this->GetModelObjectList()->GetSize(); i++) {
+    ModelObject* mo = this->GetModelObjectList()->GetModelObjectAtIndex(i);
+    if (mo->GetProperty(ModelObject::X_POSITION_PROP)) {
+      mo->GetProperty(ModelObject::X_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Y_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
+      mo->GetProperty(ModelObject::Z_POSITION_PROP)->SetDoubleValue(originalPositions[index++]);
     }
   }
 
-  if (exportBlue) {
-    extractor->SetComponents(2);
-    sprintf(filePath, "%s%04d_B.%s", fileName.c_str(), index, extension.c_str());
-
-    try {
-      ImageWriter writer;
-      writer.SetFileName(filePath);
-      writer.SetInputConnection(extractor->GetOutputPort());
-      writer.WriteUShortImage();
-    } catch (itk::ExceptionObject e) {
-      std::cout << "Error on writing the blue channel" << std::endl;
-      std::cout << e.GetDescription() << std::endl;
-    }
-  }
-
-  rawStack->Delete();
+  // Reset to original focal plane depth
+  this->GetFluorescenceSimulation()->SetFocalPlaneIndex(originalIndex);
 }
 
 

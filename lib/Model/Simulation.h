@@ -79,8 +79,12 @@ public:
   ImageModelObject* GetComparisonImageModelObject();
 
   void OptimizeToFluorescence();
-  void ExportFluorescenceStack(const std::string& fileName, int index, const std::string& extension,
-                               bool exportRed, bool exportGreen, bool exportBlue);
+  void ExportFluorescenceStack(const std::string& fileName, const std::string& extension,
+                               bool exportRed, bool exportGreen, bool exportBlue,
+                               bool regenerateFluorophores, bool randomizeObjectPositions,
+                               bool randomizeStagePosition,
+                               double xRange, double yRange, double zRange,
+                               int numberOfCopies);
   void SaveFluorescenceObjectiveFunctionValue(const std::string& fileName);
 
   void SetNumberOfThreads(unsigned int threads);
