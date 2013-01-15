@@ -450,13 +450,13 @@ MicroscopeSimulator
             std::cout << "--blue" << std::endl;
           } else if (strcmp(argv[i], "--regenerateFluorophores") == 0) {
             regenerateFluorophores = true;
-            std::cout << "regenerateFluorophores" << std::endl;
+            std::cout << "--regenerateFluorophores" << std::endl;
           } else if (strcmp(argv[i], "--randomizeObjectPositions") == 0) {
             randomizeObjectPositions = true;
-            std::cout << "randomizeObjectPositions" << std::endl;
+            std::cout << "--randomizeObjectPositions" << std::endl;
           } else if (strcmp(argv[i], "--randomizeStagePosition") == 0) {
             randomizeStagePosition = true;
-            std::cout << "randomizeStagePosition" << std::endl;
+            std::cout << "--randomizeStagePosition" << std::endl;
           } else if (strcmp(argv[i], "--xrange") == 0) {
             if (i+1 < argc) {
               xRange = atof(argv[i+1]);
@@ -498,7 +498,7 @@ MicroscopeSimulator
         }
       }
       if (i < argc) {
-        m_Simulation->ExportFluorescenceStack(std::string(argv[i]), 0,
+        m_Simulation->ExportFluorescenceStack(std::string(argv[i]), m_Visualization,
           "tif", exportRed, exportGreen, exportBlue, regenerateFluorophores,
           randomizeObjectPositions, randomizeStagePosition, xRange, yRange, zRange,
           numberOfCopies);
