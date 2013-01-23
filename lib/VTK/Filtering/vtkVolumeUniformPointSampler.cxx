@@ -23,7 +23,9 @@
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
 #include "vtkTetra.h"
+
 #include <cstdlib>
+#include <ctime>
 
 vtkStandardNewMacro(vtkVolumeUniformPointSampler);
 
@@ -67,6 +69,9 @@ int vtkVolumeUniformPointSampler::RequestData(
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
+  // Set the RNG seed
+  this->Random->SetSeed( time( NULL ) );
+
   // get the info objects
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
   vtkInformation *outInfo = outputVector->GetInformationObject(0);

@@ -24,7 +24,9 @@
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
 #include "vtkTriangle.h"
+
 #include <cstdlib>
+#include <ctime>
 
 vtkStandardNewMacro(vtkSurfaceUniformPointSampler);
 
