@@ -22,6 +22,10 @@
 #define __vtkUniformPointSampler_h
 
 #include "vtkPolyDataAlgorithm.h"
+#include "vtkSmartPointer.h"
+
+class vtkMinimalStandardRandomSequence;
+
 
 class vtkDoubleArray;
 
@@ -81,6 +85,10 @@ protected:
   // Description:
   // Time when the sampling was last computed.
   long ComputedTime;
+
+  // Description:
+  // Random number generator
+  vtkSmartPointer< vtkMinimalStandardRandomSequence > Random;
 
 
 private:

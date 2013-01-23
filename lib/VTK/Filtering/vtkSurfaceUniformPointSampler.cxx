@@ -19,6 +19,7 @@
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkMath.h"
+#include "vtkMinimalStandardRandomSequence.h"
 #include "vtkObjectFactory.h"
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
@@ -61,6 +62,9 @@ int vtkSurfaceUniformPointSampler::RequestData(
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
+  // Set the RNG seed
+  this->Random->SetSeed( time( NULL ) );
+
   // get the info objects
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
@@ -120,14 +124,12 @@ void vtkSurfaceUniformPointSampler::CreateSamplePoints(vtkPolyData *input,
   vtkPoints *newPoints = vtkPoints::New();
   newPoints->SetNumberOfPoints(numPoints);
 
-  // Temporarily reset seed
-  //vtkMath::RandomSeed(200);
-
   // Insert the appropriate number of points.
   for (int j = 0; j < numPoints; j++) {
 
     // Get a random number. Probably doesn't matter how good it is.
-    double rand = vtkMath::Random() * this->SurfaceArea;
+    this->Random->Next();
+    double rand = this->Random->GetValue() * this->SurfaceArea;
 
     // Map this number to a polygon index via a binary search.
     vtkIdType polygonIndex = -1;    
@@ -185,7 +187,8 @@ void vtkSurfaceUniformPointSampler::RandomTrianglePoint(vtkTriangle *triangle,
   double vy = p2[1] - p1[1];
   double vz = p2[2] - p1[2];
 
-  double t = sqrt(vtkMath::Random());
+  this->Random->Next();
+  double t = sqrt( this->Random->GetValue() );
   
   // Now that we know t, get a random point on the line
   // connecting edges u and v.
@@ -196,7 +199,8 @@ void vtkSurfaceUniformPointSampler::RandomTrianglePoint(vtkTriangle *triangle,
   double vty = vy*t + p1[1];
   double vtz = vz*t + p1[2];
 
-  double s = vtkMath::Random();
+  this->Random->Next();
+  double s = this->Random->GetValue();
 
   pt[0] = (utx*(1.0-s)) + (vtx*s);
   pt[1] = (uty*(1.0-s)) + (vty*s);

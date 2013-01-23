@@ -18,7 +18,7 @@
 #include "vtkDoubleArray.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
-#include "vtkMath.h"
+#include "vtkMinimalStandardRandomSequence.h"
 #include "vtkObjectFactory.h"
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
@@ -36,6 +36,7 @@ vtkUniformPointSampler::vtkUniformPointSampler()
   this->UseFixedNumberOfSamples = 0;
   this->NumberOfSamples = 0;
   this->SurfaceArea = 0.0;
+  this->Random = vtkSmartPointer< vtkMinimalStandardRandomSequence >::New();
 }
 
 //----------------------------------------------------------------------------

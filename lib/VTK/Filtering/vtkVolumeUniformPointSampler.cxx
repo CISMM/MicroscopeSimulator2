@@ -18,8 +18,8 @@
 #include "vtkDoubleArray.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
-#include "vtkMath.h"
 #include "vtkObjectFactory.h"
+#include "vtkMinimalStandardRandomSequence.h"
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
 #include "vtkTetra.h"
@@ -142,7 +142,8 @@ void vtkVolumeUniformPointSampler::CreateSamplePoints(vtkUnstructuredGrid *input
   for (int j = 0; j < numPoints; j++) {
 
     // Get a random number. Probably doesn't matter how good it is.
-    double rand = vtkMath::Random() * this->Volume;
+    this->Random->Next();
+    double rand = this->Random->GetValue() * this->Volume;
 
     // Map this number to a polygon index via a binary search.
     vtkIdType tetraIndex = -1;    
@@ -192,9 +193,12 @@ void vtkVolumeUniformPointSampler::RandomTetrahedronPoint(vtkTetra *tetra,
   // Get coordinates that give a uniformly random
   // distribution in the space contained by the
   // tetrahedron.
-  double s = pow(vtkMath::Random(), 1.0/3.0);
-  double t = sqrt(vtkMath::Random());
-  double r = vtkMath::Random();
+  this->Random->Next();
+  double s = pow(this->Random->GetValue(), 1.0/3.0);
+  this->Random->Next();
+  double t = sqrt(this->Random->GetValue());
+  this->Random->Next();
+  double r = this->Random->GetValue();
 
   // Get triangle
   double ux = s*(p2[0] - p1[0]) + p1[0];
