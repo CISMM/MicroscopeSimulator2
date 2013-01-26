@@ -1,8 +1,6 @@
 PROJECT (MicroscopeSimulator)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 
-INCLUDE( ${MicroscopeSimulator_SOURCE_DIR}/CMake/GetCMakeCacheValue.cmake )
-
 # Set version information. Bump this up with every release.
 SET (MicroscopeSimulator_MAJOR_NUMBER "2")
 SET (MicroscopeSimulator_MINOR_NUMBER "2")
@@ -80,7 +78,7 @@ FIND_PACKAGE( OpenGL REQUIRED )
 # Find include files for libxml2
 #######################################
 # Find the include directory for libxml2
-GetCMakeCacheValue( "${VTK_DIR}" LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES )
+LOAD_CACHE( "${VTK_DIR}" READ_WITH_PREFIX "" LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES )
 
 INCLUDE_DIRECTORIES( ${LIBXML2_INCLUDE_DIR} )
 #TARGET_LINK_LIBRARIES( ${LIBXML2_LIBRARIES} )
