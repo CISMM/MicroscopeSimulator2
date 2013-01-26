@@ -80,7 +80,7 @@ FIND_PACKAGE( OpenGL REQUIRED )
 # Find include files for libxml2
 #######################################
 # Find the include directory for libxml2
-GetCMakeCacheValue( "${VTK_DIR}/CMakeCache.txt" LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES )
+GetCMakeCacheValue( "${VTK_DIR}" LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES )
 
 INCLUDE_DIRECTORIES( ${LIBXML2_INCLUDE_DIR} )
 #TARGET_LINK_LIBRARIES( ${LIBXML2_LIBRARIES} )
