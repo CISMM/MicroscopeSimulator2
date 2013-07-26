@@ -399,6 +399,7 @@ MicroscopeSimulator
 
       i++;
       if (i < argc) {
+        m_SimulationNeedsSaving = false; // Kind of a hack to prevent file save dialog box from appearing.
         NewSimulation();
         OpenSimulationFile(std::string(argv[i]));
       } else {
