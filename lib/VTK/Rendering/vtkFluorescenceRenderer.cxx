@@ -14,6 +14,7 @@
 =========================================================================*/
 #include "vtkFluorescenceRenderer.h"
 
+#include <ctime>
 #include <vector>
 
 #include "vtkObjectFactory.h"
@@ -31,7 +32,7 @@ vtkStandardNewMacro(vtkFluorescenceRenderer);
 
 vtkFluorescenceRenderer::vtkFluorescenceRenderer() {
   this->GenerateNoise = 0;
-  this->ScrambleKey   = 0;
+  this->ScrambleKey   = static_cast<unsigned int>(time(NULL));
   this->NoiseStdDev   = 0.0;
   this->NoiseMean     = 0.0;
   this->NoiseProgramHandle = 0;
