@@ -367,6 +367,13 @@ ImportedPointSpreadFunction
 ::ReadFile() {
   typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
+  // Check for existance of file
+  FILE *fp = fopen(m_FileName.c_str(), "r");
+  if (fp == NULL) {
+    return false;
+  }
+  fclose(fp);
+
   itk::ImageIOBase::Pointer imageIO =
     itk::ImageIOFactory::CreateImageIO(m_FileName.c_str(), itk::ImageIOFactory::ReadMode);
 
