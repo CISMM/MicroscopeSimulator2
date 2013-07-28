@@ -496,7 +496,7 @@ Four buttons below the PSF list enable adding and deleting PSFs:
 A 3D Gaussian is often used to model the PSF of a confocal microscope. The parameters of this model include the standard deviation of the Gaussian in each of the three spatial dimensions.
 
 \item[Add Calculated Widefield PSF] \hfill \\
-Gibson and Lanni\footnote{Gibson, S. F. and Lanni, F. (1992 ). Experimental test of an analytical model of aberration in an oil-immersion objective lens used in 3-D microscopy. \emph{Journal of the Optical Society of America}, 9(1):154Ð166.} proposed a model for aberrated PSFs in widefield microscopes. This model assumes that an objective lens has been designed for specific microscope parameters. When the actual parameters of the microscope match the design parameters, an ideal PSF is formed. When the actual parameters do not match, the difference in the length of the path traveled by a ray in the design system and a ray in the actual system causes a phase shift that leads to an aberrated PSF. This model's parameters include: emission wavelength, numerical aperture, magnification, design and actual cover slip refractive indices, design and actual cover slip thicknesses, design and actual immersion oil refractive indices, design immersion oil thickness, design and actual specimen layer refractive indices, depth in specimen layer, and the design and actual distances from the back focal plane.
+Gibson and Lanni\footnote{Gibson, S. F. and Lanni, F. (1992 ). Experimental test of an analytical model of aberration in an oil-immersion objective lens used in 3-D microscopy. \emph{Journal of the Optical Society of America}, 9(1):154ï¿½166.} proposed a model for aberrated PSFs in widefield microscopes. This model assumes that an objective lens has been designed for specific microscope parameters. When the actual parameters of the microscope match the design parameters, an ideal PSF is formed. When the actual parameters do not match, the difference in the length of the path traveled by a ray in the design system and a ray in the actual system causes a phase shift that leads to an aberrated PSF. This model's parameters include: emission wavelength, numerical aperture, magnification, design and actual cover slip refractive indices, design and actual cover slip thicknesses, design and actual immersion oil refractive indices, design immersion oil thickness, design and actual specimen layer refractive indices, depth in specimen layer, and the design and actual distances from the back focal plane.
 
 \item[Import PSF Image...] \hfill \\
 A PSF image generated from an external program may be imported by clicking on this button. 3D TIFF and Zeiss LSM files can be imported.
@@ -801,6 +801,20 @@ Because the \emph{Fixed Fluorophore Model} does not sample the geometry, only th
 
 \section{Version History}
 
+\subsection{Version 2.3.0}
+
+\noindent
+Changes from previous release:
+\begin{itemize}
+
+\item Better error handling when an imported PSF image file does not exist.
+
+\item Seed for Gaussian random noise in fluorescence images is based on the current time instead of a fixed number.
+
+\item In batch mode, user is no longer prompted to confirm closing a simulation when something has changed.
+
+\end{itemize}
+
 \subsection{Version 2.0.0}
 
 \noindent
@@ -819,4 +833,4 @@ Known issues:
 
 \end{itemize}
 
-\end{document}  
+\end{document}
