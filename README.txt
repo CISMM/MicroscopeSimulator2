@@ -12,7 +12,7 @@ You'll need to obtain CMake, Qt, libxml2, VTK, and ITK.
 1. Download CMake 2.8.10 or higher from
 http://www.cmake.org/cmake/resources/software.html
 
-If you are developing on Windows, you will also need to develop the NSIS
+If you are developing on Windows, you will also need to install the NSIS
 scriptable install system from http://nsis.sourceforge.net/Download.
 CMake requires this to make installer programs.
 
@@ -81,8 +81,8 @@ git submodule update
 
 Configure VTK with CMake and build it. You'll need to configure it once first.
 Then, you'll need to enable BUILD_SHARED_LIBS, disable BUILD_TESTING
-(if you want to speed up the build process), enable VTK_USE_GUI_SUPPORT,
-enable VTK_USE_QT, enable VTK_USE_VIEWS, and enable VTK_USE_SYSTEM_LIBXML2.
+(if you want to speed up the build process), enable VTK_Group_QT,
+enable VTK_Group_VIEWS, and enable VTK_USE_SYSTEM_LIBXML2.
 Configure the project again.
 
 After configuration is finished, CMake will complain that LIBXML2_LIBRARY is not found.
@@ -117,7 +117,15 @@ Unzip and untar the archive. Configure it with CMake. No non-default options
 are required. Generate the Visual Studio solution file and build CLAPACK in
 Visual Studio.
 
-7. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to the VTK build directory
+Note: If the build fails, you may need to modify the Tools setting on
+Visual Studio to only build using one parallel process.  Otherwise, there
+can be contention for the output library file.
+
+7. Pull down the NanoITK submodule
+
+Edit MicroscopeSimculator2.gitmodule to change the name "cquammen" to your loging name for CS.  Then do 'got submodule update --init" to pull in the submodule.
+
+8. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to the VTK build directory
 from step 4. Set ITK_DIR to the ITK build directory from step 5. Set CLAPACK_DIR to the
 CLAPACK build directory in step 6.
 

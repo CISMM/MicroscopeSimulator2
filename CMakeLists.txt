@@ -4,7 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2)
 # Set version information. Bump this up with every release.
 SET (MicroscopeSimulator_MAJOR_NUMBER "2")
 SET (MicroscopeSimulator_MINOR_NUMBER "3")
-SET (MicroscopeSimulator_REVISION_NUMBER "0")
+SET (MicroscopeSimulator_REVISION_NUMBER "1")
 SET (MicroscopeSimulator_VERSION_STRING "${MicroscopeSimulator_MAJOR_NUMBER}.${MicroscopeSimulator_MINOR_NUMBER}.${MicroscopeSimulator_REVISION_NUMBER}")
 
 SET (EXECUTABLE_OUTPUT_PATH "${MicroscopeSimulator_BINARY_DIR}/bin")
@@ -14,11 +14,18 @@ OPTION (CMAKE_VERBOSE_MAKEFILE  "Enable/Disable verbose compiler output" ON)
 OPTION (CMAKE_COLOR_MAKEFILE "Enable/Disable color cues when building" ON)
 MARK_AS_ADVANCED (CLEAR CMAKE_VERBOSE_MAKEFILE CMAKE_COLOR_MAKEFILE)
 
-OPTION (USE_SUPERBUILD "Enable superbuild" ON)
+# Superbuild off by default.
+OPTION (USE_SUPERBUILD "Enable superbuild" OFF)
 IF (${USE_SUPERBUILD})
   INCLUDE(SuperBuild.cmake)
   RETURN()
 ENDIF()
+
+if(WIN32)
+  # To avoid warnings in case we're using Visual Studio
+  ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS )
+  ADD_DEFINITIONS( -D_CRT_NONSTDC_NO_DEPRECATE )
+endif(WIN32)
 
 #######################################
 # Include ITK
