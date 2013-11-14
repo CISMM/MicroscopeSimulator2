@@ -123,7 +123,7 @@ can be contention for the output library file.
 
 7. Pull down the NanoITK submodule
 
-Edit MicroscopeSimculator2.gitmodule to change the name "cquammen" to your loging name for CS.  Then do 'got submodule update --init" to pull in the submodule.
+Edit MicroscopeSimculator2/.gitmodule to change the name "swaldon" to your loging name for CS.  Then do 'git submodule update --init" to pull in the submodule.
 
 8. Configure the MicroscopeSimulator2 project using CMake. Set VTK_DIR to the VTK build directory
 from step 4. Set ITK_DIR to the ITK build directory from step 5. Set CLAPACK_DIR to the
