@@ -15,7 +15,7 @@ OPTION (CMAKE_COLOR_MAKEFILE "Enable/Disable color cues when building" ON)
 MARK_AS_ADVANCED (CLEAR CMAKE_VERBOSE_MAKEFILE CMAKE_COLOR_MAKEFILE)
 
 # Superbuild off by default.
-OPTION (USE_SUPERBUILD "Enable superbuild" OFF)
+OPTION (USE_SUPERBUILD "Enable superbuild" ON)
 IF (${USE_SUPERBUILD})
   INCLUDE(SuperBuild.cmake)
   RETURN()
