@@ -30,7 +30,7 @@ ENDIF()
 IF(NOT DEFINED ITK_DIR)
   EXTERNALPROJECT_ADD( ITK
     PREFIX    ${EXTERNAL_PREFIX}
-    GIT_REPOSITORY git://itk.org/ITK.git
+    GIT_REPOSITORY https://github.com/InsightSoftwareConsortium/ITK.git
     GIT_TAG "v4.0a07"
     CMAKE_ARGS
       -D BUILD_TESTING:BOOL=OFF
@@ -51,7 +51,7 @@ ENDIF()
 IF(NOT DEFINED VTK_DIR)
   EXTERNALPROJECT_ADD( VTK
     PREFIX    ${EXTERNAL_PREFIX}
-    GIT_REPOSITORY git://vtk.org/VTK.git
+    GIT_REPOSITORY https://github.com/Kitware/VTK.git
     GIT_TAG "v5.6.1"
     CMAKE_ARGS
       -D BUILD_TESTING:BOOL=OFF
