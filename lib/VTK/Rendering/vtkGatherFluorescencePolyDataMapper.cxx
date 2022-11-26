@@ -501,9 +501,9 @@ int vtkGatherFluorescencePolyDataMapper::LoadShaderProgram(vtkRenderWindow *renW
 
   vtkgl::GetProgramiv(this->ShaderProgramHandle, vtkgl::LINK_STATUS, &status);
   if (!status) {
-    vtkGraphicErrorMacro(renWin, "Failed to link shader program");
+    std::cerr << "Failed to link shader program" << std::endl;
     vtkgl::GetProgramInfoLog(this->ShaderProgramHandle, 256, &length, infoLog);
-    vtkGraphicErrorMacro(renWin, infoLog);
+    std::cerr << infoLog << std::endl;
   }
 
   return 1;

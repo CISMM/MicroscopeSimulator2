@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <itkMultiThreader.h>
+#include <itkMultiThreaderBase.h>
 #include <itkPoint.h>
 
 #include <vtkMath.h>
@@ -639,15 +639,15 @@ Simulation
 void
 Simulation
 ::SetNumberOfThreads(unsigned int threads) {
-  itk::MultiThreader::SetGlobalDefaultNumberOfThreads(threads);
-  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(threads);
+  itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads(threads);
+  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(threads);
 }
 
 
 unsigned int
 Simulation
 ::GetNumberOfThreads() {
-  return itk::MultiThreader::GetGlobalMaximumNumberOfThreads();
+  return itk::MultiThreaderBase::GetGlobalMaximumNumberOfThreads();
 }
 
 

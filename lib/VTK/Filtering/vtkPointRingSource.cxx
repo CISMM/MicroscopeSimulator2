@@ -37,11 +37,14 @@ int vtkPointRingSource::RequestInformation(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
   vtkInformationVector *outputVector) {
-  
+ 
+  /// @todo https://paraview.paraview.narkive.com/0o9BOiAA/where-did-vtkmultigroupdataset-go
+  /// reports that this is not needed anymore, and it breaks the compile on more recent versions
+  /// of VTK, so commenting it out. 
   // get the info object
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(),
-               -1);
+  // vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  //outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(),
+  //             -1);
 
   return 1;
 }

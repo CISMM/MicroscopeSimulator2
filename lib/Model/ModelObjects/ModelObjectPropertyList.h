@@ -2,6 +2,7 @@
 #define _MODEL_OBJECT_PROPERTY_LIST_H_
 
 #include <vector>
+#include <string>
 
 // Forward declarations
 class ModelObjectProperty;
