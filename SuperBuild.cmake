@@ -34,7 +34,7 @@ IF(NOT DEFINED ITK_DIR)
     # Original code used version 4.0a07 of ITK, but it can't compile with gcc above 4.
     # Version 4.9.1 didn't know about gcc above 6.
     #GIT_TAG "v4.0a07"
-    GIT_TAG "v5.0.0"
+    GIT_TAG "v5.2.0"
     GIT_SHALLOW ON
     GIT_SUBMODULES_RECURSE OFF
     GIT_SUBMODULES ""
