@@ -1,4 +1,5 @@
 #include <string>
+#include <string.h>
 
 bool ShouldTestBeRun( const char * testName, int argc, char* argv[] ) {
   if ((argc == 1) ||

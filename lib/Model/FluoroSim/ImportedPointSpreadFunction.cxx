@@ -8,7 +8,7 @@
 #include <itkCastImageFilter.h>
 #include <itkChangeInformationImageFilter.hxx>
 #include <itkImageFileReader.hxx>
-#include <itkBinaryFunctorImageFilter.hxx> // Needed for AddConstantToImageFilter
+#include <itkBinaryGeneratorImageFilter.hxx> // Needed for AddConstantToImageFilter
 #include <ITKImageToVTKImage.cxx>
 
 // WARNING: Always include the header file for this class AFTER
