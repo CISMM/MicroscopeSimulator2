@@ -120,16 +120,16 @@ ADD_EXECUTABLE( MicroscopeSimulator
 TARGET_LINK_LIBRARIES( MicroscopeSimulator
   ${QT_LIBRARIES}
   ${VTK_LIBRARIES}
-  ${OPENGL_LIBRARIES}
   msvtkFiltering
   msvtkImaging
   msvtkRendering
-  ${ITK_LIBRARIES}
   msimFilter
   msimIO
   msimModel
   msimVisualization
   msimUtilities
+  ${ITK_LIBRARIES}
+  OpenGL::GL
 )
 
 # Set package properties

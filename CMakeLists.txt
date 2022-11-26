@@ -28,6 +28,11 @@ if(WIN32)
 endif(WIN32)
 
 #######################################
+# Include Qt4, required by VTK build
+#######################################
+FIND_PACKAGE(Qt4 REQUIRED)
+
+#######################################
 # Include ITK
 #######################################
 FIND_PACKAGE(ITK
@@ -88,7 +93,7 @@ FIND_PACKAGE( OpenGL REQUIRED )
 LOAD_CACHE( "${VTK_DIR}" READ_WITH_PREFIX "" LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES )
 
 INCLUDE_DIRECTORIES( ${LIBXML2_INCLUDE_DIR} )
-#TARGET_LINK_LIBRARIES( ${LIBXML2_LIBRARIES} )
+LINK_DIRECTORIES( ${LIBXML2_LIBRARIES} )
 
 #######################################
 # Personal filter library and support classes.

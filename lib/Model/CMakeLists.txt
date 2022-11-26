@@ -93,12 +93,12 @@ SET(modelFluoroSimSrc
 ADD_LIBRARY(msimModel ${modelSrc} ${modelModelObjectsSrc} ${modelAFMSimSrc} ${modelFluoroSimSrc})
 
 TARGET_LINK_LIBRARIES( msimModel
-  ${VTK_LIBRARIES}
   msvtkGraphics
   msvtkFiltering
   msvtkImaging
-  ${ITK_LIBRARIES}
   msimIO
   msimUtilities
+  ${ITK_LIBRARIES}
+  ${VTK_LIBRARIES}
   ${LIBXML2_LIBRARIES}
 )
