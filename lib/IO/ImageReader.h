@@ -1,6 +1,9 @@
 #ifndef _IMAGE_READER_H_
 #define _IMAGE_READER_H_
 
+// @todo Figure out how to make Eigen happy and keep this defined.
+#undef Success
+
 #define ITK_MANUAL_INSTANTIATION
 #include <itkImage.h>
 #include <itkImageFileReader.h>
